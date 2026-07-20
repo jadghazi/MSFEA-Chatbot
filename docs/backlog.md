@@ -64,6 +64,38 @@ a v2 feature once single-answer retrieval is solid.
 
 ---
 
+## B-3 — Admin / usage analytics dashboard (end-stage)
+
+**Idea (from Jad, 2026-07-20).** The department asked whether usage can be seen.
+A founder/admin dashboard showing how the bot is being used — for stakeholders
+to view value and to guide what content to improve.
+
+**Why it matters.** It's a real stakeholder ask, and it directly demonstrates
+the project's goal: is email volume actually being deflected? It also surfaces
+the unanswered-questions log as the roadmap for KB improvements.
+
+**Where it fits.** End-stage. It sits **on top of** the Phase 9 observability
+logging ([CLAUDE.md](../CLAUDE.md) §5.9) — the structured interaction log is the
+*data source*; the dashboard is just a *view* on it. If Phase 9 logging is done
+well, the dashboard is cheap.
+
+**Likely metrics (aggregate only):** questions/day, deflection rate,
+escalation rate, 👍/👎 ratings (Layer 4, see [decisions/0002-evaluation-methodology.md](decisions/0002-evaluation-methodology.md)),
+top topics asked, and the unanswered-questions list.
+
+**Non-negotiable guardrail — privacy.** Aggregate numbers only. **No
+student-identifying data** (names/emails stripped before logging, per
+[CLAUDE.md](../CLAUDE.md) §7). The dashboard must never expose individual student
+queries in a way that identifies the student.
+
+**Keep it simple (solo student).** A read-only view over the existing log — do
+not build a heavy analytics stack or user-management/roles system for it. Resist
+turning this into a product of its own.
+
+**Do NOT build yet.** Depends on Phase 9 logging existing first.
+
+---
+
 ## How to promote an item off this backlog
 
 When a phase is ready to take one of these on: write an ADR

@@ -6,6 +6,30 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-20 — Evaluation methodology + dashboard decision (docs only)
+
+**Decided (ADR-0002).** Answer grading uses a **layered hybrid**, matching
+production RAG practice — all four layers, since this is built to deploy:
+1. Deterministic checks (refusal / citation / disclaimer) — free, no LLM.
+2. Decomposed LLM-as-judge (faithfulness/groundedness + relevance).
+3. Human calibration on a small sample to trust the judge.
+4. Production feedback (👍/👎, escalation/deflection rate, unanswered-questions).
+Layers 1–3 = Phase 2 (offline harness); Layer 4 = Phase 9 (online).
+
+**Clarified.** 👍/👎 feedback does NOT auto-retrain the bot — it signals a human
+to fix content/retrieval/prompt (human-in-the-loop). Documented in ADR-0002 and
+DoD C4.
+
+**New backlog item B-3.** Admin/usage analytics dashboard (department asked if
+usage can be seen). End-stage, sits on top of Phase 9 logging, aggregate metrics
+only, no student-identifying data (privacy per §7).
+
+**Docs touched:** ADR-0002 (new), decisions/README index, backlog B-3,
+definition-of-done (Tier B note + C4), this journal. No code — Phase 2 not built
+yet.
+
+---
+
 ## 2026-07-20 — Phase 1: scaffolding
 
 **Done.** Built the repo skeleton (no RAG logic yet — labelled `# PLACEHOLDER`

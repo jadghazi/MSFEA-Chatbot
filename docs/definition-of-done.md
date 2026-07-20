@@ -47,9 +47,12 @@ failure here blocks release regardless of metrics.
 
 ### Tier B — Quality gates (measured against the golden set, §4)
 
-Two metrics kept strictly separate, per [CLAUDE.md](../CLAUDE.md) §4. Thresholds
-below are **proposed starting targets** — we ratify or adjust them once the real
-golden set exists; they are not guesses to ship blindly.
+Two metrics kept strictly separate, per [CLAUDE.md](../CLAUDE.md) §4. How the
+answer metric is actually graded (deterministic checks + decomposed LLM-judge +
+human calibration) is defined in
+[decisions/0002-evaluation-methodology.md](decisions/0002-evaluation-methodology.md).
+Thresholds below are **proposed starting targets** — we ratify or adjust them
+once the real golden set exists; they are not guesses to ship blindly.
 
 > **Note on the numbers.** There is no universal industry-standard value for
 > these. The standard *practice* is baseline-first: measure the real golden set
@@ -72,6 +75,7 @@ golden set exists; they are not guesses to ship blindly.
 | C1  | Measurable drop in repetitive internship emails to professors during the pilot cohort. | Compare email volume vs. a pre-pilot baseline. | `[CONFIRM]` department provides a baseline + a target (e.g. "−X% over N weeks"). |
 | C2  | Healthy deflection: a majority of asked questions are answered from the KB rather than escalated. | Deflection rate = answered / total, from the interaction log (§9). | Proxy we control even without C1's baseline. |
 | C3  | The unanswered-questions log exists and is reviewed — it's the roadmap for what KB content to add next. | Log surfaced per §9. | — |
+| C4  | Per-answer 👍/👎 feedback is collected (Layer 4). It feeds a **human** improvement loop (fix content/retrieval/prompt), not automatic retraining. | Ratings logged per §9; see [decisions/0002-evaluation-methodology.md](decisions/0002-evaluation-methodology.md). | — |
 
 ### Tier D — Operational / handover (from §3, §6, §10, §12)
 

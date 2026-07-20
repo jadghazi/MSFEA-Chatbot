@@ -29,3 +29,4 @@ file layout). Keep the log signal-heavy.
 | ADR | Title | Status |
 |-----|-------|--------|
 | 0001 | Adopt ADR process + provisional success metrics | Accepted |
+| 0002 | Evaluation methodology: layered hybrid | Accepted |
