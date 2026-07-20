@@ -92,7 +92,36 @@ queries in a way that identifies the student.
 not build a heavy analytics stack or user-management/roles system for it. Resist
 turning this into a product of its own.
 
-**Do NOT build yet.** Depends on Phase 9 logging existing first.
+### B-3a — Feedback review / audit queue (part of the dashboard)
+
+**Idea (from Jad, 2026-07-20).** Answers that got a 👎 surface in the dashboard
+as an audit/triage list where an admin can review the failure and act — e.g.
+note what the bot *should* have answered, or understand *why* it answered the way
+it did, so they know what to improve.
+
+**Why it works.** It turns a raw 👎 into an actionable diagnosis. To do that, the
+audit view shows **everything the bot had at answer time** — the data
+[CLAUDE.md](../CLAUDE.md) §9 already logs per interaction:
+question · retrieved chunks · bot answer · citation · rating · escalated? So this
+is a *view* on data we're already capturing, not new plumbing.
+
+**Diagnostic payoff.** Seeing the retrieved chunks lets the admin tell *which
+half* failed — the retrieval-vs-generation split at the heart of the project:
+- right chunk **not** retrieved → content/search problem (missing info or search miss)
+- right chunk retrieved but answer wrong → prompt/generation problem
+
+**Discipline — keep grounding intact.** When an admin records "what it should
+have said": if the info genuinely isn't in the official docs, the fix is to
+**add it to the source documents and rebuild the KB**, NOT to hard-code a canned
+answer (that would sneak ungrounded answers back in). Admin-verified corrections
+also make excellent new **golden-set** entries — a past failure becomes a
+permanent regression test (ties to [decisions/0002-evaluation-methodology.md](decisions/0002-evaluation-methodology.md)).
+
+**Keep it simple.** A review list with a status (new / reviewed / actioned) and
+a notes field. Not a ticketing system.
+
+**Do NOT build yet.** Depends on Phase 9 logging (must log retrieved chunks +
+ratings) existing first.
 
 ---
 

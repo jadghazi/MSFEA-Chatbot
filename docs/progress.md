@@ -20,9 +20,13 @@ Layers 1–3 = Phase 2 (offline harness); Layer 4 = Phase 9 (online).
 to fix content/retrieval/prompt (human-in-the-loop). Documented in ADR-0002 and
 DoD C4.
 
-**New backlog item B-3.** Admin/usage analytics dashboard (department asked if
-usage can be seen). End-stage, sits on top of Phase 9 logging, aggregate metrics
-only, no student-identifying data (privacy per §7).
+**New backlog item B-3 (+ B-3a).** Admin/usage analytics dashboard (department
+asked if usage can be seen). End-stage, sits on top of Phase 9 logging, aggregate
+metrics only, no student-identifying data (privacy per §7). B-3a: a feedback
+review/audit queue where 👎 answers surface with their retrieved chunks so an
+admin can diagnose retrieval-vs-generation failure and record what should have
+been answered (fix = update source docs, not hard-code; verified corrections seed
+the golden set).
 
 **Docs touched:** ADR-0002 (new), decisions/README index, backlog B-3,
 definition-of-done (Tier B note + C4), this journal. No code — Phase 2 not built
