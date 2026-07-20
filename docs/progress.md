@@ -6,6 +6,36 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-20 — Phase 1: scaffolding
+
+**Done.** Built the repo skeleton (no RAG logic yet — labelled `# PLACEHOLDER`
+where empty, per CLAUDE.md §2):
+- `src/msfea_bot/` split into `ingestion` / `retrieval` / `generation` / `llm`
+  (the provider abstraction, §3) / `api`, plus `config.py` (all env vars in one
+  place, §6).
+- `llm/` provides the `LLMProvider` contract + `get_llm_provider()` factory —
+  concrete vendor deferred to the generation phase (§5.6).
+- FastAPI app with a real `/health` endpoint; `/chat` deferred to the walking
+  skeleton (§5.3).
+- Tooling: `pyproject.toml` (src-layout, hatchling; runtime deps kept minimal —
+  fastapi/uvicorn/pydantic-settings — heavier RAG deps added in their phases),
+  `.env.example`, `.gitattributes` (LF normalization), Docker/compose skeletons
+  (app + pgvector), `eval/` placeholder, expanded README.
+- `docs/dev-workflow.md` added.
+
+**Verified before push:** `pytest` 1 passed, `ruff check` clean, `mypy --strict`
+clean.
+
+**Workflow change (this session).** Switched to committing **directly to `main`,
+no branches** (solo dev, tested before push). Recorded in `docs/dev-workflow.md`.
+
+**Next.** Phase 2 — evaluation harness: `eval/golden_set.jsonl` structure + the
+two-metric runner (retrieval recall@k, answer correctness/refusal) on placeholder
+questions. First RAG design decisions (embedding model, chunking) will be
+presented with trade-offs as ADRs when we reach ingestion.
+
+---
+
 ## 2026-07-20 — Phase 0 kickoff (no content yet)
 
 **Situation.** Repo was empty except `CLAUDE.md`. Department has not yet

@@ -1,0 +1,26 @@
+# PLACEHOLDER — deployment is finalized in Phase 10 (CLAUDE.md §5.10). The
+# structure is real: one app container + PostgreSQL with the pgvector extension
+# (the vector store, §3). Config comes from the environment / .env, never baked
+# into the image.
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: msfea
+      POSTGRES_PASSWORD: msfea
+      POSTGRES_DB: msfea
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
