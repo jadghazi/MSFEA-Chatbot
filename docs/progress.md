@@ -6,6 +6,27 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — First KB content arriving — starting Phase 1 (KB intake)
+
+**Phase-numbering note.** Earlier commits labelled the repo scaffolding as
+"Phase 1"; that was un-numbered groundwork. CLAUDE.md's *numbered* Phase 1 is
+**Knowledge base intake**, which begins now that some real content has arrived.
+
+**Done.** Set up the KB source-of-truth structure: `kb/source/` (tracked
+originals — the landing zone for documents) and `kb/README.md` (intake
+convention, provenance manifest, add-content-later workflow). Built index stays
+in gitignored `data/`.
+
+**Status.** User has received *some* (not all) of the KB content. Treating it as
+batch 1 — the reproducible pipeline absorbs the rest later with no rewrite.
+
+**Blocked / next.** Waiting on the actual files + their format before processing.
+Once received: assess format → preserve originals in `kb/source/` → clean/
+normalize → split by section → fill the manifest. If any is an FAQ, it also seeds
+the Phase 2 golden set (real question/answer/source triples).
+
+---
+
 ## 2026-07-20 — Evaluation methodology + dashboard decision (docs only)
 
 **Decided (ADR-0002).** Answer grading uses a **layered hybrid**, matching
