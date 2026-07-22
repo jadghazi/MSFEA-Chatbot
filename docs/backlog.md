@@ -28,6 +28,18 @@ address. That keeps the door open for routing without committing to it. Needs
 the department to give us the list of who-owns-what (added to DoD §4 open
 questions).
 
+**Real data now available (batch 1, 2026-07-22).** The Summer training
+guidelines doc already provides the topic→owner map:
+- General / CDC: `fcareer@aub.edu.lb`
+- IAESTE: `iaeste.lebanon@aub.edu.lb`
+- Department coordinators — Chemical: Adnan Itani (`ai34@aub.edu.lb`); Civil &
+  Environmental: Hiam Khoury (`hk50@aub.edu.lb`); Electrical & Computer: Rafika
+  Dinnawi (`rd39@aub.edu.lb`); Industrial: Maysaa Jaafar (`mj73@aub.edu.lb`);
+  Mechanical: Elie Kfoury (`ek15@aub.edu.lb`).
+
+These are official staff contacts published for students (not student PII). This
+substantially answers DoD §4 open-question #5 for internship routing.
+
 **Do NOT build yet.** Smallest working slice first is a *single* escalation
 contact (Phase 6). Routing is a v2 refinement.
 
@@ -43,6 +55,14 @@ answering, or otherwise scope the answer to the right department.
 the KB holds department-conditional rules and the bot answers with the wrong
 department's rule, that's a confidently-wrong answer of exactly the kind
 CLAUDE.md forbids. Better to ask a clarifying question than to guess.
+
+**Confirmed real & concrete (batch 1, 2026-07-22).** The Summer training
+guidelines doc has an explicit *"Department-Specific Rules"* section (MECH, ECE,
+CHEM, IEM, CEE) where the **same question has different answers by department**.
+Example: "Can I split my internship into two 4-week periods?" → CEE allows it
+(if ≥1 period is civil/construction); MECH forbids it. This validates both the
+reserved `department` metadata field and the ask-the-student's-department
+behavior.
 
 **Architectural implication we must respect NOW (Phase 4 ingestion):**
 when we design chunk metadata, include a field like `applies_to` /

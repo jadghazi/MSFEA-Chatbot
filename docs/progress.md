@@ -20,10 +20,22 @@ in gitignored `data/`.
 **Status.** User has received *some* (not all) of the KB content. Treating it as
 batch 1 — the reproducible pipeline absorbs the rest later with no rewrite.
 
-**Blocked / next.** Waiting on the actual files + their format before processing.
-Once received: assess format → preserve originals in `kb/source/` → clean/
-normalize → split by section → fill the manifest. If any is an FAQ, it also seeds
-the Phase 2 golden set (real question/answer/source triples).
+**Batch 1 received & assessed (4 files).** `msfea_cdc_kb.md` (clean, sectioned,
+has FAQs), `Summer training guidelines - June 2026.docx` (authoritative course
+rules; has dept contacts + dept-specific rules; tables need python-docx),
+`Internship Templates and Rubrics.docx` (templates/rubrics; strip committee
+note), `Advanced Experience template.pptx` (presentation template, 8 slides).
+Originals committed to `kb/source/`; manifest filled.
+
+**Concrete findings.** (1) Escalation contacts (B-1) and department-specific
+rules (B-2) are now real, with data — captured in backlog. (2) Cleaning is
+genuinely needed (docx tables + encoding) — validates Phase 1. (3) Scope
+question raised: the markdown KB covers CO-OP/IAESTE/full-time/mentorship, beyond
+internship-only — awaiting user decision before normalizing/ingesting.
+
+**Next (pending scope decision).** Clean/normalize each source into sectioned
+markdown in `kb/normalized/`; for docx use python-docx. Then draft golden-set
+questions (the FAQs seed it). Real student questions still to come (batch 2).
 
 ---
 
