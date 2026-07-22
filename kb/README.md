@@ -18,6 +18,34 @@ kb/
 The built vector index lives in `data/` (gitignored) — it is regenerated, never
 committed.
 
+## How normalization is done
+
+`source/` files are converted to clean Markdown in `normalized/` in two steps:
+
+1. **Mechanical extraction (deterministic code).** A parser using `python-docx`
+   / `python-pptx` walks each document in reading order and emits a Markdown
+   draft — headings, lists, and tables. This step is reproducible.
+2. **Assisted curation (human/AI review).** The draft is then cleaned into the
+   final file: fix encoding artifacts, split merged sentences, normalize
+   headings/bullets, strip non-content (e.g. committee cover notes), and add YAML
+   frontmatter (`title`, `source`, `type`, `program`, `last_updated`,
+   `department`). This step involves editorial judgment, so the result is
+   **verified against the original** (facts, numbers, contacts, tables) before it
+   is trusted. Originals in `source/` remain the ground truth for that check.
+
+The `normalized/` Markdown is the **canonical input to ingestion** — the vector
+store is rebuilt from it, so it is version-controlled and reviewable. Known
+limitation: `python-docx` does not capture hyperlink URLs (only link text).
+
+### Normalized outputs (batch 1)
+
+| Normalized file | From |
+|-----------------|------|
+| `cdc-knowledge-base.md` | `msfea_cdc_kb.md` (frontmatter added; content unchanged) |
+| `summer-training-guidelines-2026.md` | `Summer training guidelines - June 2026.docx` |
+| `internship-report-templates-and-rubrics.md` | `Internship Templates and Rubrics- Shared with Committee.docx` (committee note stripped) |
+| `final-presentation-slide-template.md` | `MSFEA_AUB_Advanced Experience template font.pptx` |
+
 ## Provenance manifest
 
 Record every document as it lands, so freshness (`last-updated`) is trackable.

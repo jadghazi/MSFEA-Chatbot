@@ -6,11 +6,11 @@ This file is the source of truth for how this project is built. Read it before d
 
 ## 1. What this project is
 
-A Retrieval-Augmented Generation (RAG) chatbot for the AUB Faculty of Engineering (MSFEA) internship course. It answers student questions about internship guidelines, forms, deadlines, and eligibility, and is embedded as a small pop-up chat widget (bottom-right bubble) on an AUB web page.
+A Retrieval-Augmented Generation (RAG) chatbot for the AUB Faculty of Engineering (MSFEA) Career Development Center (CDC). It answers student questions about the internship course (Approved Experience) and related CDC programs — guidelines, forms, deadlines, and eligibility — and is embedded as a small pop-up chat widget (bottom-right bubble) on an AUB web page.
 
-**The problem it solves:** students flood professors with repetitive questions because they don't read the guidelines. The bot deflects that email volume by answering from the official documents directly.
+**The problem it solves:** students flood professors and the CDC with repetitive questions because they don't read the guidelines. The bot deflects that email volume by answering from the official documents directly.
 
-**Phase 1 scope (this project):** the internship course only. Architecture must not hard-code that scope — a later expansion to the whole career center should mean adding a new content set, not rewriting the system. But do NOT build career-center features now. Resist scope creep.
+**Phase 1 scope (this project):** the MSFEA CDC content set — internship (Approved Experience), CO-OP, IAESTE, full-time job support, and mentorship. (Updated 2026-07-22 per ADR-0003; originally internship-course-only.) This is a *content* scope: the bot answers across these CDC topics from the source documents. Architecture must not hard-code the topic list — adding future content should mean adding documents, not rewriting. But do NOT build career-center *features* (logins, portals, per-program workflows) — the boundary is features, not content. Resist scope creep beyond the CDC content.
 
 **Non-negotiable product behaviors:**
 - Every answer is **grounded in the source documents**. The bot never free-styles from the LLM's general knowledge.

@@ -6,6 +6,31 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 1: scope broadened + batch-1 sources normalized
+
+**Scope decision applied (ADR-0003).** Bot scope = all CDC content. Updated
+CLAUDE.md §1 wording accordingly (user confirmed; new preference: update plan
+docs on new decisions without re-asking).
+
+**Tooling.** Added `python-docx` + `python-pptx` as ingestion/parse dependencies.
+
+**Normalized all 4 batch-1 sources → `kb/normalized/`** (clean Markdown, the
+canonical ingestion input): `cdc-knowledge-base.md`,
+`summer-training-guidelines-2026.md`, `internship-report-templates-and-rubrics.md`,
+`final-presentation-slide-template.md`. Process (code extraction + assisted
+curation) documented in kb/README.
+
+**Verified against originals:** no mojibake left; all 5 dept emails + CDC email;
+all 5 department-specific rule sections; key numbers intact; deliverables table
+9/9 rows; 18 FAQ pairs preserved; 3/3 rubric tables. Committee cover note
+intentionally stripped.
+
+**Next.** Phase 2 — draft the golden set (the CDC-KB FAQs give ~18 real Q/A/source
+triples to seed it) + build the metric runner. Real student questions still to
+come (batch 2). Then ingestion (Phase 4).
+
+---
+
 ## 2026-07-22 — First KB content arriving — starting Phase 1 (KB intake)
 
 **Phase-numbering note.** Earlier commits labelled the repo scaffolding as
