@@ -22,7 +22,7 @@ class GeminiProvider:
                 "(get one free at https://aistudio.google.com/apikey)."
             )
         self._client = genai.Client(api_key=settings.llm_api_key)
-        self._model = settings.llm_model or "gemini-2.0-flash"
+        self._model = settings.llm_model or "gemini-flash-latest"
 
     def generate(self, prompt: str) -> str:
         response = self._client.models.generate_content(model=self._model, contents=prompt)

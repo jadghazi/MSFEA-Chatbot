@@ -6,6 +6,17 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 3 COMPLETE: walking skeleton (all 5 steps) 🎉
+
+The full path works end to end: `python -m msfea_bot.skeleton "<question>"` →
+chunk → embed → pgvector → retrieve → Gemini → **grounded answer with citations**.
+For "minimum internship duration?" it answered "8 weeks" and correctly surfaced
+the CEE/IEM 6-week department exceptions, citing its source sections.
+
+**Model note.** `gemini-2.0-flash` had a 0 free-tier quota on this account and
+`gemini-2.5-flash` is deprecated for new users (it's mid-2026); using
+`gemini-flash-latest` (stable alias). Provider swap remains one file (ADR-0005).
+
 ## 2026-07-22 — Phase 3: walking skeleton (steps 1-4 working)
 
 **Decisions.** ADR-0004 embedding model = local `BAAI/bge-small-en-v1.5`
