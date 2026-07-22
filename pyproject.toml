@@ -42,5 +42,5 @@ strict = true
 mypy_path = "src"
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "."]  # "." so the top-level eval/ harness is importable
 testpaths = ["tests"]

@@ -6,6 +6,31 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 2: evaluation harness (golden set + metrics)
+
+**Built.**
+- `eval/golden_set.jsonl` — 26 cases (21 answerable, 5 should-refuse), seeded from
+  the real CDC-KB FAQs + refusal cases (dates, case-specific, fees, abuse,
+  off-topic) + 2 department-specific "clarify" cases. `is_synthetic` marks the 15
+  predicted ones (placeholders until real student questions arrive).
+- `eval/loader.py` (validated load), `eval/metrics.py` (retrieval recall@k +
+  Layer-1 deterministic answer checks: refusal / citation / disclaimer),
+  `eval/run.py` CLI summary.
+- Tests: 10 passing (metrics + golden-set-vs-KB consistency). ruff + mypy clean.
+
+**Honest status of the harness** (ADR-0002 layers): Layer 1 ready; retrieval
+recall@k function ready but needs a retriever (Phase 4) to run end-to-end;
+Layer 2 (LLM-judge) pending the provider (Phase 6); Layer 3 pending real answers.
+
+**Backlog.** Added B-4: question-augmented indexing (Phase 5 retrieval tuning) —
+generate questions as retrieval aids, never inject generated answers into the KB.
+
+**Next.** Phase 3 (walking skeleton) or Phase 4 (ingestion) — first real RAG that
+gives the eval harness something to actually score. First RAG design decisions
+(embedding model, chunking) will come as ADRs with trade-offs.
+
+---
+
 ## 2026-07-22 — Phase 1: scope broadened + batch-1 sources normalized
 
 **Scope decision applied (ADR-0003).** Bot scope = all CDC content. Updated

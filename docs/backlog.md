@@ -145,6 +145,25 @@ ratings) existing first.
 
 ---
 
+## B-4 — Question-augmented indexing (retrieval tuning, Phase 5)
+
+**Idea (from Jad, 2026-07-22).** Generate the questions each chunk answers and
+use them as **retrieval aids** — index the generated questions pointing back to
+the original grounded chunk — so a student's question-shaped query matches
+better. (Sometimes called hypothetical-question indexing / HyDE-style.)
+
+**Why it's safe (and where the line is).** We generate *questions*, not
+*answers*. The answer text stays the official source chunk; we never inject
+model-written answers into the KB (that would break the "grounded in official
+docs" guarantee and risk baking in hallucinations). See the discussion that led
+here — predicted *questions* belong in the eval set and as retrieval aids, not as
+new KB content.
+
+**Where it fits.** Phase 5 (retrieval tuning). Only keep it if it **measurably**
+improves retrieval recall@k against the eval set — otherwise drop it.
+
+**Do NOT build yet.** Needs ingestion + a retrieval baseline to measure against.
+
 ## How to promote an item off this backlog
 
 When a phase is ready to take one of these on: write an ADR
