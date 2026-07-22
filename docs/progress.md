@@ -6,6 +6,31 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 3: walking skeleton (steps 1-4 working)
+
+**Decisions.** ADR-0004 embedding model = local `BAAI/bge-small-en-v1.5`
+(free/offline). ADR-0005 provisional LLM provider = Google Gemini free tier
+(behind the llm abstraction; one-file swap later; privacy note for real data).
+
+**Built + verified end-to-end (chunk -> embed -> pgvector -> retrieve):**
+- `ingestion/embeddings.py` (sentence-transformers, 384-dim), `retrieval/store.py`
+  (pgvector: rebuild-on-ingest, cosine search), `llm/gemini.py` + factory wiring,
+  `msfea_bot/skeleton.py` runner (`ingest` / `"<question>"`).
+- Docker: pgvector container up; `skeleton ingest` indexed **86 chunks**.
+- Retrieval smoke test returns sensible chunks (e.g. "split into two 4-week
+  periods" -> department-specific rule chunks; "co-op GPA" -> eligibility).
+- deps added: sentence-transformers, psycopg[binary], pgvector, google-genai
+  (extra). ruff/mypy/pytest all clean (mypy target bumped to 3.12 for numpy stubs).
+
+**Remaining (step 5).** The final LLM call needs a Gemini API key in a local
+`.env` (LLM_API_KEY). Retrieval already works without it. Once the key is added,
+run `python -m msfea_bot.skeleton "<question>"` for the full grounded answer.
+
+**Next after that.** Phase 4 (proper ingestion: semantic chunking + one-command
+rebuild) and wiring retrieval into the eval harness for the first real recall@k.
+
+---
+
 ## 2026-07-22 — Phase 2: evaluation harness (golden set + metrics)
 
 **Built.**

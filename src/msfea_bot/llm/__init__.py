@@ -14,11 +14,15 @@ __all__ = ["LLMProvider", "get_llm_provider"]
 def get_llm_provider() -> LLMProvider:
     """Return the configured LLM provider.
 
-    PLACEHOLDER: no concrete provider is wired yet. When generation is built
-    (§5.6), add provider classes and dispatch on ``settings.llm_provider`` here —
-    this factory is the one place that changes when swapping vendors.
+    This factory is the one place that changes when swapping vendors (CLAUDE.md
+    §3): add a branch here mapping ``settings.llm_provider`` to a concrete class.
     """
+    provider = settings.llm_provider.lower()
+    if provider == "gemini":
+        from msfea_bot.llm.gemini import GeminiProvider
+
+        return GeminiProvider()
     raise NotImplementedError(
-        f"PLACEHOLDER: LLM provider '{settings.llm_provider}' is not implemented "
-        "yet; concrete providers are added in the generation phase (CLAUDE.md §5.6)."
+        f"LLM provider '{settings.llm_provider}' is not implemented. "
+        "Supported: 'gemini' (add others in this factory)."
     )

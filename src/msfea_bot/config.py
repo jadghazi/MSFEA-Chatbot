@@ -20,8 +20,8 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_model: str = ""
 
-    # Embeddings (local/open by default — §3)
-    embedding_model: str = ""
+    # Embeddings (local/open by default — §3, ADR-0004)
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
 
     # Vector store: PostgreSQL + pgvector
     database_url: str = "postgresql://msfea:msfea@localhost:5432/msfea"

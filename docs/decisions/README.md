@@ -31,3 +31,5 @@ file layout). Keep the log signal-heavy.
 | 0001 | Adopt ADR process + provisional success metrics | Accepted |
 | 0002 | Evaluation methodology: layered hybrid | Accepted |
 | 0003 | Phase 1 KB scope: all CDC content | Accepted |
+| 0004 | Embedding model: local bge-small-en-v1.5 | Accepted |
+| 0005 | Provisional LLM provider: Google Gemini (free tier) | Accepted (provisional) |
