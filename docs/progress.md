@@ -6,6 +6,36 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 6 COMPLETE: guardrails + first answer-quality numbers
+
+**Built.** `generation/answer.py`: answer only from context, two-layer refusal
+(similarity-threshold gate + prompt `INSUFFICIENT_CONTEXT` marker), structured
+citations, disclaimer on every answer. Skeleton uses it. `eval/answer_eval.py`
+measures Layer-1 answer metrics.
+
+**Answer eval (26 golden questions, flash-lite):**
+- correct-refusal (B3): **5/5 = 100%** (target 100% ✅)
+- missed refusals: **0** ✅
+- false-refusal (B4): **2/21 = 9.5%** (target ≤10% ✅, just under)
+- citation present: 26/26 ✅ · disclaimer: 26/26 ✅
+
+**Key diagnosis (eval-driven).** The 2 false refusals (`int-skills-quiz`,
+`int-petition-exception`) are **retrieval failures, not guardrail failures** —
+the answer-bearing chunk was NOT in the top-5, so the bot correctly refused
+instead of hallucinating. This validates the guardrail AND pinpoints the real
+gap: **chunk-level** retrieval (< doc-level recall@5 of 100%). Exact-term
+questions ("75%") are the classic case for **hybrid search** (§5). → concrete
+Phase 4/5 to-do, measured against this baseline.
+
+**Caveats.** Synthetic questions, small set (26), flash-lite model. Targets are
+provisional (`[CONFIRM]`). Don't over-read; re-measure with real student
+questions.
+
+**Quota note.** Free-tier is per-model and tight: gemini-2.0-flash = 0/day,
+gemini-flash-latest (3.6-flash) = 5/min & 20/day, flash-lite = usable. Now
+defaulting to `gemini-flash-lite-latest` (ADR-0005 updated). Free tier is a
+dev-only constraint; production needs paid/AUB vendor (one-file swap).
+
 ## 2026-07-22 — Retrieval wired into eval: first baseline recall@k
 
 `eval/retrieval_eval.py` runs the golden set through the vector store and reports

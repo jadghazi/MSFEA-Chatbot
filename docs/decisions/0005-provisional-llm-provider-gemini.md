@@ -38,3 +38,18 @@ later is a one-file change in the `llm/` package.
   revisit this per CLAUDE.md §7 (anonymize; and AUB's approved-vendor decision).
 - The `llm/` abstraction is exercised for real for the first time, validating the
   swap-in design.
+
+### Free-tier quota findings (2026-07-22)
+
+Measured while running the eval — the free tier is **per-model** and tight on the
+newer models:
+
+- `gemini-2.0-flash`: **0** free-tier requests (unusable on this account).
+- `gemini-flash-latest` → `gemini-3.6-flash`: **5 requests/min, 20 requests/day**.
+  Too small even to run the 26-question answer eval once.
+- `gemini-flash-lite-latest`: usable — the practical default for free-tier dev.
+
+Implication: the free tier is fine for development and small eval runs but **not
+sized for production**. Production needs a paid tier or AUB's approved vendor —
+exactly the swap this ADR anticipates. Default model set to
+`gemini-flash-lite-latest`.
