@@ -92,6 +92,11 @@
       details.tech .explain { font-size: 13px; color: var(--muted); margin: 8px 0; line-height: 1.5; }
       details.tech .snippet { background: #f7f7f8; border: 1px solid var(--line); padding: 8px 10px; border-radius: 6px; font-size: 12.5px; margin: 6px 0; white-space: pre-wrap; color: #333; }
 
+      /* ---- Published answers ---- */
+      .curated-answer { font-size: 14px; color: #333; white-space: pre-wrap; line-height: 1.5; margin: 4px 0 10px; }
+      .curated-meta { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
+      #curated-search { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font: inherit; }
+
       .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
       .empty .big { font-size: 40px; }
       .empty p { font-size: 15px; margin: 10px 0 0; }
@@ -136,6 +141,9 @@
             <button class="tab active" data-tab="attention">
               Needs your attention <span id="pending-badge" class="badge zero">0</span>
             </button>
+            <button class="tab" data-tab="curated">
+              Published answers <span id="curated-badge" class="badge zero">0</span>
+            </button>
             <button class="tab" data-tab="usage">Usage</button>
           </div>
           <div class="refresh-wrap">
@@ -154,6 +162,16 @@
             will use it the next time someone asks. Items you handle disappear from this list.
           </p>
           <div id="list"></div>
+        </div>
+
+        <!-- Tab: published answers -->
+        <div id="tab-curated" class="hidden">
+          <p class="intro">
+            Answers you've published into the bot's knowledge. The bot uses these to reply to students,
+            so this is everything staff have added on top of the official documents. Use the box to search.
+          </p>
+          <input id="curated-search" type="search" placeholder="Search published questions and answers…" style="width:100%; margin-bottom:14px" />
+          <div id="curated-list"></div>
         </div>
 
         <!-- Tab: usage -->
@@ -212,7 +230,7 @@
       }
 
       // ---- Tabs ----
-      var TABS = ["attention", "usage"];
+      var TABS = ["attention", "curated", "usage"];
       function selectTab(name) {
         TABS.forEach(function (t) {
           $("tab-" + t).classList.toggle("hidden", t !== name);
@@ -228,16 +246,18 @@
         Promise.all([
           fetch(API + "/admin/api/stats", { headers: headers() }),
           fetch(API + "/admin/api/feedback", { headers: headers() }),
+          fetch(API + "/admin/api/curated", { headers: headers() }),
         ])
           .then(function (rs) {
-            if (rs[0].status === 401 || rs[1].status === 401) throw new Error("That access code isn't valid. Please check it and try again.");
-            if (rs[0].status === 403) throw new Error("Admin access is turned off on the server (no access code has been set).");
-            if (!rs[0].ok || !rs[1].ok) throw new Error("Couldn't reach the server. Is the chatbot running?");
-            return Promise.all([rs[0].json(), rs[1].json()]);
+            if (rs.some(function (r) { return r.status === 401; })) throw new Error("That access code isn't valid. Please check it and try again.");
+            if (rs.some(function (r) { return r.status === 403; })) throw new Error("Admin access is turned off on the server (no access code has been set).");
+            if (rs.some(function (r) { return !r.ok; })) throw new Error("Couldn't reach the server. Is the chatbot running?");
+            return Promise.all(rs.map(function (r) { return r.json(); }));
           })
           .then(function (data) {
             renderStats(data[0]);
             renderList(data[1]);
+            renderCurated(data[2]);
             $("updated").textContent = "Updated " + new Date().toLocaleTimeString();
             if (done) done(true);
           })
@@ -381,6 +401,48 @@
         return card;
       }
 
+      // ---- Published (curated) answers ----
+      var _curated = [];
+      function renderCurated(items) {
+        _curated = items || [];
+        var badge = $("curated-badge");
+        badge.textContent = _curated.length;
+        badge.classList.toggle("zero", _curated.length === 0);
+        drawCurated(_curated);
+      }
+      function drawCurated(items) {
+        var box = $("curated-list");
+        if (!_curated.length) {
+          box.innerHTML =
+            '<div class="empty"><div class="big">📄</div>' +
+            '<p>No answers published yet. When you answer a question in “Needs your attention,” it shows up here.</p></div>';
+          return;
+        }
+        if (!items.length) {
+          box.innerHTML = '<p class="intro">No published answers match your search.</p>';
+          return;
+        }
+        box.innerHTML = items.map(function (c) {
+          var when = new Date(c.created_at);
+          var whenStr = isNaN(when) ? "" : when.toLocaleDateString();
+          return '<div class="card">' +
+            '<div class="q-label">Question</div>' +
+            '<div class="q">' + esc(c.question) + '</div>' +
+            '<div class="q-label">Published answer</div>' +
+            '<div class="curated-answer">' + esc(c.answer) + '</div>' +
+            '<div class="curated-meta">Added by ' + esc(c.author || "admin") +
+            (whenStr ? " · " + esc(whenStr) : "") + '</div>' +
+          '</div>';
+        }).join("");
+      }
+      function filterCurated() {
+        var q = ($("curated-search").value || "").trim().toLowerCase();
+        if (!q) { drawCurated(_curated); return; }
+        drawCurated(_curated.filter(function (c) {
+          return (c.question + " " + c.answer).toLowerCase().indexOf(q) !== -1;
+        }));
+      }
+
       // Keep the pending badge + count in sync as cards are cleared.
       function bumpPending(delta) {
         var badge = $("pending-badge");
@@ -400,6 +462,7 @@
       $("token").addEventListener("keydown", function (e) { if (e.key === "Enter") signIn(); });
       $("signout").addEventListener("click", signOut);
       $("refresh").addEventListener("click", function () { loadAll(); });
+      $("curated-search").addEventListener("input", filterCurated);
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
         b.addEventListener("click", function () { selectTab(b.getAttribute("data-tab")); });
       });

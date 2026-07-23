@@ -6,6 +6,24 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — "Published answers" tab + KB test-data cleanup
+
+- **New read-only tab.** `GET /admin/api/curated` lists the curated Q&As (from
+  `list_curated`, active only) so staff can see everything they've published
+  without touching the database. Dashboard shows them as searchable cards
+  (question · answer · author · date) with a live count badge.
+- **Cleanup (a real bug found while building it).** The `curated_answers` table
+  held 7 leftover **test/placeholder** rows (e.g. "zzz-test placeholder…") from
+  earlier sessions, and 2 of their chunks were **live in the vector store** —
+  i.e. placeholder junk was retrievable and could have been served to a student.
+  Cleared all curated rows + `admin-curated` chunks (no real content existed yet)
+  for a clean slate. **Verified** end-to-end over HTTP: publish → appears in the
+  new endpoint → removed; 0 curated rows remain.
+
+ruff/mypy clean; 49 tests pass (added `/admin/api/curated` coverage).
+
+---
+
 ## 2026-07-23 — Dashboard usability + resolution state (B-3a follow-up, ADR-0010)
 
 Reworked the admin dashboard around non-technical CDC staff, and fixed a real

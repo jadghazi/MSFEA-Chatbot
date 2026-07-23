@@ -63,6 +63,28 @@ def test_admin_curate_ok(monkeypatch: pytest.MonkeyPatch) -> None:
     assert body["resolved"] == 2
 
 
+def test_admin_curated_lists_published(monkeypatch: pytest.MonkeyPatch) -> None:
+    from datetime import datetime
+
+    from msfea_bot.curation.store import CuratedAnswer
+
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(
+        app_module,
+        "list_curated",
+        lambda active_only=True: [
+            CuratedAnswer(3, "How long?", "8 weeks.", "admin", datetime(2026, 7, 23), True)
+        ],
+    )
+    resp = client.get("/admin/api/curated", headers={"Authorization": "Bearer secret"})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert len(body) == 1
+    assert body[0]["question"] == "How long?"
+    assert body[0]["answer"] == "8 weeks."
+    assert "active" not in body[0]  # internal field not exposed
+
+
 def test_admin_resolve_dismisses_item(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
     monkeypatch.setattr(app_module, "resolve_interaction", lambda i: True)

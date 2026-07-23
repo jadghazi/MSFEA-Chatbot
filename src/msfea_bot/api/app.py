@@ -22,6 +22,7 @@ from pydantic import BaseModel, Field
 from msfea_bot.api.security import RateLimiter, sanitize
 from msfea_bot.config import settings
 from msfea_bot.curation.service import publish_curated_answer
+from msfea_bot.curation.store import list_curated
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
 from msfea_bot.observability.privacy import anonymize
@@ -189,6 +190,30 @@ def admin_curate(req: CurateRequest, _: None = Depends(require_admin)) -> dict[s
     curated_id = publish_curated_answer(req.question, req.answer, author="admin")
     resolved = resolve_by_question(req.question)
     return {"curated_id": curated_id, "resolved": resolved}
+
+
+class CuratedOut(BaseModel):
+    id: int
+    question: str
+    answer: str
+    author: str
+    created_at: str
+
+
+@app.get("/admin/api/curated")
+def admin_curated(_: None = Depends(require_admin)) -> list[CuratedOut]:
+    """List the answers admins have published into the KB (a readable view of the
+    `curated_answers` table, so staff don't need database access)."""
+    return [
+        CuratedOut(
+            id=c.id,
+            question=c.question,
+            answer=c.answer,
+            author=c.author,
+            created_at=c.created_at.isoformat(),
+        )
+        for c in list_curated(active_only=True)
+    ]
 
 
 class ResolveRequest(BaseModel):
