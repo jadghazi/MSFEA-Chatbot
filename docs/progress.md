@@ -6,6 +6,24 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 4: improved chunking, measured — context-recall 90% → 100%
+
+**Change (ADR-0006).** Chunker now splits oversized sections into <=500-char
+overlapping windows (overlap 150), each keeping its section heading. Window size
+chosen by an empirical sweep against context-recall (not guessed).
+
+**Sweep result:** 500 is the largest window reaching 100% context-recall@5
+(baseline 86 chunks/90% → 144 chunks/100%).
+
+**Confirmed end-to-end:** the two previously-failing questions now answer
+correctly ("75% on the Moodle quiz"; "formal petition ..."), i.e. the two
+answer-eval false refusals are fixed. Expected B4 false-refusal now ~0/21
+(full LLM answer-eval re-run deferred to conserve free-tier quota; context-recall
+is the validated predictor).
+
+**Metrics now:** doc-recall@5 100%, context-recall@3 95%, context-recall@5 100%.
+Added windowing unit tests. All checks green.
+
 ## 2026-07-22 — Phase 4/5 prep: built the metric that measures the real gap
 
 Before tuning retrieval, built the metric that captures the actual problem

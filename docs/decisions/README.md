@@ -33,3 +33,4 @@ file layout). Keep the log signal-heavy.
 | 0003 | Phase 1 KB scope: all CDC content | Accepted |
 | 0004 | Embedding model: local bge-small-en-v1.5 | Accepted |
 | 0005 | Provisional LLM provider: Google Gemini (free tier) | Accepted (provisional) |
+| 0006 | Chunking: section-aware + size-bounded overlapping windows | Accepted |

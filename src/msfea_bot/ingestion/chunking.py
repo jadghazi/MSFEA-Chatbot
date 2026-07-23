@@ -1,10 +1,10 @@
-"""Crude section-based chunking for the walking skeleton (CLAUDE.md §5.3).
+"""Section-aware chunking (CLAUDE.md §5.4).
 
-Splits a normalized Markdown document into chunks at Markdown headings
-(level >= 2), carrying the source doc and section as metadata. This is
-intentionally simple — proper semantic chunking (overlap, tuned against the eval
-set) is Phase 4. It is good enough here because our normalized docs already have
-clean section headings.
+Splits a normalized Markdown document at headings (level >= 2), then further
+splits any oversized section into smaller overlapping windows so that specific
+facts (e.g. "75%") get focused embeddings instead of being diluted inside a large
+section. Each sub-chunk keeps its section heading for context. Window size and
+overlap are tuned against the eval set (context-recall).
 """
 
 from __future__ import annotations
@@ -13,6 +13,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 NORMALIZED_DIR = Path(__file__).resolve().parents[3] / "kb" / "normalized"
+
+# Defaults chosen by measuring context-recall on the golden set (see ADR-0006):
+# 500 is the largest window that still reaches 100% context-recall@5.
+DEFAULT_MAX_CHARS = 500
+DEFAULT_OVERLAP = 150
 
 
 @dataclass
@@ -61,8 +66,43 @@ def _slug(text: str) -> str:
     return "".join(c for c in lowered if c.isalnum() or c == "-")[:50]
 
 
-def chunk_markdown(md: str, source_doc: str) -> list[Chunk]:
-    """Split one Markdown document into section chunks."""
+def _split_windows(text: str, max_chars: int, overlap: int) -> list[str]:
+    """Split text into <=max_chars windows on line boundaries, with overlap.
+
+    Returns [text] unchanged when it already fits.
+    """
+    if len(text) <= max_chars:
+        return [text]
+    windows: list[str] = []
+    current: list[str] = []
+    length = 0
+    for line in text.split("\n"):
+        if length + len(line) + 1 > max_chars and current:
+            windows.append("\n".join(current))
+            # Keep trailing lines (~overlap chars) as the start of the next window.
+            kept: list[str] = []
+            kept_len = 0
+            for prev in reversed(current):
+                if kept_len + len(prev) + 1 > overlap:
+                    break
+                kept.insert(0, prev)
+                kept_len += len(prev) + 1
+            current = kept
+            length = kept_len
+        current.append(line)
+        length += len(line) + 1
+    if current:
+        windows.append("\n".join(current))
+    return windows
+
+
+def chunk_markdown(
+    md: str,
+    source_doc: str,
+    max_chars: int = DEFAULT_MAX_CHARS,
+    overlap: int = DEFAULT_OVERLAP,
+) -> list[Chunk]:
+    """Split one Markdown document into section chunks (oversized sections windowed)."""
     meta, body = parse_frontmatter(md)
     section = meta.get("title", source_doc)
     chunks: list[Chunk] = []
@@ -70,11 +110,16 @@ def chunk_markdown(md: str, source_doc: str) -> list[Chunk]:
 
     def flush() -> None:
         text = "\n".join(buffer).strip()
-        if text:
+        if not text:
+            return
+        heading = buffer[0] if buffer and _heading_level(buffer[0]) >= 2 else f"## {section}"
+        for window in _split_windows(text, max_chars, overlap):
+            # Ensure every window carries its section heading for context.
+            window_text = window if window.lstrip().startswith(heading) else f"{heading}\n{window}"
             chunks.append(
                 Chunk(
                     id=f"{source_doc}#{len(chunks):02d}-{_slug(section)}",
-                    text=text,
+                    text=window_text,
                     source_doc=source_doc,
                     section=section,
                     metadata=meta,
@@ -92,14 +137,20 @@ def chunk_markdown(md: str, source_doc: str) -> list[Chunk]:
     return chunks
 
 
-def chunk_file(path: Path) -> list[Chunk]:
+def chunk_file(
+    path: Path, max_chars: int = DEFAULT_MAX_CHARS, overlap: int = DEFAULT_OVERLAP
+) -> list[Chunk]:
     """Chunk a single normalized Markdown file."""
-    return chunk_markdown(path.read_text(encoding="utf-8"), path.name)
+    return chunk_markdown(path.read_text(encoding="utf-8"), path.name, max_chars, overlap)
 
 
-def chunk_normalized_dir(directory: Path = NORMALIZED_DIR) -> list[Chunk]:
+def chunk_normalized_dir(
+    directory: Path = NORMALIZED_DIR,
+    max_chars: int = DEFAULT_MAX_CHARS,
+    overlap: int = DEFAULT_OVERLAP,
+) -> list[Chunk]:
     """Chunk every ``*.md`` file in the normalized KB directory."""
     chunks: list[Chunk] = []
     for path in sorted(directory.glob("*.md")):
-        chunks.extend(chunk_file(path))
+        chunks.extend(chunk_file(path, max_chars, overlap))
     return chunks
