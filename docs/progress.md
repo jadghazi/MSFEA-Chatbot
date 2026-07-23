@@ -6,6 +6,35 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — Curated Q&As as live eval cases (closes ADR-0010 follow-up)
+
+Curated answers now feed the evaluation harness, so a real past failure that was
+fixed by curation becomes a permanent **retrieval + grounding regression test**.
+
+- **Derive at run time, don't copy into the file.** New `eval/curated_cases.py`
+  `curated_eval_items()` expands each *active* curated row into a `GoldenItem`
+  (`id=curated-<n>`, `source_doc=admin-curated`, `evidence=<answer>`,
+  `is_synthetic=True`). It is **not** written into `golden_set.jsonl`.
+  - *Why this way (design call, user-approved):* an admin **edit** regenerates
+    the case from the current row and a **retire** (`active=false`) drops it —
+    consistency is automatic, no snapshot to drift, and the human-reviewed
+    golden file stays stable. Writing into the file would need sync code that
+    rewrites/deletes lines on every admin click.
+  - *Honest scope:* these check "does the bot still retrieve + stay grounded in
+    this curated chunk?" (the #1 RAG regression, §2) — not independent answer
+    quality, since the expected text is the same admin answer we indexed.
+- **Wired into both runners**, reported **separately** so the golden baseline
+  stays legible: `retrieval_eval` → "21 golden + 1 live curated"; `answer_eval`
+  and `eval.run` likewise. DB hiccup degrades to zero curated cases (file eval
+  still runs).
+
+**Verified live:** `eval.retrieval_eval` includes the curated case and
+context-recall@5 = 100% (no misses); a DB-gated test proves the case follows an
+edit (expected text updates) and disappears on retire. ruff/mypy clean;
+**59 tests pass**.
+
+---
+
 ## 2026-07-23 — Edit / Retire curated answers (closes ADR-0010 follow-up)
 
 Made the "Published answers" tab actionable — staff can now correct or remove a

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from eval.curated_cases import curated_eval_items
 from eval.loader import GoldenItem, load_golden_set
 from eval.metrics import evidence_present, recall_at_k
 from msfea_bot.retrieval.store import search
@@ -31,7 +32,9 @@ def _pct_bar(hits: int, total: int) -> str:
 
 
 def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> None:
-    items = [i for i in load_golden_set() if not i.should_refuse]
+    golden = [i for i in load_golden_set() if not i.should_refuse]
+    curated = curated_eval_items()  # live cases from the curated table (all answerable)
+    items = golden + curated
     top = max(ks)
 
     # Retrieve once at the largest k; recall at smaller k is a prefix of that.
@@ -43,7 +46,10 @@ def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> None:
         )
 
     n = len(items)
-    print(f"Retrieval on {n} answerable golden questions\n")
+    print(
+        f"Retrieval on {n} answerable questions "
+        f"({len(golden)} golden + {len(curated)} live curated)\n"
+    )
 
     print("Document-level recall (is a chunk from the expected source_doc in top-k?)")
     for k in ks:

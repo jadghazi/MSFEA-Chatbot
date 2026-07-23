@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from collections import Counter
 
+from eval.curated_cases import curated_eval_items
 from eval.loader import load_golden_set
 
 
@@ -23,8 +24,12 @@ def main() -> None:
     by_source: Counter[str] = Counter(i.source_doc for i in items if i.source_doc)
     by_tag: Counter[str] = Counter(t for i in items for t in i.tags)
 
-    print(f"Golden set: {total} items ({answerable} answerable, {refuse} should-refuse)")
+    print(f"Golden set (file): {total} items ({answerable} answerable, {refuse} should-refuse)")
     print(f"  synthetic (predicted) questions: {synthetic} / {total}")
+
+    curated = curated_eval_items()
+    print(f"  + {len(curated)} live curated case(s) from the admin dashboard "
+          "(derived at run time, not stored in the file)")
     print("  by source doc:")
     for doc, n in by_source.most_common():
         print(f"    {n:3}  {doc}")

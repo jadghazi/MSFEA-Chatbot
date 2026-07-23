@@ -58,6 +58,36 @@ def test_retire_removes_chunk_and_deactivates_row() -> None:
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_curated_eval_case_follows_edit_and_retire() -> None:
+    # Proves the derive-at-run-time design: the eval case stays consistent with
+    # the dashboard — an edit regenerates it, a retire removes it. No stale copy.
+    from eval.curated_cases import curated_eval_items
+    from msfea_bot.curation.service import (
+        edit_curated_answer,
+        publish_curated_answer,
+        retire_curated_answer,
+    )
+    from msfea_bot.retrieval.store import delete_chunk
+
+    question = "What is the zzz-test eval-sync marker question?"
+    curated_id = publish_curated_answer(question, "Sync marker GAMMA-3.", "test")
+    try:
+        assert f"curated-{curated_id}" in {i.id for i in curated_eval_items()}
+
+        # Edit -> the derived case regenerates with the new expected text.
+        edit_curated_answer(curated_id, question, "Sync marker DELTA-4.")
+        item = next(i for i in curated_eval_items() if i.id == f"curated-{curated_id}")
+        assert item.expected_answer_or_behavior == "Sync marker DELTA-4."
+
+        # Retire -> the case drops out of the eval set automatically.
+        retire_curated_answer(curated_id)
+        assert f"curated-{curated_id}" not in {i.id for i in curated_eval_items()}
+    finally:
+        delete_chunk(f"curated-{curated_id}")
+        _delete_curated_row(curated_id)
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
 def test_edit_updates_text_and_reindexes() -> None:
     from msfea_bot.curation.service import edit_curated_answer, publish_curated_answer
     from msfea_bot.retrieval.store import delete_chunk, search

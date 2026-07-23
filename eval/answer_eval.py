@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import time
 
+from eval.curated_cases import curated_eval_items
 from eval.loader import load_golden_set
 from eval.metrics import BotAnswer, citation_present, disclaimer_present
 from msfea_bot.generation import generate_answer
@@ -33,7 +34,9 @@ def _answer_with_retry(question: str, attempts: int = 6, backoff: float = 20.0) 
 
 
 def evaluate_answers(delay: float = 13.0) -> None:
-    items = load_golden_set()
+    # File golden set + live curated cases (curated are all answerable).
+    curated = curated_eval_items()
+    items = load_golden_set() + curated
     refuse_items = [i for i in items if i.should_refuse]
     answerable = [i for i in items if not i.should_refuse]
 
@@ -61,8 +64,8 @@ def evaluate_answers(delay: float = 13.0) -> None:
         time.sleep(delay)
 
     n = len(items)
-    print(f"Answer eval on {n} golden questions ({len(answerable)} answerable, "
-          f"{len(refuse_items)} should-refuse)\n")
+    print(f"Answer eval on {n} questions ({len(answerable)} answerable, "
+          f"{len(refuse_items)} should-refuse; {len(curated)} live curated)\n")
     print(f"  correct-refusal (B3): {correct_refusals}/{len(refuse_items)}")
     print(f"  false-refusal   (B4): {len(false_refusals)}/{len(answerable)} "
           f"({', '.join(false_refusals) or 'none'})")
