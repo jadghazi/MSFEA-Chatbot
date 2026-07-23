@@ -89,8 +89,19 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
     return len(chunks)
 
 
+def delete_chunk(chunk_id: str) -> int:
+    """Delete a single chunk by exact id (e.g. one retired curated answer).
+
+    Prefer this over `delete_chunks` when removing one known chunk — a prefix like
+    "curated-1" would also match "curated-10".
+    """
+    with _connect() as conn:
+        cur = conn.execute("DELETE FROM chunks WHERE id = %s", (chunk_id,))
+        return int(cur.rowcount)
+
+
 def delete_chunks(id_prefix: str) -> int:
-    """Delete chunks whose id starts with `id_prefix` (e.g. a retired curated answer)."""
+    """Delete chunks whose id starts with `id_prefix` (bulk removal by source)."""
     with _connect() as conn:
         cur = conn.execute("DELETE FROM chunks WHERE id LIKE %s", (id_prefix + "%",))
         return int(cur.rowcount)

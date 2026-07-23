@@ -96,6 +96,8 @@
       .curated-answer { font-size: 14px; color: #333; white-space: pre-wrap; line-height: 1.5; margin: 4px 0 10px; }
       .curated-meta { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
       #curated-search { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font: inherit; }
+      .edit-form textarea { width: 100%; min-height: 64px; border: 1px solid #ccc; border-radius: 8px; padding: 9px; font: inherit; resize: vertical; }
+      .edit-form .label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; }
 
       .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
       .empty .big { font-size: 40px; }
@@ -422,18 +424,110 @@
           box.innerHTML = '<p class="intro">No published answers match your search.</p>';
           return;
         }
-        box.innerHTML = items.map(function (c) {
-          var when = new Date(c.created_at);
-          var whenStr = isNaN(when) ? "" : when.toLocaleDateString();
-          return '<div class="card">' +
-            '<div class="q-label">Question</div>' +
-            '<div class="q">' + esc(c.question) + '</div>' +
-            '<div class="q-label">Published answer</div>' +
-            '<div class="curated-answer">' + esc(c.answer) + '</div>' +
-            '<div class="curated-meta">Added by ' + esc(c.author || "admin") +
+        box.innerHTML = "";
+        items.forEach(function (c) { box.appendChild(buildCuratedCard(c)); });
+      }
+
+      function buildCuratedCard(c) {
+        var card = document.createElement("div");
+        card.className = "card";
+        var when = new Date(c.created_at);
+        var whenStr = isNaN(when) ? "" : when.toLocaleDateString();
+
+        card.innerHTML =
+          '<div class="q-label">Question</div>' +
+          '<div class="q view-q">' + esc(c.question) + '</div>' +
+          '<div class="q-label">Published answer</div>' +
+          '<div class="curated-answer view-a">' + esc(c.answer) + '</div>' +
+          '<div class="curated-meta">Added by ' + esc(c.author || "admin") +
             (whenStr ? " · " + esc(whenStr) : "") + '</div>' +
+          '<div class="actions">' +
+            '<button class="edit secondary">Edit</button>' +
+            '<button class="retire secondary">Retire</button>' +
+            '<span class="status"></span>' +
           '</div>';
-        }).join("");
+
+        var actions = card.querySelector(".actions");
+        var status = card.querySelector(".status");
+        var editBtn = card.querySelector(".edit");
+        var retireBtn = card.querySelector(".retire");
+
+        // ---- Edit (inline) ----
+        editBtn.addEventListener("click", function () {
+          var qDiv = card.querySelector(".view-q");
+          var aDiv = card.querySelector(".view-a");
+          var form = document.createElement("div");
+          form.className = "edit-form";
+          form.innerHTML =
+            '<label class="label">Question</label>' +
+            '<textarea class="edit-q"></textarea>' +
+            '<label class="label" style="margin-top:8px">Answer</label>' +
+            '<textarea class="edit-a"></textarea>' +
+            '<div class="actions"><button class="save">Save changes</button>' +
+            '<button class="cancel secondary">Cancel</button><span class="status"></span></div>';
+          form.querySelector(".edit-q").value = c.question;
+          form.querySelector(".edit-a").value = c.answer;
+          // Hide view fields + main actions while editing.
+          qDiv.classList.add("hidden"); aDiv.classList.add("hidden"); actions.classList.add("hidden");
+          card.insertBefore(form, actions);
+
+          var fStatus = form.querySelector(".status");
+          form.querySelector(".cancel").addEventListener("click", function () {
+            form.remove();
+            qDiv.classList.remove("hidden"); aDiv.classList.remove("hidden"); actions.classList.remove("hidden");
+          });
+          form.querySelector(".save").addEventListener("click", function () {
+            var nq = form.querySelector(".edit-q").value.trim();
+            var na = form.querySelector(".edit-a").value.trim();
+            if (!nq || !na) { fStatus.className = "status err"; fStatus.textContent = "Question and answer can't be empty."; return; }
+            var saveBtn = form.querySelector(".save"); saveBtn.disabled = true;
+            fStatus.className = "status"; fStatus.textContent = "Saving…";
+            fetch(API + "/admin/api/curated/edit", {
+              method: "POST", headers: headers(),
+              body: JSON.stringify({ id: c.id, question: nq, answer: na }),
+            })
+              .then(function (r) { if (!r.ok) throw new Error("Couldn't save (error " + r.status + ")"); return r.json(); })
+              .then(function (res) {
+                if (!res.ok) throw new Error("This answer no longer exists.");
+                c.question = nq; c.answer = na;         // update local copy
+                qDiv.innerHTML = esc(nq); aDiv.innerHTML = esc(na);
+                form.remove();
+                qDiv.classList.remove("hidden"); aDiv.classList.remove("hidden"); actions.classList.remove("hidden");
+                status.className = "status ok"; status.textContent = "✓ Saved — the bot now uses the updated answer.";
+                setTimeout(function () { status.textContent = ""; status.className = "status"; }, 4000);
+              })
+              .catch(function (e) { saveBtn.disabled = false; fStatus.className = "status err"; fStatus.textContent = e.message; });
+          });
+        });
+
+        // ---- Retire ----
+        retireBtn.addEventListener("click", function () {
+          if (!confirm("Retire this answer? The bot will stop using it. It stays in the record but won't be shown to students.")) return;
+          editBtn.disabled = true; retireBtn.disabled = true;
+          status.className = "status"; status.textContent = "Retiring…";
+          fetch(API + "/admin/api/curated/retire", {
+            method: "POST", headers: headers(),
+            body: JSON.stringify({ id: c.id }),
+          })
+            .then(function (r) { if (!r.ok) throw new Error("Couldn't retire (error " + r.status + ")"); return r.json(); })
+            .then(function () {
+              status.className = "status ok"; status.textContent = "Retired.";
+              _curated = _curated.filter(function (x) { return x.id !== c.id; });
+              var badge = $("curated-badge");
+              badge.textContent = _curated.length;
+              badge.classList.toggle("zero", _curated.length === 0);
+              setTimeout(function () {
+                card.classList.add("resolving");
+                setTimeout(function () { filterCurated(); }, 420);
+              }, 700);
+            })
+            .catch(function (e) {
+              editBtn.disabled = false; retireBtn.disabled = false;
+              status.className = "status err"; status.textContent = e.message;
+            });
+        });
+
+        return card;
       }
       function filterCurated() {
         var q = ($("curated-search").value || "").trim().toLowerCase();

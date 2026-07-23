@@ -85,6 +85,53 @@ def test_admin_curated_lists_published(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "active" not in body[0]  # internal field not exposed
 
 
+def test_admin_curated_edit_ok(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    seen = {}
+    monkeypatch.setattr(
+        app_module,
+        "edit_curated_answer",
+        lambda i, q, a: seen.update(id=i, q=q, a=a) or True,
+    )
+    resp = client.post(
+        "/admin/api/curated/edit",
+        headers={"Authorization": "Bearer secret"},
+        json={"id": 5, "question": "new q", "answer": "new a"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["ok"] is True
+    assert seen == {"id": 5, "q": "new q", "a": "new a"}
+
+
+def test_admin_curated_edit_missing_returns_false(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(app_module, "edit_curated_answer", lambda i, q, a: False)
+    resp = client.post(
+        "/admin/api/curated/edit",
+        headers={"Authorization": "Bearer secret"},
+        json={"id": 999, "question": "q", "answer": "a"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["ok"] is False
+
+
+def test_admin_curated_retire_ok(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(app_module, "retire_curated_answer", lambda i: True)
+    resp = client.post(
+        "/admin/api/curated/retire",
+        headers={"Authorization": "Bearer secret"},
+        json={"id": 5},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["ok"] is True
+
+
+def test_admin_curated_retire_requires_token() -> None:
+    # Wrong/absent auth is rejected (admin is enabled via .env in this env).
+    assert client.post("/admin/api/curated/retire", json={"id": 1}).status_code in (401, 403)
+
+
 def test_admin_resolve_dismisses_item(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
     monkeypatch.setattr(app_module, "resolve_interaction", lambda i: True)

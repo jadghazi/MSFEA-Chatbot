@@ -21,7 +21,11 @@ from pydantic import BaseModel, Field
 
 from msfea_bot.api.security import RateLimiter, sanitize
 from msfea_bot.config import settings
-from msfea_bot.curation.service import publish_curated_answer
+from msfea_bot.curation.service import (
+    edit_curated_answer,
+    publish_curated_answer,
+    retire_curated_answer,
+)
 from msfea_bot.curation.store import list_curated
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
@@ -214,6 +218,32 @@ def admin_curated(_: None = Depends(require_admin)) -> list[CuratedOut]:
         )
         for c in list_curated(active_only=True)
     ]
+
+
+class EditCuratedRequest(BaseModel):
+    id: int
+    question: str = Field(min_length=1, max_length=2000)
+    answer: str = Field(min_length=1, max_length=8000)
+
+
+@app.post("/admin/api/curated/edit")
+def admin_curated_edit(
+    req: EditCuratedRequest, _: None = Depends(require_admin)
+) -> dict[str, bool]:
+    """Update a published answer's text and re-index it. False if it's gone/retired."""
+    return {"ok": edit_curated_answer(req.id, req.question, req.answer)}
+
+
+class RetireCuratedRequest(BaseModel):
+    id: int
+
+
+@app.post("/admin/api/curated/retire")
+def admin_curated_retire(
+    req: RetireCuratedRequest, _: None = Depends(require_admin)
+) -> dict[str, bool]:
+    """Retire a published answer so the bot stops using it (row kept for history)."""
+    return {"ok": retire_curated_answer(req.id)}
 
 
 class ResolveRequest(BaseModel):

@@ -6,6 +6,36 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — Edit / Retire curated answers (closes ADR-0010 follow-up)
+
+Made the "Published answers" tab actionable — staff can now correct or remove a
+published answer from the UI, no DB access needed.
+
+- **Retire.** `POST /admin/api/curated/retire` → `retire_curated_answer`:
+  deactivates the row (`active = false`, kept for history) **and** deletes its
+  vector chunk so the bot stops using it. Idempotent (retiring twice → False).
+- **Edit.** `POST /admin/api/curated/edit` → `edit_curated_answer`: updates the
+  row text and **re-embeds/upserts** the chunk, so retrieval reflects the edit
+  immediately.
+- **Store:** added `get_curated`, `update_curated_answer`,
+  `deactivate_curated_answer`.
+- **Safety fix:** added `retrieval.store.delete_chunk` (exact-id delete) and used
+  it for retire — the existing prefix `delete_chunks("curated-1")` would also
+  match `curated-10`. `delete_chunks` kept for bulk/source deletes.
+- **Test-leak fix:** the curation integration test deleted the chunk but not the
+  `curated_answers` row on teardown — that's what created the earlier
+  `zzz-test` pile-up. Teardown now removes both.
+- **UI:** each published card has **Edit** (inline question/answer editor with
+  Save/Cancel) and **Retire** (confirm → card animates out, count updates).
+
+**Verified:** live DB integration tests — edit re-indexes (old marker gone, new
+marker retrievable), retire removes the chunk + deactivates the row and is
+idempotent. ruff/mypy clean; **55 tests pass**. (One live curated row remains —
+"How many credits is the internship??", created via the dashboard, left in place
+as real content.)
+
+---
+
 ## 2026-07-23 — "Published answers" tab + KB test-data cleanup
 
 - **New read-only tab.** `GET /admin/api/curated` lists the curated Q&As (from

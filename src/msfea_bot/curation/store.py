@@ -55,6 +55,42 @@ def add_curated_answer(question: str, answer: str, author: str = "") -> int:
     return int(row[0])
 
 
+def get_curated(curated_id: int) -> CuratedAnswer | None:
+    with _connect() as conn:
+        _init_schema(conn)
+        row = conn.execute(
+            "SELECT id, question, answer, author, created_at, active"
+            " FROM curated_answers WHERE id = %s",
+            (curated_id,),
+        ).fetchone()
+    return CuratedAnswer(row[0], row[1], row[2], row[3], row[4], row[5]) if row else None
+
+
+def update_curated_answer(curated_id: int, question: str, answer: str) -> bool:
+    """Edit an active curated answer's text. Returns True if a row was updated."""
+    with _connect() as conn:
+        _init_schema(conn)
+        cur = conn.execute(
+            "UPDATE curated_answers SET question = %s, answer = %s WHERE id = %s AND active",
+            (question, answer, curated_id),
+        )
+        return bool(cur.rowcount > 0)
+
+
+def deactivate_curated_answer(curated_id: int) -> bool:
+    """Retire a curated answer (mark inactive). Returns True if a row changed.
+
+    The row is kept for audit history; it just stops being an ingestion source.
+    """
+    with _connect() as conn:
+        _init_schema(conn)
+        cur = conn.execute(
+            "UPDATE curated_answers SET active = false WHERE id = %s AND active",
+            (curated_id,),
+        )
+        return bool(cur.rowcount > 0)
+
+
 def list_curated(active_only: bool = True) -> list[CuratedAnswer]:
     where = "WHERE active" if active_only else ""
     with _connect() as conn:
