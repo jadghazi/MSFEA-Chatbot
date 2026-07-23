@@ -28,6 +28,8 @@ from msfea_bot.observability.privacy import anonymize
 from msfea_bot.observability.store import (
     feedback_items,
     log_interaction,
+    resolve_by_question,
+    resolve_interaction,
     set_rating,
     stats,
 )
@@ -179,9 +181,28 @@ class CurateRequest(BaseModel):
 
 @app.post("/admin/api/curate")
 def admin_curate(req: CurateRequest, _: None = Depends(require_admin)) -> dict[str, int]:
-    """Publish an admin-written answer into the KB (indexed immediately)."""
+    """Publish an admin-written answer into the KB (indexed immediately).
+
+    Publishing also clears the queue: any open feedback item asking this exact
+    question is marked resolved, so it stops re-appearing after a refresh.
+    """
     curated_id = publish_curated_answer(req.question, req.answer, author="admin")
-    return {"curated_id": curated_id}
+    resolved = resolve_by_question(req.question)
+    return {"curated_id": curated_id, "resolved": resolved}
+
+
+class ResolveRequest(BaseModel):
+    interaction_id: int
+
+
+@app.post("/admin/api/resolve")
+def admin_resolve(req: ResolveRequest, _: None = Depends(require_admin)) -> dict[str, bool]:
+    """Dismiss a feedback item without publishing an answer.
+
+    For cases that don't need new KB content (e.g. a thumbs-down on an answer
+    that was actually correct). Removes it from the attention queue.
+    """
+    return {"ok": resolve_interaction(req.interaction_id)}
 
 
 # Static frontends: the widget (demo) and the admin dashboard.

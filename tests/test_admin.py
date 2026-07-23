@@ -50,10 +50,34 @@ def test_admin_feedback_ok(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_admin_curate_ok(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
     monkeypatch.setattr(app_module, "publish_curated_answer", lambda q, a, author="admin": 7)
+    monkeypatch.setattr(app_module, "resolve_by_question", lambda q: 2)
     resp = client.post(
         "/admin/api/curate",
         headers={"Authorization": "Bearer secret"},
         json={"question": "q", "answer": "a"},
     )
     assert resp.status_code == 200
-    assert resp.json()["curated_id"] == 7
+    body = resp.json()
+    assert body["curated_id"] == 7
+    # Publishing clears the queue for that question (ADR-0010 / B-3a resolution).
+    assert body["resolved"] == 2
+
+
+def test_admin_resolve_dismisses_item(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(app_module, "resolve_interaction", lambda i: True)
+    resp = client.post(
+        "/admin/api/resolve",
+        headers={"Authorization": "Bearer secret"},
+        json={"interaction_id": 42},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["ok"] is True
+
+
+def test_admin_resolve_rejects_wrong_token(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    resp = client.post(
+        "/admin/api/resolve", headers={"Authorization": "Bearer nope"}, json={"interaction_id": 1}
+    )
+    assert resp.status_code == 401

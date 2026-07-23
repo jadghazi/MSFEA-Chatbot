@@ -6,6 +6,39 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — Dashboard usability + resolution state (B-3a follow-up, ADR-0010)
+
+Reworked the admin dashboard around non-technical CDC staff, and fixed a real
+workflow gap: an answered item kept re-appearing after a page refresh.
+
+- **Resolution state (the fix).** Added `interactions.resolved_at` (nullable,
+  migrated with `ADD COLUMN IF NOT EXISTS`). The attention queue and `pending`
+  stat now filter `resolved_at IS NULL`. Publishing an answer calls
+  `resolve_by_question` (clears every open item asking the same thing);
+  new `POST /admin/api/resolve` + `resolve_interaction` let an admin *dismiss*
+  an item without publishing (e.g. a 👎 that was actually fine). This completes
+  the "review list with a status" anticipated in backlog B-3a.
+- **Plain-language redesign.** No jargon ("chunks"/"escalated" gone from the UI).
+  Split into two tabs — **Needs your attention** (action queue with a live count
+  badge) and **Usage** (labelled stat cards + a deflection %). Cards show a
+  friendly badge, the question, what the bot said (for 👎), a clear
+  "write the answer" box, Publish + Dismiss, and technical diagnostics tucked
+  into a collapsible "Why couldn't it answer?" section that explains the
+  content-gap-vs-wording split in words.
+- **Sign-in UX.** Access code remembered in `sessionStorage` (survives refresh,
+  clears on tab close / Sign out); human-readable error messages; cards visibly
+  resolve and disappear.
+
+**Verified:** live DB check — a refused item shows in the queue (pending 6),
+`resolve_by_question` clears it, and a simulated refresh does **not** bring it
+back (pending 5). ruff/mypy clean; 48 tests pass (added resolve + curate-resolve
+coverage).
+
+**Still open (ADR-0010):** edit/reactivate a *curated answer* via UI (distinct
+from dismissing a feedback item); auto-add curated Q&A to the golden set; SSO.
+
+---
+
 ## 2026-07-23 — Admin dashboard + curation feedback loop (B-3/B-3a, ADR-0010)
 
 Built the loop that turns failures into KB content.

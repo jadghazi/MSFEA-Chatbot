@@ -45,11 +45,13 @@ def _init_schema(conn: Any) -> None:
         "  answer TEXT NOT NULL,"
         "  citations TEXT[] NOT NULL DEFAULT '{}',"
         "  retrieved TEXT[] NOT NULL DEFAULT '{}',"
-        "  rating SMALLINT"
+        "  rating SMALLINT,"
+        "  resolved_at TIMESTAMPTZ"
         ")"
     )
-    # Migration for tables created before the rating column existed.
+    # Migrations for tables created before these columns existed.
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS rating SMALLINT")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS resolved_at TIMESTAMPTZ")
 
 
 def log_interaction(question: str, answer: Answer) -> int | None:
@@ -87,6 +89,48 @@ def set_rating(interaction_id: int, rating: int) -> bool:
         return False
 
 
+def resolve_interaction(interaction_id: int) -> bool:
+    """Mark one feedback item as handled so it leaves the queue.
+
+    Used when an admin dismisses an item without publishing an answer (e.g. a
+    thumbs-down on an answer that was actually fine). Returns True if a row moved
+    from open to resolved.
+    """
+    try:
+        with _connect() as conn:
+            _init_schema(conn)
+            cur = conn.execute(
+                "UPDATE interactions SET resolved_at = now()"
+                " WHERE id = %s AND resolved_at IS NULL",
+                (interaction_id,),
+            )
+            return bool(cur.rowcount > 0)
+    except Exception as exc:  # noqa: BLE001 - non-critical; don't break the dashboard
+        print(f"[observability] failed to resolve interaction: {exc}")
+        return False
+
+
+def resolve_by_question(question: str) -> int:
+    """Resolve every open feedback item with this exact question. Returns the count.
+
+    Called after an admin publishes an answer: any pending item asking the same
+    thing is now answered, so it should leave the queue in one step (several
+    students often ask the identical question).
+    """
+    try:
+        with _connect() as conn:
+            _init_schema(conn)
+            cur = conn.execute(
+                "UPDATE interactions SET resolved_at = now()"
+                " WHERE question = %s AND resolved_at IS NULL AND (refused OR rating = -1)",
+                (question,),
+            )
+            return int(cur.rowcount)
+    except Exception as exc:  # noqa: BLE001 - non-critical; publishing already succeeded
+        print(f"[observability] failed to resolve by question: {exc}")
+        return 0
+
+
 def recent_unanswered(limit: int = 50) -> list[tuple[datetime, str]]:
     """Recent escalated/refused questions — the roadmap for what KB content to add."""
     with _connect() as conn:
@@ -106,17 +150,19 @@ def stats() -> dict[str, int]:
             "SELECT count(*),"
             " count(*) FILTER (WHERE refused),"
             " count(*) FILTER (WHERE rating = 1),"
-            " count(*) FILTER (WHERE rating = -1)"
+            " count(*) FILTER (WHERE rating = -1),"
+            " count(*) FILTER (WHERE (refused OR rating = -1) AND resolved_at IS NULL)"
             " FROM interactions"
         ).fetchone()
-    vals = row or (0, 0, 0, 0)
-    total, refused, up, down = int(vals[0]), int(vals[1]), int(vals[2]), int(vals[3])
+    vals = row or (0, 0, 0, 0, 0)
+    total, refused, up, down, pending = (int(vals[i]) for i in range(5))
     return {
         "total": total,
         "answered": total - refused,
         "refused": refused,
         "thumbs_up": up,
         "thumbs_down": down,
+        "pending": pending,
     }
 
 
@@ -126,7 +172,7 @@ def feedback_items(limit: int = 100) -> list[FeedbackItem]:
         _init_schema(conn)
         rows = conn.execute(
             "SELECT id, ts, question, answer, refused, rating, retrieved"
-            " FROM interactions WHERE refused OR rating = -1"
+            " FROM interactions WHERE (refused OR rating = -1) AND resolved_at IS NULL"
             " ORDER BY ts DESC LIMIT %s",
             (limit,),
         ).fetchall()
