@@ -86,6 +86,11 @@ a v2 feature once single-answer retrieval is solid.
 
 ## B-3 — Admin / usage analytics dashboard (end-stage)
 
+**Status: IMPLEMENTED v1 (2026-07-23, ADR-0010)** — dashboard with usage stats +
+the feedback list (refused / 👎) + retrieved chunks (B-3a) + inline answer→publish
+into the KB. Follow-ups noted in ADR-0010 (edit/retire curated answers, SSO,
+auto-add to golden set).
+
 **Idea (from Jad, 2026-07-20).** The department asked whether usage can be seen.
 A founder/admin dashboard showing how the bot is being used — for stakeholders
 to view value and to guide what content to improve.

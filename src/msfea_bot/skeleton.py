@@ -13,13 +13,14 @@ from __future__ import annotations
 
 import sys
 
+from msfea_bot.curation.service import curated_chunks
 from msfea_bot.ingestion.chunking import chunk_normalized_dir
 from msfea_bot.retrieval.store import index_chunks
 
 
 def ingest() -> int:
-    """Chunk the normalized KB and (re)build the vector store."""
-    chunks = chunk_normalized_dir()
+    """(Re)build the vector store from the normalized KB + admin-curated answers."""
+    chunks = chunk_normalized_dir() + curated_chunks()
     count = index_chunks(chunks)
     print(f"Indexed {count} chunks into the vector store.")
     return count

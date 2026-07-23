@@ -27,6 +27,9 @@
     ".msfea-cite{font-size:11px;color:#666;margin-top:6px}" +
     ".msfea-cite b{color:#6a1b1a}" +
     ".msfea-disc{font-size:11px;color:#8a8a8a;font-style:italic;margin-top:6px}" +
+    ".msfea-rate{margin-top:6px}" +
+    ".msfea-rate button{background:none;border:1px solid #ddd;border-radius:6px;cursor:pointer;font-size:13px;margin-right:4px;padding:2px 8px}" +
+    ".msfea-thanks{font-size:11px;color:#2e7d32}" +
     ".msfea-foot{display:flex;border-top:1px solid #e3e3e6;padding:8px}" +
     ".msfea-foot input{flex:1;border:1px solid #ccc;border-radius:8px;padding:9px;font-size:14px;outline:none}" +
     ".msfea-foot button{margin-left:6px;background:#6a1b1a;color:#fff;border:none;border-radius:8px;padding:0 14px;cursor:pointer}" +
@@ -80,8 +83,32 @@
       wrap.appendChild(c);
     }
     if (data.disclaimer) wrap.appendChild(el("msfea-disc", data.disclaimer));
+    if (data.interaction_id) wrap.appendChild(ratingUI(data.interaction_id));
     msgs.appendChild(wrap);
     msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function ratingUI(interactionId) {
+    var box = el("msfea-rate");
+    function vote(value) {
+      fetch(API + "/rate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ interaction_id: interactionId, rating: value }),
+      }).catch(function () {});
+      box.innerHTML = '<span class="msfea-thanks">Thanks for the feedback!</span>';
+    }
+    var up = document.createElement("button");
+    up.textContent = "👍";
+    up.setAttribute("aria-label", "Helpful");
+    up.addEventListener("click", function () { vote(1); });
+    var down = document.createElement("button");
+    down.textContent = "👎";
+    down.setAttribute("aria-label", "Not helpful");
+    down.addEventListener("click", function () { vote(-1); });
+    box.appendChild(up);
+    box.appendChild(down);
+    return box;
   }
 
   function escapeHtml(s) {

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MSFEA CDC — Admin Dashboard</title>
+    <style>
+      :root { --brand: #6a1b1a; }
+      body { font-family: system-ui, Arial, sans-serif; margin: 0; color: #1a1a1a; background: #f4f4f6; }
+      header { background: var(--brand); color: #fff; padding: 14px 20px; }
+      header h1 { margin: 0; font-size: 18px; }
+      main { max-width: 900px; margin: 0 auto; padding: 20px; }
+      .auth { display: flex; gap: 8px; margin-bottom: 16px; }
+      .auth input { flex: 1; padding: 9px; border: 1px solid #ccc; border-radius: 8px; }
+      button { background: var(--brand); color: #fff; border: none; border-radius: 8px; padding: 9px 14px; cursor: pointer; }
+      button.secondary { background: #eee; color: #333; }
+      .stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+      .stat { background: #fff; border: 1px solid #e3e3e6; border-radius: 10px; padding: 12px 16px; min-width: 110px; }
+      .stat .n { font-size: 22px; font-weight: 700; color: var(--brand); }
+      .stat .l { font-size: 12px; color: #666; }
+      .card { background: #fff; border: 1px solid #e3e3e6; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+      .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-right: 6px; }
+      .tag.refused { background: #fdecea; color: #b3261e; }
+      .tag.down { background: #fff4e5; color: #a15c00; }
+      .q { font-weight: 600; margin: 6px 0; }
+      .a { color: #444; font-size: 14px; white-space: pre-wrap; }
+      details { margin-top: 8px; }
+      details summary { cursor: pointer; font-size: 12px; color: #666; }
+      details pre { background: #f7f7f8; padding: 8px; border-radius: 6px; font-size: 12px; overflow-x: auto; }
+      .answer-box { margin-top: 10px; }
+      .answer-box textarea { width: 100%; box-sizing: border-box; min-height: 70px; border: 1px solid #ccc; border-radius: 8px; padding: 8px; font: inherit; }
+      .muted { color: #888; font-size: 13px; }
+      .err { color: #b3261e; font-size: 13px; }
+      .ok { color: #2e7d32; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <header><h1>MSFEA CDC — Admin Dashboard</h1></header>
+    <main>
+      <div class="auth">
+        <input id="token" type="password" placeholder="Admin token (from ADMIN_TOKEN)" />
+        <button id="load">Load</button>
+      </div>
+      <div id="msg" class="muted">Enter the admin token and press Load.</div>
+      <div id="stats" class="stats"></div>
+      <div id="list"></div>
+    </main>
+
+    <script>
+      var API = ""; // same origin (served from /dashboard/)
+      var $ = function (id) { return document.getElementById(id); };
+
+      function token() { return $("token").value.trim(); }
+      function headers() { return { "Authorization": "Bearer " + token(), "Content-Type": "application/json" }; }
+      function esc(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+
+      function loadAll() {
+        if (!token()) { $("msg").textContent = "Please enter the admin token."; return; }
+        $("msg").textContent = "Loading…";
+        Promise.all([
+          fetch(API + "/admin/api/stats", { headers: headers() }),
+          fetch(API + "/admin/api/feedback", { headers: headers() }),
+        ])
+          .then(function (rs) {
+            if (rs[0].status === 401 || rs[1].status === 401) throw new Error("Invalid admin token.");
+            if (rs[0].status === 403) throw new Error("Admin is disabled (no ADMIN_TOKEN set on the server).");
+            return Promise.all([rs[0].json(), rs[1].json()]);
+          })
+          .then(function (data) { renderStats(data[0]); renderList(data[1]); $("msg").textContent = ""; })
+          .catch(function (e) { $("msg").innerHTML = '<span class="err">' + esc(e.message) + "</span>"; });
+      }
+
+      function renderStats(s) {
+        var items = [
+          ["Total", s.total], ["Answered", s.answered], ["Escalated", s.refused],
+          ["👍", s.thumbs_up], ["👎", s.thumbs_down],
+        ];
+        $("stats").innerHTML = items.map(function (i) {
+          return '<div class="stat"><div class="n">' + i[1] + '</div><div class="l">' + i[0] + "</div></div>";
+        }).join("");
+      }
+
+      function renderList(items) {
+        if (!items.length) { $("list").innerHTML = '<p class="muted">Nothing needs attention. 🎉</p>'; return; }
+        $("list").innerHTML = "";
+        items.forEach(function (it) {
+          var card = document.createElement("div");
+          card.className = "card";
+          var tags = (it.refused ? '<span class="tag refused">escalated / no answer</span>' : "") +
+            (it.rating === -1 ? '<span class="tag down">👎 not helpful</span>' : "");
+          card.innerHTML =
+            tags +
+            '<div class="q">' + esc(it.question) + "</div>" +
+            (it.refused ? "" : '<div class="a">Bot answered: ' + esc(it.answer) + "</div>") +
+            '<details><summary>Retrieved chunks (diagnosis)</summary><pre>' +
+            esc((it.retrieved || []).join("\n") || "(none)") + "</pre></details>" +
+            '<div class="answer-box">' +
+            '<textarea placeholder="Write the correct answer to publish into the KB..."></textarea>' +
+            '<div style="margin-top:6px"><button class="publish">Publish answer</button> ' +
+            '<span class="status"></span></div></div>';
+
+          var ta = card.querySelector("textarea");
+          var status = card.querySelector(".status");
+          card.querySelector(".publish").addEventListener("click", function () {
+            var answer = ta.value.trim();
+            if (!answer) { status.innerHTML = '<span class="err">Write an answer first.</span>'; return; }
+            status.textContent = "Publishing…";
+            fetch(API + "/admin/api/curate", {
+              method: "POST", headers: headers(),
+              body: JSON.stringify({ question: it.question, answer: answer }),
+            })
+              .then(function (r) { if (!r.ok) throw new Error("Publish failed (" + r.status + ")"); return r.json(); })
+              .then(function () { status.innerHTML = '<span class="ok">Published — the bot can now answer this.</span>'; })
+              .catch(function (e) { status.innerHTML = '<span class="err">' + esc(e.message) + "</span>"; });
+          });
+          $("list").appendChild(card);
+        });
+      }
+
+      $("load").addEventListener("click", loadAll);
+      $("token").addEventListener("keydown", function (e) { if (e.key === "Enter") loadAll(); });
+    </script>
+  </body>
+</html>

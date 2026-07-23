@@ -65,6 +65,37 @@ def index_chunks(chunks: list[Chunk]) -> int:
     return len(chunks)
 
 
+def upsert_chunks(chunks: list[Chunk]) -> int:
+    """Embed and insert/update specific chunks without wiping the store.
+
+    Used for incremental additions (e.g. a newly curated answer) so we don't have
+    to rebuild the whole index. Returns the number upserted.
+    """
+    if not chunks:
+        return 0
+    vectors = embed_texts([c.text for c in chunks])
+    with _connect() as conn:
+        _init_schema(conn)
+        with conn.cursor() as cur:
+            for chunk, vector in zip(chunks, vectors, strict=True):
+                cur.execute(
+                    "INSERT INTO chunks (id, text, source_doc, section, embedding)"
+                    " VALUES (%s, %s, %s, %s, %s)"
+                    " ON CONFLICT (id) DO UPDATE SET"
+                    " text = EXCLUDED.text, source_doc = EXCLUDED.source_doc,"
+                    " section = EXCLUDED.section, embedding = EXCLUDED.embedding",
+                    (chunk.id, chunk.text, chunk.source_doc, chunk.section, vector),
+                )
+    return len(chunks)
+
+
+def delete_chunks(id_prefix: str) -> int:
+    """Delete chunks whose id starts with `id_prefix` (e.g. a retired curated answer)."""
+    with _connect() as conn:
+        cur = conn.execute("DELETE FROM chunks WHERE id LIKE %s", (id_prefix + "%",))
+        return int(cur.rowcount)
+
+
 def search(query: str, k: int = 5) -> list[RetrievedChunk]:
     """Return the top-k chunks most similar to the query (cosine similarity)."""
     qv = embed_query(query)

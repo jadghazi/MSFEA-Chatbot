@@ -6,6 +6,28 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — Admin dashboard + curation feedback loop (B-3/B-3a, ADR-0010)
+
+Built the loop that turns failures into KB content.
+- **Storage:** Postgres `curated_answers` table as an ingestion source (chosen
+  over a file — ephemeral container FS vs persistent DB volume; transactional).
+  Vector store rebuilds from md files + curated table; publish = incremental
+  embed+upsert.
+- **Ratings:** `interactions.rating`; widget 👍/👎; `POST /rate`; `/chat` returns
+  `interaction_id`.
+- **Admin (token-auth, constant-time):** `/admin/api/stats`, `/admin/api/feedback`
+  (refused OR 👎, with retrieved chunks), `/admin/api/curate` (publish answer).
+- **Dashboard page** (`/dashboard/`): stats, feedback list, inline answer→publish.
+- `curation/` module (store + service). `skeleton ingest` now includes curated.
+
+**Verified end-to-end (live HTTP):** ask → refuse → admin curates → re-ask →
+answered from curated content; ratings + auth (401 w/o token) + dashboard (200)
+all work; demo data cleaned up afterward. Hermetic admin/rate tests + DB
+integration test (skips w/o DB). ruff/mypy/pytest clean (46 tests).
+
+**Follow-ups (ADR-0010):** edit/retire curated answers via UI; auto-add curated
+Q&A to golden set; replace shared token with AUB SSO.
+
 ## 2026-07-23 — Name redaction via local NER (closes the §7 names gap)
 
 Closed the open privacy gap from ADR-0007/0008. `anonymize()` now redacts
