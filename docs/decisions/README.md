@@ -34,3 +34,4 @@ file layout). Keep the log signal-heavy.
 | 0004 | Embedding model: local bge-small-en-v1.5 | Accepted |
 | 0005 | Provisional LLM provider: Google Gemini (free tier) | Accepted (provisional) |
 | 0006 | Chunking: section-aware + size-bounded overlapping windows | Accepted |
+| 0007 | Observability: interaction logging + anonymization | Accepted |

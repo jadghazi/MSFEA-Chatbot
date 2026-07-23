@@ -20,7 +20,9 @@ from pydantic import BaseModel, Field
 
 from msfea_bot.config import settings
 from msfea_bot.generation import generate_answer
-from msfea_bot.generation.answer import DISCLAIMER
+from msfea_bot.generation.answer import Answer
+from msfea_bot.observability.privacy import anonymize
+from msfea_bot.observability.store import log_interaction
 
 app = FastAPI(title="MSFEA Internship Chatbot API")
 
@@ -52,16 +54,20 @@ def health() -> dict[str, str]:
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
     """Answer a question via the guarded bot; degrade gracefully on backend errors."""
+    # Anonymize once, then use the same text for the LLM and the log (CLAUDE.md §7).
+    question = anonymize(req.question)
     try:
-        result = generate_answer(req.question)
+        result = generate_answer(question)
     except Exception:  # noqa: BLE001 - never 500 at the student; escalate gracefully
         contact = settings.escalation_contact or "the CDC office"
-        return ChatResponse(
-            answer=f"Sorry, I'm having trouble right now. Please contact {contact}.",
+        result = Answer(
+            text=f"Sorry, I'm having trouble right now. Please contact {contact}.",
             citations=[],
             refused=True,
-            disclaimer=DISCLAIMER,
         )
+
+    log_interaction(question, result)  # fail-safe; never breaks the response
+
     return ChatResponse(
         answer=result.text,
         citations=result.citations,

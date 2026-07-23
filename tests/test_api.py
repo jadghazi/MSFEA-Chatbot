@@ -24,6 +24,7 @@ def test_chat_returns_structured_answer(monkeypatch: pytest.MonkeyPatch) -> None
         return Answer(text="At least 8 weeks.", citations=["doc.md > Duration"], refused=False)
 
     monkeypatch.setattr(app_module, "generate_answer", fake)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
     resp = client.post("/chat", json={"question": "How long is the internship?"})
     assert resp.status_code == 200
     body = resp.json()
@@ -38,6 +39,7 @@ def test_chat_degrades_gracefully_on_backend_error(monkeypatch: pytest.MonkeyPat
         raise RuntimeError("LLM down")
 
     monkeypatch.setattr(app_module, "generate_answer", boom)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
     resp = client.post("/chat", json={"question": "anything"})
     assert resp.status_code == 200
     assert resp.json()["refused"] is True

@@ -6,6 +6,26 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — Phase 9: observability (interaction logging + unanswered log)
+
+**Built (ADR-0007).**
+- `observability/store.py`: Postgres `interactions` table (ts, anonymized
+  question, refused, answer, citations, retrieved). Logging is **fail-safe** — a
+  logging error never breaks the chat.
+- `observability/privacy.py`: `anonymize()` strips emails + long digit runs
+  (student IDs, phones), preserves domain numbers ("8 weeks", "3.3", "75%").
+- `/chat` anonymizes the question once and uses it for BOTH the LLM and the log
+  (CLAUDE.md §7). `Answer` now carries `retrieved` chunks for logging/diagnosis.
+- `python -m msfea_bot.observability` prints the unanswered-questions log.
+
+**Verified live:** the "how many credits is the internship?" refusal is now
+captured in the unanswered log; a PII question was stored as
+`student [redacted-number], email [redacted-email]`. Privacy unit tests; API
+tests made hermetic (stub logging). ruff/mypy/pytest clean (32 tests).
+
+**Known limitation (→ Phase 8):** regex anonymization does not strip personal
+names (needs NER). Tracked in ADR-0007.
+
 ## 2026-07-22 — Phase 7: API /chat endpoint + chat widget
 
 **Built.**

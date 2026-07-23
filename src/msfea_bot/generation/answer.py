@@ -46,6 +46,9 @@ class Answer:
     citations: list[str] = field(default_factory=list)
     refused: bool = False
     disclaimer: str = DISCLAIMER
+    # The chunks retrieved for this question ("source > section (score)"), for
+    # observability/diagnosis (CLAUDE.md §9). Not returned to the student.
+    retrieved: list[str] = field(default_factory=list)
 
 
 def _format_context(chunks: list[RetrievedChunk]) -> str:
@@ -101,8 +104,14 @@ def generate_answer(
     """Full guarded generation: retrieve -> threshold gate -> LLM -> structured answer."""
     top_k = k if k is not None else settings.top_k
     chunks = search(question, top_k)
+    retrieved = [f"{c.source_doc} > {c.section} ({c.score:.2f})" for c in chunks]
+
     if not chunks or chunks[0].score < settings.similarity_threshold:
-        return escalation()
-    llm = provider or get_llm_provider()
-    raw = llm.generate(build_prompt(question, chunks))
-    return parse_answer(raw, chunks)
+        result = escalation()
+    else:
+        llm = provider or get_llm_provider()
+        raw = llm.generate(build_prompt(question, chunks))
+        result = parse_answer(raw, chunks)
+
+    result.retrieved = retrieved
+    return result
