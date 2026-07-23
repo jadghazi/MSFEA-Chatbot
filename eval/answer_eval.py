@@ -17,9 +17,22 @@ import time
 from eval.loader import load_golden_set
 from eval.metrics import BotAnswer, citation_present, disclaimer_present
 from msfea_bot.generation import generate_answer
+from msfea_bot.generation.answer import Answer
 
 
-def evaluate_answers(delay: float = 4.0) -> None:
+def _answer_with_retry(question: str, attempts: int = 6, backoff: float = 20.0) -> Answer:
+    """Generate an answer, retrying on transient errors (e.g. free-tier 429s)."""
+    for attempt in range(attempts):
+        try:
+            return generate_answer(question)
+        except Exception:  # noqa: BLE001 - retry any transient API error
+            if attempt == attempts - 1:
+                raise
+            time.sleep(backoff)
+    raise RuntimeError("unreachable")
+
+
+def evaluate_answers(delay: float = 13.0) -> None:
     items = load_golden_set()
     refuse_items = [i for i in items if i.should_refuse]
     answerable = [i for i in items if not i.should_refuse]
@@ -31,7 +44,7 @@ def evaluate_answers(delay: float = 4.0) -> None:
     disclaimer_ok = 0
 
     for item in items:
-        ans = generate_answer(item.question)
+        ans = _answer_with_retry(item.question)
         ba = BotAnswer(
             text=f"{ans.text} {ans.disclaimer}", citations=ans.citations, refused=ans.refused
         )
