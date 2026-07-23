@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MSFEA CDC Chatbot — Demo</title>
+    <style>
+      body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 3rem; color: #222; line-height: 1.6; }
+      .box { max-width: 640px; }
+      code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h1>MSFEA CDC Chatbot — demo page</h1>
+      <p>
+        This page simulates an AUB web page with the chat widget embedded. Click
+        the <strong>💬 bubble</strong> in the bottom-right corner and ask an
+        internship / CO-OP question, e.g. <em>"What is the minimum internship
+        duration?"</em> or <em>"What GPA do I need for co-op?"</em>.
+      </p>
+      <p>
+        The widget is a thin client: it just calls the backend
+        <code>POST /chat</code> and renders the answer, its sources, and the
+        disclaimer.
+      </p>
+    </div>
+
+    <!-- Same origin when served from the API at /widget/demo.html, so no API URL needed. -->
+    <script src="widget.js"></script>
+  </body>
+</html>

@@ -6,6 +6,29 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 7: API /chat endpoint + chat widget
+
+**Built.**
+- `POST /chat` (FastAPI) wired to the guarded `generate_answer`; returns
+  `{answer, citations, refused, disclaimer}`. CORS enabled (for cross-origin
+  embed), input length cap, graceful degradation (never 500s the student — a
+  backend error returns a polite escalation).
+- `widget/widget.js` — self-contained vanilla-JS chat bubble (bottom-right),
+  thin client that POSTs to `/chat` and renders answer + sources + disclaimer.
+  Embeds via one `<script>` tag (`data-api-url` or `window.MSFEA_CHAT_API`).
+- `widget/demo.html` served via a static mount at `/widget` for local demoing.
+
+**Verified over real HTTP:** `/health` ok; `POST /chat` returned a grounded
+answer with citations + disclaimer; widget files served (200). 4 API tests
+(monkeypatched, no DB/LLM). ruff/mypy/pytest clean (28 tests).
+
+**Run locally:** `uvicorn msfea_bot.api.app:app` then open
+`http://localhost:8000/widget/demo.html`.
+
+**Minor refinement noted.** The model sometimes inlines `[label]` citations in
+the answer text (redundant with the citations field) — a small prompt tweak for
+later; not blocking.
+
 ## 2026-07-22 — Phase 4: improved chunking, measured — context-recall 90% → 100%
 
 **Change (ADR-0006).** Chunker now splits oversized sections into <=500-char

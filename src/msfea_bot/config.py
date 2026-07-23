@@ -33,5 +33,12 @@ class Settings(BaseSettings):
     # Escalation target shown when the bot refuses
     escalation_contact: str = ""
 
+    # API / widget: comma-separated allowed CORS origins ("*" for dev)
+    cors_allow_origins: str = "*"
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_allow_origins.split(",") if o.strip()]
+
 
 settings = Settings()
