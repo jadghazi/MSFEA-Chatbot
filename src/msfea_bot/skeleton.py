@@ -14,19 +14,7 @@ from __future__ import annotations
 import sys
 
 from msfea_bot.ingestion.chunking import chunk_normalized_dir
-from msfea_bot.retrieval.store import RetrievedChunk, index_chunks, search
-
-PROMPT_TEMPLATE = """You are an assistant for the AUB MSFEA Career Development Center.
-Answer the student's question using ONLY the context below. If the answer is not
-in the context, say you don't have that information and suggest contacting the CDC.
-Cite the section(s) you used.
-
-Context:
-{context}
-
-Question: {question}
-
-Answer:"""
+from msfea_bot.retrieval.store import index_chunks
 
 
 def ingest() -> int:
@@ -37,25 +25,21 @@ def ingest() -> int:
     return count
 
 
-def build_prompt(question: str, retrieved: list[RetrievedChunk]) -> str:
-    context = "\n\n".join(f"[{c.source_doc} > {c.section}]\n{c.text}" for c in retrieved)
-    return PROMPT_TEMPLATE.format(context=context, question=question)
+def answer(question: str) -> None:
+    """Run guarded generation and print the answer (or graceful refusal)."""
+    from msfea_bot.generation import generate_answer
 
-
-def answer(question: str, k: int = 5) -> None:
-    """Retrieve top-k chunks, print them, then print the LLM's grounded answer."""
-    retrieved = search(question, k)
-    print("Retrieved chunks (score  source > section):")
-    for c in retrieved:
-        print(f"  {c.score:.3f}  {c.source_doc} > {c.section}")
-    print()
-
-    # The LLM call is the last step and needs a provider/key; import lazily so
-    # retrieval can be exercised even before the key is set.
-    from msfea_bot.llm import get_llm_provider
-
-    llm = get_llm_provider()
-    print("Answer:\n" + llm.generate(build_prompt(question, retrieved)))
+    result = generate_answer(question)
+    if result.refused:
+        print("Refused / escalated:")
+        print("  " + result.text)
+    else:
+        print("Answer:")
+        print("  " + result.text)
+        print("\nSources:")
+        for citation in result.citations:
+            print("  - " + citation)
+    print(f"\n[{result.disclaimer}]")
 
 
 def main() -> None:

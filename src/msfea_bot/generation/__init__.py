@@ -1,9 +1,10 @@
 """Generation + guardrails (CLAUDE.md §5.6).
 
-Build a prompt that answers ONLY from retrieved context, cite the source, and
-refuse + escalate when context is insufficient (with a similarity-threshold gate
-that skips the LLM entirely when nothing clears it). All LLM calls go through the
-msfea_bot.llm abstraction.
-
-PLACEHOLDER: no implementation yet — built in the generation phase.
+Builds a prompt that answers ONLY from retrieved context, cites the source, and
+refuses + escalates when context is insufficient (with a similarity-threshold
+gate). All LLM calls go through the msfea_bot.llm abstraction.
 """
+
+from msfea_bot.generation.answer import Answer, generate_answer
+
+__all__ = ["Answer", "generate_answer"]

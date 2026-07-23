@@ -30,6 +30,9 @@ data/
 # --- Widget / Node (later phases) ---
 node_modules/
 
+# --- Local eval scratch output ---
+eval_answer_result.txt
+
 # --- Editors / OS ---
 .idea/
 .vscode/
