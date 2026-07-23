@@ -13,11 +13,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from msfea_bot.api.security import RateLimiter, sanitize
 from msfea_bot.config import settings
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
@@ -32,6 +33,25 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+_limiter = RateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds)
+
+
+def _client_key(request: Request) -> str:
+    if settings.trust_proxy_headers:
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def rate_limit(request: Request) -> None:
+    """Per-client rate-limit dependency; raises 429 when the limit is exceeded."""
+    if not _limiter.allow(_client_key(request)):
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests — please slow down and try again shortly.",
+        )
 
 
 class ChatRequest(BaseModel):
@@ -52,19 +72,28 @@ def health() -> dict[str, str]:
 
 
 @app.post("/chat", response_model=ChatResponse)
-def chat(req: ChatRequest) -> ChatResponse:
+def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
     """Answer a question via the guarded bot; degrade gracefully on backend errors."""
-    # Anonymize once, then use the same text for the LLM and the log (CLAUDE.md §7).
-    question = anonymize(req.question)
-    try:
-        result = generate_answer(question)
-    except Exception:  # noqa: BLE001 - never 500 at the student; escalate gracefully
-        contact = settings.escalation_contact or "the CDC office"
+    # Sanitize, then anonymize once; use the same text for the LLM and the log
+    # (CLAUDE.md §7).
+    question = anonymize(sanitize(req.question))
+
+    if not question:
         result = Answer(
-            text=f"Sorry, I'm having trouble right now. Please contact {contact}.",
+            text="Please type a question about internships or CDC programs.",
             citations=[],
             refused=True,
         )
+    else:
+        try:
+            result = generate_answer(question)
+        except Exception:  # noqa: BLE001 - never 500 at the student; escalate gracefully
+            contact = settings.escalation_contact or "the CDC office"
+            result = Answer(
+                text=f"Sorry, I'm having trouble right now. Please contact {contact}.",
+                citations=[],
+                refused=True,
+            )
 
     log_interaction(question, result)  # fail-safe; never breaks the response
 

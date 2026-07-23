@@ -47,3 +47,13 @@ def test_chat_degrades_gracefully_on_backend_error(monkeypatch: pytest.MonkeyPat
 
 def test_chat_rejects_empty_question() -> None:
     assert client.post("/chat", json={"question": ""}).status_code == 422
+
+
+def test_chat_rate_limited(monkeypatch: pytest.MonkeyPatch) -> None:
+    from msfea_bot.api.security import RateLimiter
+
+    monkeypatch.setattr(app_module, "_limiter", RateLimiter(max_requests=1, window_seconds=60))
+    monkeypatch.setattr(app_module, "generate_answer", lambda q: Answer(text="ok", refused=False))
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    assert client.post("/chat", json={"question": "hi"}).status_code == 200
+    assert client.post("/chat", json={"question": "hi"}).status_code == 429

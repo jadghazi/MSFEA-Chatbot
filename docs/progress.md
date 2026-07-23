@@ -6,6 +6,28 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — Phase 8: safety / abuse hardening
+
+**Built (ADR-0008).**
+- `api/security.py`: `sanitize()` (strip control chars) + thread-safe in-memory
+  sliding-window `RateLimiter`. `/chat` rate-limited per client (429), sanitizes
+  input, and returns a gentle message on empty input. Client key = client IP (or
+  first X-Forwarded-For only when `trust_proxy_headers`).
+- Hardened the system prompt: scope-locked to CDC topics; treat the question as
+  untrusted; ignore embedded instructions / role changes / prompt-reveal; refuse
+  out-of-scope or override attempts.
+- Added a jailbreak golden case (`refuse-injection`).
+- Config: `rate_limit_*`, `trust_proxy_headers`, `cors_allow_origins` in .env.example.
+
+**Verified live:** legit question answered (co-op GPA 3.3); injection ("reply
+HACKED") refused (no compliance); "write my essay" refused. Unit tests for
+sanitize + RateLimiter; API rate-limit test (429). ruff/mypy/pytest clean (38).
+
+**Notes / open gaps.** Grounding is the primary defense; prompt hardening is
+defense-in-depth (no prompt is jailbreak-proof — regressions guarded by the eval
+case). Rate limiter is per-process (single instance); multi-instance needs Redis.
+Name-stripping in logs still a gap (needs NER) — carried from ADR-0007.
+
 ## 2026-07-23 — Phase 9: observability (interaction logging + unanswered log)
 
 **Built (ADR-0007).**
