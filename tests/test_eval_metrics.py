@@ -6,10 +6,18 @@ from eval.metrics import (
     BotAnswer,
     citation_present,
     disclaimer_present,
+    evidence_present,
     hit_rate_at_k,
     recall_at_k,
     refusal_is_correct,
 )
+
+
+def test_evidence_present() -> None:
+    texts = ["The minimum is 8 weeks.", "Something else."]
+    assert evidence_present(texts, "8 WEEKS") is True  # case-insensitive
+    assert evidence_present(texts, "75%") is False
+    assert evidence_present([], "x") is False
 
 
 def test_recall_at_k() -> None:

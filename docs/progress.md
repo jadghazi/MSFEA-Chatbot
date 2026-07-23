@@ -6,6 +6,26 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Phase 4/5 prep: built the metric that measures the real gap
+
+Before tuning retrieval, built the metric that captures the actual problem
+(CLAUDE.md §2: build the metric first).
+
+**Added `evidence` to every answerable golden item** — a verbatim fact that must
+appear in retrieved context (e.g. "75%", "formal petition"). A test enforces that
+each evidence string really exists in its KB source doc (no mis-annotations).
+
+**New metric: context-recall** (`eval/metrics.evidence_present`) — is the answer's
+evidence in the top-k chunks? Stricter than doc-level recall, needs no LLM.
+
+**Baseline:** doc-recall@5 = 100% (saturated), **context-recall@5 = 90% (19/21)**.
+The 2 misses (`int-skills-quiz` '75%', `int-petition-exception` 'formal petition')
+are exactly the 2 answer-eval false refusals — so this free metric predicts the
+expensive LLM one. Now we can tune retrieval cheaply and confirm with one LLM run.
+
+**Next:** improve chunking (Phase 4) to get those 2 evidence chunks into top-5,
+measured against context-recall; then hybrid keyword search (Phase 5) if needed.
+
 ## 2026-07-22 — Phase 6 COMPLETE: guardrails + first answer-quality numbers
 
 **Built.** `generation/answer.py`: answer only from context, two-layer refusal

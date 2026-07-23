@@ -23,6 +23,9 @@ class GoldenItem(BaseModel):
     should_refuse: bool
     source_doc: str | None = None
     source_section: str | None = None
+    # A verbatim fact that must appear in retrieved context for the question to be
+    # answerable (used by the context-recall retrieval metric). None for refusals.
+    evidence: str | None = None
     tags: list[str] = []
     is_synthetic: bool = False
     notes: str | None = None

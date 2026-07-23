@@ -40,6 +40,16 @@ def hit_rate_at_k(cases: list[tuple[list[str], str]], k: int) -> float:
     return hits / len(cases)
 
 
+def evidence_present(chunk_texts: list[str], evidence: str) -> bool:
+    """True if the evidence string appears (case-insensitively) in any chunk text.
+
+    This is the *context-recall* signal: did retrieval actually surface the
+    passage that contains the answer? It is stricter than document-level recall.
+    """
+    needle = evidence.lower()
+    return any(needle in text.lower() for text in chunk_texts)
+
+
 # --------------------------------------------------------------------------- #
 # Answer metric — Layer 1 (deterministic, no LLM)
 # --------------------------------------------------------------------------- #
