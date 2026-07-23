@@ -22,7 +22,11 @@ dependencies = [
     "sentence-transformers>=3.0",  # local embedding model (ADR-0004), free/offline
     "psycopg[binary]>=3.2",        # PostgreSQL driver for the pgvector store (§3)
     "pgvector>=0.3",               # pgvector helpers for psycopg
+    "spacy>=3.7",                  # local NER for name redaction (ADR-0009), free/offline
 ]
+# NOTE: the spaCy model must also be installed once (not on PyPI as a normal dep):
+#   python -m spacy download en_core_web_sm
+# This is baked into the Docker image in Phase 10.
 
 [project.optional-dependencies]
 dev = [
@@ -51,7 +55,7 @@ mypy_path = "src"
 
 # Third-party libraries without type stubs — don't fail on missing imports.
 [[tool.mypy.overrides]]
-module = ["sentence_transformers.*", "pgvector.*", "google.*"]
+module = ["sentence_transformers.*", "pgvector.*", "google.*", "spacy.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

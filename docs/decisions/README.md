@@ -36,3 +36,4 @@ file layout). Keep the log signal-heavy.
 | 0006 | Chunking: section-aware + size-bounded overlapping windows | Accepted |
 | 0007 | Observability: interaction logging + anonymization | Accepted |
 | 0008 | Safety / abuse hardening | Accepted |
+| 0009 | Name redaction via local NER | Accepted |

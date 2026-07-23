@@ -1,6 +1,8 @@
 """Tests for question anonymization (CLAUDE.md §7)."""
 
-from msfea_bot.observability.privacy import anonymize
+import pytest
+
+from msfea_bot.observability.privacy import _ner, anonymize
 
 
 def test_strips_email() -> None:
@@ -23,3 +25,11 @@ def test_preserves_domain_numbers() -> None:
 def test_plain_question_unchanged() -> None:
     q = "How many credits is the internship?"
     assert anonymize(q) == q
+
+
+def test_redacts_person_name() -> None:
+    if _ner() is None:
+        pytest.skip("spaCy NER model not installed")
+    out = anonymize("Hi, my name is Sara Khoury and I need help with my internship.")
+    assert "Sara Khoury" not in out
+    assert "[redacted-name]" in out

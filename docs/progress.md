@@ -6,6 +6,17 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-23 — Name redaction via local NER (closes the §7 names gap)
+
+Closed the open privacy gap from ADR-0007/0008. `anonymize()` now redacts
+personal names using local spaCy NER (`en_core_web_sm`), after the email/number
+regexes. Free/offline (no API/per-use cost); fail-safe if the model is missing
+(warns, skips names, regex still applies). Verified: "Sara Khoury, student
+202012345, sara@aub.edu.lb" -> "[redacted-name], student [redacted-number],
+[redacted-email]"; domain terms ("8 weeks", "FEAA 500", "3.3") preserved.
+Dep: `spacy` + one-time `python -m spacy download en_core_web_sm` (into Docker in
+Phase 10). ADR-0009. 39 tests green.
+
 ## 2026-07-23 — Phase 8: safety / abuse hardening
 
 **Built (ADR-0008).**
