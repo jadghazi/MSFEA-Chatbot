@@ -6,6 +6,29 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-22 — Retrieval wired into eval: first baseline recall@k
+
+`eval/retrieval_eval.py` runs the golden set through the vector store and reports
+document-level recall (is a chunk from the expected source_doc in top-k).
+
+**Baseline (crude section chunking, bge-small, 21 answerable questions):**
+recall@1 = 71% (15/21), recall@3 = 100%, recall@5 = 100%. No misses at k=5.
+
+**Honest read.** Strong, but (a) small KB + 21 questions makes 100%@3 easy — don't
+over-read it; (b) this is *document*-level, coarser than chunk-level; (c) the
+recall@1 misses are likely multi-doc facts where the top hit is a different but
+valid doc than the single label. Retrieval is not the bottleneck right now, so
+avoid over-tuning a near-saturated metric (premature optimization).
+
+**Ops note.** The pgvector container had stopped (Docker/host sleep); the named
+volume persisted the 86 chunks across restart — nice reproducibility signal.
+
+**Recommended next.** The biggest *product* gap is guardrails (Phase 6): the bot
+has no refusal logic yet, so the 5 should-refuse golden cases would currently
+fail. Adding refusal + similarity threshold + grounded prompt + structured
+citations is higher value than tuning retrieval further, and it lights up the
+answer metric (Layer 1 + refusal correctness).
+
 ## 2026-07-22 — Phase 3 COMPLETE: walking skeleton (all 5 steps) 🎉
 
 The full path works end to end: `python -m msfea_bot.skeleton "<question>"` →
