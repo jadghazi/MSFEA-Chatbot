@@ -75,12 +75,22 @@ def build_prompt(question: str, chunks: list[RetrievedChunk]) -> str:
 
 
 def escalation() -> Answer:
-    """The graceful refusal returned when the answer isn't in the documents."""
+    """The graceful refusal.
+
+    Worded to *guide* rather than dead-end: many refusals are just vague questions
+    the bot could answer with more specificity, so the message names what it can
+    help with and asks the student to narrow the question — while still giving the
+    human contact for questions that genuinely aren't in the documents.
+    """
     contact = settings.escalation_contact or "the CDC office"
     return Answer(
         text=(
-            "I don't have that information in the CDC documents I can access. "
-            f"Please contact {contact} for help."
+            "I couldn't find a specific answer to that. I can help with the CDC's "
+            "programs — internships (Approved Experience), CO-OP, IAESTE, full-time "
+            "job support, and mentorship — so try asking a more specific question "
+            "(for example, name the program and what you need, like deadlines, "
+            "eligibility, or deliverables). If your question was already specific "
+            f"and I still couldn't help, please contact {contact}."
         ),
         citations=[],
         refused=True,

@@ -6,6 +6,25 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-27 — Guiding refusal message (turn dead-ends into nudges)
+
+A vague question ("what are the timelines") hit the refusal path and got a
+dead-end "I don't have that, email someone" — misleading, since the bot *can*
+answer once the question names a program.
+
+- **Fix:** reworded `escalation()` to guide instead of dead-end — it names what the
+  bot can help with (internships/CO-OP/IAESTE/full-time/mentorship) and asks the
+  student to be more specific, while still giving the human contact for questions
+  genuinely not in the docs. One message, helps every refusal (vague, out-of-scope,
+  and truly-unanswerable) without misclassifying.
+- **Verified live:** "what are the timelines" now returns the guiding message; the
+  `refused` flag and eval refusal metric are unchanged (text-only change).
+- Left as backlog: distinguishing "too vague" from "not in the docs" with separate
+  markers — more precise but adds LLM-classification complexity; the single guiding
+  message covers both well enough for now. 66 tests pass.
+
+---
+
 ## 2026-07-27 — Program labeling for ambiguous questions (cheap disambiguation)
 
 An ambiguous "what are the salary guidelines?" was answered CO-OP-only with no
