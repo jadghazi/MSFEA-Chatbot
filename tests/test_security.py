@@ -33,3 +33,15 @@ def test_rate_limiter_window_expiry() -> None:
     assert limiter.allow("a") is False  # blocked within the window
     time.sleep(0.06)
     assert limiter.allow("a") is True  # window elapsed, allowed again
+
+
+def test_rate_limiter_evicts_stale_keys() -> None:
+    # Keys from clients that go quiet must not accumulate forever (memory bound).
+    limiter = RateLimiter(max_requests=5, window_seconds=0.05)
+    for i in range(50):
+        limiter.allow(f"ip-{i}")
+    assert len(limiter._hits) == 50
+    time.sleep(0.06)  # let every key's window expire
+    limiter.allow("fresh")  # triggers a sweep of the now-stale keys
+    assert "fresh" in limiter._hits
+    assert len(limiter._hits) == 1  # the 50 stale keys were evicted

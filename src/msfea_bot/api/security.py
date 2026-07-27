@@ -34,12 +34,24 @@ class RateLimiter:
         self.window_seconds = window_seconds
         self._hits: dict[str, deque[float]] = defaultdict(deque)
         self._lock = threading.Lock()
+        self._last_sweep = time.monotonic()
+
+    def _sweep(self, cutoff: float) -> None:
+        """Drop keys whose most recent hit has expired, so the map can't grow
+        unbounded under a flood of distinct client IPs (public-endpoint hardening).
+        Caller must hold the lock."""
+        stale = [key for key, hits in self._hits.items() if not hits or hits[-1] < cutoff]
+        for key in stale:
+            del self._hits[key]
 
     def allow(self, key: str) -> bool:
         """Record a request for `key`; return False if it exceeds the limit."""
         now = time.monotonic()
         cutoff = now - self.window_seconds
         with self._lock:
+            if now - self._last_sweep > self.window_seconds:
+                self._sweep(cutoff)
+                self._last_sweep = now
             hits = self._hits[key]
             while hits and hits[0] < cutoff:
                 hits.popleft()

@@ -6,6 +6,30 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-27 — Security review + production hardening
+
+Pre-exposure pass on the public LLM endpoint, plus turnkey deploy assets. Full
+write-up in [deployment.md](deployment.md) §6.
+
+- **Security review — no critical issues.** Verified safe: parameterized SQL (no
+  injection), widget/dashboard output escaping (no XSS), PII anonymized before LLM
+  + logging, prompt-injection hardening, graceful errors, `pip-audit` clean.
+- **Fixed:** CORS was `*` → **strict-by-default** (empty = deny cross-origin;
+  set the real page origin in prod). Rate-limiter map could grow unbounded under
+  many distinct IPs → **periodic sweep** of stale keys (+ test).
+- **Accepted/documented:** admin endpoints unthrottled but protected by a
+  192-bit random token + constant-time compare; in-memory limiter is per-process
+  (Redis for multi-instance) — both noted with the SSO/scale follow-ups.
+- **Turnkey deploy assets:** `docker-compose.prod.yml` (Caddy overlay =
+  automatic HTTPS + `TRUST_PROXY_HEADERS`), `deploy/Caddyfile`, `deploy/nginx.conf`
+  (IT-managed TLS), `deploy/backup.sh` + `restore.sh` (pg_dump). Documented the
+  proxy↔rate-limit setting, secrets/rotation, and a pre-launch checklist.
+
+Only IT-supplied *values* remain (domain, page origin, cert/auto-cert, LLM
+provider) — no further engineering blocked. ruff/mypy clean; tests pass.
+
+---
+
 ## 2026-07-27 — Phase 10: containerize + deploy + CI
 
 Turned the placeholder Docker skeleton into a real, portable deployment and wired

@@ -33,8 +33,11 @@ class Settings(BaseSettings):
     # Escalation target shown when the bot refuses
     escalation_contact: str = ""
 
-    # API / widget: comma-separated allowed CORS origins ("*" for dev)
-    cors_allow_origins: str = "*"
+    # API / widget: comma-separated allowed CORS origins. Empty (default) = deny
+    # all cross-origin requests (same-origin still works). Set to the exact page
+    # origin(s) that embed the widget in production, e.g. "https://www.aub.edu.lb".
+    # Avoid "*" in production — it lets any site call the API and drain LLM quota.
+    cors_allow_origins: str = ""
 
     # Safety (Phase 8)
     rate_limit_requests: int = 20  # max requests per client per window

@@ -1,0 +1,13 @@
+# Caddy reverse proxy with AUTOMATIC HTTPS for the chatbot API.
+#
+# Set DOMAIN (e.g. chatbot.aub.edu.lb) in the environment. DNS for that name must
+# point at this server, and ports 80 + 443 must be open. Caddy obtains and renews
+# the TLS certificate from Let's Encrypt automatically — no manual cert handling.
+#
+# Used by docker-compose.prod.yml. Caddy reaches the app over the internal Compose
+# network ("app:8000") and forwards the real client IP as X-Forwarded-For.
+
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy app:8000
+}

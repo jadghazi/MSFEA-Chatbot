@@ -1,0 +1,38 @@
+# Production overlay: puts Caddy in front for AUTOMATIC HTTPS, and tells the app it
+# sits behind a trusted proxy (so rate limiting sees the real client IP).
+#
+# Usage:
+#   DOMAIN=chatbot.aub.edu.lb docker compose \
+#       -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Requirements:
+#   - DNS for DOMAIN points at this server; ports 80 + 443 are open.
+#   - For a hardened prod host, also restrict the host port publishes in
+#     docker-compose.yml so ONLY Caddy is public: bind the app to 127.0.0.1
+#     ("127.0.0.1:8000:8000") and drop the db "5432:5432" line. Caddy still
+#     reaches the app over the internal network as "app:8000".
+services:
+  app:
+    environment:
+      # Caddy sets X-Forwarded-For; trust it so the rate limiter keys on the real
+      # client IP instead of Caddy's. Only enable this when actually behind a proxy.
+      TRUST_PROXY_HEADERS: "true"
+
+  caddy:
+    image: caddy:2
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN to your public hostname, e.g. chatbot.aub.edu.lb}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data      # persists the TLS certificates across restarts
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

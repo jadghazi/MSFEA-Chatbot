@@ -19,6 +19,7 @@ professors and the CDC.
 - [`docs/definition-of-done.md`](docs/definition-of-done.md) — Phase 0 acceptance criteria.
 - [`docs/dev-workflow.md`](docs/dev-workflow.md) — how the project is developed (git, docs, phases).
 - [`docs/decisions/`](docs/decisions/) — architecture decision records (ADRs).
+- [`docs/deployment.md`](docs/deployment.md) — production hardening runbook (HTTPS, CORS, backups, security review).
 - [`docs/backlog.md`](docs/backlog.md) — captured-but-not-yet-built ideas.
 - [`docs/progress.md`](docs/progress.md) — dated development journal.
 
