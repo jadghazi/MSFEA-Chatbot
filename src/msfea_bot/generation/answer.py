@@ -13,6 +13,7 @@ Every answer carries a visible AI-generated disclaimer (CLAUDE.md §1).
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 from msfea_bot.config import settings
@@ -92,7 +93,12 @@ def parse_answer(raw: str, chunks: list[RetrievedChunk]) -> Answer:
     lines = text.splitlines()
     for idx, line in enumerate(lines):
         if line.strip().upper().startswith("SOURCES:"):
-            for part in line.split(":", 1)[1].split(","):
+            payload = line.split(":", 1)[1]
+            # Prefer explicit [label] tags — the model may separate them by spaces
+            # ("[a] [b]"), commas, or nothing, so splitting on "," alone is wrong.
+            bracketed = re.findall(r"\[([^\[\]]+)\]", payload)
+            parts = bracketed if bracketed else payload.split(",")
+            for part in parts:
                 label = part.strip().strip("[]").strip()
                 if label:
                     citations.append(label)

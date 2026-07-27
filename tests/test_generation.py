@@ -47,6 +47,19 @@ def test_parse_answer_with_sources_line() -> None:
     assert "doc.md > Duration" in ans.citations
 
 
+def test_parse_answer_splits_multiple_bracketed_sources() -> None:
+    # Gemini emits multiple sources as adjacent brackets: "[a] [b]" (no comma).
+    raw = "A minimum GPA of 3.3.\nSOURCES: [doc.md > FAQs] [doc.md > Eligibility]"
+    ans = parse_answer(raw, CHUNKS)
+    assert ans.citations == ["doc.md > FAQs", "doc.md > Eligibility"]
+
+
+def test_parse_answer_splits_comma_separated_sources() -> None:
+    raw = "Answer.\nSOURCES: [doc.md > A], [doc.md > B]"
+    ans = parse_answer(raw, CHUNKS)
+    assert ans.citations == ["doc.md > A", "doc.md > B"]
+
+
 def test_parse_answer_without_sources_falls_back_to_context() -> None:
     ans = parse_answer("It is 8 weeks.", CHUNKS)
     assert ans.refused is False
