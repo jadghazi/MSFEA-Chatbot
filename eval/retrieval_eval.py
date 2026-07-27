@@ -12,6 +12,7 @@ Run: `python -m eval.retrieval_eval`
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 
 from eval.curated_cases import curated_eval_items
@@ -31,7 +32,7 @@ def _pct_bar(hits: int, total: int) -> str:
     return "#" * round(20 * hits / total) if total else ""
 
 
-def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> None:
+def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> float:
     golden = [i for i in load_golden_set() if not i.should_refuse]
     curated = curated_eval_items()  # live cases from the curated table (all answerable)
     items = golden + curated
@@ -74,9 +75,21 @@ def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> None:
     for r in misses:
         print(f"  [{r.item.id}] evidence '{r.item.evidence}' not in top-{top}")
 
+    top_hits = sum(1 for r in with_ev if evidence_present(r.texts[:top], r.item.evidence or ""))
+    return top_hits / m if m else 1.0
+
 
 def main() -> None:
-    evaluate_retrieval()
+    score = evaluate_retrieval()
+    # CI gate (CLAUDE.md §4): fail the build if context-recall drops below a floor.
+    # Off by default for local runs; CI sets EVAL_MIN_CONTEXT_RECALL (e.g. 0.90).
+    floor = os.getenv("EVAL_MIN_CONTEXT_RECALL")
+    if floor:
+        limit = float(floor)
+        if score < limit:
+            print(f"\nFAIL: context-recall@top {score:.1%} is below the floor {limit:.1%}")
+            raise SystemExit(1)
+        print(f"\nOK: context-recall@top {score:.1%} meets the floor {limit:.1%}")
 
 
 if __name__ == "__main__":

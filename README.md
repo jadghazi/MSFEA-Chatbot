@@ -1,15 +1,17 @@
 # MSFEA Internship Course Chatbot (RAG)
 
 A Retrieval-Augmented Generation chatbot for the AUB Faculty of Engineering
-(MSFEA) internship course. It answers student questions about internship
-guidelines, forms, deadlines, and eligibility **strictly from the official
-source documents**, cites its source, and **refuses + escalates** rather than
-guessing when the answer isn't in the material. Goal: cut the volume of
-repetitive student emails to professors.
+(MSFEA) Career Development Center. It answers student questions about the CDC's
+programs — internship (Approved Experience), CO-OP, IAESTE, full-time job
+support, and mentorship — **strictly from the official source documents**, cites
+its source, and **refuses + escalates** rather than guessing when the answer
+isn't in the material. Goal: cut the volume of repetitive student emails to
+professors and the CDC.
 
-> **Status:** early development. Phase 0 (Definition of Done) and Phase 1
-> (scaffolding) done. The pipeline modules are labelled skeletons — no RAG logic
-> is implemented yet.
+> **Status:** functional end-to-end — ingestion, hybrid retrieval, grounded
+> generation with citations + refusal, the chat widget, safety/rate-limiting,
+> observability, and an admin dashboard with a curation loop. Containerized and
+> CI-gated (Phase 10). Pending: the pilot (Phase 11).
 
 ## Project docs
 
@@ -37,7 +39,7 @@ docs/
 
 ## Development setup
 
-Requires Python 3.11+.
+Requires Python 3.12+.
 
 ```bash
 # 1. Create and activate a virtual environment
@@ -61,10 +63,69 @@ uvicorn msfea_bot.api.app:app --reload
 Copy [`.env.example`](.env.example) to `.env` and fill in values as phases need
 them. Never commit the real `.env`.
 
-## Running with Docker (skeleton — finalized in Phase 10)
+## Running with Docker (recommended — runs anywhere)
+
+Everything ships as two containers — the app and PostgreSQL/pgvector — so it runs
+identically on any machine or on AUB infrastructure with no code changes. The
+embedding and NER models are **baked into the image**, so the container needs no
+internet at runtime (firewall-safe).
+
+**Prerequisites:** Docker + Docker Compose.
 
 ```bash
-docker compose up --build
+# 1. Configure: copy the example env file and fill in the two secrets.
+cp .env.example .env
+#     LLM_API_KEY : Gemini key from https://aistudio.google.com/apikey
+#     ADMIN_TOKEN : any strong random string (protects the admin dashboard)
+
+# 2. Build and start the app + database.
+docker compose up -d --build
+
+# 3. Load the knowledge base into the vector store (one time, and after any
+#    content change) — rebuilds from kb/normalized/ + curated answers.
+docker compose run --rm app python -m msfea_bot.skeleton ingest
 ```
 
-Brings up the app plus PostgreSQL with the `pgvector` extension.
+Then open:
+
+- **Widget (demo page):** http://localhost:8000/widget/demo.html
+- **Admin dashboard:** http://localhost:8000/dashboard/ (paste your `ADMIN_TOKEN`)
+- **Health check:** http://localhost:8000/health
+
+Everyday commands:
+
+```bash
+docker compose logs -f app     # tail the app logs
+docker compose down            # stop (KEEPS the database volume)
+docker compose down -v         # stop and DELETE the database (fresh start)
+```
+
+### Required environment variables
+
+| Variable | Required | What it is |
+|---|---|---|
+| `LLM_API_KEY` | **yes** | Gemini API key. |
+| `ADMIN_TOKEN` | for admin | Shared secret for the admin dashboard; empty = admin disabled. |
+| `LLM_PROVIDER` | no | `gemini` (default); swappable behind the provider abstraction. |
+| `LLM_MODEL` | no | Default `gemini-flash-lite-latest`. |
+| `EMBEDDING_MODEL` | no | Default `BAAI/bge-small-en-v1.5` (baked into the image). |
+| `DATABASE_URL` | no | Set automatically by Compose; only needed for host-based dev. |
+| `ESCALATION_CONTACT` | no | Email shown when the bot refuses. |
+| `CORS_ALLOW_ORIGINS` | no | Comma-separated origins allowed to embed the widget. |
+
+Every variable is documented in [`.env.example`](.env.example).
+
+### Updating the knowledge base
+
+1. Add/edit the official doc under `kb/source/` and its cleaned version under
+   `kb/normalized/` (see [`kb/README.md`](kb/README.md)).
+2. Re-ingest: `docker compose run --rm app python -m msfea_bot.skeleton ingest`.
+3. Add matching questions to `eval/golden_set.jsonl` and re-run the eval.
+
+## Continuous integration
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push/PR:
+ruff (lint), mypy `--strict` (types), pytest (including DB-backed tests via a
+Postgres service), and the **retrieval eval with a context-recall floor** so a
+retrieval regression fails the build. The answer eval is intentionally not in CI
+(it calls the live LLM); run it locally with `python -m eval.answer_eval`.

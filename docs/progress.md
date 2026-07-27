@@ -6,6 +6,39 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-27 — Phase 10: containerize + deploy + CI
+
+Turned the placeholder Docker skeleton into a real, portable deployment and wired
+up CI. Built and **validated the image end-to-end**, not just written.
+
+- **Dockerfile** (python:3.12-slim): **editable install** (so `parents[3]` path
+  resolution for kb/widget/dashboard points at /app — a normal install would
+  break it); **models baked in** (embedding + spaCy) so the container needs no
+  internet at runtime (firewall-safe, fast startup); **CPU-only torch** via the
+  PyTorch CPU index (cuts the download ~10x and the image by >1 GB vs the default
+  CUDA build — final image 2.81 GB); non-root user; stdlib healthcheck.
+- **.dockerignore** keeps the context lean and secret-safe (excludes .env,
+  .venv, kb/source, caches).
+- **docker-compose**: DB healthcheck + `depends_on: service_healthy`;
+  `DATABASE_URL` overridden to the `db` host so it works in-network regardless of
+  the dev value in .env; restart policy; persistent pgdata volume.
+- **CI** (`.github/workflows/ci.yml`): ruff + mypy --strict + pytest (DB-backed
+  tests run against a Postgres **service**) + the **retrieval eval gated** on a
+  0.90 context-recall floor (`EVAL_MIN_CONTEXT_RECALL`) so a retrieval regression
+  fails the build (§4). Answer eval stays out of CI (needs the live LLM).
+- **README**: full "run in a few commands" guide, required-env-vars table, and the
+  KB-update flow.
+
+**Validated live (containers up):** `/health` 200; in-container `ingest` → 175
+chunks (models offline); `POST /chat` → correct grounded answer + citations +
+logged; `/dashboard/` and `/widget/demo.html` served. 66 tests pass; ruff/mypy
+clean.
+
+**Pending (needs the department):** Phase 11 pilot — embed on the real page,
+measure email deflection vs the Phase 0 Definition of Done.
+
+---
+
 ## 2026-07-27 — Guiding refusal message (turn dead-ends into nudges)
 
 A vague question ("what are the timelines") hit the refusal path and got a

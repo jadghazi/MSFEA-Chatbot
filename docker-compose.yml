@@ -1,7 +1,10 @@
-# PLACEHOLDER — deployment is finalized in Phase 10 (CLAUDE.md §5.10). The
-# structure is real: one app container + PostgreSQL with the pgvector extension
-# (the vector store, §3). Config comes from the environment / .env, never baked
-# into the image.
+# One app container + PostgreSQL with the pgvector extension (the vector store, §3).
+# Runtime config comes from .env; secrets are never baked into the image.
+#
+#   1. cp .env.example .env   (fill LLM_API_KEY and ADMIN_TOKEN)
+#   2. docker compose up -d --build
+#   3. docker compose run --rm app python -m msfea_bot.skeleton ingest   (one time)
+#
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -9,18 +12,30 @@ services:
       POSTGRES_USER: msfea
       POSTGRES_PASSWORD: msfea
       POSTGRES_DB: msfea
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"          # convenience for host-based dev; safe to drop in prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msfea -d msfea"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 
   app:
     build: .
     env_file: .env
+    environment:
+      # Inside Compose the database is reached at host "db", not localhost. This
+      # overrides DATABASE_URL from .env (that value is for host-based dev only).
+      DATABASE_URL: postgresql://msfea:msfea@db:5432/msfea
     depends_on:
-      - db
+      db:
+        condition: service_healthy   # wait until Postgres is actually ready
     ports:
       - "8000:8000"
+    restart: unless-stopped
 
 volumes:
   pgdata:

@@ -1,0 +1,34 @@
+# Keep the build context small, fast, and free of secrets. The Dockerfile copies
+# only what the app needs; this is the safety net.
+
+# Virtualenvs / local Python caches
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets and local env — NEVER ship these in an image
+.env
+.env.*
+!.env.example
+
+# Generated / large artifacts not needed at runtime
+data/
+kb/source/          # original PDFs/docx; only kb/normalized/ is ingested
+
+# Dev-only material not needed to run the app
+tests/
+.git/
+.github/
+docs/
+*.md
+!README.md
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
