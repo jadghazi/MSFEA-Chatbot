@@ -169,6 +169,30 @@ improves retrieval recall@k against the eval set — otherwise drop it.
 
 **Do NOT build yet.** Needs ingestion + a retrieval baseline to measure against.
 
+## B-5 — Query decomposition for comparison / multi-topic questions
+
+**Idea (surfaced 2026-07-27, ADR-0011).** Cross-topic questions like *"what's the
+difference between an internship and a co-op?"* retrieve poorly because one side
+(here, the internship "graduation requirement" chunk) is both **semantically
+distant** from the query and **lexically dominated** by the other topic — so it
+never enters the top-k, even with hybrid search. The fix: detect a multi-topic
+question, split it into sub-queries ("internship requirements" + "co-op
+requirements"), retrieve for each, and merge the results before generation.
+
+**Why it matters.** Comparison questions are exactly the kind a confused student
+asks. The current failure mode is *incomplete* (co-op-only answer), not *wrong*,
+so it's safe — but it's a real quality gap. This is the tracked
+`internship-vs-coop` golden-set miss.
+
+**Cost / why deferred.** Adds an LLM call (or a heuristic splitter) per query, plus
+merge logic — more latency and moving parts. Hybrid search (ADR-0011) was the
+cheap, in-stack win; a reranker was declined for scope. Decomposition is the next
+lever, but only worth it once comparison questions prove common in the
+unanswered-questions log, or the KB grows enough that they matter.
+
+**Do NOT build yet.** The `internship-vs-coop` golden case stays in the set as the
+regression tripwire; build this when the data shows the need.
+
 ## How to promote an item off this backlog
 
 When a phase is ready to take one of these on: write an ADR

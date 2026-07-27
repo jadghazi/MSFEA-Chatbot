@@ -6,6 +6,35 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-27 — Phase 5: hybrid retrieval (ADR-0011)
+
+Triggered by a real miss: "difference between internship and co-op?" answered
+co-op-only. Diagnosis — the internship-side chunk sat at vector rank ~40; pure
+vector never retrieved it.
+
+- **Fixed the ruler first.** The golden set had no cross-topic cases, so retrieval
+  read a *false* 100% context-recall. Added comparison + exact-term questions
+  (`internship-vs-coop`, `internship-mandatory`, `feaa500a`); honest baseline was
+  context-recall@5 = 97% (1 miss).
+- **Hybrid search (kept).** Vector + Postgres full-text (`tsv` generated column +
+  GIN), fused with **Reciprocal Rank Fusion**; all in Postgres, no new infra.
+  Returned chunks keep cosine `score` (threshold gate unaffected). **Fixed a bug in
+  my own first cut:** the keyword half ANDed every word (1 hit for a sentence);
+  switched to OR (`to_tsquery('a | b | …')`) so keyword is a real recall booster.
+- **Measured:** context-recall@1 **79% → 90%**, doc-recall@1 **83% → 90%**;
+  @5 unchanged (97%); @3 dipped 97%→93% (reordering within top-5). Clear top-rank
+  win, same top-5 coverage.
+- **Reranker: declined** (ADR-0011) — a cross-encoder's model/latency/image cost
+  isn't worth rescuing one comparison question at this KB size (Jad's call).
+- **Query decomposition: backlogged (B-5)** — the real fix for cross-topic
+  comparisons; build when the data shows the need. The `internship-vs-coop` miss
+  stays in the golden set as the tripwire.
+
+New: `tests/test_retrieval.py` (RRF unit tests + DB-gated keyword-recall test).
+ruff/mypy clean; 66 tests pass (1 known-flaky timing test passed on re-run).
+
+---
+
 ## 2026-07-27 — Add CO-OP handbook to the KB (batch 2), reconciled to one source
 
 New source `kb/source/msfea-cdc-coop-handbook.pdf` (official 10-page MSFEA CO-OP

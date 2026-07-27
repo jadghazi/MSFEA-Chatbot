@@ -38,3 +38,4 @@ file layout). Keep the log signal-heavy.
 | 0008 | Safety / abuse hardening | Accepted |
 | 0009 | Name redaction via local NER | Accepted |
 | 0010 | Admin dashboard + curation feedback loop | Accepted |
+| 0011 | Hybrid retrieval (semantic + keyword, RRF) | Accepted |
