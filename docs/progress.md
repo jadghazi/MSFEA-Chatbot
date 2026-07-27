@@ -6,6 +6,42 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-27 — Add CO-OP handbook to the KB (batch 2), reconciled to one source
+
+New source `kb/source/msfea-cdc-coop-handbook.pdf` (official 10-page MSFEA CO-OP
+handbook) added and integrated.
+
+- **Finding:** the KB already covered CO-OP well in `cdc-knowledge-base.md`
+  (curated from this same handbook), and 4 CO-OP golden questions already passed.
+  So this was a **reconcile + gap-fill**, not a fresh add — a naive second doc
+  would have created ~80% duplicate chunks competing in retrieval.
+- **Decision (user-approved): handbook = single authoritative CO-OP source.**
+  Normalized the full handbook → `kb/normalized/msfea-cdc-coop-handbook.md`
+  (extracted with `pypdf`; stripped cover/ToC/running-header mojibake/footnotes;
+  fixed `)!`/`1.!` bullets and `|` headings). **Merged in the KB-only facts** so
+  nothing was lost: the Figure-1 application-timeline (an image, transcribed from
+  the batch-1 KB), the "max 3 ranked applications" detail, and the 4-vs-6-month
+  duration note. Then **trimmed the CO-OP section in `cdc-knowledge-base.md` to a
+  one-line pointer** so every co-op fact lives in one place. Provenance/​limits
+  recorded in an "About this document" footer + the KB README manifest.
+- **Known gap (flagged, not hidden):** the exact application deadlines are in an
+  image (Figure 1) and the FEAA 500 syllabus (Appendix 1) isn't in the PDF text.
+- **Eval (measured, per §2/§4):** moved the 4 existing CO-OP golden entries'
+  `source_doc` to the handbook and **added 4 net-new questions** for the newly
+  captured content (deliverable forms, midterm site visit, FEAA 500A tuition,
+  pay). Re-ingested (175 chunks). Retrieval eval: **doc-level recall@3/5 = 100%,
+  context-recall@5 = 100%, no misses** on 26 answerable questions (was 22).
+- **Retrieval miss found + fixed (retrieval-before-generation):** `coop-second-
+  tuition` first missed because a hard line-wrap split the evidence phrase
+  (`no additional\n  tuition`) so no chunk contained it literally — a
+  normalization artifact, not a ranking problem. Un-wrapped the phrase,
+  re-ingested → green.
+- `pypdf` added to `dependencies` (with reason) for reproducible PDF extraction.
+
+ruff/mypy clean; 59 tests pass.
+
+---
+
 ## 2026-07-23 — Curated Q&As as live eval cases (closes ADR-0010 follow-up)
 
 Curated answers now feed the evaluation harness, so a real past failure that was

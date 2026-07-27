@@ -76,115 +76,13 @@ Companies in Lebanon interested in hosting an international intern can participa
 
 ## CO-OP (Cooperative Education)
 
-### What CO-OP is
-CO-OP combines academic study with one or more official **paid** work terms in the student's field of study. Unlike a short internship (1–2 months, sometimes unpaid), a CO-OP work term is longer — the MSFEA CO-OP work term is **at least 6 months**.
+CO-OP (Cooperative Education) is an optional program of paid, full-time work terms
+combined with study.
 
-*(Note: the source page's general description of co-op elsewhere states "at least four months" as a typical co-op duration — this appears to be generic boilerplate language, while 6 months is the MSFEA-specific figure. Worth confirming with the CDC which is authoritative.)*
-
-### Benefits
-- **For students:** Spending extended time at a company allows students to be treated like full-time employees working on real projects, deepening understanding of their field and its practical applications. Research shows co-op participation increases student interest in learning and academic performance upon return to campus, and leads to more satisfying career outcomes (Blair et al., 2004; Boudreau and Marx, 2019).
-- **For employers:** Employers get longer-term access to trained student talent working on real projects.
-
-### Eligibility criteria
-- **Degree:** Undergraduate student pursuing a Bachelor of Engineering, Bachelor of Architecture, or Bachelor of Fine Arts in Graphic Design.
-- **Minimum GPA:** 3.3 (B+)
-- **Minimum credits:** 90 completed credits at the time of enrolling in the FEAA 500 course (not required at the time of applying to the co-op program itself).
-- **CDC Career Development Modules:** Must be completed before applying to co-op positions and enrolling in FEAA 500.
-- **Department-specific requirements:** Individual departments may have additional requirements — students should check with their department.
-- **Graduate students:** Participation depends on the individual department's policy — check with your department.
-
-### CDC Career Development Modules (mandatory for CO-OP)
-Free, 0-credit modules delivered asynchronously via Moodle, required before applying to co-op positions:
-1. Resume and Cover Letter Writing
-2. Interview Preparation
-3. Work Placement / Job Search
-4. Workplace Environment and Skills
-
-### Course registration
-CO-OP is associated with a 3-credit Pass/Fail course, **FEAA 500** (or FEAA 500A). Students must register for this course every semester they are in a co-op position.
-
-### Credits and academic status
-Whether FEAA 500 counts toward academic credit — and whether it's treated as a free elective or technical elective — is decided by each individual department. Students remain full-time students during their co-op experience regardless.
-
-### Taking courses while on CO-OP
-Students may **not** register for other courses during their co-op term, with a possible exception for Final Year Project (FYP) work — subject to department policy, and only if it doesn't interfere with working hours.
-
-### When students can go on CO-OP
-- Engineering / Graphic Design students: 3rd or 4th year
-- Architecture students: 4th or 5th year
-- Departments may have their own required or preferred co-op schedule — check with your department.
-- Students must return to campus for **at least one academic term** after their co-op experience.
-
-### When to apply
-Apply **at least one year before** the intended co-op start date. Example: for a co-op planned for Spring of 3rd year and Summer of 4th year, apply at the beginning of Spring of 2nd year. Refer to the CO-OP handbook for exact deadlines.
-
-### Application process (2 stages)
-1. **Stage 1 — Qualification:** Complete the co-op program qualification form (available on the CDC's CO-OP page on the MSFEA website) to be accepted into the co-op program.
-2. **Stage 2 — Position application:** Apply to actual co-op positions via the CDC. Students may apply to a **maximum of 3 co-op opportunities**, ranked by priority, but can only accept and confirm one.
-
-Being accepted into the co-op program (Stage 1) does not guarantee placement with a company (Stage 2) — students compete with other candidates and placement depends on availability of opportunities.
-
-### CO-OP Application Workflow (Timeline)
-The CO-OP process follows two possible timelines depending on the intake — **Summer + Fall** or **Spring + Summer** — both follow the same steps, offset by roughly 5 months.
-
-**Student steps:**
-| Step | Action | Summer+Fall track | Spring+Summer track |
-|---|---|---|---|
-| 1 | Apply to the CO-OP program | Jul | Feb |
-| 2 | Meet your CO-OP Academic Advisor during CO-OP advising week | Aug | Mar |
-| 3 | Complete the CO-OP career development modules | Sep | Apr |
-| 4 | Apply to the advertised CO-OP positions via the CDC | Oct | May |
-| 5 | Get an offer | Dec | Jul |
-| 6 | Sign the CO-OP Joint Agreement Form | Jan | Aug |
-| → | **Start of CO-OP experience** | Jun | Jan |
-
-**Employer steps:**
-| Step | Action | Summer+Fall track | Spring+Summer track |
-|---|---|---|---|
-| 1 | Advertise CO-OP positions | ~Sep–Oct | ~Apr–May |
-| 2 | Shortlist & interview eligible CO-OP student applicants | ~Oct–Nov | ~May–Jun |
-| 3 | Extend an offer | Dec | Jul |
-| 4 | Sign the CO-OP Joint Agreement Form | Jan | Aug |
-| → | **Start of CO-OP experience** | Jun | Jan |
-
-**Notes:**
-- If a student finds a CO-OP opportunity independently, they should contact the CO-OP CDC Advisor for guidance on how to proceed.
-
-### CO-OP FAQs
-**Q: Is CO-OP mandatory?**
-A: No, it's an optional program students can choose to enroll in.
-
-**Q: What are the student eligibility criteria for CO-OP?**
-A: Undergraduate student in Engineering, Architecture, or Graphic Design; minimum GPA of 3.3 (B+); at least 90 completed credits when enrolling in FEAA 500; completion of the CDC Career Development Modules; and any additional department-specific requirements.
-
-**Q: I'm a graduate student — can I participate in CO-OP?**
-A: This depends on your department's policy. Check with your department.
-
-**Q: What are the CDC Career Development Modules?**
-A: Four mandatory, 0-credit modules delivered via Moodle: Resume and Cover Letter Writing, Interview Preparation, Work Placement/Job Search, and Workplace Environment and Skills.
-
-**Q: Is CO-OP associated with a course?**
-A: Yes — the 3-credit Pass/Fail course FEAA 500 (or FEAA 500A), which you register for every semester you're on co-op.
-
-**Q: Do CO-OP course credits count toward my degree?**
-A: This is decided by individual departments — check your department's co-op policy. You remain a full-time student during co-op regardless.
-
-**Q: Can I take other courses while on CO-OP?**
-A: No, except possibly Final Year Project (FYP) work, depending on department policy, and only if it doesn't interfere with working hours.
-
-**Q: When can I go on CO-OP?**
-A: 3rd or 4th year for Engineering/Graphic Design students; 4th or 5th year for Architecture students. Check your department's preferred schedule. You must return to campus for at least one term afterward.
-
-**Q: When should I apply to the CO-OP program?**
-A: At least one year before your intended start date. See the CO-OP handbook for exact deadlines.
-
-**Q: Can I apply to more than one CO-OP opportunity?**
-A: Yes, up to 3, ranked by priority — but you can only accept and confirm one.
-
-**Q: How do I apply for CO-OP?**
-A: Two stages: (1) complete the co-op program qualification form on the CDC website to be accepted into the program, and (2) apply to actual co-op positions through the CDC. Passing Stage 1 doesn't guarantee placement in Stage 2.
-
----
+All CO-OP details — what it is, eligibility, the FEAA 500 course, application
+steps and deadlines, deliverables, evaluation, and information for employers — are
+maintained in the dedicated **[MSFEA CO-OP Handbook](msfea-cdc-coop-handbook.md)**,
+which is the authoritative source for CO-OP questions.
 
 ## Career Readiness Resources
 

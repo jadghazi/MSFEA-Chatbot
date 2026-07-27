@@ -19,6 +19,7 @@ dependencies = [
     "pydantic-settings>=2.4",      # load + validate all env vars in one place (§6)
     "python-docx>=1.1",            # parse .docx sources (paragraphs + tables) for ingestion
     "python-pptx>=1.0",            # parse .pptx sources (slide text) for ingestion
+    "pypdf>=4.0",                  # extract text from .pdf sources (e.g. CO-OP handbook) for normalization
     "sentence-transformers>=3.0",  # local embedding model (ADR-0004), free/offline
     "psycopg[binary]>=3.2",        # PostgreSQL driver for the pgvector store (§3)
     "pgvector>=0.3",               # pgvector helpers for psycopg
