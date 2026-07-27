@@ -6,6 +6,27 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-27 — Program labeling for ambiguous questions (cheap disambiguation)
+
+An ambiguous "what are the salary guidelines?" was answered CO-OP-only with no
+signal about which program — confusing, since only the citation hinted at it.
+
+- **Fix (prompt, no new capability):** when the question doesn't name a CDC
+  program but the answer applies to only one, the bot prefixes it — e.g.
+  "**For CO-OP:** …". If the question already names the program, no prefix.
+- **Verified live:** "What are the salary guidelines?" → "For CO-OP: …"; "What GPA
+  do I need for co-op?" → no prefix (already scoped). Refusal/citations/disclaimer
+  unchanged; 66 tests pass.
+- Separately confirmed the internship-salary **refusal is correct**: the KB has
+  zero internship pay content (all pay text is CO-OP; internships can be paid or
+  unpaid at the employer's discretion). Anti-hallucination working as designed.
+- The full clarifying-question ("co-op or internship?") flow stays backlogged —
+  it needs multi-turn/session state (shares machinery with B-2/B-5); deferred to a
+  post-pilot decision once the unanswered-questions log shows how often ambiguity
+  actually happens.
+
+---
+
 ## 2026-07-27 — Phase 5: hybrid retrieval (ADR-0011)
 
 Triggered by a real miss: "difference between internship and co-op?" answered
