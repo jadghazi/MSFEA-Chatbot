@@ -66,10 +66,17 @@ def _slug(text: str) -> str:
     return "".join(c for c in lowered if c.isalnum() or c == "-")[:50]
 
 
-def _split_windows(text: str, max_chars: int, overlap: int) -> list[str]:
+def split_windows(text: str, max_chars: int, overlap: int) -> list[str]:
     """Split text into <=max_chars windows on line boundaries, with overlap.
 
     Returns [text] unchanged when it already fits.
+
+    Splits only on newlines, so a run-on paragraph with no line breaks comes back
+    as one oversized window — callers feeding free-form text (see
+    curation.service) must introduce line boundaries first.
+
+    Public because curated answers are windowed with the same rules as KB content
+    (ADR-0013); `chunk_markdown` is the KB-side caller.
     """
     if len(text) <= max_chars:
         return [text]
@@ -113,7 +120,7 @@ def chunk_markdown(
         if not text:
             return
         heading = buffer[0] if buffer and _heading_level(buffer[0]) >= 2 else f"## {section}"
-        for window in _split_windows(text, max_chars, overlap):
+        for window in split_windows(text, max_chars, overlap):
             # Ensure every window carries its section heading for context.
             window_text = window if window.lstrip().startswith(heading) else f"{heading}\n{window}"
             chunks.append(
