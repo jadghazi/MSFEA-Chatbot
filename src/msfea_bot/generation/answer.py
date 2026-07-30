@@ -8,6 +8,9 @@ when the context does not contain the answer. Two layers of refusal:
 2. Prompt-based refusal: the model is instructed to emit a refusal marker when the
    context does not answer the question.
 
+Citations are **verified against the context that was actually supplied** — a label
+the model invents is dropped rather than shown to the student (CLAUDE.md §1).
+
 Every answer carries a visible AI-generated disclaimer (CLAUDE.md §1).
 """
 
@@ -97,11 +100,38 @@ def escalation() -> Answer:
     )
 
 
+def _label(chunk: RetrievedChunk) -> str:
+    """The citation tag a chunk is presented under (must match `_format_context`)."""
+    return f"{chunk.source_doc} > {chunk.section}"
+
+
+def _match_key(label: str) -> str:
+    """Whitespace/case-insensitive key, so trivial reformatting still matches."""
+    return " ".join(label.split()).casefold()
+
+
+def _dedupe(labels: list[str]) -> list[str]:
+    """Drop repeats, keep order — several windows of one section share a label."""
+    seen: set[str] = set()
+    out: list[str] = []
+    for label in labels:
+        if label not in seen:
+            seen.add(label)
+            out.append(label)
+    return out
+
+
 def parse_answer(raw: str, chunks: list[RetrievedChunk]) -> Answer:
     """Turn a raw LLM response into a structured Answer (refusal or grounded)."""
     text = raw.strip()
     if REFUSAL_MARKER in text:
         return escalation()
+
+    # Only labels we actually put in the prompt may be cited. Without this, a model
+    # that invents a plausible-looking source has it shown to the student as fact —
+    # and it would still satisfy the eval's citation-presence check, which measures
+    # that a citation exists, not that it is real.
+    supplied = {_match_key(_label(c)): _label(c) for c in chunks}
 
     citations: list[str] = []
     body = text
@@ -115,15 +145,21 @@ def parse_answer(raw: str, chunks: list[RetrievedChunk]) -> Answer:
             parts = bracketed if bracketed else payload.split(",")
             for part in parts:
                 label = part.strip().strip("[]").strip()
-                if label:
-                    citations.append(label)
+                # Resolve to the supplied spelling; silently drop anything unknown.
+                verified = supplied.get(_match_key(label)) if label else None
+                if verified:
+                    citations.append(verified)
             body = "\n".join(lines[:idx]).strip()
             break
 
-    # If the model didn't label its sources, cite the context we gave it.
-    if not citations:
-        citations = [f"{c.source_doc} > {c.section}" for c in chunks]
-    return Answer(text=body, citations=citations, refused=False)
+    # No usable citation — either the model didn't label its sources, or every label
+    # it gave was unrecognised. Fall back to the context we actually supplied, which
+    # is always truthful.
+    return Answer(
+        text=body,
+        citations=_dedupe(citations) or _dedupe([_label(c) for c in chunks]),
+        refused=False,
+    )
 
 
 def generate_answer(
