@@ -13,10 +13,16 @@ from typing import Any
 
 import psycopg
 from pgvector.psycopg import register_vector
+from psycopg.types.json import Json
 
 from msfea_bot.config import settings
 from msfea_bot.ingestion.chunking import Chunk
-from msfea_bot.ingestion.embeddings import embed_query, embed_texts, embedding_dim
+from msfea_bot.ingestion.embeddings import (
+    embed_query,
+    embed_texts,
+    embedding_dim,
+    model_fingerprint,
+)
 
 
 @dataclass
@@ -30,8 +36,11 @@ class RetrievedChunk:
     score: float
 
 
-def _connect() -> Any:
-    conn = psycopg.connect(settings.database_url, autocommit=True)
+def _connect(autocommit: bool = True) -> Any:
+    """Connect (and register pgvector). Pass autocommit=False for a rebuild, so
+    TRUNCATE + inserts land as one transaction instead of leaving a half-built
+    index behind on failure."""
+    conn = psycopg.connect(settings.database_url, autocommit=autocommit)
     conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
     register_vector(conn)
     return conn
@@ -60,6 +69,22 @@ def _init_schema(conn: Any) -> None:
     # part of `text` so it reaches neither the embedding nor `tsv`. Prepended when a
     # chunk is read back. See Chunk.display_prefix for the measurements.
     conn.execute("ALTER TABLE chunks ADD COLUMN IF NOT EXISTS display_prefix TEXT NOT NULL DEFAULT ''")
+    # Chunk frontmatter (last_updated, program, department, ...). Backlog B-2 asks
+    # for this slot to be reserved NOW because retrofitting it once the index exists
+    # is expensive; department-scoped *filtering* is the v2 feature, not this column.
+    conn.execute(
+        "ALTER TABLE chunks ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb"
+    )
+    # Which embedding model produced these vectors. Without it, querying with a
+    # different model than the one indexed is silent — dimensions still match, only
+    # the answers get quietly worse.
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS index_meta ("
+        "  key TEXT PRIMARY KEY,"
+        "  value TEXT NOT NULL,"
+        "  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()"
+        ")"
+    )
     # NOTE: there is deliberately NO index on `embedding` (no HNSW/IVFFlat). At this
     # corpus size (~175 chunks) pgvector's exact sequential scan is sub-millisecond
     # and returns 100% recall, whereas HNSW/IVFFlat are approximate — they would
@@ -71,17 +96,24 @@ def _init_schema(conn: Any) -> None:
 
 
 def index_chunks(chunks: list[Chunk]) -> int:
-    """Embed all chunks and (re)build the store. Returns the number indexed."""
+    """Embed all chunks and (re)build the store atomically. Returns the number indexed.
+
+    Embedding happens before the connection opens, so the slow part runs while the
+    old index is still serving. The TRUNCATE and the inserts then commit as **one
+    transaction**: under autocommit the TRUNCATE committed on its own, so a failure
+    part-way through the insert loop left the live API answering from an empty or
+    half-built index with no way to roll back.
+    """
     vectors = embed_texts([c.text for c in chunks])
-    with _connect() as conn:
+    with _connect(autocommit=False) as conn:
         _init_schema(conn)
         conn.execute("TRUNCATE chunks")
         with conn.cursor() as cur:
             for chunk, vector in zip(chunks, vectors, strict=True):
                 cur.execute(
                     "INSERT INTO chunks"
-                    " (id, text, source_doc, section, embedding, display_prefix)"
-                    " VALUES (%s, %s, %s, %s, %s, %s)",
+                    " (id, text, source_doc, section, embedding, display_prefix, metadata)"
+                    " VALUES (%s, %s, %s, %s, %s, %s, %s)",
                     (
                         chunk.id,
                         chunk.text,
@@ -89,9 +121,22 @@ def index_chunks(chunks: list[Chunk]) -> int:
                         chunk.section,
                         vector,
                         chunk.display_prefix,
+                        Json(chunk.metadata),
                     ),
                 )
+        conn.execute(
+            "INSERT INTO index_meta (key, value) VALUES ('embedding_model', %s)"
+            " ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()",
+            (model_fingerprint(),),
+        )
     return len(chunks)
+
+
+def indexed_model() -> str | None:
+    """The embedding model recorded for the current index, if any."""
+    with _connect() as conn:
+        row = conn.execute("SELECT value FROM index_meta WHERE key = 'embedding_model'").fetchone()
+    return str(row[0]) if row else None
 
 
 def upsert_chunks(chunks: list[Chunk]) -> int:
@@ -109,12 +154,13 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
             for chunk, vector in zip(chunks, vectors, strict=True):
                 cur.execute(
                     "INSERT INTO chunks"
-                    " (id, text, source_doc, section, embedding, display_prefix)"
-                    " VALUES (%s, %s, %s, %s, %s, %s)"
+                    " (id, text, source_doc, section, embedding, display_prefix, metadata)"
+                    " VALUES (%s, %s, %s, %s, %s, %s, %s)"
                     " ON CONFLICT (id) DO UPDATE SET"
                     " text = EXCLUDED.text, source_doc = EXCLUDED.source_doc,"
                     " section = EXCLUDED.section, embedding = EXCLUDED.embedding,"
-                    " display_prefix = EXCLUDED.display_prefix",
+                    " display_prefix = EXCLUDED.display_prefix,"
+                    " metadata = EXCLUDED.metadata",
                     (
                         chunk.id,
                         chunk.text,
@@ -122,6 +168,7 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
                         chunk.section,
                         vector,
                         chunk.display_prefix,
+                        Json(chunk.metadata),
                     ),
                 )
     return len(chunks)

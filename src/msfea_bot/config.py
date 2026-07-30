@@ -35,6 +35,13 @@ class Settings(BaseSettings):
 
     # Embeddings (local/open by default — §3, ADR-0004)
     embedding_model: str = "BAAI/bge-small-en-v1.5"
+    # Pinned to an exact Hugging Face commit, not just the tag. "Reproducible from
+    # source" (CLAUDE.md §2) means a rebuild must produce the *same* vectors: the
+    # `v1.5` name alone would still let re-uploaded weights change them silently,
+    # and a rebuilt image querying a persisted pgdata volume would then compare new
+    # vectors against old ones with no error — just quietly worse retrieval.
+    # Empty = track the tag (not recommended outside experiments).
+    embedding_model_revision: str = "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a"
 
     # Vector store: PostgreSQL + pgvector
     database_url: str = "postgresql://msfea:msfea@localhost:5432/msfea"

@@ -16,10 +16,28 @@ if TYPE_CHECKING:
 
 @lru_cache(maxsize=1)
 def get_model() -> "SentenceTransformer":
-    """Load (and cache) the configured sentence-transformers model."""
+    """Load (and cache) the configured sentence-transformers model.
+
+    Pinned to an exact revision so a rebuild reproduces the same vectors — see
+    `settings.embedding_model_revision`.
+    """
     from sentence_transformers import SentenceTransformer
 
-    return cast("SentenceTransformer", SentenceTransformer(settings.embedding_model))
+    revision = settings.embedding_model_revision or None
+    return cast(
+        "SentenceTransformer",
+        SentenceTransformer(settings.embedding_model, revision=revision),
+    )
+
+
+def model_fingerprint() -> str:
+    """Identity of the model that produced the vectors, e.g. "name@revision".
+
+    Recorded with the index so a mismatch between the indexed vectors and the
+    querying model is discoverable instead of silent.
+    """
+    revision = settings.embedding_model_revision or "unpinned"
+    return f"{settings.embedding_model}@{revision}"
 
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
