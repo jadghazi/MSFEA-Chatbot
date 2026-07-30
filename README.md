@@ -110,6 +110,10 @@ docker compose down -v         # stop and DELETE the database (fresh start)
 | `LLM_PROVIDER` | no | `gemini` (default); swappable behind the provider abstraction. |
 | `LLM_MODEL` | no | Default `gemini-flash-lite-latest`. |
 | `EMBEDDING_MODEL` | no | Default `BAAI/bge-small-en-v1.5` (baked into the image). |
+| `EMBEDDING_MODEL_REVISION` | no | Exact HF commit of the embedding model, so rebuilds reproduce the same vectors. Changing it needs a full re-ingest. |
+| `LLM_TEMPERATURE` | no | Default `0.0`. Decoding is deterministic on purpose (ADR-0012). |
+| `LLM_SEED` | no | Default `42`. Temperature alone did not stop the model varying its wording. |
+| `LLM_MAX_OUTPUT_TOKENS` | no | Default `1024`; caps runaway generations against the free-tier quota. |
 | `DATABASE_URL` | no | Set automatically by Compose; only needed for host-based dev. |
 | `ESCALATION_CONTACT` | no | Email shown when the bot refuses. |
 | `CORS_ALLOW_ORIGINS` | no | Comma-separated origins allowed to embed the widget. |

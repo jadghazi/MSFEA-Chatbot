@@ -35,9 +35,13 @@ RUN pip install -e ".[gemini]"
 # --- Bake models so the container needs NO internet at runtime ---------------
 # Fast startup and firewall-safe. Override at build time with
 # --build-arg EMBEDDING_MODEL=... if you change the default embedding model.
+# The revision MUST match settings.embedding_model_revision: the app loads the
+# model by revision, so baking a different snapshot would make the container try to
+# download at runtime — which fails on an offline/firewalled host.
 ARG EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+ARG EMBEDDING_MODEL_REVISION=5c38ec7c405ec4b44b94cc5a9bb96e735b38267a
 RUN python -m spacy download en_core_web_sm \
- && python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('${EMBEDDING_MODEL}')"
+ && python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('${EMBEDDING_MODEL}', revision='${EMBEDDING_MODEL_REVISION}')"
 
 # --- App content the API serves and ingests from -----------------------------
 # Copied last (changes more often than code/deps) for better layer caching.
