@@ -4,9 +4,13 @@ Answer ONLY from retrieved context, cite the sources used, and refuse + escalate
 when the context does not contain the answer. Two layers of refusal:
 
 1. A similarity-threshold gate: if nothing retrieved clears the bar, skip the LLM
-   entirely and escalate.
+   entirely and escalate. **Disabled by default** (`SIMILARITY_THRESHOLD=0.0`) until
+   the threshold is calibrated against real score distributions rather than guessed
+   — see the note in `.env.example`. Only the "no chunks at all" case triggers it
+   today.
 2. Prompt-based refusal: the model is instructed to emit a refusal marker when the
-   context does not answer the question.
+   context does not answer the question. **This is the active refusal layer**, and
+   it is the one measured by the eval (correct-refusal 5/5, 0 missed).
 
 Citations are **verified against the context that was actually supplied** — a label
 the model invents is dropped rather than shown to the student (CLAUDE.md §1).

@@ -38,9 +38,9 @@ def main() -> None:
         print(f"    {n:3}  {tag}")
     print()
     print("Metric status:")
-    print("  retrieval recall@k : PENDING retriever (Phase 4 ingestion)")
+    print("  retrieval recall@k : READY (python -m eval.retrieval_eval; gated in CI)")
     print("  answer Layer 1     : READY (deterministic checks in eval.metrics)")
-    print("  answer Layer 2     : PENDING LLM provider (Phase 6 generation)")
+    print("  answer Layer 2     : NOT BUILT (LLM-judge faithfulness — ADR-0002)")
 
 
 if __name__ == "__main__":

@@ -1,10 +1,16 @@
 """Ingestion pipeline (CLAUDE.md §5.4).
 
-load -> clean/normalize -> chunk -> embed source documents -> store in pgvector,
-with metadata (source doc, section, last-updated, and a reserved
-`department`/`applies_to` field for department-conditional rules — see
-docs/backlog.md B-2). One command rebuilds the index from source; the vector
-store is never hand-edited.
+load -> clean/normalize -> chunk -> embed source documents -> store in pgvector.
+One command rebuilds the index from source (`python -m msfea_bot.skeleton
+ingest`); the vector store is never hand-edited.
 
-PLACEHOLDER: no implementation yet — built in the ingestion phase.
+Modules: `chunking` (section-aware windowing, ADR-0006) and `embeddings` (local
+sentence-transformers model, ADR-0004). Curated admin answers are windowed with
+the same rules — see `curation.service` (ADR-0013).
+
+**Known gap.** Chunk frontmatter (`last_updated`, `program`, `department`) is
+parsed into `Chunk.metadata` but not persisted: the `chunks` table has no column
+for it, so it is dropped at the storage boundary. Backlog B-2 asks for a reserved
+`department`/`applies_to` field precisely because retrofitting is expensive once
+the index exists. Not yet done.
 """

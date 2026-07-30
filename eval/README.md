@@ -23,10 +23,14 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
 | Piece | Status |
 |-------|--------|
 | Golden set + loader | Ready |
-| Answer Layer 1 (deterministic checks) | Ready, unit-tested |
-| Retrieval recall@k | Function ready; needs a retriever (Phase 4) to run end-to-end |
-| Answer Layer 2 (LLM-judge) | Pending the LLM provider (Phase 6) |
+| Answer Layer 1 (deterministic checks) | Ready, unit-tested (`python -m eval.answer_eval`) |
+| Retrieval recall@k + context-recall | Ready (`python -m eval.retrieval_eval`); **gated in CI** on a context-recall floor |
+| Answer Layer 2 (LLM-judge: faithfulness/groundedness) | **Not built.** No blocker — the provider has existed since Phase 3. This is the one real gap: nothing currently checks that an answer's claims are supported by the retrieved context |
 | Answer Layer 3 (human calibration) | Pending real answers |
+
+The answer eval is deliberately **not** in CI: it calls the live LLM, so it needs an
+API key and burns free-tier quota. Run it locally before/after a change that could
+affect generation.
 
 ## Run it
 

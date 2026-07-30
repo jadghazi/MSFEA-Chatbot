@@ -56,6 +56,14 @@ def _init_schema(conn: Any) -> None:
         " GENERATED ALWAYS AS (to_tsvector('english', text)) STORED"
     )
     conn.execute("CREATE INDEX IF NOT EXISTS chunks_tsv_idx ON chunks USING GIN (tsv)")
+    # NOTE: there is deliberately NO index on `embedding` (no HNSW/IVFFlat). At this
+    # corpus size (~175 chunks) pgvector's exact sequential scan is sub-millisecond
+    # and returns 100% recall, whereas HNSW/IVFFlat are approximate — they would
+    # trade recall away and add tuning knobs (m, ef_construction, lists) to solve a
+    # speed problem we do not have (CLAUDE.md §2: no premature optimization).
+    # Revisit if the KB grows past roughly 10k chunks or search latency becomes
+    # visible; add the index THEN and re-measure context-recall, since an
+    # approximate index can silently lower it.
 
 
 def index_chunks(chunks: list[Chunk]) -> int:
