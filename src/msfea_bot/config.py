@@ -20,6 +20,19 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_model: str = ""
 
+    # Generation sampling (ADR-0012). This bot does grounded extraction from
+    # retrieved context, not creative writing, so decoding is deterministic by
+    # default. Temperature 0 also makes the answer eval reproducible, which §2
+    # depends on: a metric can only prove a change helped if re-running it on
+    # unchanged code gives the same result.
+    # Measured 2026-07-30: temperature 0 alone is NOT enough — Gemini still varied
+    # its wording across identical calls (2 distinct answers in 3 runs). Pinning a
+    # seed as well made 3/3 runs identical. Any fixed value works; what matters is
+    # that it does not change between runs.
+    llm_temperature: float = 0.0
+    llm_seed: int = 42
+    llm_max_output_tokens: int = 1024
+
     # Embeddings (local/open by default — §3, ADR-0004)
     embedding_model: str = "BAAI/bge-small-en-v1.5"
 

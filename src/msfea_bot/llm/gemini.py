@@ -15,6 +15,7 @@ class GeminiProvider:
 
     def __init__(self) -> None:
         from google import genai
+        from google.genai import types
 
         if not settings.llm_api_key:
             raise RuntimeError(
@@ -23,7 +24,15 @@ class GeminiProvider:
             )
         self._client = genai.Client(api_key=settings.llm_api_key)
         self._model = settings.llm_model or "gemini-flash-lite-latest"
+        # Deterministic decoding (ADR-0012). Built once here rather than per call.
+        self._config = types.GenerateContentConfig(
+            temperature=settings.llm_temperature,
+            seed=settings.llm_seed,
+            max_output_tokens=settings.llm_max_output_tokens,
+        )
 
     def generate(self, prompt: str) -> str:
-        response = self._client.models.generate_content(model=self._model, contents=prompt)
+        response = self._client.models.generate_content(
+            model=self._model, contents=prompt, config=self._config
+        )
         return response.text or ""
