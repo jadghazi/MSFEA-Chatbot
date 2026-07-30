@@ -41,3 +41,4 @@ file layout). Keep the log signal-heavy.
 | 0011 | Hybrid retrieval (semantic + keyword, RRF) | Accepted |
 | 0012 | Deterministic decoding (temperature, seed, token ceiling) | Accepted |
 | 0013 | Curated answers use the same windowing as KB content | Accepted |
+| 0014 | Split-table headers are display context, not retrieval text | Accepted |

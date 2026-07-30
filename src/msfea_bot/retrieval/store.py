@@ -56,6 +56,10 @@ def _init_schema(conn: Any) -> None:
         " GENERATED ALWAYS AS (to_tsvector('english', text)) STORED"
     )
     conn.execute("CREATE INDEX IF NOT EXISTS chunks_tsv_idx ON chunks USING GIN (tsv)")
+    # Display-only context (e.g. the header row of a split table), deliberately NOT
+    # part of `text` so it reaches neither the embedding nor `tsv`. Prepended when a
+    # chunk is read back. See Chunk.display_prefix for the measurements.
+    conn.execute("ALTER TABLE chunks ADD COLUMN IF NOT EXISTS display_prefix TEXT NOT NULL DEFAULT ''")
     # NOTE: there is deliberately NO index on `embedding` (no HNSW/IVFFlat). At this
     # corpus size (~175 chunks) pgvector's exact sequential scan is sub-millisecond
     # and returns 100% recall, whereas HNSW/IVFFlat are approximate — they would
@@ -75,9 +79,17 @@ def index_chunks(chunks: list[Chunk]) -> int:
         with conn.cursor() as cur:
             for chunk, vector in zip(chunks, vectors, strict=True):
                 cur.execute(
-                    "INSERT INTO chunks (id, text, source_doc, section, embedding)"
-                    " VALUES (%s, %s, %s, %s, %s)",
-                    (chunk.id, chunk.text, chunk.source_doc, chunk.section, vector),
+                    "INSERT INTO chunks"
+                    " (id, text, source_doc, section, embedding, display_prefix)"
+                    " VALUES (%s, %s, %s, %s, %s, %s)",
+                    (
+                        chunk.id,
+                        chunk.text,
+                        chunk.source_doc,
+                        chunk.section,
+                        vector,
+                        chunk.display_prefix,
+                    ),
                 )
     return len(chunks)
 
@@ -96,12 +108,21 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
         with conn.cursor() as cur:
             for chunk, vector in zip(chunks, vectors, strict=True):
                 cur.execute(
-                    "INSERT INTO chunks (id, text, source_doc, section, embedding)"
-                    " VALUES (%s, %s, %s, %s, %s)"
+                    "INSERT INTO chunks"
+                    " (id, text, source_doc, section, embedding, display_prefix)"
+                    " VALUES (%s, %s, %s, %s, %s, %s)"
                     " ON CONFLICT (id) DO UPDATE SET"
                     " text = EXCLUDED.text, source_doc = EXCLUDED.source_doc,"
-                    " section = EXCLUDED.section, embedding = EXCLUDED.embedding",
-                    (chunk.id, chunk.text, chunk.source_doc, chunk.section, vector),
+                    " section = EXCLUDED.section, embedding = EXCLUDED.embedding,"
+                    " display_prefix = EXCLUDED.display_prefix",
+                    (
+                        chunk.id,
+                        chunk.text,
+                        chunk.source_doc,
+                        chunk.section,
+                        vector,
+                        chunk.display_prefix,
+                    ),
                 )
     return len(chunks)
 
@@ -122,6 +143,21 @@ def delete_chunks(id_prefix: str) -> int:
     with _connect() as conn:
         cur = conn.execute("DELETE FROM chunks WHERE id LIKE %s", (id_prefix + "%",))
         return int(cur.rowcount)
+
+
+def _with_display_prefix(text: str, prefix: str) -> str:
+    """Re-attach display-only context (a split table's header row) when reading.
+
+    Placed *after* the section heading, not above it: KB chunks start with their
+    heading, and a bare table row sitting above it reads as an orphan. Curated
+    chunks have no heading, so the prefix goes on top.
+    """
+    if not prefix:
+        return text
+    head, newline, rest = text.partition("\n")
+    if not head.lstrip().startswith("#"):
+        return f"{prefix}\n{text}"
+    return f"{head}\n{prefix}\n{rest}" if newline else f"{head}\n{prefix}"
 
 
 def _keyword_tsquery(text: str) -> str:
@@ -187,7 +223,8 @@ def search(query: str, k: int = 5, candidates: int = 20) -> list[RetrievedChunk]
             return []
         # Fetch content + cosine score for the fused ids in one query.
         rows = conn.execute(
-            "SELECT id, text, source_doc, section, 1 - (embedding <=> %s::vector) AS score"
+            "SELECT id, text, source_doc, section,"
+            " 1 - (embedding <=> %s::vector) AS score, display_prefix"
             " FROM chunks WHERE id = ANY(%s)",
             (qv, fused),
         ).fetchall()
@@ -196,7 +233,10 @@ def search(query: str, k: int = 5, candidates: int = 20) -> list[RetrievedChunk]
     for cid in fused:  # preserve fused (RRF) order
         r = by_id.get(cid)
         if r is not None:
+            text = _with_display_prefix(r[1], r[5])
             out.append(
-                RetrievedChunk(id=r[0], text=r[1], source_doc=r[2], section=r[3], score=float(r[4]))
+                RetrievedChunk(
+                    id=r[0], text=text, source_doc=r[2], section=r[3], score=float(r[4])
+                )
             )
     return out
