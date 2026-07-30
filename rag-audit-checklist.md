@@ -9,6 +9,29 @@ their original order; findings are recorded inline beneath each item.
 *(Updated 2026-07-30 after owner confirmation: the similarity threshold was
 reclassified PARTIAL → INTENTIONAL; the FAIL was confirmed as standing.)*
 
+## Remediation status (2026-07-30)
+
+Findings below are recorded as they were **at audit time**; the verdicts have not
+been rewritten. This is what has since been fixed, one commit each:
+
+| Finding | Status | Where |
+|---|---|---|
+| Sampling params never set (**the FAIL**) | **Fixed** — temperature 0, seed, token ceiling. Temperature alone proved insufficient (3 runs, 2 distinct answers); seed made it stable | ADR-0012 |
+| Curated answers bypass chunking | **Fixed** — windowed like KB content; also fixed a test-teardown leak found in the process | ADR-0013 |
+| Citations never validated | **Fixed** — invented labels dropped, deduped, falls back to real context | `generation/answer.py` |
+| Table headers lost on split | **Fixed** — via `display_prefix`, at zero retrieval cost after two rejected variants | ADR-0014 |
+| Chunk metadata dropped at storage | **Fixed** — `metadata JSONB` column (B-2's reserved slot). Filtering still v2 | `retrieval/store.py` |
+| Unpinned embedding revision | **Fixed** — pinned to an exact HF commit; fingerprint recorded in `index_meta` | `config.py` |
+| Non-atomic rebuild | **Fixed** — TRUNCATE + inserts now one transaction | `retrieval/store.py` |
+| Similarity threshold `0.0` | **Reclassified INTENTIONAL** + rationale now recorded | `.env.example` |
+| No vector index | **Unchanged by design** — rationale + revisit threshold now recorded | `retrieval/store.py` |
+| Stale docs (eval README/run, ingestion `__init__`) | **Fixed** | — |
+| **No faithfulness check (ADR-0002 Layer 2)** | **Still open** — the one substantive gap remaining | `eval/` |
+| CI floor 0.90 vs 0.97 actual | **Still open** — worth a decision, not a code change | `.github/workflows/ci.yml` |
+
+Retrieval metrics are unchanged throughout: doc-recall 90/97/97%,
+context-recall 90/93/97%, same single tracked `internship-vs-coop` miss.
+
 ## Summary — most serious findings
 
 Only **one** item met the FAIL bar (missing or poorly done *with no valid

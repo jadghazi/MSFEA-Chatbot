@@ -6,6 +6,58 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-07-30 — RAG practice audit + remediation (ADR-0012/0013/0014)
+
+Audited the whole pipeline against a 32-item RAG practice checklist
+(`rag-audit-checklist.md`), then fixed what it found. Every load-bearing claim was
+**measured** rather than reasoned about, which changed the conclusion three times.
+
+- **Audit result:** 16 PASS, 10 PARTIAL, 5 INTENTIONAL, 1 FAIL. Five items are
+  deliberate documented decisions (reranker declined, query rewriting deferred,
+  single-turn design, prompt-layer injection defence, disabled similarity gate) and
+  are explicitly *not* things to fix.
+- **The FAIL — no sampling params at all (ADR-0012).** The provider passed only
+  model+contents, so generation ran at Gemini's ~1.0 default. Fixed first because it
+  is the *measuring instrument*: at that temperature two `answer_eval` runs over
+  identical code disagree, so nothing else could be validated. Testing the fix
+  disproved my own assumption — temperature 0 alone still gave 2 distinct answers in
+  3 runs; **temperature 0 + a pinned seed** gave 3 identical, confirmed end-to-end.
+- **Curated answers silently half-indexed (ADR-0013).** They skipped windowing, and
+  bge-small truncates at 512 tokens — so a max-size 8000-char answer had **only ~39%
+  embedded** (1302 tokens in, 512 kept) and its tail was unreachable by any query.
+  Windowing alone wouldn't have fixed it: `split_windows` only breaks on newlines, so
+  a run-on paragraph came back as one 5,520-char window. Now sentence-normalized then
+  windowed → 17 chunks, max 110 tokens, tail searchable. Found and fixed a
+  **test-teardown leak** in the process (teardowns deleted `curated-<id>`, which no
+  longer matches windowed ids — two orphans were live in the dev DB).
+- **Table headers restored at zero retrieval cost (ADR-0014).** 14 of 174 chunks held
+  table rows with no column labels. The obvious fix *hurt*: folding the header into
+  chunk text dropped context-recall@5 97%→93% (reviving the exact `int-skills-quiz`
+  miss ADR-0006 fixed), and keeping it in `text` for display dropped @1 90%→83%
+  because `tsv` is generated from `text`. Solution: a `display_prefix` column
+  re-attached at read time. All metrics identical to baseline.
+- **Also fixed:** citations are now verified against the context actually supplied
+  (an invented label used to reach the student *and* pass the citation-presence
+  metric); chunk frontmatter is persisted (`metadata JSONB` — backlog B-2's reserved
+  slot); the embedding model is pinned to an exact HF revision with its fingerprint
+  recorded in `index_meta`, and the Dockerfile bakes that same revision; the index
+  rebuild is now atomic.
+- **Documented, not changed:** the `SIMILARITY_THRESHOLD=0.0` gate is deliberate
+  (prompt marker is the active refusal layer; the gate waits on calibration) and the
+  absence of a vector index is correct at this size — both now carry their rationale
+  and a revisit trigger. Stale status lines in `eval/README.md`, `eval/run.py` and
+  `ingestion/__init__.py` corrected.
+
+**Still open:** ADR-0002's **Layer 2 faithfulness judge** was never built, so nothing
+checks that an answer's claims are supported by the retrieved context — the one
+substantive gap left. Also worth a decision: the CI floor is 0.90 while actual
+context-recall is 0.97, so a drop to 91% would pass unnoticed.
+
+Metrics unchanged throughout: doc-recall 90/97/97%, context-recall 90/93/97%, same
+tracked `internship-vs-coop` miss. 82 tests pass; ruff/mypy clean.
+
+---
+
 ## 2026-07-27 — Security review + production hardening
 
 Pre-exposure pass on the public LLM endpoint, plus turnkey deploy assets. Full
