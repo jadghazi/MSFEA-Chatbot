@@ -41,7 +41,11 @@ jobs:
       - name: Install package + dev tools
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          # The gemini extra is installed so the provider-wiring test actually runs
+          # here (it guards ADR-0012's sampling params). It stays an optional extra
+          # in pyproject — the core package remains vendor-neutral (§3). No API key
+          # is needed: that test fakes the SDK client.
+          pip install -e ".[dev,gemini]"
           python -m spacy download en_core_web_sm
 
       - name: Lint (ruff)

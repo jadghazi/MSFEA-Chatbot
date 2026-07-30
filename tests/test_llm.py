@@ -33,6 +33,10 @@ class _FakeClient:
 
 
 def test_gemini_passes_sampling_params_to_the_sdk(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The Gemini SDK is an optional extra (CLAUDE.md §3 keeps the core
+    # vendor-neutral), so skip rather than fail where only ".[dev]" is installed.
+    # CI installs ".[dev,gemini]" so this does run there.
+    pytest.importorskip("google.genai")
     from google import genai
 
     monkeypatch.setattr(genai, "Client", _FakeClient)
