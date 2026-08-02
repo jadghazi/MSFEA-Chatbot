@@ -155,15 +155,17 @@
 .msfea-rate button:focus-visible{outline:2px solid var(--m);outline-offset:1px}
 .msfea-thanks{font-size:11.5px;color:#2e7d32;font-weight:550}
 
-/* typing indicator */
-.msfea-typing{display:flex;gap:4px;padding:13px 15px;align-items:center}
+/* typing indicator — dots MUST be <span> (see showTyping) */
+.msfea-thinking{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.msfea-thinking-label{font-size:12.5px;color:var(--ink-soft);font-style:italic}
+.msfea-typing{display:flex;gap:4px;align-items:center;flex:0 0 auto}
 .msfea-typing span{
-  width:7px;height:7px;border-radius:50%;background:#b9bec6;
+  display:block;width:7px;height:7px;border-radius:50%;background:var(--m);opacity:.45;
   animation:msfea-bounce 1.3s infinite ease-in-out both;
 }
 .msfea-typing span:nth-child(2){animation-delay:.16s}
 .msfea-typing span:nth-child(3){animation-delay:.32s}
-@keyframes msfea-bounce{0%,72%,100%{transform:translateY(0);opacity:.45}36%{transform:translateY(-5px);opacity:1}}
+@keyframes msfea-bounce{0%,72%,100%{transform:translateY(0);opacity:.35}36%{transform:translateY(-5px);opacity:1}}
 
 /* ---------- empty state ---------- */
 .msfea-welcome{padding:6px 2px 2px}
@@ -391,13 +393,13 @@
   var typingRow = null;
 
   function showTyping() {
-    var t = el("msfea-msg msfea-bot");
+    var t = el("msfea-msg msfea-bot msfea-thinking");
     var dots = el("msfea-typing");
-    dots.setAttribute("aria-label", "Assistant is typing");
-    dots.appendChild(el(""));
-    dots.appendChild(el(""));
-    dots.appendChild(el(""));
+    dots.setAttribute("aria-label", "Assistant is looking through the documents");
+    // Must be <span>: the dot styles are scoped to `.msfea-typing span`.
+    for (var i = 0; i < 3; i++) dots.appendChild(document.createElement("span"));
     t.appendChild(dots);
+    t.appendChild(el("msfea-thinking-label", "Searching the CDC documents…"));
     typingRow = row("b", t);
   }
 
