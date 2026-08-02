@@ -3,28 +3,158 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MSFEA CDC Chatbot — Demo</title>
+    <title>Approved Experience (Internship) — MSFEA CDC | Demo</title>
     <style>
-      body { font-family: system-ui, Arial, sans-serif; margin: 0; padding: 3rem; color: #222; line-height: 1.6; }
-      .box { max-width: 640px; }
-      code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; }
+      :root {
+        --m: #862633;          /* AUB maroon (PMS 202) */
+        --m-dark: #6e1f2a;
+        --ink: #1c1c1e;
+        --ink-soft: #5b5f66;
+        --line: #e4e6ea;
+        --canvas: #f6f7f9;
+        --font: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: var(--font); color: var(--ink); background: #fff; line-height: 1.65; }
+
+      /* Demo banner — keeps this page from being mistaken for the live AUB site. */
+      .demo-flag {
+        background: #fff4d6; color: #6b4c00; border-bottom: 1px solid #efdca8;
+        font-size: 12.5px; text-align: center; padding: 7px 16px;
+      }
+
+      header { border-bottom: 3px solid var(--m); }
+      .bar { max-width: 1080px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; gap: 16px; }
+      /* Typographic wordmark. Drop the official logo in as an <img> here if you
+         have the asset — the layout leaves room for it. */
+      .crest {
+        width: 46px; height: 46px; border-radius: 8px; background: var(--m); color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 13px; letter-spacing: .5px; flex: 0 0 auto;
+      }
+      .wordmark .u { font-family: Georgia, "Times New Roman", serif; color: var(--m); font-size: 19px; letter-spacing: .3px; }
+      .wordmark .f { font-size: 12px; font-weight: 700; letter-spacing: .6px; color: var(--ink); margin-top: 2px; text-transform: uppercase; }
+      nav { background: var(--canvas); border-bottom: 1px solid var(--line); }
+      nav div { max-width: 1080px; margin: 0 auto; padding: 11px 24px; font-size: 13px; color: var(--ink-soft); }
+      nav a { color: var(--m); text-decoration: none; }
+      nav a:hover { text-decoration: underline; }
+
+      main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 90px; display: grid; grid-template-columns: 1fr 300px; gap: 48px; }
+      h1 { font-size: 31px; line-height: 1.25; margin: 0 0 6px; letter-spacing: -.2px; }
+      .lede { font-size: 16.5px; color: var(--ink-soft); margin: 0 0 30px; }
+      h2 { font-size: 19px; margin: 34px 0 10px; padding-bottom: 7px; border-bottom: 1px solid var(--line); }
+      p { margin: 0 0 14px; }
+      ul { margin: 0 0 14px; padding-left: 22px; }
+      li { margin-bottom: 7px; }
+
+      table { width: 100%; border-collapse: collapse; margin: 6px 0 16px; font-size: 14.5px; }
+      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { background: var(--canvas); font-size: 12.5px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); }
+
+      aside { font-size: 14px; }
+      .card { border: 1px solid var(--line); border-radius: 12px; padding: 18px; background: #fff; }
+      .card h3 { margin: 0 0 10px; font-size: 15px; }
+      .card.tip { background: #fdf8f9; border-color: #ecdde1; }
+      .card.tip h3 { color: var(--m-dark); }
+      .card p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 0; }
+      .contact { margin-top: 16px; }
+      .contact a { color: var(--m); }
+
+      footer { border-top: 1px solid var(--line); background: var(--canvas); }
+      footer div { max-width: 1080px; margin: 0 auto; padding: 22px 24px; font-size: 12.5px; color: var(--ink-soft); }
+
+      @media (max-width: 860px) {
+        main { grid-template-columns: 1fr; gap: 32px; padding-bottom: 110px; }
+      }
     </style>
   </head>
   <body>
-    <div class="box">
-      <h1>MSFEA CDC Chatbot — demo page</h1>
-      <p>
-        This page simulates an AUB web page with the chat widget embedded. Click
-        the <strong>💬 bubble</strong> in the bottom-right corner and ask an
-        internship / CO-OP question, e.g. <em>"What is the minimum internship
-        duration?"</em> or <em>"What GPA do I need for co-op?"</em>.
-      </p>
-      <p>
-        The widget is a thin client: it just calls the backend
-        <code>POST /chat</code> and renders the answer, its sources, and the
-        disclaimer.
-      </p>
+    <div class="demo-flag">
+      Demonstration page — not an official AUB page. Built to show the CDC chat assistant in context.
     </div>
+
+    <header>
+      <div class="bar">
+        <div class="crest">AUB</div>
+        <div class="wordmark">
+          <div class="u">American University of Beirut</div>
+          <div class="f">Maroun Semaan Faculty of Engineering &amp; Architecture</div>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+      <div><a href="#">MSFEA</a> &rsaquo; <a href="#">Career Development Center</a> &rsaquo; Approved Experience</div>
+    </nav>
+
+    <main>
+      <article>
+        <h1>Approved Experience (Internship)</h1>
+        <p class="lede">
+          The Approved Experience is a graduation requirement for MSFEA undergraduate
+          students. This page summarizes the essentials; the assistant at the
+          bottom-right answers detailed questions from the official documents.
+        </p>
+
+        <h2>Overview</h2>
+        <p>
+          Students complete supervised professional training with an approved employer
+          and submit a set of deliverables through Moodle. Requirements vary slightly by
+          department, so check your department's specific rules before you start.
+        </p>
+
+        <h2>Key deliverables</h2>
+        <table>
+          <thead>
+            <tr><th>When</th><th>Deliverable</th><th>Where</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>First week of training</td><td>Notice of Arrival Form</td><td>Moodle</td></tr>
+            <tr><td>During the internship</td><td>Professional Skills Requirement</td><td>Moodle</td></tr>
+            <tr><td>By the end of Week 4</td><td>Progress Report</td><td>Moodle</td></tr>
+            <tr><td>Within 1 week of completion</td><td>Final Training Report</td><td>Moodle</td></tr>
+            <tr><td>First 2 weeks of Fall</td><td>Final Presentation</td><td>Department</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Other CDC programs</h2>
+        <ul>
+          <li><strong>CO-OP</strong> — a longer paid placement with its own eligibility rules.</li>
+          <li><strong>IAESTE</strong> — international exchange internships.</li>
+          <li><strong>Full-time job support</strong> — CV reviews, interview preparation.</li>
+          <li><strong>Mentorship</strong> — guidance from alumni and industry professionals.</li>
+        </ul>
+
+        <h2>Before you email us</h2>
+        <p>
+          Most questions are already answered in the guidelines. Try the assistant first —
+          it answers from those documents and cites the section it used, so you can verify
+          it. If it can't help, it will point you to the right person.
+        </p>
+      </article>
+
+      <aside>
+        <div class="card tip">
+          <h3>💬 Ask the CDC assistant</h3>
+          <p>
+            Click the maroon chat button in the bottom-right corner. Try
+            <em>"What is the minimum internship duration?"</em> or
+            <em>"What GPA do I need for CO-OP?"</em>
+          </p>
+        </div>
+        <div class="card contact">
+          <h3>Contact</h3>
+          <p>
+            Career Development Center<br />
+            <a href="mailto:fcareer@aub.edu.lb">fcareer@aub.edu.lb</a>
+          </p>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div>Demonstration page for the MSFEA CDC chatbot capstone project.</div>
+    </footer>
 
     <!-- Same origin when served from the API at /widget/demo.html, so no API URL needed. -->
     <script src="widget.js"></script>
