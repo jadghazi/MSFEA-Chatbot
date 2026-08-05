@@ -6,6 +6,45 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-08-05 — KB reconciled: one form policy, links where retrieval lands
+
+Follow-up to the link restoration. "i found an internship now what" returned no
+link while "i found an internship **on my own** now what" did. Diagnosed rather
+than guessed: only the guidelines section carried the URL, and its wording
+("secure an internship on your own" / "Independently") is what the second phrasing
+matched. Without that phrase the chunk sat **below rank 20** — it was never in the
+model's context, so the bot was behaving correctly with what it had.
+
+A plausible fix was tested and **rejected by measurement**: 4 of 7 slots were
+near-duplicate windows of one section, so a per-section cap looked promising. It
+did not help — the URL chunk is out of the candidate pool entirely at that phrasing.
+
+**Root cause was a policy contradiction between the two documents.**
+`cdc-knowledge-base.md` instructed that students always be sent to search the CDC
+website "rather than relying on a saved link", while the guidelines now give real
+URLs. The section that *reliably wins retrieval* for these questions is in the
+knowledge base — i.e. the one that forbade links.
+
+Reconciled:
+- Removed the "never link a form" policy. Direct links now given for the three
+  forms we have URLs for (self-secured internship, letter request, AUB petitions);
+  the CDC students page stays as the fallback and as the route for the four forms
+  with no published link.
+- Unified naming: **self-secured internship form** and **internship approval form**
+  are the same form, previously named differently in each document. Flagged for CDC
+  confirmation, since the two names came from two sources.
+- Added the links to the sections and FAQs that actually rank, not just the
+  authoritative one, plus the internship 90-credit minimum to Quick Reference
+  (it listed the CO-OP one only).
+
+**Measured:** every phrasing now retrieves the right form — the vague one went from
+below rank 20 to **rank 1**, "the company needs a letter" to rank 4. Context-recall
+improved at every depth: @1 76%->85%, @3 82%->90%, @5 92%->95%, **@7 97%** (38/39),
+still the single known `internship-vs-coop` miss. New golden case
+`found-internship-vague` locks in the phrasing that failed. 102 tests pass.
+
+---
+
 ## 2026-08-05 — Restored lost links, new CDC rules, clickable answers (ADR-0016)
 
 Audited the original sources against the normalized KB and found **four URLs that

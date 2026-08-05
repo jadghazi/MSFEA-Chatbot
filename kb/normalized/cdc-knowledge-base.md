@@ -31,11 +31,17 @@ The MSFEA CDC usually sends internship guidelines to students around the beginni
 
 ### Applying to an internship found independently
 If a student secures an internship on their own (not through the CDC), they must contact the CDC to confirm the company is approved. The CDC will then guide the student to either get the internship confirmed through the CDC, or petition their department directly.
-> To have an independently-found internship approved, students should visit the CDC section of the MSFEA website and complete the internship approval form there (do not rely on old saved links, as the form URL may change — search the CDC students page for "internship approval").
+
+Complete the CDC's self-secured internship form (also referred to as the internship approval form): https://forms.office.com/pages/responsepage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUM05XSkRJQThUQ1VaM1dLOEZUOVM4N1Q1RC4u
+
+Training offers not processed through the CDC and not pre-approved by the department will not count toward the graduation requirement. If the link above does not work, find the current version on the MSFEA CDC students page: https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx
 
 ### Requesting a support letter
-If a hiring company requires a letter confirming that the internship is a degree requirement, students can request one from the CDC.
-> To request this letter, visit the CDC section of the MSFEA website and use the letter request form listed there.
+If a hiring company requires a letter confirming that the internship is a degree requirement — or a convention de stage — students can request one from the CDC.
+
+Request it through the CDC letter request form: https://forms.office.com/Pages/ResponsePage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUODdKUjhTOTNPMEhJVFJTOExOUjZJWUZNUi4u
+
+The CDC will get back to you as soon as possible.
 
 ### Internship FAQs
 **Q: When should I start applying for internships?**
@@ -50,14 +56,14 @@ A: No. To give everyone a fair chance at CDC offers, you may only apply to one o
 **Q: How long does it take to hear back from an internship offer?**
 A: It usually takes 2–3 weeks for an employer to respond.
 
-**Q: I secured an internship offer on my own — what should I do?**
-A: Contact the CDC to confirm the company is approved. The CDC will guide you through either confirming the internship via the CDC or petitioning your department. You'll need to complete the internship approval form available on the CDC website.
+**Q: I found an internship myself — what should I do now?**
+A: Contact the CDC to confirm the company is approved. The CDC will guide you through either confirming the internship via the CDC or petitioning your department. You must also complete the CDC's self-secured internship form (also called the internship approval form): https://forms.office.com/pages/responsepage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUM05XSkRJQThUQ1VaM1dLOEZUOVM4N1Q1RC4u
 
 **Q: What is the minimum internship duration?**
 A: To satisfy the approved experience requirement, the internship must be at least 8 weeks.
 
-**Q: The company I'm applying to needs a letter confirming the internship is required — who provides that?**
-A: The CDC can provide a signed letter. Request it using the letter request form available on the CDC website.
+**Q: The company I'm applying to needs a letter (or a convention de stage) confirming the internship is required — who provides that?**
+A: The CDC can provide a signed letter. Request it using the CDC letter request form: https://forms.office.com/Pages/ResponsePage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUODdKUjhTOTNPMEhJVFJTOExOUjZJWUZNUi4u
 
 ---
 
@@ -139,21 +145,49 @@ Students can register on the AUB Career Portal (careers.aub.edu.lb) to check the
 
 ## Forms & Requests — Where to Find Them
 
-Several CDC processes require filling out an online form. Since form links can change over time, always direct students to locate the current version on the **MSFEA CDC website** (or by contacting the CDC office) rather than relying on a saved link. Forms include:
+Several CDC processes require filling out an online form.
+
+**Forms with a direct link:**
+
+- Self-secured internship form, also called the internship approval form (for internships secured independently): https://forms.office.com/pages/responsepage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUM05XSkRJQThUQ1VaM1dLOEZUOVM4N1Q1RC4u
+- Letter request form, including a convention de stage (proof-of-internship-requirement letters): https://forms.office.com/Pages/ResponsePage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUODdKUjhTOTNPMEhJVFJTOExOUjZJWUZNUi4u
+- AUB online petition system (exceptions, startup internships, department approvals): https://petitions.aub.edu.lb
+
+**Forms without a published link** — find the current version on the MSFEA CDC students page (https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx) or contact the CDC office at fcareer@aub.edu.lb:
+
 - CO-OP program qualification/application form
-- Internship approval form (for internships secured independently)
-- Letter request form (proof-of-internship-requirement letters)
 - CDC Online Modules registration form
 - Mentorship program (MentorPlus+) sign-up form
 - IAESTE employer interest form
+
+If a linked form ever stops working, the CDC students page above always has the current version.
 
 ---
 
 ## Quick Reference: Key Numbers
 - Internship minimum duration: **8 weeks**
+- Internship minimum credits to register: **90 credits**
 - CO-OP minimum work term: **6 months** (paid)
 - CO-OP minimum GPA: **3.3 (B+)**
 - CO-OP minimum credits (at FEAA 500 enrollment): **90 credits**
 - CO-OP max opportunities applied to per cycle: **3** (ranked by priority, only 1 can be accepted)
 - Apply to CO-OP program: **at least 1 year** before intended start
 - Typical employer response time for internship offers: **2–3 weeks**
+
+---
+
+## About this document
+
+Normalized from `kb/source/msfea_cdc_kb.md`.
+
+**2026-08-05 — form links added, "never link a form" policy removed.** This document
+previously instructed that students always be sent to search the CDC website rather
+than given a form URL, which contradicted the guidelines document once the real URLs
+were restored there. Direct links are now given for the three forms we have URLs for
+(self-secured internship, letter request, AUB petitions), with the CDC students page
+kept as the fallback for those and as the route for the four forms that still have no
+published link.
+
+Also unified naming: the **self-secured internship form** and the **internship
+approval form** are the same form and are now labelled as such. Worth confirming with
+the CDC that this is right — the two names came from two different source documents.
