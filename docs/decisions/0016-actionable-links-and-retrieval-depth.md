@@ -86,11 +86,14 @@ rule, and both "not accepted" rules all answer correctly with the URL emitted in
 - **The petition deep link was deliberately not used.** The .docx held a URL carrying
   an Oracle APEX session id, which is not durable; the bare
   `https://petitions.aub.edu.lb` entry point is recorded instead.
-- **A contradiction is now explicit in the KB.** The new general rule "remote
-  internships are not accepted" sits alongside an IEM rule permitting remote
-  internships with U.S.-based companies. The general rule points at the department
-  exceptions rather than stating a false absolute — but which takes precedence needs
-  CDC confirmation.
+- **General rule + department exception, handled correctly.** "Remote internships are
+  not accepted" is general; IEM's allowance for U.S.-based remote internships is a
+  documented exception — the same general/department structure the document uses
+  throughout, not a conflict. Confirmed with the owner 2026-08-05. Verified per
+  student: IEM gets the exception with both of its conditions, MECH and CEE get "not
+  accepted", and an unscoped student gets "not accepted, though some departments
+  allow narrow exceptions". This is department scoping (ADR-0015) doing exactly what
+  it was built for.
 - **Provenance is recorded in the document itself.** The rules supplied verbally are
   marked as such, so a future maintainer doesn't assume they came from the .docx. They
   should be folded into the next official revision of the source document.

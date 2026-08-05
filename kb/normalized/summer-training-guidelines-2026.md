@@ -286,7 +286,10 @@ Normalized from `kb/source/Summer training guidelines - June 2026.docx`.
   June 2026 .docx: the 90-credit eligibility minimum; remote internships not accepted;
   internships inside AUB not accepted except in special circumstances. These should be
   reflected in the next official revision of the source document.
-- **Known tension:** the general "remote internships are not accepted" rule sits
-  alongside an IEM department rule permitting remote internships with U.S.-based
-  companies. The general rule is worded to point at the department exceptions rather
-  than state a false absolute. Confirm with the CDC which takes precedence.
+- **General rule + department exception (not a conflict).** "Remote internships are
+  not accepted" is the general rule; IEM's allowance for U.S.-based remote
+  internships is a documented department exception, which is how this document
+  already works throughout. Precedence confirmed by the project owner 2026-08-05:
+  the department rule applies to that department's students, the general rule to
+  everyone else. The general rule points at the exceptions rather than stating a
+  false absolute.

@@ -46,10 +46,12 @@ miss, over 38 answerable questions (was 33). The eval now reports at the *config
 top_k — gating CI on a depth production doesn't use tests the wrong thing. Note
 `.env` pinned TOP_K=5 and overrode the new default; updated there too.
 
-Flagged for the CDC: the new "remote not accepted" rule contradicts IEM's rule
-permitting remote internships with U.S.-based companies (the general rule now points
-at the department exceptions rather than stating a false absolute); and ~12 named
-forms still have no link in any source document. 102 tests pass; ruff/mypy clean.
+On the "remote not accepted" rule: it is the general rule and IEM's U.S.-based
+allowance is a documented department exception, not a conflict — the same structure
+the document uses throughout (owner-confirmed). Verified per student: IEM gets the
+exception with both conditions, MECH/CEE get "not accepted", unscoped gets "not
+accepted, though some departments allow narrow exceptions". Still flagged for the
+CDC: ~12 named forms have no link in any source document. 102 tests pass; ruff/mypy clean.
 
 ---
 
