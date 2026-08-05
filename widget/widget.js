@@ -19,6 +19,20 @@
   // told before the request is rejected rather than after.
   var MAX_CHARS = 2000;
 
+  // Kept in the browser, not on the server: the bot stays stateless, and a coarse
+  // one-of-five attribute never becomes a stored student profile (CLAUDE.md §7).
+  var DEPT_KEY = "msfea_department";
+
+  // Codes MUST match msfea_bot/departments.py. The server re-validates and ignores
+  // anything unknown, so a stale copy here degrades to an unscoped answer.
+  var DEPARTMENTS = [
+    { code: "mech", abbr: "MECH", label: "Mechanical" },
+    { code: "ece", abbr: "ECE", label: "Electrical & Computer" },
+    { code: "chem", abbr: "CHEM", label: "Chemical" },
+    { code: "iem", abbr: "IEM", label: "Industrial & Management" },
+    { code: "cee", abbr: "CEE", label: "Civil & Environmental" },
+  ];
+
   // Shown on the empty state. Real answerable questions from the KB, so a click
   // always demonstrates a grounded answer with citations.
   var SUGGESTIONS = [
@@ -183,6 +197,31 @@
 .msfea-sg:hover{border-color:var(--m);color:var(--m-dark);background:#fdf8f9;transform:translateX(2px)}
 .msfea-sg:focus-visible{outline:2px solid var(--m);outline-offset:1px}
 
+/* ---------- department picker ---------- */
+.msfea-dept-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.msfea-dept{
+  background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 10px;
+  cursor:pointer;text-align:center;transition:all .16s ease;
+}
+.msfea-dept:hover{border-color:var(--m);background:#fdf8f9;transform:translateY(-1px)}
+.msfea-dept:focus-visible{outline:2px solid var(--m);outline-offset:1px}
+.msfea-dept b{display:block;font-size:13px;color:var(--m-dark);font-weight:700;line-height:1.2}
+.msfea-dept span{display:block;font-size:10.5px;color:var(--ink-faint);margin-top:3px;line-height:1.25}
+.msfea-skip{
+  display:block;width:100%;background:none;border:none;cursor:pointer;
+  font-size:12px;color:var(--ink-faint);text-decoration:underline;padding:7px;
+}
+.msfea-skip:hover{color:var(--m-dark)}
+/* current department, in the header — clicking it reopens the picker */
+.msfea-deptpill{
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;
+  border-radius:999px;padding:2px 9px;font-size:10.5px;font-weight:650;cursor:pointer;
+  margin-top:4px;line-height:1.5;transition:background .15s ease;
+}
+.msfea-deptpill:hover{background:rgba(255,255,255,.3)}
+.msfea-deptpill:focus-visible{outline:2px solid #fff;outline-offset:1px}
+.msfea-deptpill.hidden{display:none}
+
 /* ---------- composer ---------- */
 .msfea-foot{flex:0 0 auto;border-top:1px solid var(--line);padding:11px 12px;background:#fff}
 .msfea-inputwrap{
@@ -253,6 +292,7 @@
       '<div class="msfea-titles">' +
         '<div class="msfea-title">MSFEA CDC Assistant</div>' +
         '<div class="msfea-sub">Career Development Center · Internships &amp; programs</div>' +
+        '<button class="msfea-deptpill hidden" type="button"></button>' +
       "</div>" +
       '<button class="msfea-x" type="button" aria-label="Close chat">' + ICON_CLOSE + "</button>" +
     "</div>" +
@@ -297,6 +337,95 @@
     msgs.appendChild(r);
     scrollDown();
     return r;
+  }
+
+  /* ---------- department ---------- */
+
+  function getDept() {
+    try {
+      return sessionStorageSafe("get");
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // localStorage can throw in private mode / blocked third-party contexts, and the
+  // widget is embedded on a page we don't control — so every access is guarded.
+  function sessionStorageSafe(op, value) {
+    try {
+      if (op === "get") return window.localStorage.getItem(DEPT_KEY);
+      if (op === "set") window.localStorage.setItem(DEPT_KEY, value);
+      if (op === "clear") window.localStorage.removeItem(DEPT_KEY);
+    } catch (e) {
+      /* storage unavailable — the widget still works, just without memory */
+    }
+    return null;
+  }
+
+  function deptLabel(code) {
+    for (var i = 0; i < DEPARTMENTS.length; i++) {
+      if (DEPARTMENTS[i].code === code) return DEPARTMENTS[i].abbr;
+    }
+    return null;
+  }
+
+  function refreshDeptPill() {
+    var pill = panel.querySelector(".msfea-deptpill");
+    var abbr = deptLabel(getDept());
+    if (abbr) {
+      pill.textContent = abbr + " · change";
+      pill.setAttribute("aria-label", "Your department is " + abbr + ". Change it.");
+      pill.classList.remove("hidden");
+    } else {
+      pill.classList.add("hidden");
+    }
+  }
+
+  function setDept(code) {
+    if (code) sessionStorageSafe("set", code);
+    else sessionStorageSafe("clear");
+    refreshDeptPill();
+  }
+
+  function showDepartmentPicker() {
+    msgs.innerHTML = "";
+    var w = el("msfea-welcome");
+    w.appendChild(el("msfea-hi", "Hello 👋"));
+    w.appendChild(
+      el(
+        "msfea-hi-sub",
+        "Some internship rules differ by department, so tell me which one you're " +
+          "in and I'll give you the rules that actually apply to you — and the right " +
+          "person to contact if I can't help."
+      )
+    );
+    w.appendChild(el("msfea-sg-h", "Your department"));
+    var grid = el("msfea-dept-grid");
+    DEPARTMENTS.forEach(function (d) {
+      var b = document.createElement("button");
+      b.className = "msfea-dept";
+      b.type = "button";
+      b.innerHTML = "<b>" + d.abbr + "</b><span>" + d.label + "</span>";
+      b.addEventListener("click", function () {
+        setDept(d.code);
+        msgs.innerHTML = "";
+        showWelcome();
+      });
+      grid.appendChild(b);
+    });
+    w.appendChild(grid);
+    var skip = document.createElement("button");
+    skip.className = "msfea-skip";
+    skip.type = "button";
+    skip.textContent = "Skip — I'm not sure / other";
+    skip.addEventListener("click", function () {
+      // Recorded as an explicit choice so we don't ask again every visit.
+      setDept("skipped");
+      msgs.innerHTML = "";
+      showWelcome();
+    });
+    w.appendChild(skip);
+    msgs.appendChild(w);
   }
 
   /* ---------- empty state ---------- */
@@ -441,10 +570,16 @@
     setBusy(true);
     showTyping();
 
+    // "skipped" is a local marker meaning "don't ask again", not a department —
+    // send null so the server answers unscoped.
+    var dept = getDept();
     fetch(API + "/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: q }),
+      body: JSON.stringify({
+        question: q,
+        department: dept && dept !== "skipped" ? dept : null,
+      }),
     })
       .then(function (r) {
         return r.json();
@@ -473,7 +608,13 @@
     root.classList.add("is-open");
     bubble.setAttribute("aria-expanded", "true");
     bubble.setAttribute("aria-label", "Close the CDC assistant");
-    if (!msgs.children.length) showWelcome();
+    refreshDeptPill();
+    // Ask for the department once, before anything else — it changes which rules
+    // the answers come from, so it is worth one tap up front.
+    if (!msgs.children.length) {
+      if (getDept()) showWelcome();
+      else showDepartmentPicker();
+    }
     setTimeout(function () { input.focus(); }, 120);
   }
 
@@ -490,6 +631,7 @@
   });
   closeBtn.addEventListener("click", closePanel);
   sendBtn.addEventListener("click", function () { send(); });
+  panel.querySelector(".msfea-deptpill").addEventListener("click", showDepartmentPicker);
 
   input.addEventListener("input", function () {
     autoGrow();

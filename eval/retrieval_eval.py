@@ -41,7 +41,9 @@ def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> float:
     # Retrieve once at the largest k; recall at smaller k is a prefix of that.
     results: list[_Result] = []
     for item in items:
-        chunks = search(item.question, top)
+        # Department-scoped cases must be retrieved the way the student would ask
+        # them: with their department set (ADR-0013). None for every other case.
+        chunks = search(item.question, top, department=item.department)
         results.append(
             _Result(item, [c.source_doc for c in chunks], [c.text for c in chunks])
         )

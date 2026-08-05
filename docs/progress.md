@@ -6,6 +6,44 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-08-05 — Department-scoped answers + escalation routing (B-1 + B-2, ADR-0013)
+
+Closed the two oldest backlog items. Both were raised on day one and deliberately
+deferred; the audit's metadata column is what made them cheap to build now.
+
+- **Measured before designing** (§2, retrieval-before-generation). Unscoped, "can I
+  split my internship into two 4-week periods?" returns **four departments'
+  contradictory rules** in the top-5. And exclusion alone is *not* enough: IEM's
+  "final presentations are generally not required" sits at **vector rank 8**, so an
+  IEM student would be told the general rule — wrong for them.
+- **Retrieval:** chunks tagged by department from the KB's own `### ... (CEE)`
+  headings (6 of 175). `search()` excludes other departments **and reserves one slot**
+  for the student's own rule when it reached the candidate pool but not top-k. Only
+  the reserved slot fixes the rank-8 case; it can displace at most one general chunk.
+- **Routing (B-1):** refusals now name the student's coordinator — "please contact
+  Hiam Khoury (hk50@aub.edu.lb), the Civil and Environmental Engineering
+  coordinator." Contacts are *data* in `msfea_bot/departments.py`, with a test
+  asserting every name and address still appears in the KB so the copy can't drift.
+- **Widget:** asks the department once before the suggestions, remembers it in
+  `localStorage` (server stays stateless — no session store, no student profile),
+  shows it as a header pill that reopens the picker, and offers "Skip / not sure".
+- **Untrusted by default:** the code arrives from a page we don't control, so an
+  unknown value degrades to an unscoped answer. Verified: `nonsense`, an SQL-injection
+  string, `""` and `null` all return 200 with a normal answer and the index intact.
+
+**Measured:** department cases **2/4 -> 4/4** context-recall@5; general questions
+**unchanged at 97%** with the same known `internship-vs-coop` miss (33 answerable
+questions, was 29). **Verified live:** same question, CEE -> "may be split if at
+least one period is in civil or construction engineering"; MECH -> "cannot be
+split"; no department -> CEE's rule, which is exactly the old behaviour this fixes.
+
+Note: updating `generate_answer`'s signature broke a stale test stub, and the
+endpoint's broad `except` turned that TypeError into a graceful refusal rather than
+a failure — a reminder that the never-500-the-student handler can mask a programming
+error. Stubs now take `**kwargs`. 102 tests pass; ruff/mypy clean.
+
+---
+
 ## 2026-07-30 — RAG practice audit + remediation (ADR-0012/0013/0014)
 
 Audited the whole pipeline against a 32-item RAG practice checklist

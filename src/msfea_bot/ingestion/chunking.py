@@ -12,6 +12,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from msfea_bot import departments
+
 NORMALIZED_DIR = Path(__file__).resolve().parents[3] / "kb" / "normalized"
 
 # Defaults chosen by measuring context-recall on the golden set (see ADR-0006):
@@ -181,6 +183,15 @@ def chunk_markdown(
         )
         table_headers = _table_headers(lines)
 
+        # Sections like "### Civil and Environmental Engineering (CEE)" hold rules that
+        # apply to one department only. Tagging them lets retrieval tell a
+        # department-conditional chunk from a general one (backlog B-2). Sections with
+        # no department keep the document-level default ("all").
+        section_dept = departments.from_heading(section)
+        chunk_meta = dict(meta)  # per-chunk copy: `meta` is shared across the document
+        if section_dept is not None:
+            chunk_meta["department"] = section_dept.code
+
         def with_heading(body_lines: list[str]) -> str:
             joined = "\n".join(body_lines)
             # Ensure every window carries its section heading for context.
@@ -197,7 +208,7 @@ def chunk_markdown(
                     text=with_heading(lines[start:end]),
                     source_doc=source_doc,
                     section=section,
-                    metadata=meta,
+                    metadata=chunk_meta,
                     display_prefix="\n".join(carried) if carried is not None else "",
                 )
             )

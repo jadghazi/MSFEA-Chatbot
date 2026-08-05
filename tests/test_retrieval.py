@@ -141,3 +141,52 @@ def test_chunk_metadata_is_persisted(restore_index: None) -> None:
             " FROM chunks WHERE id = 'meta-test-1'"
         ).fetchone()
     assert row is not None and row[0] == "cee" and row[1] == "2026-06"
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_department_scoping_excludes_other_departments() -> None:
+    """A student must never be shown another department's contradictory rule.
+
+    Unscoped, "can I split my internship into two 4-week periods?" returns four
+    departments' rules at once — MECH forbids it, CEE allows it conditionally.
+    """
+    from msfea_bot.retrieval.store import search
+
+    q = "Can I split my internship into two 4-week periods?"
+    unscoped = {c.section for c in search(q, 5)}
+    assert sum("(" in s and s.endswith(")") for s in unscoped) > 1, (
+        "precondition: unscoped search should surface several departments"
+    )
+
+    scoped = [c.section for c in search(q, 5, department="cee")]
+    assert any("(CEE)" in s for s in scoped), "the student's own rule must be present"
+    for other in ("(MECH)", "(CHEM)", "(ECE)", "(IEM)"):
+        assert not any(other in s for s in scoped), f"{other} leaked into a CEE answer"
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_department_slot_is_reserved_when_the_rule_would_be_crowded_out() -> None:
+    """The case exclusion alone does not fix.
+
+    IEM's "final presentations are generally not required" sits at vector rank 8 for
+    this question, so without a reserved slot an IEM student is told the general rule
+    — which is wrong for them.
+    """
+    from msfea_bot.retrieval.store import search
+
+    q = "Do I need to give a final presentation?"
+    assert not any("(IEM)" in c.section for c in search(q, 5)), (
+        "precondition: unscoped search should NOT surface the IEM exception"
+    )
+    assert any("(IEM)" in c.section for c in search(q, 5, department="iem"))
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_unknown_department_behaves_exactly_like_no_department() -> None:
+    """Untrusted input must degrade, not change results or raise."""
+    from msfea_bot.retrieval.store import search
+
+    q = "What is the minimum internship duration?"
+    assert [c.id for c in search(q, 5, department="nonsense")] == [
+        c.id for c in search(q, 5)
+    ]

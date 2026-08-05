@@ -19,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from msfea_bot import departments
 from msfea_bot.api.security import RateLimiter, sanitize
 from msfea_bot.config import settings
 from msfea_bot.curation.service import (
@@ -70,6 +71,10 @@ def rate_limit(request: Request) -> None:
 
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
+    # Optional so existing embeds keep working. Untrusted: `departments.from_code`
+    # ignores anything not on the known list, so a bad value degrades to an
+    # unscoped answer rather than an error (ADR-0013).
+    department: str | None = Field(default=None, max_length=32)
 
 
 class ChatResponse(BaseModel):
@@ -92,6 +97,10 @@ def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
     # Sanitize, then anonymize once; use the same text for the LLM and the log
     # (CLAUDE.md §7).
     question = anonymize(sanitize(req.question))
+    # Normalised here so an unknown value is dropped once, at the edge, rather than
+    # being passed down and re-validated in retrieval, generation and logging.
+    dept = departments.from_code(req.department)
+    dept_code = dept.code if dept else None
 
     if not question:
         result = Answer(
@@ -101,9 +110,13 @@ def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
         )
     else:
         try:
-            result = generate_answer(question)
+            result = generate_answer(question, department=dept_code)
         except Exception:  # noqa: BLE001 - never 500 at the student; escalate gracefully
-            contact = settings.escalation_contact or "the CDC office"
+            contact = (
+                f"{dept.contact_name} ({dept.contact_email})"
+                if dept
+                else settings.escalation_contact or "the CDC office"
+            )
             result = Answer(
                 text=f"Sorry, I'm having trouble right now. Please contact {contact}.",
                 citations=[],

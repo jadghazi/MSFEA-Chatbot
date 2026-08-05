@@ -20,7 +20,10 @@ def test_health_ok() -> None:
 
 
 def test_chat_returns_structured_answer(monkeypatch: pytest.MonkeyPatch) -> None:
-    def fake(question: str) -> Answer:
+    # **kwargs so the stub keeps matching generate_answer's signature as it grows
+    # (it now takes `department`); a stale stub raises TypeError, which the
+    # endpoint's graceful-degradation handler would silently turn into a refusal.
+    def fake(question: str, **kwargs: object) -> Answer:
         return Answer(text="At least 8 weeks.", citations=["doc.md > Duration"], refused=False)
 
     monkeypatch.setattr(app_module, "generate_answer", fake)
@@ -53,7 +56,9 @@ def test_chat_rate_limited(monkeypatch: pytest.MonkeyPatch) -> None:
     from msfea_bot.api.security import RateLimiter
 
     monkeypatch.setattr(app_module, "_limiter", RateLimiter(max_requests=1, window_seconds=60))
-    monkeypatch.setattr(app_module, "generate_answer", lambda q: Answer(text="ok", refused=False))
+    monkeypatch.setattr(
+        app_module, "generate_answer", lambda q, **kw: Answer(text="ok", refused=False)
+    )
     monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
     assert client.post("/chat", json={"question": "hi"}).status_code == 200
     assert client.post("/chat", json={"question": "hi"}).status_code == 429

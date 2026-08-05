@@ -26,6 +26,10 @@ class GoldenItem(BaseModel):
     # A verbatim fact that must appear in retrieved context for the question to be
     # answerable (used by the context-recall retrieval metric). None for refusals.
     evidence: str | None = None
+    # The asking student's department, for cases where the correct answer depends on
+    # it (ADR-0013). None = a general question, asked with no department set — which
+    # is also how every pre-existing case keeps its original meaning.
+    department: str | None = None
     tags: list[str] = []
     is_synthetic: bool = False
     notes: str | None = None

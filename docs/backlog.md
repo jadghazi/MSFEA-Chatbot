@@ -9,6 +9,11 @@ decisions we should make *now* so we don't paint ourselves into a corner later.
 
 ## B-1 — Smart escalation routing (route refusals to the *right* person)
 
+**Status: IMPLEMENTED 2026-08-05 (ADR-0013)** — refusals now name the asking
+student's department coordinator. Contacts live in `msfea_bot/departments.py` as
+data (per the "cheap thing to get right now" below), with a test asserting they
+still match the KB.
+
 **Idea (from Jad, 2026-07-20).** When the bot can't answer, don't escalate to a
 single generic contact — give the email of the person **most likely to own that
 question**, chosen from the question's topic (e.g. eligibility → coordinator X,
@@ -46,6 +51,13 @@ contact (Phase 6). Routing is a v2 refinement.
 ---
 
 ## B-2 — Department-specific answers (same question, different rule per department)
+
+**Status: IMPLEMENTED 2026-08-05 (ADR-0013)** — the widget asks the student's
+department once, retrieval excludes other departments and reserves a slot for the
+student's own rule, and the answer is labelled with the department it applies to.
+The reserved `department` metadata field anticipated below is what made it cheap.
+Measured: department cases 2/4 -> 4/4 context-recall@5, no regression on general
+questions. The open design questions below are answered in ADR-0013.
 
 **Idea (from Jad, 2026-07-20).** Some departments have different rules for the
 same question. The bot may need to **ask the student their department** before

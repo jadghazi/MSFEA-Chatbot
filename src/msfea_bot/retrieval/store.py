@@ -15,6 +15,7 @@ import psycopg
 from pgvector.psycopg import register_vector
 from psycopg.types.json import Json
 
+from msfea_bot import departments
 from msfea_bot.config import settings
 from msfea_bot.ingestion.chunking import Chunk
 from msfea_bot.ingestion.embeddings import (
@@ -234,38 +235,101 @@ def reciprocal_rank_fusion(rankings: list[list[str]], c: int = 60) -> list[str]:
     return sorted(scores, key=lambda i: scores[i], reverse=True)
 
 
-def search(query: str, k: int = 5, candidates: int = 20) -> list[RetrievedChunk]:
+# Chunks tagged with a specific department (see ingestion.chunking). Anything else
+# — untagged, or the document-level default "all" — applies to every student.
+_GENERAL = "(metadata->>'department' IS NULL OR metadata->>'department' = 'all')"
+
+
+def _reserve_department_slot(
+    conn: Any,
+    fused: list[str],
+    vec_ids: list[str],
+    kw_ids: list[str],
+    dept_code: str,
+    k: int,
+) -> list[str]:
+    """Ensure the student's own department rule is present, if it is relevant at all.
+
+    Only promotes a chunk that already reached the candidate pool, so an irrelevant
+    department rule is never forced in: relevance is still decided by retrieval, this
+    just stops a relevant one being crowded out of the last slot by general content.
+    Costs at most one of `k` slots.
+    """
+    pool = list(dict.fromkeys(vec_ids + kw_ids))  # candidate ids, best vector rank first
+    if not pool:
+        return fused
+    rows = conn.execute(
+        "SELECT id FROM chunks WHERE id = ANY(%s) AND metadata->>'department' = %s",
+        (pool, dept_code),
+    ).fetchall()
+    dept_ids = {r[0] for r in rows}
+    if not dept_ids or any(cid in dept_ids for cid in fused):
+        return fused  # nothing relevant, or already represented
+    best = next(cid for cid in pool if cid in dept_ids)
+    return fused[: k - 1] + [best]
+
+
+def search(
+    query: str, k: int = 5, candidates: int = 20, department: str | None = None
+) -> list[RetrievedChunk]:
     """Hybrid retrieval: fuse semantic (vector) and keyword (full-text) rankings.
 
     Pure embeddings blur exact terms (course codes, "8 weeks"); pure keyword misses
     paraphrases. We take the top-`candidates` from each and fuse with RRF, then
     return the top-`k`. Each returned chunk still carries its cosine `score`, so the
     generation similarity-threshold gate is unaffected (ADR-0011).
+
+    `department` scopes the result to one student (ADR-0013). Two things happen:
+
+    1. **Other departments are excluded.** MECH's rules can never be the right answer
+       for a CEE student, and leaving them in actively misleads — measured on the real
+       KB, "can I split my internship into two 4-week periods?" returns four different
+       departments' contradictory rules in the top-5.
+    2. **One slot is reserved for the student's own department**, when a rule of theirs
+       is relevant enough to reach the candidate pool but not the top-k. This is the
+       case exclusion alone does not fix: for "do I need to give a final presentation?"
+       the IEM chunk — which says presentations are generally *not* required — sits at
+       vector rank 8, so an IEM student would otherwise be told the general rule, which
+       is wrong for them. Bounded to a single slot so it can displace at most one
+       general chunk.
     """
     qv = embed_query(query)
+    dept = departments.from_code(department)
+    # Untrusted input: an unknown code degrades to no scoping rather than an error.
+    scope = "" if dept is None else f" WHERE ({_GENERAL} OR metadata->>'department' = %(dept)s)"
+    params: dict[str, Any] = {"qv": qv, "cand": candidates}
+    if dept is not None:
+        params["dept"] = dept.code
+
     with _connect() as conn:
         vec_ids = [
             r[0]
             for r in conn.execute(
-                "SELECT id FROM chunks ORDER BY embedding <=> %s::vector LIMIT %s",
-                (qv, candidates),
+                f"SELECT id FROM chunks{scope}"
+                " ORDER BY embedding <=> %(qv)s::vector LIMIT %(cand)s",
+                params,
             ).fetchall()
         ]
         kwq = _keyword_tsquery(query)
         kw_ids: list[str] = []
         if kwq:
             try:
+                kw_scope = scope.replace(" WHERE ", " AND ") if scope else ""
                 kw_ids = [
                     r[0]
                     for r in conn.execute(
-                        "SELECT id FROM chunks WHERE tsv @@ to_tsquery('english', %s)"
-                        " ORDER BY ts_rank_cd(tsv, to_tsquery('english', %s)) DESC LIMIT %s",
-                        (kwq, kwq, candidates),
+                        "SELECT id FROM chunks"
+                        " WHERE tsv @@ to_tsquery('english', %(kwq)s)" + kw_scope +
+                        " ORDER BY ts_rank_cd(tsv, to_tsquery('english', %(kwq)s)) DESC"
+                        " LIMIT %(cand)s",
+                        {**params, "kwq": kwq},
                     ).fetchall()
                 ]
             except psycopg.errors.Error:
                 kw_ids = []  # degrade to vector-only on any tsquery hiccup (autocommit)
         fused = reciprocal_rank_fusion([vec_ids, kw_ids])[:k]
+        if dept is not None:
+            fused = _reserve_department_slot(conn, fused, vec_ids, kw_ids, dept.code, k)
         if not fused:
             return []
         # Fetch content + cosine score for the fused ids in one query.
