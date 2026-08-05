@@ -6,6 +6,44 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-08-05 — Answer style: talk to a student, don't reprint the handbook
+
+Two problems, one of them mine. Answers read as near-verbatim dumps of the
+retrieved chunks, and `**bold**` was rendering as literal asterisks in the widget.
+
+- **Markdown was never rendered.** The widget set answer text via `textContent`, so
+  every `**` and `*` the model emitted showed raw. Added a *minimal* renderer —
+  bold, bullet lists, numbered lists — built from DOM nodes (`createElement` +
+  `createTextNode`), never `innerHTML`, same rule as the linkifier. Deliberately not
+  a markdown parser: only the few constructs the model actually emits.
+- **Style rules in the prompt** (this is where style comes from — temperature is
+  already 0 and controls randomness, not verbosity): lead with the direct answer,
+  put it in your own words rather than copying the context, bullets only when the
+  answer really is a list, no headings or bold-for-emphasis, under ~90 words, never
+  open with "Based on the context".
+- **Then walked one back.** The brevity rule made the model *drop* two deliverables
+  it had in context. Omitting "Final Training Report" from a deliverables list could
+  cost a student credit, so completeness now explicitly beats brevity for lists of
+  requirements/deadlines/deliverables, and the word cap is exempted for them.
+- Also tightened the CO-OP pointer, which was being appended to unrelated answers
+  ("CO-OP has its own deliverables" on a question about registering a self-found
+  internship).
+
+**Measured:** "minimum duration" 14 words (was a paragraph); "i found an internship
+now what" 30 words with the form link intact; deliverables now a clean list instead
+of a wall of `**`. Correct-refusal re-verified at **6/6** — a previous prompt change
+broke it, so this is checked every time now.
+
+**Known gap, not caused by this change:** the deliverables answer still omits the
+Progress Report row. Diagnosed as retrieval, not writing — the internship table is
+split across 4 chunks and 3 of the 7 slots went to CO-OP content, so the internship
+"Progress Report" row never reached the context (the only one that did was CO-OP's,
+which the model correctly declined to present as an internship deliverable). The
+same rows were missing before this change. Fix is program-aware retrieval or keeping
+that table in one chunk; both need measuring first. 102 tests pass.
+
+---
+
 ## 2026-08-05 — Internship is the default program (fixes a false refusal)
 
 "what are the deliverables" was refused for a MECH student. Diagnosed with the

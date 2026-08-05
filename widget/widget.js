@@ -139,6 +139,15 @@
   padding:11px 14px;border-radius:15px;max-width:88%;
   white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.52;font-size:14px;
 }
+/* Rendered answer structure. white-space is reset to normal inside these, since
+   the renderer has already turned newlines into real elements. */
+.msfea-p{white-space:normal;margin:0 0 8px}
+.msfea-p:last-child{margin-bottom:0}
+.msfea-list{white-space:normal;margin:0 0 8px;padding-left:19px}
+.msfea-list:last-child{margin-bottom:0}
+.msfea-list li{margin-bottom:4px}
+.msfea-list li:last-child{margin-bottom:0}
+.msfea-bot strong{font-weight:650;color:var(--m-dark)}
 .msfea-user{background:var(--m);color:#fff;border-bottom-right-radius:5px;box-shadow:0 1px 3px rgba(134,38,51,.28)}
 .msfea-bot{background:#fff;color:var(--ink);border:1px solid var(--line);border-bottom-left-radius:5px;box-shadow:0 1px 2px rgba(16,18,22,.05)}
 /* An escalation is "a human should answer this", not an error — amber, not red. */
@@ -543,10 +552,75 @@
     return rest ? doc + " › " + rest : doc;
   }
 
+  /* Minimal markdown -> DOM. Deliberately NOT a markdown parser: only the few
+   * things the model actually emits (bold, bullet lists, numbered lists), each
+   * built as real elements. Same safety rule as linkify — no innerHTML anywhere,
+   * so nothing in the model's output can become markup we didn't choose. */
+  function inline(text) {
+    var frag = document.createDocumentFragment();
+    var re = /\*\*([^*]+)\*\*/g;
+    var last = 0;
+    var m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) frag.appendChild(linkify(text.slice(last, m.index)));
+      var b = document.createElement("strong");
+      b.appendChild(linkify(m[1]));
+      frag.appendChild(b);
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) frag.appendChild(linkify(text.slice(last)));
+    return frag;
+  }
+
+  function renderAnswer(text) {
+    var frag = document.createDocumentFragment();
+    var lines = String(text).split("\n");
+    var list = null; // the <ul>/<ol> currently being filled
+    var para = [];   // buffered non-list lines
+
+    function flushPara() {
+      if (!para.length) return;
+      var p = el("msfea-p");
+      p.appendChild(inline(para.join("\n")));
+      frag.appendChild(p);
+      para = [];
+    }
+    function flushList() {
+      if (list) { frag.appendChild(list); list = null; }
+    }
+
+    lines.forEach(function (raw) {
+      var bullet = raw.match(/^\s*[-*]\s+(.*)$/);
+      var numbered = raw.match(/^\s*\d+[.)]\s+(.*)$/);
+      var item = bullet || numbered;
+      if (item) {
+        flushPara();
+        var tag = numbered ? "OL" : "UL";
+        if (!list || list.tagName !== tag) {
+          flushList();
+          list = document.createElement(numbered ? "ol" : "ul");
+          list.className = "msfea-list";
+        }
+        var li = document.createElement("li");
+        li.appendChild(inline(item[1]));
+        list.appendChild(li);
+      } else if (!raw.trim()) {
+        flushList();
+        flushPara();
+      } else {
+        flushList();
+        para.push(raw);
+      }
+    });
+    flushList();
+    flushPara();
+    return frag;
+  }
+
   function addBot(data) {
     var wrap = el("msfea-msg msfea-bot" + (data.refused ? " esc" : ""));
     var bodyEl = el("");
-    bodyEl.appendChild(linkify(data.answer || ""));
+    bodyEl.appendChild(renderAnswer(data.answer || ""));
     wrap.appendChild(bodyEl);
 
     if (data.citations && data.citations.length && !data.refused) {
