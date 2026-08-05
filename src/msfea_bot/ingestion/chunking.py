@@ -21,6 +21,9 @@ NORMALIZED_DIR = Path(__file__).resolve().parents[3] / "kb" / "normalized"
 DEFAULT_MAX_CHARS = 500
 DEFAULT_OVERLAP = 150
 
+# Headings whose sections are editorial metadata rather than answers for students.
+_NON_CONTENT_SECTIONS = {"about this document"}
+
 
 @dataclass
 class Chunk:
@@ -173,6 +176,12 @@ def chunk_markdown(
     def flush() -> None:
         text = "\n".join(buffer).strip()
         if not text:
+            return
+        # Provenance footers document the file for whoever maintains the KB; they are
+        # not student content and must not be retrievable. Measured: 7 of 182 chunks
+        # were these notes, and one was retrieved at rank 5 for "how do I submit a
+        # petition?", displacing real content.
+        if section.strip().lower() in _NON_CONTENT_SECTIONS:
             return
         heading = buffer[0] if buffer and _heading_level(buffer[0]) >= 2 else f"## {section}"
         lines = text.split("\n")

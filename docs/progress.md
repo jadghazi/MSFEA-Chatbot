@@ -6,7 +6,54 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
-## 2026-08-05 — Department-scoped answers + escalation routing (B-1 + B-2, ADR-0013)
+## 2026-08-05 — Restored lost links, new CDC rules, clickable answers (ADR-0016)
+
+Audited the original sources against the normalized KB and found **four URLs that
+existed in the .docx but were lost in normalization** — they sat behind anchor text
+("here", "petition", "self-secured internship form"), which is exactly how links
+vanish when Word becomes Markdown. The bot was telling students to complete a form
+without being able to reach it, in a paragraph warning the internship won't count
+toward graduation if mishandled.
+
+- **Restored + added links:** CDC students page, self-secured internship form, AUB
+  petition system, and the letter / convention-de-stage request form (supplied by the
+  CDC). The petition link is the bare entry point, not the .docx's deep link — that
+  one carried an Oracle APEX session id, which isn't durable.
+- **New CDC rules** (not in the June 2026 .docx, recorded as such in the document's
+  provenance footer): 90-credit eligibility minimum; remote internships not accepted;
+  internships inside AUB not accepted except in special circumstances.
+- **Clickable, safely.** The widget linkifies URLs and emails by building DOM nodes —
+  `createTextNode` for prose, `<a>` only for a scheme-checked match — so injection is
+  impossible by construction rather than escaped. Verified `javascript:`, `data:` and
+  raw `<img onerror=...>` all render as inert text. Coordinator emails are now
+  `mailto:` links, so escalation is one tap.
+- **Prompt:** the model had the link in context and still said "linked on their
+  website". One rule now requires URLs verbatim.
+
+**Two intermediate steps were wrong and the measurement caught them.** Adding the
+content *regressed* context-recall 97% -> 92%, breaking `internship-mandatory`. Then
+excluding department chunks for unscoped students — which seemed principled — measured
+**worse** (89%) and broke `dept-split-internship`, whose whole point is that an
+unplaced student should still learn the rule depends on their department. Reverted.
+
+The actual fixes: **top_k 5 -> 7** (swept: 5=92%, 7=95%, 10=97% — 7 is the knee), and
+**excluding "About this document" provenance footers from the index** — 7 of 182
+chunks were maintainer notes, one retrieved at rank 5 for "how do I submit a
+petition?". One of those footers predated this work, so that was a latent bug.
+
+**Final: context-recall@7 = 97%** (37/38), same single known `internship-vs-coop`
+miss, over 38 answerable questions (was 33). The eval now reports at the *configured*
+top_k — gating CI on a depth production doesn't use tests the wrong thing. Note
+`.env` pinned TOP_K=5 and overrode the new default; updated there too.
+
+Flagged for the CDC: the new "remote not accepted" rule contradicts IEM's rule
+permitting remote internships with U.S.-based companies (the general rule now points
+at the department exceptions rather than stating a false absolute); and ~12 named
+forms still have no link in any source document. 102 tests pass; ruff/mypy clean.
+
+---
+
+## 2026-08-05 — Department-scoped answers + escalation routing (B-1 + B-2, ADR-0015)
 
 Closed the two oldest backlog items. Both were raised on day one and deliberately
 deferred; the audit's metadata column is what made them cheap to build now.

@@ -27,7 +27,7 @@ class GoldenItem(BaseModel):
     # answerable (used by the context-recall retrieval metric). None for refusals.
     evidence: str | None = None
     # The asking student's department, for cases where the correct answer depends on
-    # it (ADR-0013). None = a general question, asked with no department set — which
+    # it (ADR-0015). None = a general question, asked with no department set — which
     # is also how every pre-existing case keeps its original meaning.
     department: str | None = None
     tags: list[str] = []

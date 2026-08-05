@@ -160,6 +160,15 @@
 }
 .msfea-disc::before{content:"ⓘ";font-style:normal;flex:0 0 auto}
 
+/* links inside an answer (forms, petitions, coordinator emails) */
+.msfea-link{
+  color:var(--m);font-weight:600;text-decoration:underline;
+  text-decoration-color:rgba(134,38,51,.35);text-underline-offset:2px;
+  overflow-wrap:anywhere;border-radius:3px;
+}
+.msfea-link:hover{color:var(--m-dark);text-decoration-color:var(--m-dark);background:#f7ecef}
+.msfea-link:focus-visible{outline:2px solid var(--m);outline-offset:2px}
+
 .msfea-rate{margin-top:10px;display:flex;align-items:center;gap:6px}
 .msfea-rate button{
   background:#fff;border:1px solid var(--line);border-radius:8px;cursor:pointer;
@@ -466,6 +475,66 @@
     row("u", el("msfea-msg msfea-user", text));
   }
 
+  // A URL (http/https only) or a bare email address.
+  var LINK_RE = /(https?:\/\/[^\s<>"']+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+
+  function shortenUrl(u) {
+    var s = u.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+    // Office Forms links run to 200+ chars and would wreck the layout. The full URL
+    // stays in href and title, so nothing is hidden from the student.
+    return s.length > 46 ? s.slice(0, 43) + "…" : s;
+  }
+
+  /* Turn URLs and emails in the model's answer into real links.
+   *
+   * Built from DOM nodes, never innerHTML: the answer is model output derived from
+   * retrieved documents, so it is not trusted markup. Text goes through
+   * createTextNode and only the href of a scheme-checked link is ever set, which
+   * makes injection impossible rather than merely escaped. */
+  function linkify(text) {
+    var frag = document.createDocumentFragment();
+    var last = 0;
+    var m;
+    LINK_RE.lastIndex = 0;
+    while ((m = LINK_RE.exec(text)) !== null) {
+      var raw = m[0];
+      var isEmail = !m[1];
+      var href = raw;
+      var trail = "";
+      if (!isEmail) {
+        // Don't swallow sentence punctuation into the link.
+        while (/[.,;:!?)\]]$/.test(href)) {
+          trail = href.slice(-1) + trail;
+          href = href.slice(0, -1);
+        }
+      }
+      // Defence in depth: the regex already excludes other schemes, but never set
+      // href from model output without confirming the scheme.
+      var safe = isEmail || /^https?:\/\//i.test(href);
+      if (m.index > last) {
+        frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      }
+      if (safe) {
+        var a = document.createElement("a");
+        a.className = "msfea-link";
+        a.href = isEmail ? "mailto:" + href : href;
+        a.textContent = isEmail ? href : shortenUrl(href);
+        a.title = href;
+        if (!isEmail) {
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+        }
+        frag.appendChild(a);
+      } else {
+        frag.appendChild(document.createTextNode(href));
+      }
+      if (trail) frag.appendChild(document.createTextNode(trail));
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    return frag;
+  }
+
   // "summer-training-guidelines-2026.md > Eligibility" -> "summer training guidelines 2026 › Eligibility"
   function prettyCitation(s) {
     var parts = String(s).split(">");
@@ -476,7 +545,9 @@
 
   function addBot(data) {
     var wrap = el("msfea-msg msfea-bot" + (data.refused ? " esc" : ""));
-    wrap.appendChild(el("", data.answer));
+    var bodyEl = el("");
+    bodyEl.appendChild(linkify(data.answer || ""));
+    wrap.appendChild(bodyEl);
 
     if (data.citations && data.citations.length && !data.refused) {
       var c = el("msfea-cite");

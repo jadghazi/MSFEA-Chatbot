@@ -17,6 +17,10 @@ This internship is a graduation requirement and is normally completed during the
 
 To successfully pass the course, you must complete the internship requirements, submit all deliverables on time, and follow the regulations outlined in this guide.
 
+## Eligibility
+
+To be eligible to register for the internship (Approved Experience) program, you must have completed a **minimum of 90 credits**.
+
 ## Course Registration
 
 Registration and payment deadlines follow the schedule announced by the University Registrar for the summer term:
@@ -32,11 +36,18 @@ To qualify for the Bachelor of Engineering degree, you must complete:
 - Typically equivalent to 320 work hours (8 weeks × 40 hours/week).
 - Training at a recognized company, organization, laboratory, or approved research setting in Lebanon or abroad.
 
+### Internships That Are Not Accepted
+
+- **Remote internships are not accepted.** Some departments allow narrow exceptions — see Department-Specific Rules.
+- **Internships inside AUB are not accepted**, except in special circumstances.
+
 Any exception to the internship requirements must be approved through a formal petition. Petitions must:
 
 - Be approved by both the Department and the Course Instructor.
 - Include all required supporting documents (incomplete petitions will automatically be rejected).
 - Be copied (CC) to the MSFEA Career Development Center (CDC) at fcareer@aub.edu.lb.
+
+Submit petitions through the AUB online petition system: https://petitions.aub.edu.lb
 
 Your internship should provide meaningful professional experience related to your field of study and allow you to apply engineering or design knowledge in practice. Requirements may vary slightly by department.
 
@@ -48,13 +59,21 @@ The MSFEA CDC office maintains strong relationships with employers and regularly
 - Regularly check internship postings.
 - Attend the CDC information session at the beginning of the academic year.
 
-You can find all CDC information relevant to summer internships (list of offers, letter requests, self-secured internship form) on the MSFEA CDC website.
+You can find all CDC information relevant to summer internships (list of offers, letter requests, self-secured internship form) on the MSFEA CDC students page: https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx
+
+### Requesting a Letter or Convention de Stage
+
+If the hiring company requires any type of letter or a convention de stage, request one through the CDC letter request form: https://forms.office.com/Pages/ResponsePage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUODdKUjhTOTNPMEhJVFJTOExOUjZJWUZNUi4u
+
+The CDC will get back to you as soon as possible.
 
 ## Securing an Internship Independently
 
 Students are responsible for securing their own internship opportunities and are encouraged to seek the support of the MSFEA Career Development Center (CDC).
 
-If you secure an internship on your own (outside the CDC), you must complete the CDC's self-secured internship form. Training offers not processed through the CDC and not pre-approved by the department will not be counted toward your graduation requirement.
+If you secure an internship on your own (outside the CDC), you must complete the CDC's self-secured internship form: https://forms.office.com/pages/responsepage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUM05XSkRJQThUQ1VaM1dLOEZUOVM4N1Q1RC4u
+
+Training offers not processed through the CDC and not pre-approved by the department will not be counted toward your graduation requirement.
 
 ### If the Company Is Already Listed with the CDC
 
@@ -248,3 +267,26 @@ Students may be asked to revise reports that do not meet department expectations
 - Research internships may be approved with Chair approval.
 - Students may take summer courses while completing internship hour requirements.
 - A reduced 6-week internship may be approved in exceptional cases for selected companies.
+
+---
+
+## About this document
+
+Normalized from `kb/source/Summer training guidelines - June 2026.docx`.
+
+**Additions after the original extraction (recorded so provenance stays honest):**
+
+- **2026-08-05 — hyperlinks restored.** Four URLs existed in the .docx but sat behind
+  anchor text ("here", "petition", "self-secured internship form") and were lost when
+  the document was converted to Markdown: the CDC students page, the self-secured
+  internship form, the AUB petition system, and the letter-request form. The petition
+  link is recorded as the bare `https://petitions.aub.edu.lb` entry point — the .docx
+  held a deep link carrying an Oracle APEX session id, which is not durable.
+- **2026-08-05 — rules supplied by the CDC via the project owner**, not present in the
+  June 2026 .docx: the 90-credit eligibility minimum; remote internships not accepted;
+  internships inside AUB not accepted except in special circumstances. These should be
+  reflected in the next official revision of the source document.
+- **Known tension:** the general "remote internships are not accepted" rule sits
+  alongside an IEM department rule permitting remote internships with U.S.-based
+  companies. The general rule is worded to point at the department exceptions rather
+  than state a false absolute. Confirm with the CDC which takes precedence.

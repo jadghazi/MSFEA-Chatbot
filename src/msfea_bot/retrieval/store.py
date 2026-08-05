@@ -279,7 +279,7 @@ def search(
     return the top-`k`. Each returned chunk still carries its cosine `score`, so the
     generation similarity-threshold gate is unaffected (ADR-0011).
 
-    `department` scopes the result to one student (ADR-0013). Two things happen:
+    `department` scopes the result to one student (ADR-0015). Two things happen:
 
     1. **Other departments are excluded.** MECH's rules can never be the right answer
        for a CEE student, and leaving them in actively misleads — measured on the real
@@ -296,9 +296,16 @@ def search(
     qv = embed_query(query)
     dept = departments.from_code(department)
     # Untrusted input: an unknown code degrades to no scoping rather than an error.
-    scope = "" if dept is None else f" WHERE ({_GENERAL} OR metadata->>'department' = %(dept)s)"
+    #
+    # Note: with NO department we deliberately leave department chunks in. Excluding
+    # them was tried and measured worse — the golden case `dept-split-internship`
+    # expects an unplaced student to still learn that the rule *depends* on their
+    # department, and exclusion removes the only content that can say so.
     params: dict[str, Any] = {"qv": qv, "cand": candidates}
-    if dept is not None:
+    if dept is None:
+        scope = ""
+    else:
+        scope = f" WHERE ({_GENERAL} OR metadata->>'department' = %(dept)s)"
         params["dept"] = dept.code
 
     with _connect() as conn:

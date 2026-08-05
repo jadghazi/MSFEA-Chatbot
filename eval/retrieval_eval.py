@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from eval.curated_cases import curated_eval_items
 from eval.loader import GoldenItem, load_golden_set
 from eval.metrics import evidence_present, recall_at_k
+from msfea_bot.config import settings
 from msfea_bot.retrieval.store import search
 
 
@@ -32,7 +33,17 @@ def _pct_bar(hits: int, total: int) -> str:
     return "#" * round(20 * hits / total) if total else ""
 
 
-def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> float:
+def _default_ks() -> tuple[int, ...]:
+    """Report at 1/3/5 plus whatever k production actually uses.
+
+    The CI gate is taken at the largest k, so it has to be the configured `top_k` —
+    otherwise the build is gated on a retrieval depth the bot never uses.
+    """
+    return tuple(sorted({1, 3, 5, settings.top_k}))
+
+
+def evaluate_retrieval(ks: tuple[int, ...] | None = None) -> float:
+    ks = ks or _default_ks()
     golden = [i for i in load_golden_set() if not i.should_refuse]
     curated = curated_eval_items()  # live cases from the curated table (all answerable)
     items = golden + curated
@@ -42,7 +53,7 @@ def evaluate_retrieval(ks: tuple[int, ...] = (1, 3, 5)) -> float:
     results: list[_Result] = []
     for item in items:
         # Department-scoped cases must be retrieved the way the student would ask
-        # them: with their department set (ADR-0013). None for every other case.
+        # them: with their department set (ADR-0015). None for every other case.
         chunks = search(item.question, top, department=item.department)
         results.append(
             _Result(item, [c.source_doc for c in chunks], [c.text for c in chunks])

@@ -1,4 +1,4 @@
-# ADR-0013 — Department-scoped answers and escalation routing
+# ADR-0015 — Department-scoped answers and escalation routing
 
 **Status:** Accepted
 **Date:** 2026-08-05

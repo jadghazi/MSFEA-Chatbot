@@ -73,7 +73,7 @@ class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     # Optional so existing embeds keep working. Untrusted: `departments.from_code`
     # ignores anything not on the known list, so a bad value degrades to an
-    # unscoped answer rather than an error (ADR-0013).
+    # unscoped answer rather than an error (ADR-0015).
     department: str | None = Field(default=None, max_length=32)
 
 

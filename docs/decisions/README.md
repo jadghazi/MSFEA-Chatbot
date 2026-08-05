@@ -40,6 +40,7 @@ file layout). Keep the log signal-heavy.
 | 0010 | Admin dashboard + curation feedback loop | Accepted |
 | 0011 | Hybrid retrieval (semantic + keyword, RRF) | Accepted |
 | 0012 | Deterministic decoding (temperature, seed, token ceiling) | Accepted |
-| 0013 | Department-scoped answers and escalation routing (B-1, B-2) | Accepted |
 | 0013 | Curated answers use the same windowing as KB content | Accepted |
 | 0014 | Split-table headers are display context, not retrieval text | Accepted |
+| 0015 | Department-scoped answers and escalation routing (B-1, B-2) | Accepted |
+| 0016 | Actionable links; top_k 5->7; provenance excluded from the index | Accepted |

@@ -77,3 +77,5 @@ Record every document as it lands, so freshness (`last-updated`) is trackable.
 - No student-identifying data in here (CLAUDE.md §7).
 - Originals in `source/` stay byte-for-byte as received; all cleaning happens in
   the pipeline and lands in `normalized/`.
+
+- **2026-08-05:** `summer-training-guidelines-2026.md` gained four URLs that were lost in the original normalization (they sat behind anchor text in the .docx) plus three rules supplied by the CDC that are not in the June 2026 file. Both are recorded in that document's "About this document" footer, which is excluded from the index.

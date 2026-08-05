@@ -47,7 +47,10 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://msfea:msfea@localhost:5432/msfea"
 
     # Retrieval / generation knobs
-    top_k: int = 5
+    # Swept against context-recall after the KB grew to 183 chunks (ADR-0016):
+    # k=5 -> 92%, k=7 -> 95%, k=10 -> 97%. 7 is the knee — it recovers a real case
+    # for two extra chunks (~1k chars), where 10 doubles the context for one more.
+    top_k: int = 7
     similarity_threshold: float = 0.0
 
     # Escalation target shown when the bot refuses
