@@ -44,3 +44,4 @@ file layout). Keep the log signal-heavy.
 | 0014 | Split-table headers are display context, not retrieval text | Accepted |
 | 0015 | Department-scoped answers and escalation routing (B-1, B-2) | Accepted |
 | 0016 | Actionable links; top_k 5->7; provenance excluded from the index | Accepted |
+| 0017 | Tables are atomic chunks (supersedes 0014's split-table handling) | Accepted |

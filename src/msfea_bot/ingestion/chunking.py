@@ -84,6 +84,33 @@ def _slug(text: str) -> str:
     return "".join(c for c in lowered if c.isalnum() or c == "-")[:50]
 
 
+def _unbreakable_lines(lines: list[str]) -> set[int]:
+    """Line indices where a window boundary must NOT fall: inside a markdown table.
+
+    A table is one unit of meaning. Splitting it produces several near-identical
+    fragments that carry the same heading, compete with each other for the same
+    top-k slots, and make a complete answer impossible: measured on the real KB, the
+    9-row deliverables table became 6 chunks, only 4 could fit, and the fragment
+    holding the "Progress Report" row ranked 18th — so that deliverable silently
+    vanished from the answer.
+
+    Cutting *at* the header row is fine (that starts a fresh table); cutting anywhere
+    after it is not.
+    """
+    blocked: set[int] = set()
+    i = 0
+    while i < len(lines) - 1:
+        if _is_table_row(lines[i]) and _is_table_separator(lines[i + 1]):
+            end = i + 2
+            while end < len(lines) and _is_table_row(lines[end]):
+                end += 1
+            blocked.update(range(i + 1, end))  # header stays cuttable, the rest doesn't
+            i = end
+        else:
+            i += 1
+    return blocked
+
+
 def _window_spans(lines: list[str], max_chars: int, overlap: int) -> list[tuple[int, int]]:
     """Half-open [start, end) line spans for each window.
 
@@ -91,10 +118,13 @@ def _window_spans(lines: list[str], max_chars: int, overlap: int) -> list[tuple[
     to repair markdown tables split across windows (see `_table_headers`).
     """
     spans: list[tuple[int, int]] = []
+    blocked = _unbreakable_lines(lines)
     start = 0
     length = 0
     for i, line in enumerate(lines):
-        if length + len(line) + 1 > max_chars and i > start:
+        # `i not in blocked` keeps tables whole: the window simply runs past
+        # max_chars until the table ends, rather than slicing it in half.
+        if length + len(line) + 1 > max_chars and i > start and i not in blocked:
             spans.append((start, i))
             # Step back so the next window repeats ~overlap chars of trailing lines.
             kept = 0
@@ -102,6 +132,8 @@ def _window_spans(lines: list[str], max_chars: int, overlap: int) -> list[tuple[
             while j > start and kept + len(lines[j - 1]) + 1 <= overlap:
                 j -= 1
                 kept += len(lines[j]) + 1
+            if j in blocked:  # overlap would start mid-table — take no overlap here
+                j, kept = i, 0
             start = j
             length = kept
         length += len(line) + 1

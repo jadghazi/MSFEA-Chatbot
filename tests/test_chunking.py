@@ -59,18 +59,35 @@ title: Doc
 )
 
 
-def test_split_table_carries_its_header_as_display_prefix() -> None:
-    """A window starting mid-table must not present unlabelled columns."""
-    chunks = chunk_markdown(TABLE_MD, "doc.md", max_chars=400, overlap=100)
-    assert len(chunks) > 1, "the table should be split across windows"
+def test_tables_are_never_split_across_chunks() -> None:
+    """A table is one unit of meaning and must survive windowing intact.
 
-    continuation = [c for c in chunks if c.display_prefix]
-    assert continuation, "windows starting inside the table body need a header prefix"
-    for c in continuation:
-        assert c.display_prefix.startswith("| Timeline | Deliverable | Where |")
-        # The header must NOT be in `text` — that is what gets embedded and
-        # full-text indexed, and folding it in measurably cost context-recall.
-        assert "| Timeline | Deliverable | Where |" not in c.text
+    Supersedes the older display_prefix behaviour, which patched the header back
+    onto mid-table windows. Splitting was the real defect: on the real KB the 9-row
+    deliverables table became 6 near-identical chunks that competed for the same
+    top-k slots, the fragment holding the "Progress Report" row ranked 18th, and
+    that deliverable silently disappeared from the answer. Keeping the table whole
+    took the answer from 6/9 rows to 9/9.
+    """
+    # max_chars far below the table's size — it must still come back whole.
+    chunks = chunk_markdown(TABLE_MD, "doc.md", max_chars=120, overlap=40)
+
+    holding = [c for c in chunks if "| Timeline | Deliverable | Where |" in c.text]
+    assert len(holding) == 1, "the table header must appear in exactly one chunk"
+
+    body_rows = [
+        line
+        for line in TABLE_MD.splitlines()
+        if line.startswith("|") and "---" not in line and "Timeline |" not in line
+    ]
+    assert body_rows, "fixture should contain table body rows"
+    for row in body_rows:
+        owners = [c for c in chunks if row in c.text]
+        assert len(owners) == 1, f"row split or duplicated across chunks: {row!r}"
+        assert owners[0] is holding[0], f"row separated from its header: {row!r}"
+
+    # Kept whole even though that pushes the chunk past max_chars — deliberate.
+    assert len(holding[0].text) > 120
 
 
 def test_first_table_window_needs_no_prefix() -> None:

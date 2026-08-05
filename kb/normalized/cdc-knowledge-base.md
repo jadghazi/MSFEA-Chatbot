@@ -167,6 +167,7 @@ If a linked form ever stops working, the CDC students page above always has the 
 ## Quick Reference: Key Numbers
 - Internship minimum duration: **8 weeks**
 - Internship minimum credits to register: **90 credits**
+- Professional Skills Requirement — minimum score on the Moodle quiz: **75%**
 - CO-OP minimum work term: **6 months** (paid)
 - CO-OP minimum GPA: **3.3 (B+)**
 - CO-OP minimum credits (at FEAA 500 enrollment): **90 credits**

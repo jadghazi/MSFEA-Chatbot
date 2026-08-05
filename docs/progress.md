@@ -6,6 +6,39 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-08-05 — Tables are atomic chunks (ADR-0017)
+
+"What are the deliverables" listed 6 of 9 rows. Not trimming, not hallucinating —
+**the missing rows were never retrieved.** The chunker had split that table into 6
+near-identical ~500-char windows which all carry the same heading and therefore
+compete for the same top-k slots. At k=7: 3 slots to CO-OP, 4 to table fragments,
+and the fragment holding "Progress Report" ranked **18th**. Retrieval cannot
+reassemble a table it already tore apart.
+
+- **Fix:** a window boundary may never fall inside a markdown table. The window runs
+  past `max_chars` until the table ends. Cutting *at* a header row is still fine.
+- **Result:** deliverables table 6 chunks -> **1 chunk with all 9 rows**; chunks
+  holding table rows without their header **14 -> 0** (fixes the audit finding at
+  source instead of patching it); the answer went **6/9 -> 9/9 rows**.
+- **A regression appeared and was fixed, not accepted.** Atomic tables buried the
+  "75%" quiz score in a 1,934-char chunk — exactly what ADR-0006 introduced
+  windowing to prevent — dropping context-recall@7 97% -> 95%. The fix was content,
+  not structure: "Quick Reference: Key Numbers" exists for specific-fact lookups and
+  was missing that number. Adding it restored **@7 = 97%** and improved @5 95% ->
+  **97%**.
+
+The general lesson, recorded in the ADR: **big chunks answer list-shaped questions,
+small chunks answer fact-shaped questions.** Keep the table whole, and give any
+specific fact buried inside it a short home of its own.
+
+Accepted cost: context-recall@1 85% -> 77% (production retrieves 7, so @5/@7 are
+what matter); three chunks now exceed max_chars; `display_prefix` is now unreachable
+for tables and can be removed in a follow-up. Correct-refusal re-verified **6/6**.
+The obsolete display_prefix test was replaced with the stronger invariant — a table
+is never split or duplicated across chunks. 102 tests pass. Needs a re-ingest.
+
+---
+
 ## 2026-08-05 — Answer style: talk to a student, don't reprint the handbook
 
 Two problems, one of them mine. Answers read as near-verbatim dumps of the
