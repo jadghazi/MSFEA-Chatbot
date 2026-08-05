@@ -6,6 +6,43 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-08-05 — Internship is the default program (fixes a false refusal)
+
+"what are the deliverables" was refused for a MECH student. Diagnosed with the
+retrieval/generation split: **retrieval was fine** — the deliverables table was in
+context (4 internship chunks + 3 CO-OP). The model refused an answer it had.
+
+Cause was a gap in the prompt. It told the model what to do when an ambiguous
+question maps to *one* program (prefix it) and when the context *lacks* the answer
+(refuse), but said nothing about a question that maps to *several* — so it fell
+through to the refusal marker.
+
+**Product decision (Jad):** the bot is primarily for internships; CO-OP is a small
+minority of students. So the internship (Approved Experience) is now the **default**
+when a question names no program, rather than answering for every program at once.
+CO-OP/IAESTE are answered when the question names them, or when only that program's
+content answers it.
+
+**A first attempt broke the guardrail and the measurement caught it.** Wording it as
+"do NOT refuse — you do have the answer" leaked past the intended case and produced
+**2 missed refusals** ("Is Acme Corp approved?" and "the exact deadline this year"
+were both answered). Missed refusals are the dangerous direction for this product.
+Rescoped to apply only when the *sole* ambiguity is the missing program name, with
+an explicit re-assertion that case-specific questions — a company's approval status,
+an individual's situation, an exact calendar date — still refuse.
+
+**Verified:** correct-refusal back to **6/6**; "what are the deliverables" now
+answers with the internship deliverables; "what are the coop deliverables" and
+"What GPA do I need for co-op?" still answer for CO-OP.
+
+Known and accepted: "what are the timelines" still gets the guiding refusal. That
+matches the 2026-07-27 decision to guide vague questions toward specificity rather
+than guess, though it sits inconsistently beside "deliverables" now answering.
+Prompt-only change — retrieval and the index are untouched, no re-ingest needed.
+102 tests pass.
+
+---
+
 ## 2026-08-05 — KB reconciled: one form policy, links where retrieval lands
 
 Follow-up to the link restoration. "i found an internship now what" returned no
