@@ -20,6 +20,12 @@ def test_health_ok() -> None:
     assert resp.json() == {"status": "ok"}
 
 
+def test_root_redirects_to_standalone_pilot() -> None:
+    resp = client.get("/", follow_redirects=False)
+    assert resp.status_code == 307
+    assert resp.headers["location"] == "/widget/demo.html"
+
+
 def test_ready_checks_the_index(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module, "index_is_ready", lambda: True)
     resp = client.get("/ready")

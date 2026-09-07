@@ -19,6 +19,7 @@ from typing import Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -77,6 +78,12 @@ app.add_middleware(
 )
 
 _limiter = RateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds)
+
+
+@app.get("/", include_in_schema=False)
+def pilot_home() -> RedirectResponse:
+    """Send the public hostname directly to the standalone pilot assistant."""
+    return RedirectResponse(url="/widget/demo.html")
 
 
 def _client_key(request: Request) -> str:
