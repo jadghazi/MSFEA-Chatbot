@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from threading import Lock
 from typing import Any
 
 import psycopg
@@ -32,7 +33,11 @@ class FeedbackItem:
 
 
 def _connect() -> Any:
-    return psycopg.connect(settings.database_url, autocommit=True)
+    return psycopg.connect(settings.database_url, autocommit=True, connect_timeout=5)
+
+
+_schema_ready = False
+_schema_lock = Lock()
 
 
 def _init_schema(conn: Any) -> None:
@@ -46,12 +51,43 @@ def _init_schema(conn: Any) -> None:
         "  citations TEXT[] NOT NULL DEFAULT '{}',"
         "  retrieved TEXT[] NOT NULL DEFAULT '{}',"
         "  rating SMALLINT,"
-        "  resolved_at TIMESTAMPTZ"
+        "  resolved_at TIMESTAMPTZ,"
+        "  error_code TEXT,"
+        "  llm_input_tokens INTEGER,"
+        "  llm_output_tokens INTEGER,"
+        "  llm_total_tokens INTEGER,"
+        "  llm_cached_tokens INTEGER,"
+        "  llm_latency_ms INTEGER"
         ")"
     )
     # Migrations for tables created before these columns existed.
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS rating SMALLINT")
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS resolved_at TIMESTAMPTZ")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS error_code TEXT")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_input_tokens INTEGER")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_output_tokens INTEGER")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_total_tokens INTEGER")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_cached_tokens INTEGER")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_latency_ms INTEGER")
+
+
+def _ensure_schema(conn: Any) -> None:
+    """Initialize once per process; normal requests pay only a boolean check."""
+    global _schema_ready
+    if _schema_ready:
+        return
+    with _schema_lock:
+        if not _schema_ready:
+            _init_schema(conn)
+            _schema_ready = True
+
+
+def initialize_schema() -> None:
+    """Create/migrate the interaction table during application startup."""
+    if _schema_ready:
+        return
+    with _connect() as conn:
+        _ensure_schema(conn)
 
 
 def log_interaction(question: str, answer: Answer) -> int | None:
@@ -61,11 +97,26 @@ def log_interaction(question: str, answer: Answer) -> int | None:
     """
     try:
         with _connect() as conn:
-            _init_schema(conn)
+            _ensure_schema(conn)
             row = conn.execute(
-                "INSERT INTO interactions (question, refused, answer, citations, retrieved)"
-                " VALUES (%s, %s, %s, %s, %s) RETURNING id",
-                (question, answer.refused, answer.text, answer.citations, answer.retrieved),
+                "INSERT INTO interactions ("
+                " question, refused, answer, citations, retrieved, error_code,"
+                " llm_input_tokens, llm_output_tokens, llm_total_tokens,"
+                " llm_cached_tokens, llm_latency_ms)"
+                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                (
+                    question,
+                    answer.refused,
+                    answer.text,
+                    answer.citations,
+                    answer.retrieved,
+                    answer.error_code,
+                    answer.input_tokens,
+                    answer.output_tokens,
+                    answer.total_tokens,
+                    answer.cached_tokens,
+                    answer.llm_latency_ms,
+                ),
             ).fetchone()
         return int(row[0]) if row else None
     except Exception as exc:  # noqa: BLE001 - fail-safe by design
@@ -79,7 +130,7 @@ def set_rating(interaction_id: int, rating: int) -> bool:
         raise ValueError("rating must be +1 or -1")
     try:
         with _connect() as conn:
-            _init_schema(conn)
+            _ensure_schema(conn)
             cur = conn.execute(
                 "UPDATE interactions SET rating = %s WHERE id = %s", (rating, interaction_id)
             )
@@ -98,7 +149,7 @@ def resolve_interaction(interaction_id: int) -> bool:
     """
     try:
         with _connect() as conn:
-            _init_schema(conn)
+            _ensure_schema(conn)
             cur = conn.execute(
                 "UPDATE interactions SET resolved_at = now()"
                 " WHERE id = %s AND resolved_at IS NULL",
@@ -119,10 +170,11 @@ def resolve_by_question(question: str) -> int:
     """
     try:
         with _connect() as conn:
-            _init_schema(conn)
+            _ensure_schema(conn)
             cur = conn.execute(
                 "UPDATE interactions SET resolved_at = now()"
-                " WHERE question = %s AND resolved_at IS NULL AND (refused OR rating = -1)",
+                " WHERE question = %s AND resolved_at IS NULL AND error_code IS NULL"
+                " AND (refused OR rating = -1)",
                 (question,),
             )
             return int(cur.rowcount)
@@ -134,9 +186,10 @@ def resolve_by_question(question: str) -> int:
 def recent_unanswered(limit: int = 50) -> list[tuple[datetime, str]]:
     """Recent escalated/refused questions — the roadmap for what KB content to add."""
     with _connect() as conn:
-        _init_schema(conn)
+        _ensure_schema(conn)
         rows = conn.execute(
-            "SELECT ts, question FROM interactions WHERE refused ORDER BY ts DESC LIMIT %s",
+            "SELECT ts, question FROM interactions"
+            " WHERE refused AND error_code IS NULL ORDER BY ts DESC LIMIT %s",
             (limit,),
         ).fetchall()
     return [(row[0], row[1]) for row in rows]
@@ -145,34 +198,47 @@ def recent_unanswered(limit: int = 50) -> list[tuple[datetime, str]]:
 def stats() -> dict[str, int]:
     """Aggregate usage counts for the admin dashboard (no student-identifying data)."""
     with _connect() as conn:
-        _init_schema(conn)
+        _ensure_schema(conn)
         row = conn.execute(
             "SELECT count(*),"
-            " count(*) FILTER (WHERE refused),"
+            " count(*) FILTER (WHERE NOT refused AND error_code IS NULL),"
+            " count(*) FILTER (WHERE refused AND error_code IS NULL),"
+            " count(*) FILTER (WHERE error_code IS NOT NULL),"
             " count(*) FILTER (WHERE rating = 1),"
             " count(*) FILTER (WHERE rating = -1),"
-            " count(*) FILTER (WHERE (refused OR rating = -1) AND resolved_at IS NULL)"
+            " count(*) FILTER (WHERE (refused OR rating = -1)"
+            "   AND error_code IS NULL AND resolved_at IS NULL),"
+            " coalesce(sum(llm_input_tokens), 0),"
+            " coalesce(sum(llm_output_tokens), 0),"
+            " coalesce(round(avg(llm_latency_ms) FILTER (WHERE llm_latency_ms IS NOT NULL)), 0)"
             " FROM interactions"
         ).fetchone()
-    vals = row or (0, 0, 0, 0, 0)
-    total, refused, up, down, pending = (int(vals[i]) for i in range(5))
+    vals = row or (0,) * 10
+    total, answered, refused, errors, up, down, pending, input_tokens, output_tokens, latency = (
+        int(vals[i]) for i in range(10)
+    )
     return {
         "total": total,
-        "answered": total - refused,
+        "answered": answered,
         "refused": refused,
+        "temporary_errors": errors,
         "thumbs_up": up,
         "thumbs_down": down,
         "pending": pending,
+        "llm_input_tokens": input_tokens,
+        "llm_output_tokens": output_tokens,
+        "avg_llm_latency_ms": latency,
     }
 
 
 def feedback_items(limit: int = 100) -> list[FeedbackItem]:
     """Interactions that need admin attention: refused OR thumbs-down."""
     with _connect() as conn:
-        _init_schema(conn)
+        _ensure_schema(conn)
         rows = conn.execute(
             "SELECT id, ts, question, answer, refused, rating, retrieved"
-            " FROM interactions WHERE (refused OR rating = -1) AND resolved_at IS NULL"
+            " FROM interactions WHERE (refused OR rating = -1) AND error_code IS NULL"
+            " AND resolved_at IS NULL"
             " ORDER BY ts DESC LIMIT %s",
             (limit,),
         ).fetchall()

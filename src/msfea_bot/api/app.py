@@ -12,7 +12,10 @@ real AUB page).
 from __future__ import annotations
 
 import hmac
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,17 +33,41 @@ from msfea_bot.curation.service import (
 from msfea_bot.curation.store import list_curated
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
-from msfea_bot.observability.privacy import anonymize
+from msfea_bot.generation.conversation import (
+    MAX_HISTORY_MESSAGES,
+    MAX_HISTORY_MESSAGE_CHARS,
+    ConversationMessage,
+)
+from msfea_bot.ingestion.embeddings import warm_embedding_model
+from msfea_bot.llm import LLMConfigurationError, LLMRateLimitError, LLMServiceError
+from msfea_bot.observability.privacy import anonymize, warm_anonymizer
 from msfea_bot.observability.store import (
     feedback_items,
+    initialize_schema as initialize_observability_schema,
     log_interaction,
     resolve_by_question,
     resolve_interaction,
     set_rating,
     stats,
 )
+from msfea_bot.retrieval.store import (
+    index_is_ready,
+    initialize_schema as initialize_retrieval_schema,
+)
 
-app = FastAPI(title="MSFEA Internship Chatbot API")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    """Initialize storage and local inference before accepting pilot traffic."""
+    if settings.warm_models_on_startup:
+        warm_embedding_model()
+        warm_anonymizer()
+    initialize_retrieval_schema()
+    initialize_observability_schema()
+    yield
+
+
+app = FastAPI(title="MSFEA CDC Chatbot API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -69,12 +96,20 @@ def rate_limit(request: Request) -> None:
         )
 
 
+class HistoryMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=MAX_HISTORY_MESSAGE_CHARS)
+
+
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     # Optional so existing embeds keep working. Untrusted: `departments.from_code`
     # ignores anything not on the known list, so a bad value degrades to an
     # unscoped answer rather than an error (ADR-0015).
     department: str | None = Field(default=None, max_length=32)
+    # Ephemeral and client-owned: never assigned a server-side conversation id or
+    # persisted as a profile. The hard bound controls latency/token use (ADR-0018).
+    history: list[HistoryMessage] = Field(default_factory=list, max_length=MAX_HISTORY_MESSAGES)
 
 
 class ChatResponse(BaseModel):
@@ -83,6 +118,25 @@ class ChatResponse(BaseModel):
     refused: bool
     disclaimer: str
     interaction_id: int | None = None
+    error_code: str | None = None
+
+
+def _temporary_failure(code: str, department: str | None) -> Answer:
+    """Student-safe operational failure, distinct from a missing-KB refusal."""
+    dept = departments.from_code(department)
+    contact = (
+        f"{dept.contact_name} ({dept.contact_email})"
+        if dept
+        else settings.escalation_contact or "the CDC office"
+    )
+    if code == "rate_limited":
+        text = (
+            "The assistant has reached its current usage limit. Please try again in "
+            f"a few minutes. If it is still unavailable later today, contact {contact}."
+        )
+    else:
+        text = f"The assistant is temporarily unavailable. Please try again or contact {contact}."
+    return Answer(text=text, citations=[], refused=True, disclaimer="", error_code=code)
 
 
 @app.get("/health")
@@ -91,12 +145,30 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/ready")
+def ready() -> dict[str, str]:
+    """Confirm that the populated KB matches this container's embedding model."""
+    try:
+        if not index_is_ready():
+            raise HTTPException(status_code=503, detail="Knowledge base is not ready.")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="Knowledge base is not ready.") from exc
+    return {"status": "ready"}
+
+
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
     """Answer a question via the guarded bot; degrade gracefully on backend errors."""
     # Sanitize, then anonymize once; use the same text for the LLM and the log
     # (CLAUDE.md §7).
     question = anonymize(sanitize(req.question))
+    history = [
+        ConversationMessage(message.role, cleaned)
+        for message in req.history
+        if (cleaned := anonymize(sanitize(message.content)))
+    ]
     # Normalised here so an unknown value is dropped once, at the edge, rather than
     # being passed down and re-validated in retrieval, generation and logging.
     dept = departments.from_code(req.department)
@@ -110,18 +182,15 @@ def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
         )
     else:
         try:
-            result = generate_answer(question, department=dept_code)
-        except Exception:  # noqa: BLE001 - never 500 at the student; escalate gracefully
-            contact = (
-                f"{dept.contact_name} ({dept.contact_email})"
-                if dept
-                else settings.escalation_contact or "the CDC office"
-            )
-            result = Answer(
-                text=f"Sorry, I'm having trouble right now. Please contact {contact}.",
-                citations=[],
-                refused=True,
-            )
+            result = generate_answer(question, department=dept_code, history=history)
+        except LLMRateLimitError:
+            result = _temporary_failure("rate_limited", dept_code)
+        except LLMConfigurationError:
+            result = _temporary_failure("configuration_error", dept_code)
+        except LLMServiceError:
+            result = _temporary_failure("service_unavailable", dept_code)
+        except Exception:  # noqa: BLE001 - never expose an internal 500 to a student
+            result = _temporary_failure("service_unavailable", dept_code)
 
     interaction_id = log_interaction(question, result)  # fail-safe; never breaks the response
 
@@ -131,6 +200,7 @@ def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
         refused=result.refused,
         disclaimer=result.disclaimer,
         interaction_id=interaction_id,
+        error_code=result.error_code,
     )
 
 

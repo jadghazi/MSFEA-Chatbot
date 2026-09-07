@@ -9,7 +9,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
+
+from msfea_bot.generation.conversation import ConversationMessage
 
 GOLDEN_SET_PATH = Path(__file__).parent / "golden_set.jsonl"
 
@@ -30,6 +32,9 @@ class GoldenItem(BaseModel):
     # it (ADR-0015). None = a general question, asked with no department set — which
     # is also how every pre-existing case keeps its original meaning.
     department: str | None = None
+    # Optional earlier turns for multi-turn cases. The production bounds still
+    # apply when the evaluator builds the retrieval query and answer prompt.
+    history: list[ConversationMessage] = Field(default_factory=list)
     tags: list[str] = []
     is_synthetic: bool = False
     notes: str | None = None

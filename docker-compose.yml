@@ -14,8 +14,7 @@ services:
       POSTGRES_DB: msfea
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"          # convenience for host-based dev; safe to drop in prod
+    # No host port: app/dev containers reach PostgreSQL privately as "db:5432".
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U msfea -d msfea"]
       interval: 5s
@@ -30,11 +29,14 @@ services:
       # Inside Compose the database is reached at host "db", not localhost. This
       # overrides DATABASE_URL from .env (that value is for host-based dev only).
       DATABASE_URL: postgresql://msfea:msfea@db:5432/msfea
+      # Readiness should mean the CPU-local embedding and PII-redaction models
+      # are loaded, so the first student does not wait through a cold start.
+      WARM_MODELS_ON_STARTUP: "true"
     depends_on:
       db:
         condition: service_healthy   # wait until Postgres is actually ready
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"  # local demo; production exposes only Caddy
     restart: unless-stopped
 
 volumes:

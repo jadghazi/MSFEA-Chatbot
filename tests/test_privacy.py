@@ -2,7 +2,7 @@
 
 import pytest
 
-from msfea_bot.observability.privacy import _ner, anonymize
+from msfea_bot.observability.privacy import _ner, anonymize, warm_anonymizer
 
 
 def test_strips_email() -> None:
@@ -33,3 +33,10 @@ def test_redacts_person_name() -> None:
     out = anonymize("Hi, my name is Sara Khoury and I need help with my internship.")
     assert "Sara Khoury" not in out
     assert "[redacted-name]" in out
+
+
+def test_warm_anonymizer_runs_inference(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[str] = []
+    monkeypatch.setattr("msfea_bot.observability.privacy._ner", lambda: seen.append("load") or seen.append)
+    warm_anonymizer()
+    assert seen == ["load", "Pilot startup readiness probe."]

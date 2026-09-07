@@ -4,6 +4,7 @@ Every environment variable the app reads is loaded and validated *here* and
 nowhere else (CLAUDE.md §6). Import the singleton `settings` from this module.
 """
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -51,7 +52,9 @@ class Settings(BaseSettings):
     # k=5 -> 92%, k=7 -> 95%, k=10 -> 97%. 7 is the knee — it recovers a real case
     # for two extra chunks (~1k chars), where 10 doubles the context for one more.
     top_k: int = 7
-    similarity_threshold: float = 0.0
+    # Calibrated in ADR-0020 against answerable, terse/misspelled valid, and
+    # clearly off-topic queries. Below this cosine score, skip the paid LLM call.
+    similarity_threshold: float = Field(default=0.60, ge=0.0, le=1.0)
 
     # Escalation target shown when the bot refuses
     escalation_contact: str = ""
@@ -66,6 +69,9 @@ class Settings(BaseSettings):
     rate_limit_requests: int = 20  # max requests per client per window
     rate_limit_window_seconds: float = 60.0
     trust_proxy_headers: bool = False  # set True only behind a trusted reverse proxy
+    # Docker enables this so readiness means the local embedding/NER models are
+    # loaded; tests and host development keep startup fast by default.
+    warm_models_on_startup: bool = False
 
     # Admin dashboard: shared secret protecting /admin endpoints. Empty = admin
     # disabled (endpoints return 403). Set a strong value in production.

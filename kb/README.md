@@ -52,6 +52,12 @@ limitation: `python-docx` does not capture hyperlink URLs (only link text).
 |-----------------|------|
 | `msfea-cdc-coop-handbook.md` | `msfea-cdc-coop-handbook.pdf` (extracted with `pypdf`; ToC/headers/footnotes stripped). Now the **authoritative CO-OP source** — the CO-OP section in `cdc-knowledge-base.md` was reduced to a pointer to avoid duplicate chunks. The Figure-1 application-timeline (an image) was transcribed from the batch-1 KB; the FEAA 500 syllabus appendix is not included. |
 
+### Normalized outputs (email clarifications)
+
+| Normalized file | From |
+|-----------------|------|
+| `email-clarifications.md` | `email-clarifications.md` (approved reusable answers consolidated from course email information; temporary exceptions and personal/case-specific data excluded). |
+
 ## Provenance manifest
 
 Record every document as it lands, so freshness (`last-updated`) is trackable.
@@ -63,6 +69,7 @@ Record every document as it lands, so freshness (`last-updated`) is trackable.
 | `Internship Templates and Rubrics- Shared with Committee.docx` | Report/presentation templates + rubrics | Provided (batch 1) | 2026 | Strip committee cover note; keep student-facing templates/rubrics. |
 | `MSFEA_AUB_Advanced Experience template font.pptx` | Final-presentation slide template (8 slides) | Provided (batch 1) | 2022 | Template artifact; extract section structure only. |
 | `msfea-cdc-coop-handbook.pdf` | Official 10-page MSFEA CO-OP (Cooperative Education) handbook | Provided by student (batch 2) | 2026-07 (received; undated in source) | Authoritative CO-OP reference. **Known extraction gap:** the application-deadline workflow is an image (Figure 1) and the FEAA 500 syllabus (Appendix 1) is not in the text — see the "About this document" note in the normalized file. |
+| `email-clarifications.md` | Reusable internship-course clarifications extracted from email information | Approved during project review | 2026-09 | Contains only question/topic, answer, and department. ECE exceptions are explicitly scoped; temporary remote and CO-OP proposals were excluded. |
 
 ## Adding or updating content later
 

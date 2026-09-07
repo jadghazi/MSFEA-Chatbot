@@ -4,7 +4,7 @@
 # Design goals: portable (builds on x86_64 and Apple-Silicon/arm64), offline at
 # runtime (models baked in — safe behind AUB's firewall), reproducible, non-root.
 
-FROM python:3.12-slim
+FROM python:3.12-slim AS production
 
 # Fail-fast Python, no bytecode/pip cache, and a fixed model-cache path so the
 # models baked below are found at runtime.
@@ -24,13 +24,25 @@ WORKDIR /app
 COPY pyproject.toml ./
 RUN pip install torch --index-url https://download.pytorch.org/whl/cpu
 
-# --- Dependencies + package (EDITABLE install) -------------------------------
-# Editable keeps the package at /app/src, so the app's path resolution for kb/,
-# widget/ and dashboard/ (Path(__file__).parents[3]) points at /app. A normal
-# install would relocate the package into site-packages and break those paths.
-# torch is already satisfied above, so this won't pull the CUDA build.
-COPY src ./src
-RUN pip install -e ".[gemini]"
+# --- Dependencies ------------------------------------------------------------
+# Install from pyproject *before* copying source. A code-only edit must not
+# invalidate the expensive language/embedding-model layer below. `tomllib` is in
+# Python 3.12, so this adds no build dependency and keeps pyproject as the single
+# dependency source of truth.
+RUN python - <<'PY'
+import subprocess
+import sys
+import tomllib
+
+with open("pyproject.toml", "rb") as f:
+    project = tomllib.load(f)["project"]
+dependencies = [*project["dependencies"], *project["optional-dependencies"]["gemini"]]
+subprocess.check_call([sys.executable, "-m", "pip", "install", *dependencies])
+PY
+
+# Do not ship the vulnerable packaging-tool versions bundled by the base image.
+# Keep this before model/source/content layers so normal edits reuse the result.
+RUN pip install --upgrade pip==26.2 setuptools==83.0.0
 
 # --- Bake models so the container needs NO internet at runtime ---------------
 # Fast startup and firewall-safe. Override at build time with
@@ -43,6 +55,19 @@ ARG EMBEDDING_MODEL_REVISION=5c38ec7c405ec4b44b94cc5a9bb96e735b38267a
 RUN python -m spacy download en_core_web_sm \
  && python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('${EMBEDDING_MODEL}', revision='${EMBEDDING_MODEL_REVISION}')"
 
+# Runtime must use only the baked snapshots. Without these flags the Hugging Face
+# client still performs network resolution and an offline container can hang during
+# startup even though the weights are present locally.
+ENV HF_HUB_OFFLINE=1 \
+    TRANSFORMERS_OFFLINE=1
+
+# --- Package source (editable) -----------------------------------------------
+# Copied only after the model layer so normal code edits rebuild in seconds.
+# Editable keeps the package at /app/src, so path resolution for kb/, widget/ and
+# dashboard/ points at /app. `--no-deps` prevents redundant dependency resolution.
+COPY src ./src
+RUN pip install --no-deps -e .
+
 # --- App content the API serves and ingests from -----------------------------
 # Copied last (changes more often than code/deps) for better layer caching.
 COPY kb ./kb
@@ -50,14 +75,34 @@ COPY widget ./widget
 COPY dashboard ./dashboard
 
 # --- Run as a non-root user --------------------------------------------------
-RUN useradd --create-home --uid 10001 appuser \
- && chown -R appuser:appuser /app /opt/models
+# App code and baked models are runtime read-only and world-readable. Do not
+# recursively chown them: touching the multi-GB model tree made every tiny widget
+# or KB edit export a huge new layer.
+RUN useradd --create-home --uid 10001 appuser
 USER appuser
 
 EXPOSE 8000
 
-# Liveness probe using only the stdlib (no curl in the image).
-HEALTHCHECK --interval=30s --timeout=5s --start-period=45s --retries=3 \
-  CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"
+# Readiness probe using only the stdlib (no curl in the image).
+HEALTHCHECK --interval=30s --timeout=5s --start-period=240s --retries=3 \
+  CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/ready').status==200 else 1)"
 
 CMD ["uvicorn", "msfea_bot.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# --- Persistent development/test image --------------------------------------
+# Built explicitly through docker-compose.dev.yml. It inherits the exact runtime
+# environment and baked models used in production, then adds the pinned tools once
+# so every lint/type/test run does not download them into a disposable container.
+FROM production AS development
+
+USER root
+RUN pip install -e ".[dev,gemini]"
+USER appuser
+
+WORKDIR /workspace
+HEALTHCHECK NONE
+CMD ["python", "-m", "pytest", "-q"]
+
+# Keep a plain `docker build .` production-safe even though the development stage
+# must be declared after it in order to inherit the complete runtime image.
+FROM production AS final

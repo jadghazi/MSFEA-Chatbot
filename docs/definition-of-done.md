@@ -1,6 +1,7 @@
 # Definition of Done — Phase 0
 
-**Status:** DRAFT — awaiting department confirmation on the numbers marked `[CONFIRM]`.
+**Status:** Long-term outcome criteria. The immediate release gate is the limited
+pilot checklist in [`pilot-readiness.md`](pilot-readiness.md).
 **Owner:** Jad Ghazi
 **Last updated:** 2026-07-20
 
@@ -117,4 +118,4 @@ what's provisional and why.
 
 To resist scope creep ([CLAUDE.md](../CLAUDE.md) §1, §7): done does **not** include
 career-center features, student logins/accounts, analytics dashboards beyond the
-interaction log, or multi-course support. Phase 1 is the internship course only.
+interaction log, or content outside the MSFEA CDC programs defined in `CLAUDE.md`.

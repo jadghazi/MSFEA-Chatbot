@@ -14,10 +14,19 @@
     window.MSFEA_CHAT_API ||
     ""
   ).replace(/\/+$/, "");
+  var STANDALONE = Boolean(script && script.getAttribute("data-layout") === "standalone");
+  var MOUNT_SELECTOR = script && script.getAttribute("data-mount");
 
   // Must match ChatRequest.question's max_length in the API, so the student is
   // told before the request is rejected rather than after.
   var MAX_CHARS = 2000;
+  var MAX_HISTORY_MESSAGES = 4;
+  var MAX_HISTORY_MESSAGE_CHARS = 1200;
+
+  // Same-page, same-widget memory only. This is intentionally a normal variable:
+  // closing/reopening the bubble keeps the conversation, while refresh/new tab
+  // starts clean. It is never written to localStorage or a server-side session.
+  var conversation = [];
 
   // Kept in the browser, not on the server: the bot stays stateless, and a coarse
   // one-of-five attribute never becomes a stored student profile (CLAUDE.md §7).
@@ -152,6 +161,7 @@
 .msfea-bot{background:#fff;color:var(--ink);border:1px solid var(--line);border-bottom-left-radius:5px;box-shadow:0 1px 2px rgba(16,18,22,.05)}
 /* An escalation is "a human should answer this", not an error — amber, not red. */
 .msfea-bot.esc{border-left:3px solid #c8892a;background:#fffdf7}
+.msfea-bot.err{border-left:3px solid #b3261e;background:#fff8f7}
 
 .msfea-cite{margin-top:10px;padding-top:9px;border-top:1px solid var(--line)}
 .msfea-cite-h{
@@ -203,6 +213,7 @@
 .msfea-welcome{padding:6px 2px 2px}
 .msfea-hi{font-size:14.5px;font-weight:650;margin-bottom:5px}
 .msfea-hi-sub{font-size:13px;color:var(--ink-soft);line-height:1.55;margin-bottom:14px}
+.msfea-privacy{font-size:11.5px;color:var(--ink-faint);line-height:1.45;margin:-6px 0 14px}
 .msfea-sg-h{
   font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
   color:var(--ink-faint);margin-bottom:8px;
@@ -282,6 +293,61 @@
 @media (prefers-reduced-motion:reduce){
   .msfea-w *{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
+
+/* ---------- full-page pilot ----------
+   The exact same client can live inside the standalone pilot page or collapse
+   back to the floating launcher when it is eventually embedded on aub.edu.lb. */
+.msfea-w.is-standalone{
+  position:relative;width:100%;height:100%;min-height:inherit;
+}
+.msfea-w.is-standalone .msfea-bubble{display:none}
+.msfea-w.is-standalone .msfea-panel{
+  position:relative;inset:auto;width:100%;max-width:none;height:100%;min-height:inherit;
+  border:1px solid rgba(86,44,51,.13);border-radius:22px;
+  box-shadow:0 18px 46px rgba(58,26,31,.1);
+  opacity:1;visibility:visible;transform:none;transition:none;z-index:1;
+}
+.msfea-w.is-standalone .msfea-head{
+  min-height:72px;padding:14px 18px;background:#fff;color:var(--ink);
+  border-bottom:1px solid var(--line);
+}
+.msfea-w.is-standalone .msfea-crest{
+  width:42px;height:42px;border:none;border-radius:13px;background:var(--m);color:#fff;
+  box-shadow:0 7px 17px rgba(134,38,51,.2);font-family:Georgia,serif;font-size:17px;
+}
+.msfea-w.is-standalone .msfea-title{font-size:15px;font-weight:720}
+.msfea-w.is-standalone .msfea-sub{color:var(--ink-soft);opacity:1;font-size:11px}
+.msfea-w.is-standalone .msfea-x{display:none}
+.msfea-w.is-standalone .msfea-deptpill{
+  background:#f5edef;border-color:#ead9dd;color:var(--m-dark);margin-top:5px;
+}
+.msfea-w.is-standalone .msfea-deptpill:hover{background:#ecdee1}
+.msfea-w.is-standalone .msfea-deptpill:focus-visible{outline-color:var(--m)}
+.msfea-w.is-standalone .msfea-msgs{
+  padding:22px;background:linear-gradient(180deg,#f9f7f4 0%,#f4f1ed 100%);
+}
+.msfea-w.is-standalone .msfea-welcome{max-width:590px;margin:0 auto;padding:10px 4px}
+.msfea-w.is-standalone .msfea-hi{font-family:Georgia,serif;font-size:24px;font-weight:500;color:var(--m-dark)}
+.msfea-w.is-standalone .msfea-hi-sub{font-size:13.5px;line-height:1.65}
+.msfea-w.is-standalone .msfea-sg{
+  padding:11px 14px;border-color:#e4dcda;background:rgba(255,255,255,.86);
+}
+.msfea-w.is-standalone .msfea-msg{max-width:min(84%,620px);font-size:14px}
+.msfea-w.is-standalone .msfea-foot{padding:13px 16px 14px}
+.msfea-w.is-standalone .msfea-inputwrap{border-radius:14px;padding:7px 7px 7px 14px}
+.msfea-w.is-standalone .msfea-send{width:40px;height:40px;border-radius:11px}
+
+@media (max-width:600px){
+  .msfea-w.is-standalone .msfea-panel{
+    position:relative;inset:auto;width:100%;height:100%;min-height:inherit;
+    border-width:0;border-radius:0;box-shadow:none;
+  }
+  .msfea-w.is-standalone .msfea-head{min-height:68px;padding:12px 15px}
+  .msfea-w.is-standalone .msfea-msgs{padding:16px 14px}
+  .msfea-w.is-standalone .msfea-msg{max-width:92%}
+  .msfea-w.is-standalone .msfea-foot{padding:10px 11px 12px}
+  .msfea-w.is-standalone .msfea-hint{display:none}
+}
 `;
 
   var style = document.createElement("style");
@@ -289,7 +355,7 @@
   document.head.appendChild(style);
 
   var root = document.createElement("div");
-  root.className = "msfea-w";
+  root.className = "msfea-w" + (STANDALONE ? " is-standalone" : "");
 
   var bubble = document.createElement("button");
   bubble.className = "msfea-bubble";
@@ -302,14 +368,14 @@
 
   var panel = document.createElement("div");
   panel.className = "msfea-panel";
-  panel.setAttribute("role", "dialog");
+  panel.setAttribute("role", STANDALONE ? "region" : "dialog");
   panel.setAttribute("aria-label", "MSFEA CDC assistant");
   panel.innerHTML =
     '<div class="msfea-head">' +
-      '<div class="msfea-crest" aria-hidden="true">AUB</div>' +
+      '<div class="msfea-crest" aria-hidden="true">M</div>' +
       '<div class="msfea-titles">' +
-        '<div class="msfea-title">MSFEA CDC Assistant</div>' +
-        '<div class="msfea-sub">Career Development Center · Internships &amp; programs</div>' +
+        '<div class="msfea-title">MSFEA Student Assistant</div>' +
+        '<div class="msfea-sub">Source-grounded internship &amp; CDC guidance</div>' +
         '<button class="msfea-deptpill hidden" type="button"></button>' +
       "</div>" +
       '<button class="msfea-x" type="button" aria-label="Close chat">' + ICON_CLOSE + "</button>" +
@@ -330,7 +396,15 @@
 
   root.appendChild(bubble);
   root.appendChild(panel);
-  document.body.appendChild(root);
+  var mount = null;
+  if (MOUNT_SELECTOR) {
+    try {
+      mount = document.querySelector(MOUNT_SELECTOR);
+    } catch (e) {
+      mount = null;
+    }
+  }
+  (mount || document.body).appendChild(root);
 
   var msgs = panel.querySelector(".msfea-msgs");
   var input = panel.querySelector("textarea");
@@ -407,6 +481,9 @@
 
   function showDepartmentPicker() {
     msgs.innerHTML = "";
+    // The visible chat is reset when the student changes department; its hidden
+    // retrieval context must reset at the same time.
+    conversation = [];
     var w = el("msfea-welcome");
     w.appendChild(el("msfea-hi", "Hello 👋"));
     w.appendChild(
@@ -457,6 +534,12 @@
         "I answer questions about MSFEA CDC programs using the official " +
           "documents — internships (Approved Experience), CO-OP, IAESTE, " +
           "full-time job support and mentorship."
+      )
+    );
+    w.appendChild(
+      el(
+        "msfea-privacy",
+        "Please don't include your name, student ID, phone number, or personal email."
       )
     );
     w.appendChild(el("msfea-sg-h", "Try asking"));
@@ -618,7 +701,8 @@
   }
 
   function addBot(data) {
-    var wrap = el("msfea-msg msfea-bot" + (data.refused ? " esc" : ""));
+    var stateClass = data.error_code ? " err" : (data.refused ? " esc" : "");
+    var wrap = el("msfea-msg msfea-bot" + stateClass);
     var bodyEl = el("");
     bodyEl.appendChild(renderAnswer(data.answer || ""));
     wrap.appendChild(bodyEl);
@@ -718,27 +802,50 @@
     // "skipped" is a local marker meaning "don't ask again", not a department —
     // send null so the server answers unscoped.
     var dept = getDept();
+    var history = conversation.slice(-MAX_HISTORY_MESSAGES);
     fetch(API + "/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         question: q,
         department: dept && dept !== "skipped" ? dept : null,
+        history: history,
       }),
     })
       .then(function (r) {
-        return r.json();
+        return r.json().catch(function () { return {}; }).then(function (data) {
+          if (!r.ok) {
+            throw new Error(data.detail || "The assistant could not process that request.");
+          }
+          return data;
+        });
       })
       .then(function (data) {
         hideTyping();
         addBot(data);
+        // Provider/network failures are not dialogue and should not contaminate
+        // the next retrieval query.
+        if (!data.error_code) {
+          conversation.push({
+            role: "user",
+            content: q.slice(0, MAX_HISTORY_MESSAGE_CHARS),
+          });
+          if (!data.refused && data.answer) {
+            conversation.push({
+              role: "assistant",
+              content: String(data.answer).slice(0, MAX_HISTORY_MESSAGE_CHARS),
+            });
+          }
+          conversation = conversation.slice(-MAX_HISTORY_MESSAGES);
+        }
       })
-      .catch(function () {
+      .catch(function (err) {
         hideTyping();
         addBot({
-          answer: "Sorry, I couldn't reach the assistant. Please check your connection and try again.",
+          answer: (err && err.message) || "Sorry, I couldn't reach the assistant. Please check your connection and try again.",
           refused: true,
           disclaimer: "",
+          error_code: "request_failed",
         });
       })
       .finally(function () {
@@ -764,6 +871,7 @@
   }
 
   function closePanel() {
+    if (STANDALONE) return;
     root.classList.remove("is-open");
     bubble.setAttribute("aria-expanded", "false");
     bubble.setAttribute("aria-label", "Open the CDC assistant");
@@ -789,6 +897,7 @@
     }
   });
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && root.classList.contains("is-open")) closePanel();
+    if (!STANDALONE && e.key === "Escape" && root.classList.contains("is-open")) closePanel();
   });
+  if (STANDALONE) openPanel();
 })();

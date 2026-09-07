@@ -58,3 +58,10 @@ def anonymize(text: str) -> str:
     text = _LONG_NUMBER.sub("[redacted-number]", text)
     text = _redact_names(text)
     return text
+
+
+def warm_anonymizer() -> None:
+    """Load the local NER model and execute its first inference before readiness."""
+    nlp = _ner()
+    if nlp is not None:
+        nlp("Pilot startup readiness probe.")

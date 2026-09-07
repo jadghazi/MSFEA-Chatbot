@@ -394,12 +394,19 @@
         badge.textContent = pending;
         badge.classList.toggle("zero", pending === 0);
 
-        var deflection = s.total ? Math.round((s.answered / s.total) * 100) : 0;
+        // Operational outages are neither successful answers nor KB refusals, so
+        // excluding them keeps the deflection metric honest (ADR-0018).
+        var completed = (s.answered || 0) + (s.refused || 0);
+        var deflection = completed ? Math.round((s.answered / completed) * 100) : 0;
         var cards = [
           { i: "📥", n: pending, l: "Waiting for you", d: "Questions that need an answer or review", highlight: true },
           { i: "💬", n: s.total || 0, l: "Questions asked", d: "Total student questions received" },
           { i: "✅", n: s.answered || 0, sub: deflection + "% of all questions", l: "Answered by the bot", d: "Handled without emailing staff" },
           { i: "📤", n: s.refused || 0, l: "Sent to a human", d: "The bot couldn't answer these" },
+          { i: "⚠️", n: s.temporary_errors || 0, l: "Temporary failures", d: "Provider quota, configuration or service errors" },
+          { i: "⬇️", n: s.llm_input_tokens || 0, l: "LLM input tokens", d: "Measured by the provider across successful calls" },
+          { i: "⬆️", n: s.llm_output_tokens || 0, l: "LLM output tokens", d: "Measured by the provider across successful calls" },
+          { i: "⏱️", n: (s.avg_llm_latency_ms || 0) + " ms", l: "Average LLM latency", d: "Provider generation time, excluding local retrieval" },
           { i: "👍", n: s.thumbs_up || 0, l: "Rated helpful", d: "Students marked the answer useful" },
           { i: "👎", n: s.thumbs_down || 0, l: "Rated not helpful", d: "Students flagged a problem" },
         ];

@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 import msfea_bot.api.app as app_module
 from msfea_bot.api.app import app
 from msfea_bot.generation.answer import Answer
+from msfea_bot.llm import LLMRateLimitError
 
 client = TestClient(app)
 
@@ -17,6 +18,19 @@ def test_health_ok() -> None:
     resp = client.get("/health")
     assert resp.status_code == 200
     assert resp.json() == {"status": "ok"}
+
+
+def test_ready_checks_the_index(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module, "index_is_ready", lambda: True)
+    resp = client.get("/ready")
+    assert resp.status_code == 200
+    assert resp.json() == {"status": "ready"}
+
+
+def test_ready_rejects_an_empty_or_mismatched_index(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module, "index_is_ready", lambda: False)
+    resp = client.get("/ready")
+    assert resp.status_code == 503
 
 
 def test_chat_returns_structured_answer(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -38,7 +52,7 @@ def test_chat_returns_structured_answer(monkeypatch: pytest.MonkeyPatch) -> None
 
 
 def test_chat_degrades_gracefully_on_backend_error(monkeypatch: pytest.MonkeyPatch) -> None:
-    def boom(question: str) -> Answer:
+    def boom(question: str, **kwargs: object) -> Answer:
         raise RuntimeError("LLM down")
 
     monkeypatch.setattr(app_module, "generate_answer", boom)
@@ -46,6 +60,47 @@ def test_chat_degrades_gracefully_on_backend_error(monkeypatch: pytest.MonkeyPat
     resp = client.post("/chat", json={"question": "anything"})
     assert resp.status_code == 200
     assert resp.json()["refused"] is True
+    assert resp.json()["error_code"] == "service_unavailable"
+
+
+def test_chat_returns_actionable_rate_limit_response(monkeypatch: pytest.MonkeyPatch) -> None:
+    def limited(question: str, **kwargs: object) -> Answer:
+        raise LLMRateLimitError("quota")
+
+    monkeypatch.setattr(app_module, "generate_answer", limited)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    resp = client.post("/chat", json={"question": "anything"})
+    assert resp.status_code == 200
+    assert resp.json()["error_code"] == "rate_limited"
+    assert "try again" in resp.json()["answer"].lower()
+
+
+def test_chat_sanitizes_and_anonymizes_every_history_message(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    seen: dict[str, object] = {}
+
+    def fake(question: str, **kwargs: object) -> Answer:
+        seen["history"] = kwargs["history"]
+        return Answer(text="ok", refused=False)
+
+    monkeypatch.setattr(app_module, "generate_answer", fake)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    resp = client.post(
+        "/chat",
+        json={
+            "question": "Where do I get it?",
+            "history": [
+                {"role": "user", "content": "Email me at student@example.com\u0000"},
+                {"role": "assistant", "content": "Use the form."},
+            ],
+        },
+    )
+    assert resp.status_code == 200
+    history = seen["history"]
+    assert isinstance(history, list)
+    assert "[redacted-email]" in history[0].content
+    assert "\u0000" not in history[0].content
 
 
 def test_chat_rejects_empty_question() -> None:

@@ -10,7 +10,8 @@ professors and the CDC.
 
 > **Status:** functional end-to-end — ingestion, hybrid retrieval, grounded
 > generation with citations + refusal, the chat widget, safety/rate-limiting,
-> observability, and an admin dashboard with a curation loop. Containerized and
+> bounded same-chat follow-ups, provider-aware failure handling, observability,
+> and an admin dashboard with a curation loop. Containerized and
 > CI-gated (Phase 10). Pending: the pilot (Phase 11).
 
 ## Project docs
@@ -20,6 +21,7 @@ professors and the CDC.
 - [`docs/dev-workflow.md`](docs/dev-workflow.md) — how the project is developed (git, docs, phases).
 - [`docs/decisions/`](docs/decisions/) — architecture decision records (ADRs).
 - [`docs/deployment.md`](docs/deployment.md) — production hardening runbook (HTTPS, CORS, backups, security review).
+- [`docs/pilot-readiness.md`](docs/pilot-readiness.md) — current small-pilot release checklist.
 - [`docs/backlog.md`](docs/backlog.md) — captured-but-not-yet-built ideas.
 - [`docs/progress.md`](docs/progress.md) — dated development journal.
 
@@ -89,9 +91,12 @@ docker compose run --rm app python -m msfea_bot.skeleton ingest
 
 Then open:
 
-- **Widget (demo page):** http://localhost:8000/widget/demo.html
+- **Standalone pilot assistant:** http://localhost:8000/widget/demo.html
+- **Future embedded widget:** load `/widget/widget.js` on the host page without
+  `data-layout="standalone"`; it retains the compact bottom-right launcher.
 - **Admin dashboard:** http://localhost:8000/dashboard/ (paste your `ADMIN_TOKEN`)
-- **Health check:** http://localhost:8000/health
+- **Liveness check:** http://localhost:8000/health
+- **Readiness check:** http://localhost:8000/ready (also verifies the populated KB/model match)
 
 Everyday commands:
 
@@ -100,6 +105,10 @@ docker compose logs -f app     # tail the app logs
 docker compose down            # stop (KEEPS the database volume)
 docker compose down -v         # stop and DELETE the database (fresh start)
 ```
+
+For repeated development checks without reinstalling Ruff, mypy, and pytest each
+time, build and use the persistent development image documented in
+[`docs/dev-workflow.md`](docs/dev-workflow.md#persistent-docker-development-environment).
 
 ### Required environment variables
 
@@ -117,8 +126,32 @@ docker compose down -v         # stop and DELETE the database (fresh start)
 | `DATABASE_URL` | no | Set automatically by Compose; only needed for host-based dev. |
 | `ESCALATION_CONTACT` | no | Email shown when the bot refuses. |
 | `CORS_ALLOW_ORIGINS` | no | Comma-separated origins allowed to embed the widget. |
+| `WARM_MODELS_ON_STARTUP` | no | Default `false`; Compose sets `true` so readiness waits for local embedding/PII models and the first student avoids their cold-start delay. |
 
 Every variable is documented in [`.env.example`](.env.example).
+
+### Same-chat context and free-tier behavior
+
+The widget remembers at most four earlier messages **in memory on the current web
+page only**. Closing and reopening the bubble keeps them; refreshing, opening a new
+tab, or changing department starts a new chat. History is never stored as a user
+profile or server-side session. The API sanitizes/anonymizes every history message,
+and only sends bounded history when a question appears to be a follow-up.
+
+Each student turn uses at most **one Gemini generation request**. Follow-up retrieval
+is reformulated deterministically, so there is no second LLM call just to rewrite a
+question. If Gemini returns a quota/rate-limit or service error, the widget shows an
+actionable retry message. These failures are counted separately from genuine
+knowledge-base refusals. The Usage tab records aggregate LLM input/output token counts
+and average generation latency returned by Gemini (ADR-0018).
+
+Because the Gemini free tier may use submitted content to improve Google's products,
+the widget asks students not to enter personal information. The backend still redacts
+detected names, emails, student IDs, and phone numbers before the provider and logs;
+the notice is defense in depth because name detection cannot be perfect.
+
+Gemini quotas vary by model, project, and account. Check the active RPM/TPM/RPD limits
+in Google AI Studio before a pilot; do not size traffic from an old hard-coded number.
 
 ### Updating the knowledge base
 

@@ -7,16 +7,20 @@
 #
 # Requirements:
 #   - DNS for DOMAIN points at this server; ports 80 + 443 are open.
-#   - For a hardened prod host, also restrict the host port publishes in
-#     docker-compose.yml so ONLY Caddy is public: bind the app to 127.0.0.1
-#     ("127.0.0.1:8000:8000") and drop the db "5432:5432" line. Caddy still
-#     reaches the app over the internal network as "app:8000".
+#   - This overlay removes the development app/database host ports, so only
+#     Caddy is public. It reaches the app privately as "app:8000".
 services:
   app:
+    # Only Caddy is public; do not inherit the development host mapping.
+    ports: !reset []
     environment:
       # Caddy sets X-Forwarded-For; trust it so the rate limiter keys on the real
       # client IP instead of Caddy's. Only enable this when actually behind a proxy.
       TRUST_PROXY_HEADERS: "true"
+
+  db:
+    # PostgreSQL is reachable only on the private Compose network.
+    ports: !reset []
 
   caddy:
     image: caddy:2

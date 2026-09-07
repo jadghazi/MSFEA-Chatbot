@@ -37,18 +37,21 @@ class RetrievedChunk:
     score: float
 
 
-def _connect(autocommit: bool = True) -> Any:
+def _connect(autocommit: bool = True, ensure_extension: bool = False) -> Any:
     """Connect (and register pgvector). Pass autocommit=False for a rebuild, so
     TRUNCATE + inserts land as one transaction instead of leaving a half-built
     index behind on failure."""
-    conn = psycopg.connect(settings.database_url, autocommit=autocommit)
-    conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+    conn = psycopg.connect(
+        settings.database_url, autocommit=autocommit, connect_timeout=5
+    )
+    if ensure_extension:
+        conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
     register_vector(conn)
     return conn
 
 
-def _init_schema(conn: Any) -> None:
-    dim = embedding_dim()
+def _init_schema(conn: Any, dim: int | None = None) -> None:
+    dim = dim if dim is not None else embedding_dim()
     conn.execute(
         f"CREATE TABLE IF NOT EXISTS chunks ("
         f"  id TEXT PRIMARY KEY,"
@@ -96,6 +99,15 @@ def _init_schema(conn: Any) -> None:
     # approximate index can silently lower it.
 
 
+def initialize_schema() -> None:
+    """Create retrieval tables and execute the first embedding inference."""
+    # Resolve the model dimension before holding a database connection through a
+    # potentially slow cold model load.
+    dim = embedding_dim()
+    with _connect(ensure_extension=True) as conn:
+        _init_schema(conn, dim)
+
+
 def index_chunks(chunks: list[Chunk]) -> int:
     """Embed all chunks and (re)build the store atomically. Returns the number indexed.
 
@@ -106,7 +118,7 @@ def index_chunks(chunks: list[Chunk]) -> int:
     half-built index with no way to roll back.
     """
     vectors = embed_texts([c.text for c in chunks])
-    with _connect(autocommit=False) as conn:
+    with _connect(autocommit=False, ensure_extension=True) as conn:
         _init_schema(conn)
         conn.execute("TRUNCATE chunks")
         with conn.cursor() as cur:
@@ -140,6 +152,18 @@ def indexed_model() -> str | None:
     return str(row[0]) if row else None
 
 
+def index_is_ready() -> bool:
+    """Whether the KB is populated with embeddings from this configured model."""
+    with _connect() as conn:
+        count_row = conn.execute("SELECT count(*) FROM chunks").fetchone()
+        model_row = conn.execute(
+            "SELECT value FROM index_meta WHERE key = 'embedding_model'"
+        ).fetchone()
+    count = int(count_row[0]) if count_row else 0
+    indexed = str(model_row[0]) if model_row else None
+    return count > 0 and indexed == model_fingerprint()
+
+
 def upsert_chunks(chunks: list[Chunk]) -> int:
     """Embed and insert/update specific chunks without wiping the store.
 
@@ -149,7 +173,7 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
     if not chunks:
         return 0
     vectors = embed_texts([c.text for c in chunks])
-    with _connect() as conn:
+    with _connect(ensure_extension=True) as conn:
         _init_schema(conn)
         with conn.cursor() as cur:
             for chunk, vector in zip(chunks, vectors, strict=True):

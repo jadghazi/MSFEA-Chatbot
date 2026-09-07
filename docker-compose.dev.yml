@@ -1,0 +1,42 @@
+# Development overlay. Builds the pinned dev tools once and mounts the live
+# working tree, so subsequent Ruff/mypy/pytest runs start immediately and inspect
+# current source without rebuilding the image.
+#
+# One-time setup:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml build dev
+#
+# Daily use:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m ruff check src tests eval
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m mypy --strict src
+services:
+  # Tests rebuild the chunks table repeatedly. Keep them on an isolated, disposable
+  # database so running pytest can never replace the KB used by the local demo.
+  test-db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: msfea
+      POSTGRES_PASSWORD: msfea
+      POSTGRES_DB: msfea_test
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msfea -d msfea_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  dev:
+    build:
+      context: .
+      target: development
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://msfea:msfea@test-db:5432/msfea_test
+      PYTHONPATH: /workspace/src:/workspace
+    depends_on:
+      test-db:
+        condition: service_healthy
+    working_dir: /workspace
+    volumes:
+      - .:/workspace

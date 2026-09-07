@@ -19,6 +19,7 @@ from eval.curated_cases import curated_eval_items
 from eval.loader import GoldenItem, load_golden_set
 from eval.metrics import evidence_present, recall_at_k
 from msfea_bot.config import settings
+from msfea_bot.generation.conversation import build_retrieval_query
 from msfea_bot.retrieval.store import search
 
 
@@ -54,7 +55,8 @@ def evaluate_retrieval(ks: tuple[int, ...] | None = None) -> float:
     for item in items:
         # Department-scoped cases must be retrieved the way the student would ask
         # them: with their department set (ADR-0015). None for every other case.
-        chunks = search(item.question, top, department=item.department)
+        query = build_retrieval_query(item.question, item.history)
+        chunks = search(query, top, department=item.department)
         results.append(
             _Result(item, [c.source_doc for c in chunks], [c.text for c in chunks])
         )

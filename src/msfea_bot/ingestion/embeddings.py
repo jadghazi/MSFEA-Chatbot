@@ -6,7 +6,7 @@ Free, offline, no API key. The model is loaded once (cached) and reused.
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from msfea_bot.config import settings
 
@@ -24,10 +24,7 @@ def get_model() -> "SentenceTransformer":
     from sentence_transformers import SentenceTransformer
 
     revision = settings.embedding_model_revision or None
-    return cast(
-        "SentenceTransformer",
-        SentenceTransformer(settings.embedding_model, revision=revision),
-    )
+    return SentenceTransformer(settings.embedding_model, revision=revision)
 
 
 def model_fingerprint() -> str:
@@ -51,6 +48,12 @@ def embed_query(text: str) -> list[float]:
     return embed_texts([text])[0]
 
 
+def warm_embedding_model() -> None:
+    """Load the model and execute one inference before reporting ready."""
+    embedding_dim()
+
+
+@lru_cache(maxsize=1)
 def embedding_dim() -> int:
     """Dimensionality of the embedding vectors (must match the pgvector column)."""
     return len(embed_query("dimension probe"))

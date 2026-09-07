@@ -19,14 +19,22 @@ from eval.loader import load_golden_set
 from eval.metrics import BotAnswer, citation_present, disclaimer_present
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
+from msfea_bot.generation.conversation import ConversationMessage
+from msfea_bot.llm import LLMRateLimitError, LLMServiceError
 
 
-def _answer_with_retry(question: str, attempts: int = 6, backoff: float = 20.0) -> Answer:
+def _answer_with_retry(
+    question: str,
+    department: str | None = None,
+    history: list[ConversationMessage] | None = None,
+    attempts: int = 3,
+    backoff: float = 10.0,
+) -> Answer:
     """Generate an answer, retrying on transient errors (e.g. free-tier 429s)."""
     for attempt in range(attempts):
         try:
-            return generate_answer(question)
-        except Exception:  # noqa: BLE001 - retry any transient API error
+            return generate_answer(question, department=department, history=history)
+        except (LLMRateLimitError, LLMServiceError):
             if attempt == attempts - 1:
                 raise
             time.sleep(backoff)
@@ -47,7 +55,7 @@ def evaluate_answers(delay: float = 13.0) -> None:
     disclaimer_ok = 0
 
     for item in items:
-        ans = _answer_with_retry(item.question)
+        ans = _answer_with_retry(item.question, item.department, item.history)
         ba = BotAnswer(
             text=f"{ans.text} {ans.disclaimer}", citations=ans.citations, refused=ans.refused
         )

@@ -6,6 +6,201 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-07 — Intent-aware grounded reasoning (ADR-0021)
+
+Diagnosed a live ECE 6+2 conversation where retrieval found the right section but
+Gemini mixed in an adjacent rule and answered a confirmation follow-up with unrelated
+report instructions. Kept `top_k=7` and the one-provider-call architecture: the
+generation prompt now silently resolves the current intent, selects minimum sufficient
+evidence, preserves rule conditions, and applies documented rules to student-stated
+facts with basic logic or arithmetic. Confirmations must answer directly without
+volunteering the entire surrounding topic.
+
+Added four golden cases for confirmation and rule application. Five live API checks
+correctly handled the 6+2 confirmation, 88 versus 90 completed credits, 3.2 versus 3.3
+CO-OP GPA, an incomplete 6+2 arrangement, and an unrelated topic switch. Calls used one
+Gemini request each, 2,416–2,589 input tokens, 26–80 output tokens, and 0.86–1.95 seconds
+of provider latency. Gemini's valid multi-line `SOURCES:` format exposed a parser gap;
+the parser now accepts labels on following lines instead of displaying all retrieved
+candidates. When Gemini omits the source marker, a no-LLM lexical fallback now selects
+the single supplied chunk with the strongest factual overlap rather than source-dumping
+all candidates. The four new reasoning cases achieved context-recall@7 **4/4 (100%)**.
+Final live retests showed one directly supporting citation for both the terse 6+2
+confirmation and the 88-credit decision. Verification: **132 tests passed**, Ruff
+passed, strict mypy passed, and the rebuilt Docker app reported ready.
+
+## 2026-09-07 — Similarity threshold calibrated and enabled (ADR-0020)
+
+Replaced the disabled `SIMILARITY_THRESHOLD=0.0` with a measured **0.60** pre-LLM
+gate. Calibration uses the actual cosine score on the first hybrid/RRF result. All 64
+answerable golden questions plus 30 terse/misspelled valid questions passed (94/94;
+lowest score 0.6329), while 14/20 varied off-topic prompts were refused before Gemini.
+A 0.65 alternative was rejected because it falsely refused two valid misspelled
+questions.
+
+Added a versioned retrieval-only calibration set and `python -m eval.threshold_eval`,
+then wired it into CI after index rebuild. The gate saves quota only for low-similarity
+requests; prompt-based refusal remains necessary for relevant but unsupported questions.
+Unit tests verify that scores below 0.60 skip the provider and that the exact boundary
+still calls it. Final verification: **124 tests passed**, Ruff and strict mypy passed,
+the running Docker app reported ready, an unrelated live query was refused with no LLM
+tokens recorded, and a valid ECE report question passed the gate and returned a grounded
+answer.
+
+## 2026-09-07 — Approved email clarifications added to the KB
+
+Reviewed 111 supplied internship Q&A items against the existing official documents.
+Already-covered material was not duplicated. The temporary wartime remote-internship
+exception and proposed CO-OP changes were excluded. Reusable new information was
+consolidated in `kb/source/email-clarifications.md`, with a matching normalized copy;
+universal rules and ECE-only exceptions are separated so department filtering applies.
+The rebuilt index contains 206 chunks: the new document contributes 30 general and 12
+ECE-scoped chunks.
+
+Added 23 high-signal email-clarification questions to the golden set rather than all
+111 similar phrasings. The set now has 70 cases, 64 of them answerable. Retrieval over
+those 64 plus one live curated case measured context-recall@5 **62/65 (95%)** and
+context-recall@7 **64/65 (98.5%)**, passing the 90% gate. The only k=7 miss remains the
+pre-existing internship-versus-CO-OP comparison.
+
+Targeted live checks correctly applied ECE's 15-minute VOP maximum and Final Report
+limits, kept MECH on the general 3–5-minute presentation rule, and answered the universal
+25% AI rule. Gemini initially included irrelevant retrieved citations, so the existing
+one-call prompt was tightened to cite only directly supporting blocks; retesting reduced
+both high-risk answers to the single correct email-clarification citation. Final checks:
+**120 tests**, Ruff, and strict mypy all pass. Synthetic live-check rows were removed
+from interaction statistics.
+
+## 2026-09-07 — Minimal small-pilot hardening (ADR-0019)
+
+Reframed the immediate target as a small, observable student pilot rather than a
+general production platform. Kept the existing single-process FastAPI, PostgreSQL/
+pgvector, local BGE embeddings, spaCy redaction, hybrid retrieval, and one-Gemini-call
+flow. Explicitly declined Redis, queues, rerankers, vector indexes, response caching,
+automatic provider failover, and a database pool until pilot measurements justify one.
+
+Fixed the concrete audit findings that matter before hosting: production Compose now
+publishes only Caddy (not PostgreSQL or raw FastAPI); baked models are forced offline;
+startup executes real embedding/NER inference; `/ready` verifies that the KB is
+populated and its embedding fingerprint matches; interaction schema DDL runs once per
+process rather than per request; PostgreSQL connects fail within five seconds; and one
+Gemini client is reused. The Dockerfile also upgrades the vulnerable pip/setuptools
+versions found by the fresh dependency scan.
+
+Audit baseline before these changes: production/dev images 2.65/2.78 GB; idle app/DB
+memory about 454/45 MiB; default warm retrieval 525 ms median (1.06 s p95); schema
+initialization with a new connection 186 ms median; live first/follow-up turns 5.5/2.0
+seconds and about 1.9k/2.0k input tokens. Retrieval remained 41/42 (98%) at both k=5
+and k=7. `top_k=7`, prompt text, and local PII detection were deliberately left
+unchanged until answer-quality or pilot evidence supports trading them for savings.
+
+Added `docs/pilot-readiness.md` as the current operator release checklist. The older
+department-wide Definition of Done remains as long-term outcome criteria, not a blocker
+whose unknown email-volume targets prevent a limited learning pilot.
+
+Final verification: **119 tests passed**, Ruff and strict mypy passed, retrieval stayed
+at **41/42 (98%)**, the rebuilt production image reported no known vulnerabilities for
+the packages `pip-audit` could resolve, and both local models loaded successfully in a
+network-disabled container. The final production/developer images are about 592/623
+MiB. Moving the packaging security update into a stable cache layer required one 7.1
+minute rebuild; an immediate fully cached rebuild took **22.2 seconds**. Cold readiness
+took about 109 seconds on the final image. The first post-start chat was correct with a
+verified citation and took 5.3 seconds total (1.97 seconds in Gemini); the remaining
+cold-provider network setup is intentionally not warmed with a quota-consuming dummy
+request.
+
+## 2026-09-07 — Bounded same-chat follow-ups + Gemini free-tier operations
+
+Added efficient conversational context without a persistent user/session store
+(ADR-0018). The widget keeps four earlier messages in page memory only; refresh, new
+tab, or department change clears them. The API bounds, sanitizes and anonymizes every
+history message. Referential/elliptical follow-ups combine the last two user questions
+into one retrieval query, while self-contained topic switches ignore history. The
+generation prompt receives bounded history as reference-only, never as factual evidence.
+There is still exactly **one Gemini generation request per student turn** — no LLM
+query-rewrite call.
+
+Added typed Gemini quota/service/configuration failures and student-safe retry messages.
+Operational failures are now separate from KB refusals, excluded from the curation queue
+and deflection denominator. Gemini's returned input/output/cached token counts and LLM
+latency are stored and surfaced as aggregate Usage dashboard metrics. Fixed the widget's
+non-2xx handling (including the app's own 429) so it no longer tries to render an absent
+`answer` field.
+
+Measured and verified:
+
+- The configured model reports a 1,048,576-token input limit. A baseline ambiguous
+  `top_k=7` prompt measured 6,644 characters / 1,710 input tokens.
+- Expanded retrieval set: **context-recall@7 = 98% (41/42)**; all three new
+  conversation/topic-switch cases pass, and only the pre-existing
+  `internship-vs-coop` case misses.
+- Live two-turn flow (`support letter` → `Where do I get it?`) returned the correct
+  Office Forms URL and verified citations. Provider usage was 1,898 input / 152 output
+  tokens for turn 1 and 1,982 / 129 for the follow-up; measured Gemini generation was
+  1.96s and 1.23s. The rebuilt production image repeated the contextual answer at
+  1,883 / 125 tokens and 1.51s.
+- **113 tests pass**, Ruff clean, strict mypy clean across `src` + `eval` (two known
+  upstream TestClient deprecation warnings remain).
+- Production Docker layering was corrected after a rebuild timed out: dependency/model
+  installation now precedes source installation. The one-time cache seed took ~17 min;
+  the immediate cached rebuild took **31.5 seconds**. A second inefficiency found by a
+  widget-only rebuild was also removed: recursively `chown`ing the multi-GB model tree
+  generated a large layer after every asset edit even though runtime only reads it.
+- Compose now warms the local embedding and PII-redaction models before reporting the
+  app ready. On this machine, a cold container became healthy in **92 seconds** and its
+  first chat then completed in **4.0 seconds** (1.43 seconds inside Gemini). During the
+  cold model load the app used about **458 MiB** and one CPU core, which must inform the
+  later free-hosting choice.
+
+Research result: current Gemini limits are model/project/account-specific and must be
+read in AI Studio; stale “~20 requests/day” deployment guidance was removed. Groq is the
+strongest manual free fallback candidate, with Cloudflare Workers AI worth revisiting
+during hosting. Neither is added automatically before provider-specific quality/privacy
+validation.
+
+The widget now also asks students not to enter names, IDs, phone numbers, or personal
+emails. This is defense in depth over the existing pre-provider anonymizer because
+Gemini free-tier data handling allows submitted content to be used for product
+improvement and local name detection is necessarily best-effort.
+
+## 2026-09-06 — Persistent Docker development environment
+
+Added a reusable `development` Docker target plus `docker-compose.dev.yml` so
+Ruff, mypy, and pytest are installed once in `msfea-chatbot-dev`, not downloaded
+into every disposable test container. The live repository is bind-mounted at
+`/workspace`; the database dependency and Python 3.12/model environment remain the
+same as production.
+
+Documented the one-time build and daily commands in `docs/dev-workflow.md` and
+linked them from the README. Verified through the new overlay, with **no install
+step at runtime**: Ruff clean, strict mypy clean, API health test passed, and a
+real pgvector hybrid-retrieval integration test passed. The first mypy run seeded
+the ignored workspace cache; an immediate cached rerun completed in about **133
+seconds**, versus roughly 9–16 minutes cold on this machine.
+
+## 2026-09-06 — New-machine end-to-end validation
+
+Validated the project on the new Windows development machine using a fresh Docker
+build and the existing environment configuration.
+
+- Docker Compose started PostgreSQL/pgvector and the FastAPI application; `/health`,
+  `/widget/demo.html`, and `/dashboard/` all returned HTTP 200.
+- Rebuilt the knowledge base from normalized sources plus curated answers: **164
+  chunks indexed**.
+- Retrieval eval reproduced the recorded baseline: **context-recall@7 = 97%**
+  (38/39), with only the known `internship-vs-coop` miss.
+- Full integration suite: **102 passed** (two upstream deprecation warnings).
+- Ruff passed. A fresh install of the pinned mypy exposed one compatibility issue
+  with the latest `sentence-transformers` typing (`cast()` had become redundant);
+  removed the cast and re-ran strict mypy: **24 source files clean**.
+- Live `/chat` check completed the full sanitize/anonymize -> embed -> pgvector ->
+  Gemini -> citation/logging path and returned the grounded 8-week internship answer
+  with verified citations, disclaimer, and a persisted interaction id.
+
+Operational note: Docker currently has about 3.7 GiB available. The system works,
+but cold model/eval/type-check runs are slow; increasing Docker Desktop's resource
+allocation would shorten the development feedback loop.
+
 ## 2026-08-05 — Tables are atomic chunks (ADR-0017)
 
 "What are the deliverables" listed 6 of 9 rows. Not trimming, not hallucinating —
@@ -966,3 +1161,17 @@ measure a baseline before fixing targets (there is no universal magic number).
    `.env.example`, `.gitignore`, README, Docker/compose stubs.
 2. Phase 2 — evaluation harness structure with a placeholder golden set.
 3. Phase 3 — walking skeleton on 1–2 placeholder docs.
+## 2026-09-07 — Standalone pilot frontend
+
+Replaced the artificial AUB-content demo page with a purpose-built, responsive
+assistant experience for the independently hosted pilot. The chat is now the main
+product surface: a maroon/cream split layout explains scope, grounding, privacy and
+pilot status, with a visible “Designed & built by Jad Ghazi” credit. The same
+dependency-free client still supports the original floating widget for later AUB-page
+embedding; `data-layout="standalone"` and `data-mount` switch presentation without
+duplicating chat, department, memory, citation or feedback logic. Added a cache-busted
+client URL and frontend contract tests. The rebuilt page and client returned HTTP 200,
+and a live department-scoped request returned the correct grounded answer. During the
+gate, pytest exposed that the dev service shared the demo database and could replace
+its chunks with fixtures; the workflow now uses a separate tmpfs-backed `test-db`, and
+the canonical 206-chunk demo index was immediately restored by normal ingestion.

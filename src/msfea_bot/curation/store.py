@@ -28,7 +28,7 @@ class CuratedAnswer:
 
 
 def _connect() -> Any:
-    return psycopg.connect(settings.database_url, autocommit=True)
+    return psycopg.connect(settings.database_url, autocommit=True, connect_timeout=5)
 
 
 def _init_schema(conn: Any) -> None:

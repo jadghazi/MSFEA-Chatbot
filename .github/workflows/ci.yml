@@ -52,7 +52,7 @@ jobs:
         run: ruff check src tests eval
 
       - name: Type-check (mypy --strict)
-        run: mypy --strict src
+        run: mypy --strict src eval
 
       - name: Tests (pytest — includes DB-backed tests via the Postgres service)
         run: pytest -q
@@ -63,3 +63,4 @@ jobs:
         run: |
           python -m msfea_bot.skeleton ingest
           python -m eval.retrieval_eval
+          python -m eval.threshold_eval

@@ -14,7 +14,7 @@ that's already done or templated; the only IT-supplied inputs are a handful of
 | A **domain** (e.g. `chatbot.aub.edu.lb`) + DNS pointing at the server | Public HTTPS URL | `DOMAIN` env (Caddy) or `server_name` (nginx) |
 | The **page origin** that embeds the widget (e.g. `https://www.aub.edu.lb`) | CORS allow-list | `CORS_ALLOW_ORIGINS` in `.env` |
 | A **TLS certificate** | HTTPS | *Automatic* with Caddy; or IT's cert with nginx |
-| The **LLM provider/quota** decision | Real traffic (the free tier is ~20 req/day) | `LLM_PROVIDER` / `LLM_API_KEY` / `LLM_MODEL` |
+| The **LLM provider/quota** decision | Real traffic (active free limits vary by model/project; check AI Studio) | `LLM_PROVIDER` / `LLM_API_KEY` / `LLM_MODEL` |
 | Backup storage location | Off-box backups | `BACKUP_DIR` for `deploy/backup.sh` |
 
 ---
@@ -80,8 +80,8 @@ quota.
 - **Rotate the admin token**: change `ADMIN_TOKEN` in `.env` and
   `docker compose up -d` to apply. Generate one with
   `python -c "import secrets; print(secrets.token_urlsafe(24))"`.
-- In production, don't publish the database port (drop `5432:5432` from
-  `docker-compose.yml`); the app reaches it over the internal network.
+- The production Compose overlay automatically removes the base app/database host
+  ports. Verify only Caddy publishes 80/443 before exposing the machine.
 
 ---
 
@@ -111,7 +111,17 @@ A review of the public-endpoint threat model. **No critical issues.**
 - **Prompt injection** — the system prompt treats the question as untrusted and is
   scope-locked to CDC topics.
 - **Errors** — `/chat` degrades gracefully; no stack traces leak to users.
-- **Dependencies** — `pip-audit`: 0 known vulnerabilities.
+- **Conversation scope** — at most four prior messages live in the current page only;
+  every history message is anonymized again at the API boundary (ADR-0018).
+- **LLM operations** — quota/service failures are distinct from KB refusals; aggregate
+  provider token usage and generation latency are available on the Usage dashboard.
+- **Dependencies** — the 2026-09-07 scan found advisories in the base image's
+  `pip`/`setuptools`; the Dockerfile now upgrades them to fixed versions. Re-scan
+  the built production image before launch. The local package, spaCy model, and
+  PyTorch CPU index are not fully covered by PyPI audit metadata.
+- **Offline startup** — Hugging Face and Transformers offline modes are forced after
+  model baking; `/ready` also verifies that the populated index uses the configured
+  embedding fingerprint.
 
 **Fixed in this pass:**
 - **CORS** was open (`*`) → now strict-by-default (deny cross-origin unless
@@ -138,5 +148,6 @@ Re-run the dependency scan periodically: `pip-audit`.
 - [ ] `ADMIN_TOKEN` set to a fresh strong value.
 - [ ] Database port not publicly published.
 - [ ] Ingestion run once; `/health` green.
+- [ ] `/ready` returns `{"status":"ready"}` after ingestion.
 - [ ] Backups scheduled and a restore tested.
 - [ ] Real student questions in the golden set; `eval` passing.

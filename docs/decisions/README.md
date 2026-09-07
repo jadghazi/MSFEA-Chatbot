@@ -45,3 +45,7 @@ file layout). Keep the log signal-heavy.
 | 0015 | Department-scoped answers and escalation routing (B-1, B-2) | Accepted |
 | 0016 | Actionable links; top_k 5->7; provenance excluded from the index | Accepted |
 | 0017 | Tables are atomic chunks (supersedes 0014's split-table handling) | Accepted |
+| 0018 | Bounded same-chat context and LLM operational failures | Accepted |
+| 0019 | Minimal hardening for a small hosted pilot | Accepted |
+| 0020 | Calibrated pre-LLM similarity threshold of 0.60 | Accepted |
+| 0021 | Intent-aware grounded answer planning in one LLM call | Accepted |

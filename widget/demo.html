@@ -3,160 +3,404 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Approved Experience (Internship) — MSFEA CDC | Demo</title>
+    <meta
+      name="description"
+      content="A source-grounded student assistant for MSFEA internship and CDC questions."
+    />
+    <title>MSFEA Student Assistant</title>
     <style>
       :root {
-        --m: #862633;          /* AUB maroon (PMS 202) */
-        --m-dark: #6e1f2a;
-        --ink: #1c1c1e;
-        --ink-soft: #5b5f66;
-        --line: #e4e6ea;
-        --canvas: #f6f7f9;
-        --font: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+        --maroon: #862633;
+        --maroon-dark: #591923;
+        --maroon-deep: #351016;
+        --cream: #f5f0e9;
+        --paper: #fffdf9;
+        --ink: #201a1b;
+        --muted: #776c6e;
+        --line: rgba(86, 44, 51, 0.14);
+        --font: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       }
+
       * { box-sizing: border-box; }
-      body { margin: 0; font-family: var(--font); color: var(--ink); background: #fff; line-height: 1.65; }
 
-      /* Demo banner — keeps this page from being mistaken for the live AUB site. */
-      .demo-flag {
-        background: #fff4d6; color: #6b4c00; border-bottom: 1px solid #efdca8;
-        font-size: 12.5px; text-align: center; padding: 7px 16px;
+      html, body { min-height: 100%; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 3%, rgba(134, 38, 51, 0.09), transparent 25rem),
+          radial-gradient(circle at 94% 94%, rgba(190, 145, 78, 0.12), transparent 28rem),
+          var(--cream);
+        font-family: var(--font);
+        line-height: 1.5;
       }
 
-      header { border-bottom: 3px solid var(--m); }
-      .bar { max-width: 1080px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; gap: 16px; }
-      /* Typographic wordmark. Drop the official logo in as an <img> here if you
-         have the asset — the layout leaves room for it. */
-      .crest {
-        width: 46px; height: 46px; border-radius: 8px; background: var(--m); color: #fff;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 700; font-size: 13px; letter-spacing: .5px; flex: 0 0 auto;
+      button, textarea { font: inherit; }
+
+      .site-header {
+        width: min(1240px, calc(100% - 48px));
+        height: 82px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
-      .wordmark .u { font-family: Georgia, "Times New Roman", serif; color: var(--m); font-size: 19px; letter-spacing: .3px; }
-      .wordmark .f { font-size: 12px; font-weight: 700; letter-spacing: .6px; color: var(--ink); margin-top: 2px; text-transform: uppercase; }
-      nav { background: var(--canvas); border-bottom: 1px solid var(--line); }
-      nav div { max-width: 1080px; margin: 0 auto; padding: 11px 24px; font-size: 13px; color: var(--ink-soft); }
-      nav a { color: var(--m); text-decoration: none; }
-      nav a:hover { text-decoration: underline; }
 
-      main { max-width: 1080px; margin: 0 auto; padding: 40px 24px 90px; display: grid; grid-template-columns: 1fr 300px; gap: 48px; }
-      h1 { font-size: 31px; line-height: 1.25; margin: 0 0 6px; letter-spacing: -.2px; }
-      .lede { font-size: 16.5px; color: var(--ink-soft); margin: 0 0 30px; }
-      h2 { font-size: 19px; margin: 34px 0 10px; padding-bottom: 7px; border-bottom: 1px solid var(--line); }
-      p { margin: 0 0 14px; }
-      ul { margin: 0 0 14px; padding-left: 22px; }
-      li { margin-bottom: 7px; }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-      table { width: 100%; border-collapse: collapse; margin: 6px 0 16px; font-size: 14.5px; }
-      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-      th { background: var(--canvas); font-size: 12.5px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); }
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--maroon);
+        box-shadow: 0 8px 20px rgba(89, 25, 35, 0.2);
+        font-family: Georgia, serif;
+        font-size: 19px;
+        font-weight: 700;
+      }
 
-      aside { font-size: 14px; }
-      .card { border: 1px solid var(--line); border-radius: 12px; padding: 18px; background: #fff; }
-      .card h3 { margin: 0 0 10px; font-size: 15px; }
-      .card.tip { background: #fdf8f9; border-color: #ecdde1; }
-      .card.tip h3 { color: var(--m-dark); }
-      .card p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 0; }
-      .contact { margin-top: 16px; }
-      .contact a { color: var(--m); }
+      .brand-copy strong,
+      .brand-copy span { display: block; }
 
-      footer { border-top: 1px solid var(--line); background: var(--canvas); }
-      footer div { max-width: 1080px; margin: 0 auto; padding: 22px 24px; font-size: 12.5px; color: var(--ink-soft); }
+      .brand-copy strong {
+        font-size: 14px;
+        letter-spacing: 0.01em;
+      }
 
-      @media (max-width: 860px) {
-        main { grid-template-columns: 1fr; gap: 32px; padding-bottom: 110px; }
+      .brand-copy span {
+        margin-top: 1px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .pilot-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 11px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #63575a;
+        background: rgba(255, 253, 249, 0.7);
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .pilot-badge::before {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #3a8b65;
+        box-shadow: 0 0 0 3px rgba(58, 139, 101, 0.13);
+        content: "";
+      }
+
+      main {
+        width: min(1240px, calc(100% - 48px));
+        min-height: calc(100vh - 112px);
+        margin: 0 auto 30px;
+        display: grid;
+        grid-template-columns: minmax(310px, 0.78fr) minmax(520px, 1.22fr);
+        overflow: hidden;
+        border: 1px solid rgba(72, 31, 38, 0.11);
+        border-radius: 30px;
+        background: var(--paper);
+        box-shadow: 0 30px 80px rgba(72, 31, 38, 0.13);
+      }
+
+      .intro {
+        position: relative;
+        min-height: 700px;
+        padding: clamp(38px, 5vw, 68px);
+        overflow: hidden;
+        color: #fff;
+        background:
+          linear-gradient(145deg, rgba(134, 38, 51, 0.98), rgba(53, 16, 22, 0.99));
+      }
+
+      .intro::before,
+      .intro::after {
+        position: absolute;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        content: "";
+        pointer-events: none;
+      }
+
+      .intro::before {
+        width: 390px;
+        height: 390px;
+        right: -250px;
+        top: -165px;
+        box-shadow: 0 0 0 45px rgba(255, 255, 255, 0.025),
+                    0 0 0 90px rgba(255, 255, 255, 0.02);
+      }
+
+      .intro::after {
+        width: 260px;
+        height: 260px;
+        left: -180px;
+        bottom: -125px;
+        box-shadow: 0 0 0 42px rgba(255, 255, 255, 0.022);
+      }
+
+      .eyebrow {
+        position: relative;
+        margin: 0 0 23px;
+        color: #e7c8cd;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        position: relative;
+        max-width: 500px;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(40px, 4.3vw, 66px);
+        font-weight: 500;
+        letter-spacing: -0.045em;
+        line-height: 0.99;
+      }
+
+      .lede {
+        position: relative;
+        max-width: 470px;
+        margin: 27px 0 31px;
+        color: rgba(255, 255, 255, 0.77);
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .topics {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .topics span {
+        padding: 7px 11px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+        color: rgba(255, 255, 255, 0.82);
+        background: rgba(255, 255, 255, 0.07);
+        font-size: 11px;
+      }
+
+      .trust-grid {
+        position: relative;
+        margin-top: 40px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .trust-item {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+        align-items: start;
+        padding: 12px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.055);
+      }
+
+      .trust-icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.11);
+        color: #f2d8dc;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .trust-item strong,
+      .trust-item span { display: block; }
+
+      .trust-item strong {
+        margin-top: 1px;
+        font-size: 12px;
+      }
+
+      .trust-item span {
+        margin-top: 2px;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 10.5px;
+        line-height: 1.5;
+      }
+
+      .credit {
+        position: relative;
+        margin: 38px 0 0;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 10.5px;
+      }
+
+      .credit strong {
+        color: rgba(255, 255, 255, 0.84);
+        font-weight: 650;
+      }
+
+      .assistant-area {
+        min-width: 0;
+        min-height: 700px;
+        padding: clamp(18px, 2.5vw, 32px);
+        background:
+          linear-gradient(rgba(255, 253, 249, 0.86), rgba(255, 253, 249, 0.86)),
+          repeating-linear-gradient(0deg, transparent 0 31px, rgba(86, 44, 51, 0.035) 32px);
+      }
+
+      #chat-app {
+        width: 100%;
+        height: 100%;
+        min-height: 636px;
+      }
+
+      .noscript {
+        margin: 40px;
+        color: var(--muted);
+      }
+
+      @media (max-width: 940px) {
+        .site-header { width: min(100% - 28px, 760px); }
+
+        main {
+          width: min(100% - 28px, 760px);
+          grid-template-columns: 1fr;
+        }
+
+        .intro {
+          min-height: auto;
+          padding: 42px;
+        }
+
+        h1 { max-width: 610px; }
+        .lede { max-width: 620px; }
+
+        .trust-grid {
+          grid-template-columns: 1fr 1fr;
+          margin-top: 30px;
+        }
+
+        .credit { margin-top: 28px; }
+        .assistant-area { min-height: 720px; }
+        #chat-app { min-height: 656px; }
+      }
+
+      @media (max-width: 600px) {
+        .site-header {
+          width: calc(100% - 24px);
+          height: 68px;
+        }
+
+        .brand-copy span { display: none; }
+        .pilot-badge { padding: 6px 9px; font-size: 10px; }
+
+        main {
+          width: 100%;
+          min-height: calc(100vh - 68px);
+          margin: 0;
+          border-width: 1px 0 0;
+          border-radius: 0;
+          box-shadow: none;
+        }
+
+        .intro { padding: 34px 24px 30px; }
+        h1 { font-size: 42px; }
+        .lede { margin: 20px 0 23px; font-size: 14px; }
+        .trust-grid { grid-template-columns: 1fr; }
+        .topics, .trust-grid { display: none; }
+        .credit { margin-top: 22px; }
+
+        .assistant-area {
+          min-height: 690px;
+          padding: 0;
+          background: #fff;
+        }
+
+        #chat-app { min-height: 690px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="demo-flag">
-      Demonstration page — not an official AUB page. Built to show the CDC chat assistant in context.
-    </div>
-
-    <header>
-      <div class="bar">
-        <div class="crest">AUB</div>
-        <div class="wordmark">
-          <div class="u">American University of Beirut</div>
-          <div class="f">Maroun Semaan Faculty of Engineering &amp; Architecture</div>
+    <header class="site-header">
+      <div class="brand" aria-label="MSFEA Student Assistant">
+        <div class="brand-mark" aria-hidden="true">M</div>
+        <div class="brand-copy">
+          <strong>MSFEA Student Assistant</strong>
+          <span>Internship &amp; career guidance</span>
         </div>
       </div>
+      <span class="pilot-badge">Pilot version</span>
     </header>
 
-    <nav>
-      <div><a href="#">MSFEA</a> &rsaquo; <a href="#">Career Development Center</a> &rsaquo; Approved Experience</div>
-    </nav>
-
     <main>
-      <article>
-        <h1>Approved Experience (Internship)</h1>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">Your questions, grounded</p>
+        <h1 id="page-title">Less searching.<br />More doing.</h1>
         <p class="lede">
-          The Approved Experience is a graduation requirement for MSFEA undergraduate
-          students. This page summarizes the essentials; the assistant at the
-          bottom-right answers detailed questions from the official documents.
+          Ask clear questions about Approved Experience, CO-OP, IAESTE and CDC
+          support. The assistant searches the available guidance, cites where its
+          answer came from, and tells you when a human should confirm it.
         </p>
 
-        <h2>Overview</h2>
-        <p>
-          Students complete supervised professional training with an approved employer
-          and submit a set of deliverables through Moodle. Requirements vary slightly by
-          department, so check your department's specific rules before you start.
-        </p>
-
-        <h2>Key deliverables</h2>
-        <table>
-          <thead>
-            <tr><th>When</th><th>Deliverable</th><th>Where</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>First week of training</td><td>Notice of Arrival Form</td><td>Moodle</td></tr>
-            <tr><td>During the internship</td><td>Professional Skills Requirement</td><td>Moodle</td></tr>
-            <tr><td>By the end of Week 4</td><td>Progress Report</td><td>Moodle</td></tr>
-            <tr><td>Within 1 week of completion</td><td>Final Training Report</td><td>Moodle</td></tr>
-            <tr><td>First 2 weeks of Fall</td><td>Final Presentation</td><td>Department</td></tr>
-          </tbody>
-        </table>
-
-        <h2>Other CDC programs</h2>
-        <ul>
-          <li><strong>CO-OP</strong> — a longer paid placement with its own eligibility rules.</li>
-          <li><strong>IAESTE</strong> — international exchange internships.</li>
-          <li><strong>Full-time job support</strong> — CV reviews, interview preparation.</li>
-          <li><strong>Mentorship</strong> — guidance from alumni and industry professionals.</li>
-        </ul>
-
-        <h2>Before you email us</h2>
-        <p>
-          Most questions are already answered in the guidelines. Try the assistant first —
-          it answers from those documents and cites the section it used, so you can verify
-          it. If it can't help, it will point you to the right person.
-        </p>
-      </article>
-
-      <aside>
-        <div class="card tip">
-          <h3>💬 Ask the CDC assistant</h3>
-          <p>
-            Click the maroon chat button in the bottom-right corner. Try
-            <em>"What is the minimum internship duration?"</em> or
-            <em>"What GPA do I need for CO-OP?"</em>
-          </p>
+        <div class="topics" aria-label="Topics covered">
+          <span>Approved Experience</span>
+          <span>CO-OP</span>
+          <span>IAESTE</span>
+          <span>Career support</span>
+          <span>Mentorship</span>
         </div>
-        <div class="card contact">
-          <h3>Contact</h3>
-          <p>
-            Career Development Center<br />
-            <a href="mailto:fcareer@aub.edu.lb">fcareer@aub.edu.lb</a>
-          </p>
+
+        <div class="trust-grid">
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">01</div>
+            <div>
+              <strong>Built from source material</strong>
+              <span>Answers include citations so you can verify the guidance.</span>
+            </div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon" aria-hidden="true">02</div>
+            <div>
+              <strong>Private by design</strong>
+              <span>Do not share your name, student ID, phone number or personal email.</span>
+            </div>
+          </div>
         </div>
-      </aside>
+
+        <p class="credit">Designed &amp; built by <strong>Jad Ghazi</strong></p>
+      </section>
+
+      <section class="assistant-area" aria-label="Chat with the student assistant">
+        <div id="chat-app"></div>
+        <noscript><p class="noscript">JavaScript is required to use the assistant.</p></noscript>
+      </section>
     </main>
 
-    <footer>
-      <div>Demonstration page for the MSFEA CDC chatbot capstone project.</div>
-    </footer>
-
-    <!-- Same origin when served from the API at /widget/demo.html, so no API URL needed. -->
-    <script src="widget.js"></script>
+    <script src="widget.js?v=pilot-standalone-1" data-layout="standalone" data-mount="#chat-app"></script>
   </body>
 </html>
