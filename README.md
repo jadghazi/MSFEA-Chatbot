@@ -91,8 +91,7 @@ docker compose run --rm app python -m msfea_bot.skeleton ingest
 
 Then open:
 
-- **Standalone pilot assistant:** http://localhost:8000/ (the explicit asset URL
-  remains available at http://localhost:8000/widget/demo.html)
+- **Standalone pilot assistant:** http://localhost:8000/
 - **Future embedded widget:** load `/widget/widget.js` on the host page without
   `data-layout="standalone"`; it retains the compact bottom-right launcher.
 - **Admin dashboard:** http://localhost:8000/dashboard/ (paste your `ADMIN_TOKEN`)

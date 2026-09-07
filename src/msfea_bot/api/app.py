@@ -4,9 +4,9 @@ Endpoints:
 - GET  /health  — liveness check.
 - POST /chat    — answer a student question through the guarded RAG pipeline.
 
-The widget is served as static files under /widget for easy local demoing;
-CORS is enabled so the widget can also be embedded on a different origin (the
-real AUB page).
+The standalone pilot frontend is served at /, while the reusable widget assets
+remain under /widget for a future AUB-page embed. CORS can allow that embedded
+widget to call the API from an explicitly configured origin.
 """
 
 from __future__ import annotations
@@ -19,7 +19,6 @@ from typing import Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -78,12 +77,6 @@ app.add_middleware(
 )
 
 _limiter = RateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds)
-
-
-@app.get("/", include_in_schema=False)
-def pilot_home() -> RedirectResponse:
-    """Send the public hostname directly to the standalone pilot assistant."""
-    return RedirectResponse(url="/widget/demo.html")
 
 
 def _client_key(request: Request) -> str:
@@ -350,7 +343,8 @@ def admin_resolve(req: ResolveRequest, _: None = Depends(require_admin)) -> dict
     return {"ok": resolve_interaction(req.interaction_id)}
 
 
-# Static frontends: the widget (demo) and the admin dashboard.
+# Static frontends. Keep the root mount last so API, widget, and dashboard routes
+# remain more specific; `/` is the standalone pilot product, not a demo redirect.
 _ROOT = Path(__file__).resolve().parents[3]
 _WIDGET_DIR = _ROOT / "widget"
 if _WIDGET_DIR.is_dir():
@@ -358,3 +352,6 @@ if _WIDGET_DIR.is_dir():
 _DASHBOARD_DIR = _ROOT / "dashboard"
 if _DASHBOARD_DIR.is_dir():
     app.mount("/dashboard", StaticFiles(directory=str(_DASHBOARD_DIR), html=True), name="dashboard")
+_FRONTEND_DIR = _ROOT / "frontend"
+if _FRONTEND_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=str(_FRONTEND_DIR), html=True), name="frontend")

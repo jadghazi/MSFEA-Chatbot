@@ -12,9 +12,10 @@ Deployed the production Compose stack on an Always Free ARM64 Oracle A1 VM with
 Caddy HTTPS at `msfea-chatbot.duckdns.org`. The 205-chunk index was ingested;
 PostgreSQL, the app, `/health`, and `/ready` all passed. Warm container memory was
 about 515 MiB total on the 12 GB VM and the 45 GB boot volume was 16% used. The
-first compressed database backup was also created. Added a tested root redirect so
-the bare hostname opens the standalone pilot assistant while the explicit widget
-and dashboard paths remain available.
+first compressed database backup was also created. The standalone frontend now lives
+at `frontend/index.html` and is served directly from `/` with HTTP 200; the obsolete
+`widget/demo.html` route was removed while the reusable widget assets and dashboard
+remain independently available.
 
 ## 2026-09-07 — Intent-aware grounded reasoning (ADR-0021)
 

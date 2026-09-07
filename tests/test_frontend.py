@@ -5,13 +5,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_pilot_page_mounts_the_standalone_chat() -> None:
-    page = (ROOT / "widget" / "demo.html").read_text(encoding="utf-8")
+    page = (ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
 
     assert 'id="chat-app"' in page
     assert 'data-layout="standalone"' in page
     assert 'data-mount="#chat-app"' in page
     assert "Pilot version" in page
     assert "Jad Ghazi" in page
+    assert 'src="/widget/widget.js?v=pilot-standalone-1"' in page
     assert 'href="#"' not in page
 
 

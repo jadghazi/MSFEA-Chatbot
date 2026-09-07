@@ -73,6 +73,7 @@ RUN pip install --no-deps -e .
 COPY kb ./kb
 COPY widget ./widget
 COPY dashboard ./dashboard
+COPY frontend ./frontend
 
 # --- Run as a non-root user --------------------------------------------------
 # App code and baked models are runtime read-only and world-readable. Do not

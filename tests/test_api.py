@@ -20,10 +20,13 @@ def test_health_ok() -> None:
     assert resp.json() == {"status": "ok"}
 
 
-def test_root_redirects_to_standalone_pilot() -> None:
+def test_root_serves_standalone_pilot_directly() -> None:
     resp = client.get("/", follow_redirects=False)
-    assert resp.status_code == 307
-    assert resp.headers["location"] == "/widget/demo.html"
+    assert resp.status_code == 200
+    assert "MSFEA Student Assistant" in resp.text
+
+    head = client.head("/")
+    assert head.status_code == 200
 
 
 def test_ready_checks_the_index(monkeypatch: pytest.MonkeyPatch) -> None:
