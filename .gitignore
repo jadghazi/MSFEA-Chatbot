@@ -33,6 +33,7 @@ node_modules/
 # --- Local scratch output ---
 eval_answer_result.txt
 *.log
+backups/
 
 # --- Editors / OS ---
 .idea/

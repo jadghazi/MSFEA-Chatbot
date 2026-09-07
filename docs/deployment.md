@@ -96,6 +96,20 @@ interaction logs are not** — back up the database.
 ```
 Schedule `backup.sh` (e.g. daily cron) and store copies off the box (`BACKUP_DIR`).
 
+For the Oracle pilot, install the version-controlled systemd timer:
+
+```bash
+sudo ./deploy/install-backup-timer.sh
+sudo systemctl start msfea-chatbot-backup.service  # immediate verification run
+systemctl status msfea-chatbot-backup.service --no-pager
+systemctl list-timers msfea-chatbot-backup.timer --no-pager
+```
+
+It runs daily at 02:00 in the VM's local timezone, catches up after downtime,
+uses a randomized delay of up to 15 minutes, and retains 14 days of compressed
+on-VM dumps. A dump must also be copied to separate storage; the local retention
+does not protect against losing the VM or boot volume.
+
 ---
 
 ## 6. Security review (2026-07-27)

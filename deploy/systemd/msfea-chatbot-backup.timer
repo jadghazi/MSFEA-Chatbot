@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the MSFEA chatbot database backup daily
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=msfea-chatbot-backup.service
+
+[Install]
+WantedBy=timers.target

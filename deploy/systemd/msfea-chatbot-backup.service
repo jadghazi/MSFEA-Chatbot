@@ -1,0 +1,19 @@
+[Unit]
+Description=Back up the MSFEA chatbot PostgreSQL database
+Requires=docker.service
+After=docker.service network-online.target
+ConditionPathExists=/opt/msfea-chatbot/.env
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/msfea-chatbot
+Environment=BACKUP_DIR=/opt/msfea-chatbot/backups
+UMask=0077
+ExecStart=/opt/msfea-chatbot/deploy/backup.sh
+# Retain two weeks of on-VM daily dumps. Off-VM retention is managed separately.
+ExecStartPost=/usr/bin/find /opt/msfea-chatbot/backups -maxdepth 1 -type f -name msfea-*.sql.gz -mtime +13 -delete
+
+[Install]
+WantedBy=multi-user.target

@@ -17,6 +17,11 @@ at `frontend/index.html` and is served directly from `/` with HTTP 200; the obso
 `widget/demo.html` route was removed while the reusable widget assets and dashboard
 remain independently available.
 
+Added a reproducible systemd timer for daily compressed PostgreSQL backups with
+catch-up after downtime and 14-day on-VM retention. Backup artifacts are now
+gitignored; at least one verified copy is kept off the VM, since the local timer
+alone does not protect against loss of the instance or boot volume.
+
 ## 2026-09-07 — Intent-aware grounded reasoning (ADR-0021)
 
 Diagnosed a live ECE 6+2 conversation where retrieval found the right section but
