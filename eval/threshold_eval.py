@@ -1,6 +1,6 @@
 """Calibrate the pre-LLM similarity gate without spending provider quota.
 
-The gate uses the cosine score attached to the first hybrid/RRF result, exactly as
+The gate uses the maximum cosine score among supplied hybrid/RRF results, exactly as
 ``generate_answer`` does. All answerable golden questions plus terse/misspelled
 valid queries must pass. The separate off-topic stress set measures how many clearly
 unrelated requests avoid an LLM call; topical-but-unanswerable questions remain the
@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from eval.loader import load_golden_set
 from msfea_bot.config import settings
 from msfea_bot.generation.conversation import build_retrieval_query
-from msfea_bot.retrieval.store import search
+from msfea_bot.retrieval.store import retrieval_depth, search
 
 THRESHOLD_SET_PATH = Path(__file__).parent / "threshold_set.jsonl"
 MIN_OFFTOPIC_BLOCK_RATE = 0.50
@@ -57,23 +57,24 @@ def load_threshold_set(path: Path = THRESHOLD_SET_PATH) -> list[ThresholdCase]:
     return cases
 
 
-def _first_score(question: str, department: str | None) -> float:
-    chunks = search(question, settings.top_k, department=department)
-    return chunks[0].score if chunks else -1.0
+def _best_score(query: str, question: str, department: str | None) -> float:
+    chunks = search(query, retrieval_depth(question, settings.top_k), department=department)
+    return max((chunk.score for chunk in chunks), default=-1.0)
 
 
 def evaluate_threshold() -> tuple[int, int, int]:
     """Print calibration metrics; return false refusals, blocked off-topic, total off-topic."""
     scored: list[ScoredCase] = []
 
-    for golden_item in load_golden_set():
+    synthesis = load_golden_set(Path(__file__).parent / "synthesis_set.jsonl")
+    for golden_item in load_golden_set() + synthesis:
         if golden_item.should_refuse:
             continue
         query = build_retrieval_query(golden_item.question, golden_item.history)
         scored.append(
             ScoredCase(
                 golden_item.id,
-                _first_score(query, golden_item.department),
+                _best_score(query, golden_item.question, golden_item.department),
                 True,
             )
         )
@@ -82,7 +83,8 @@ def evaluate_threshold() -> tuple[int, int, int]:
         scored.append(
             ScoredCase(
                 supplemental_item.id,
-                _first_score(supplemental_item.question, supplemental_item.department),
+                _best_score(supplemental_item.question, supplemental_item.question,
+                            supplemental_item.department),
                 supplemental_item.should_pass_threshold,
             )
         )

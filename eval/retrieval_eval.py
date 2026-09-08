@@ -20,7 +20,7 @@ from eval.loader import GoldenItem, load_golden_set
 from eval.metrics import evidence_present, recall_at_k
 from msfea_bot.config import settings
 from msfea_bot.generation.conversation import build_retrieval_query
-from msfea_bot.retrieval.store import search
+from msfea_bot.retrieval.store import retrieval_depth, search
 
 
 @dataclass
@@ -28,6 +28,7 @@ class _Result:
     item: GoldenItem
     docs: list[str]  # source_doc of each retrieved chunk, in rank order
     texts: list[str]  # text of each retrieved chunk, in rank order
+    production_texts: list[str]
 
 
 def _pct_bar(hits: int, total: int) -> str:
@@ -57,8 +58,13 @@ def evaluate_retrieval(ks: tuple[int, ...] | None = None) -> float:
         # them: with their department set (ADR-0015). None for every other case.
         query = build_retrieval_query(item.question, item.history)
         chunks = search(query, top, department=item.department)
+        production_k = retrieval_depth(item.question, settings.top_k)
+        production_chunks = chunks if production_k == top else search(
+            query, production_k, department=item.department
+        )
         results.append(
-            _Result(item, [c.source_doc for c in chunks], [c.text for c in chunks])
+            _Result(item, [c.source_doc for c in chunks], [c.text for c in chunks],
+                    [c.text for c in production_chunks])
         )
 
     n = len(items)
@@ -90,7 +96,8 @@ def evaluate_retrieval(ks: tuple[int, ...] | None = None) -> float:
     for r in misses:
         print(f"  [{r.item.id}] evidence '{r.item.evidence}' not in top-{top}")
 
-    top_hits = sum(1 for r in with_ev if evidence_present(r.texts[:top], r.item.evidence or ""))
+    top_hits = sum(1 for r in with_ev if evidence_present(r.production_texts, r.item.evidence or ""))
+    print(f"\nProduction adaptive-depth context recall: {top_hits}/{m}")
     return top_hits / m if m else 1.0
 
 

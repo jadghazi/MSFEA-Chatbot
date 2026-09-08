@@ -259,6 +259,17 @@ def reciprocal_rank_fusion(rankings: list[list[str]], c: int = 60) -> list[str]:
     return sorted(scores, key=lambda i: scores[i], reverse=True)
 
 
+def retrieval_depth(question: str, default_k: int) -> int:
+    """Give explicit comparisons room for evidence from both sides (synthesis eval).
+
+    Unconditionally raising k recovered the CO-OP waiver but distracted generation
+    on a conditional rule. This cue is about question structure, never CDC topics.
+    """
+    if re.search(r"\b(compare|comparison|difference|versus|vs)\b", question, re.IGNORECASE):
+        return max(default_k, 12)
+    return default_k
+
+
 # Chunks tagged with a specific department (see ingestion.chunking). Anything else
 # — untagged, or the document-level default "all" — applies to every student.
 _GENERAL = "(metadata->>'department' IS NULL OR metadata->>'department' = 'all')"

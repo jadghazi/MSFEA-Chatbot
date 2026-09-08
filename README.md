@@ -167,3 +167,12 @@ ruff (lint), mypy `--strict` (types), pytest (including DB-backed tests via a
 Postgres service), and the **retrieval eval with a context-recall floor** so a
 retrieval regression fails the build. The answer eval is intentionally not in CI
 (it calls the live LLM); run it locally with `python -m eval.answer_eval`.
+
+For the September synthesis/follow-up investigation, see
+[ADR-0022](docs/decisions/0022-measured-synthesis-and-followups.md), the frozen
+[12-case set](eval/synthesis_set.jsonl), and
+[reviewed before/after outputs](eval/results/synthesis/reviewed_results.md).
+CI also checks that all required synthesis premises survive retrieval and the
+similarity gate. Live candidate runs use `python -m eval.synthesis_eval --variant
+combined_adaptive --name local_recheck`; they require a populated source index and
+provider quota. Run pytest through the dev Compose overlay to isolate its database.

@@ -190,3 +190,10 @@ def test_unknown_department_behaves_exactly_like_no_department() -> None:
     assert [c.id for c in search(q, 5, department="nonsense")] == [
         c.id for c in search(q, 5)
     ]
+def test_comparisons_get_more_evidence_without_widening_every_question() -> None:
+    from msfea_bot.retrieval.store import retrieval_depth
+
+    assert retrieval_depth("Compare the two programs", 7) == 12
+    assert retrieval_depth("What is the difference between them?", 7) == 12
+    assert retrieval_depth("Is six plus two enough with another course?", 7) == 7
+    assert retrieval_depth("Compare these options", 15) == 15

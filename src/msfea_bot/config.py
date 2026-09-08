@@ -47,7 +47,8 @@ class Settings(BaseSettings):
     # Vector store: PostgreSQL + pgvector
     database_url: str = "postgresql://msfea:msfea@localhost:5432/msfea"
 
-    # Retrieval / generation knobs
+    # Retrieval / generation knobs. Explicit comparisons use at least 12 hits;
+    # normal questions keep this depth (see the synthesis experiments).
     # Swept against context-recall after the KB grew to 183 chunks (ADR-0016):
     # k=5 -> 92%, k=7 -> 95%, k=10 -> 97%. 7 is the knee — it recovers a real case
     # for two extra chunks (~1k chars), where 10 doubles the context for one more.

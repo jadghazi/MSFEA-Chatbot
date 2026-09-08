@@ -1,0 +1,19 @@
+{
+  "variant": "confirmation_frame_v2",
+  "model": "gemini-flash-lite-latest",
+  "temperature": 0.0,
+  "seed": 42,
+  "max_output_tokens": 1024,
+  "k": 7,
+  "similarity_threshold": 0.6,
+  "case_sha256": "2686a287f8eee59159cd4262b8a4b01ac5b373adee9ad35238c34f8808806ab4",
+  "prompt_sha256": "772e7e5e0b4f47af0379d43181a122cccbb5010f212dfe63e741f5107353e8d3",
+  "source_sha256": {
+    "kb/normalized/cdc-knowledge-base.md": "0ee9c6390e4a21d309bae3c24e9df357e95b2e54fcf5fdc4523d661209e22123",
+    "kb/normalized/email-clarifications.md": "e74b12b1154a3a38c5327c94b35035795ddd8f2db80d3aba148d0926b495f891",
+    "kb/normalized/final-presentation-slide-template.md": "b61960ddb380069575e5408b7a1ce17798c077c564eb9fcaba8a4d19db5b2a33",
+    "kb/normalized/internship-report-templates-and-rubrics.md": "311e3a599d3247ed09fb17563a6d7810e93ad288508be013f6c76d1768328a0f",
+    "kb/normalized/msfea-cdc-coop-handbook.md": "440218e2bfe6f3660a60e8a4d78699446684bd8b52708eb1074d81acbfcea2bc",
+    "kb/normalized/summer-training-guidelines-2026.md": "8403a05ccf876f8e71d4801f9aae838305f503ee43838cebb51d4fa039a2f70c"
+  }
+}

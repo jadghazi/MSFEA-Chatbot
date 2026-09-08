@@ -30,7 +30,12 @@ class GeminiProvider:
                 "LLM_API_KEY is not set. Add your Gemini key to .env "
                 "(get one free at https://aistudio.google.com/apikey)."
             )
-        self._client = genai.Client(api_key=settings.llm_api_key)
+        self._client = genai.Client(
+            api_key=settings.llm_api_key,
+            http_options=types.HttpOptions(
+                timeout=30_000, retry_options=types.HttpRetryOptions(attempts=1)
+            ),
+        )
         self._model = settings.llm_model or "gemini-flash-lite-latest"
         # Deterministic decoding (ADR-0012). Built once here rather than per call.
         self._config = types.GenerateContentConfig(
@@ -42,7 +47,8 @@ class GeminiProvider:
     def generate(self, prompt: str) -> GenerationResult:
         # Import here as well as in __init__: the SDK remains an optional extra and
         # importing msfea_bot.llm never forces it on non-Gemini deployments.
-        from google.genai import errors
+        from google.genai import errors, types
+        from httpx import TransportError
 
         started = perf_counter()
         try:
@@ -59,12 +65,19 @@ class GeminiProvider:
             raise LLMServiceError("Gemini rejected the request") from exc
         except errors.ServerError as exc:
             raise LLMServiceError("Gemini is temporarily unavailable") from exc
-        except (TimeoutError, ConnectionError) as exc:
+        except (TimeoutError, ConnectionError, TransportError) as exc:
             raise LLMServiceError("Could not reach Gemini") from exc
+
+        candidates = getattr(response, "candidates", None) or []
+        if candidates and candidates[0].finish_reason == types.FinishReason.MAX_TOKENS:
+            raise LLMServiceError("Gemini response was truncated")
+        text = response.text or ""
+        if not text.strip():
+            raise LLMServiceError("Gemini returned no answer")
 
         usage = response.usage_metadata
         return GenerationResult(
-            text=response.text or "",
+            text=text,
             input_tokens=getattr(usage, "prompt_token_count", None),
             output_tokens=getattr(usage, "candidates_token_count", None),
             total_tokens=getattr(usage, "total_token_count", None),

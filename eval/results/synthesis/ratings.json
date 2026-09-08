@@ -1,0 +1,1261 @@
+{
+  "reviewer": "Coding assistant manual review against saved source chunks and frozen expected qualities; not an independent human or calibrated judge",
+  "baseline": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "False pre-LLM refusal despite retrieved definition; no invented facts."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Defines correctly but adds progress-report timing and separate research report unasked."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Does not confirm interpretation; answers how to document research instead."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Yes endorses two more weeks at the same company, while cited alternative is four weeks at another company. Rule itself is quoted accurately but its application is misleading."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct No and remaining research component; volunteers a research-report requirement."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "unsupported",
+      "note": "Duration/pay contrast mostly direct, but waiver passage is absent; unconditional no need for both omits passing FEAA 500. Optional status also omitted."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correctly applies independent limits; omits disclosure/citation caveat and one-point difference."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Gives fairness rationale but ignores the wait-time tension; repeats avoid-rejecting advice."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No, explains separate administrative checks and routes registration correctly."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Answers IAESTE only with club and contact despite earlier internship history."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct refusal; no invented rationale for exactly two research weeks."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correctly says six plus two is insufficient and applies ten-week rule; opening does not replace is less clear than changes the requirement."
+    }
+  ],
+  "task_prompt": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Same false gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Still appends report instructions to definition."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Still answers documentation instead of confirming research."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct No for substituting company weeks, but adds another-company alternative."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "States premises before conclusion and adds report requirement."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "incomplete",
+      "note": "Correct comparison of duration/pay and acknowledges missing waiver evidence; cannot finish requested comparison."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Direct No and correct separate limits; omits disclosure and one-point difference."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "False refusal although fairness rationale is retrieved."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct conclusion from separate administrative checks."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Successful IAESTE topic switch with contact."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct refusal on undocumented rationale."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Restates ten-week rule without explicitly answering whether six plus two is enough."
+    }
+  ],
+  "k3": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Same false gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 2,
+      "grounding": "incomplete",
+      "note": "Restates source approval/report instructions; faculty identity is missing from reduced context."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Still answers forms/reports instead of confirming."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Directly corrects meaning of plus two without outlawing other approved arrangements."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No and precise remaining component."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "incomplete",
+      "note": "Duration/pay contrast only; no exemption/optional evidence."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Applies both limits correctly but gives less explanation."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness rationale but ignores wait-time tension."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "IAESTE evidence lost and topic switch falsely refused."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct unsupported-rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No with the decisive ten-week rule."
+    }
+  ],
+  "k12": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Same false gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Definition plus unnecessary reporting details."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Confirmation still answered with forms and reports."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 2,
+      "grounding": "supported",
+      "note": "Repeats two alternatives and leaves correction implicit."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No and remaining research requirement."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Retrieves and correctly applies passing FEAA 500 waiver; omits explicit full-time detail."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Concludes similarity fails but merely restates AI limit without applying 23 explicitly."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness stated but ignores the wait issue."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct direct registration conclusion."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE club/contact."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Says six plus two is enough and the summer course does not change requirement, contradicting retrieved ten-week rule."
+    }
+  ],
+  "two_step": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Same false gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fact selector includes irrelevant reports and composer repeats them."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Confirmation again becomes documentation instructions."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Yes answers same-company two-week suggestion using a four-week different-company rule."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Direct No but volunteers report."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "incomplete",
+      "note": "Duration/pay only; required waiver evidence absent."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct application of both numerical limits."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness rationale but ignores waiting issue."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration conclusion."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 3,
+      "grounding": "incomplete",
+      "note": "IAESTE club given but available contact dropped."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Applies ten-week summer-course rule and says six plus two insufficient."
+    }
+  ],
+  "temperature": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Identical to baseline. False pre-LLM refusal despite retrieved definition; no invented facts."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Identical to baseline. Defines correctly but adds progress-report timing and separate research report unasked."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Identical to baseline. Does not confirm interpretation; answers how to document research instead."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Identical to baseline. Yes endorses two more weeks at the same company, while cited alternative is four weeks at another company. Rule itself is quoted accurately but its application is misleading."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Identical to baseline. Correct No and remaining research component; volunteers a research-report requirement."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "unsupported",
+      "note": "Identical to baseline. Duration/pay contrast mostly direct, but waiver passage is absent; unconditional no need for both omits passing FEAA 500. Optional status also omitted."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Identical to baseline. Correctly applies independent limits; omits disclosure/citation caveat and one-point difference."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Identical to baseline. Gives fairness rationale but ignores the wait-time tension; repeats avoid-rejecting advice."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Identical to baseline. Direct No, explains separate administrative checks and routes registration correctly."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Identical to baseline. Answers IAESTE only with club and contact despite earlier internship history."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Identical to baseline. Correct refusal; no invented rationale for exactly two research weeks."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Identical to baseline. Correctly says six plus two is insufficient and applies ten-week rule; opening does not replace is less clear than changes the requirement."
+    }
+  ],
+  "max_gate": [
+    {
+      "id": "s01-explain",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Gate now admits the answer; correct definition but report dump remains."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Defines correctly but adds progress-report timing and separate research report unasked."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Does not confirm interpretation; answers how to document research instead."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Yes endorses two more weeks at the same company, while cited alternative is four weeks at another company. Rule itself is quoted accurately but its application is misleading."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct No and remaining research component; volunteers a research-report requirement."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "unsupported",
+      "note": "Duration/pay contrast mostly direct, but waiver passage is absent; unconditional no need for both omits passing FEAA 500. Optional status also omitted."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correctly applies independent limits; omits disclosure/citation caveat and one-point difference."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Gives fairness rationale but ignores the wait-time tension; repeats avoid-rejecting advice."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No, explains separate administrative checks and routes registration correctly."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Answers IAESTE only with club and contact despite earlier internship history."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct refusal; no invented rationale for exactly two research weeks."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correctly says six plus two is insufficient and applies ten-week rule; opening does not replace is less clear than changes the requirement."
+    }
+  ],
+  "model_current": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Unchanged first-result gate blocks Explain."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Definition plus unasked reporting details."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "incomplete",
+      "note": "Still interprets confirmation as requirements and truncates mid-sentence."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 1,
+      "grounding": "incomplete",
+      "note": "Changes same-company reference to another company and truncates before completing its correction."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No and precise unfinished component."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Refuses comparison because waiver evidence is absent; no invented waiver."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct separate numeric conclusions, no disclosure reminder."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness only; wait issue ignored."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE topic switch with contact."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 1,
+      "grounding": "incomplete",
+      "note": "Starts the correct ten-week conclusion but truncates the required alternatives."
+    }
+  ],
+  "native_system": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Unchanged gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Definition plus unasked reports."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 2,
+      "grounding": "supported",
+      "note": "Mentions two-week research meaning, then dumps forms/reports without direct confirmation."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Misleading Yes to same-company two-week suggestion, quoting a different-company four-week alternative."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct No but adds report."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "unsupported",
+      "note": "Invents unsupported unconditional exemption from doing both; retrieved duration does not establish the waiver."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct numerical comparison."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness only, wait issue unaddressed."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct direct registration answer."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE club/contact."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Offers six plus two as an alternative while taking a summer course, despite retrieved ten-week condition."
+    }
+  ],
+  "confirmation_frame": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Gate refusal unchanged."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Definition plus reports."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Confirms correctly but volunteers research report."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Corrects precisely but adds unasked alternative."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "False refusal; this prototype also changed trailing newlines on non-target questions."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 2,
+      "grounding": "incomplete",
+      "note": "Omits required minimum and waiver; does not resolve doing both."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct independent limits."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness only."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE switch."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Incorrectly accepts six plus two with summer course; non-target prompt newline also changed."
+    }
+  ],
+  "confirmation_frame_v2": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Gate refusal unchanged."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Byte-identical baseline question and reporting detail."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct confirmation, but adds report."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Corrects meaning then repeats alternatives redundantly."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Baseline correct No plus extra report."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "unsupported",
+      "note": "Baseline unsupported waiver persists."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct numeric comparison."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness only."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE switch."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Baseline correct ten-week rule."
+    }
+  ],
+  "structured": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Unchanged gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Definition plus unasked report."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Observable resolved_question wrongly broadens confirmation into requirements."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 2,
+      "grounding": "supported",
+      "note": "Repeats alternative rules without direct correction."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "False refusal of supported incomplete-arrangement question."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 2,
+      "grounding": "incomplete",
+      "note": "Omits eight-week minimum and waiver, adds irrelevant CO-OP clarification."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct arithmetic comparison."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness only."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration conclusion."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 3,
+      "grounding": "incomplete",
+      "note": "Club given but available contact omitted."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 2,
+      "grounding": "unsupported",
+      "note": "Says taking summer course does not change rule while applying ten-week rule; misstates the condition."
+    }
+  ],
+  "resolve_turn": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Unchanged gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Definition still includes reporting dump."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Source-free interpretation produces exact confirmation; concise correct reply."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correctly rejects same-company substitution."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Applies remaining research requirement directly."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 2,
+      "grounding": "incomplete",
+      "note": "Cannot resolve doing both; vague statement that co-op is required omits optional status and waiver."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct separate thresholds, wording unnecessarily admonishing."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Rewrites why as confirmation but answer still gives fairness and acknowledges wait."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE switch."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 1,
+      "grounding": "incomplete",
+      "note": "Interpreter removes why, so documented rule is affirmed instead of refusing absent rationale."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Accepts six plus two with another summer course."
+    }
+  ],
+  "task_contract": [
+    {
+      "id": "s01-explain",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Unchanged gate refusal."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Two-sentence definition but includes one unasked reporting requirement."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct concise confirmation; no forms or reports."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct correction; no irrelevant alternatives."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct No plus one unasked report."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 3,
+      "grounding": "incomplete",
+      "note": "Duration/pay comparison, but no waiver evidence or complete answer."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct numeric comparison."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 1,
+      "grounding": "supported",
+      "note": "Explicit reason cue wrongly refuses documented fairness rationale."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE switch."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Precisely applies ten-week condition, rejecting six plus two."
+    }
+  ],
+  "combined": [
+    {
+      "id": "s01-explain",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Answers Explain but still includes reports."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Concise definition; followed-by wording could imply an order the source does not expressly mandate, so avoid treating it as an ordering rule."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct confirmation without reporting dump."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct correction without alternatives."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Clear No and missing research component."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "All requested comparison premises recovered and synthesized."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Correct similarity conclusion but mainly restates limits."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Fairness only."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE switch."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct rationale refusal."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 1,
+      "grounding": "unsupported",
+      "note": "Combination regresses: accepts six plus two with another summer course despite ten-week source."
+    }
+  ],
+  "combined_adaptive": [
+    {
+      "id": "s01-explain",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Answers Explain in two sentences; one unasked research-report detail remains."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Consistent definition across paraphrase; one report detail remains."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct concise confirmation with no unasked administrative content."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct correction tied to research meaning; no unrelated alternative."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct remaining research conclusion; extra report requirement."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Explicit duration/pay comparison, optional CO-OP and conditional FEAA 500 waiver, all supported."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct independent numerical application; no disclosure caveat or one-point calculation."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Documented fairness rationale; still does not address the wait-time tension explicitly."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct supported registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE topic switch and contact."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correctly refuses undocumented rationale."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No and correct ten-week rule for the stated summer-course condition."
+    }
+  ],
+  "combined_adaptive_repeat": [
+    {
+      "id": "s01-explain",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Answers Explain in two sentences; one unasked research-report detail remains."
+    },
+    {
+      "id": "s02-what",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Consistent definition across paraphrase; one report detail remains."
+    },
+    {
+      "id": "s03-confirm",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct concise confirmation with no unasked administrative content."
+    },
+    {
+      "id": "s04-correct",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct correction tied to research meaning; no unrelated alternative."
+    },
+    {
+      "id": "s05-component",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct remaining research conclusion; extra report requirement."
+    },
+    {
+      "id": "s06-comparison",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Explicit duration/pay comparison, optional CO-OP and conditional FEAA 500 waiver, all supported."
+    },
+    {
+      "id": "s07-two-thresholds",
+      "synthesis": 4,
+      "grounding": "supported",
+      "note": "Correct independent numerical application; no disclosure caveat or one-point calculation."
+    },
+    {
+      "id": "s08-why",
+      "synthesis": 3,
+      "grounding": "supported",
+      "note": "Documented fairness rationale; still does not address the wait-time tension explicitly."
+    },
+    {
+      "id": "s09-registration",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct supported registration inference."
+    },
+    {
+      "id": "s10-topic-switch",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correct IAESTE topic switch and contact."
+    },
+    {
+      "id": "s11-unsupported-why",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Correctly refuses undocumented rationale."
+    },
+    {
+      "id": "s12-summer-course",
+      "synthesis": 5,
+      "grounding": "supported",
+      "note": "Direct No and correct ten-week rule for the stated summer-course condition."
+    }
+  ]
+}

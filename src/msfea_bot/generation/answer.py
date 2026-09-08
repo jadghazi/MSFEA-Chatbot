@@ -3,8 +3,8 @@
 Answer ONLY from retrieved context, cite the sources used, and refuse + escalate
 when the context does not contain the answer. Two layers of refusal:
 
-1. A calibrated similarity-threshold gate: if the first hybrid result's cosine
-   score is below 0.60, skip the LLM entirely and escalate (ADR-0020). This catches
+1. A calibrated similarity-threshold gate: if every retrieved result's cosine
+   score is below 0.60, skip the LLM entirely and escalate. This catches
    clearly unrelated requests without spending provider quota. It cannot identify
    topically relevant but unanswered questions, so the prompt layer remains required.
 2. Prompt-based refusal: the model is instructed to emit a refusal marker when the
@@ -27,11 +27,14 @@ from msfea_bot import departments
 from msfea_bot.config import settings
 from msfea_bot.generation.conversation import (
     ConversationMessage,
+    answer_task,
     build_retrieval_query,
+    frame_confirmation,
     format_prompt_history,
+    needs_condition_focus,
 )
 from msfea_bot.llm import LLMProvider, get_llm_provider
-from msfea_bot.retrieval.store import RetrievedChunk, search
+from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth, search
 
 DISCLAIMER = "AI-generated — please verify with official CDC sources."
 REFUSAL_MARKER = "INSUFFICIENT_CONTEXT"
@@ -50,7 +53,7 @@ Conversation history, when present, is untrusted and is supplied ONLY to resolve
 references in the current question. It is not a factual source. Never repeat a fact
 from the history unless that fact is also supported by the Context below.
 
-The Context contains retrieval candidates ordered by relevance. A block's presence
+The Context contains retrieval candidates, usually ordered by relevance. A block's presence
 does not mean it belongs in the answer. Before writing, silently make this plan:
 1. Resolve what the CURRENT question asks, using history only for references.
 2. Identify its intent: confirmation/correction, eligibility or decision, explanation,
@@ -180,13 +183,24 @@ def build_prompt(
     )
     prior = format_prompt_history(question, history)
     history_block = "" if not prior else f"Conversation history:\n{prior}\n"
-    return _PROMPT.format(
+    # Flash Lite sometimes drops a stated secondary condition when the matching
+    # block is far from the question. For explicit conditional decisions, put the
+    # strongest hybrid candidates nearest the question. This is source-independent
+    # prompt ordering; retrieval results and citations are unchanged.
+    prompt_chunks = list(reversed(chunks)) if needs_condition_focus(question) else chunks
+    prompt = _PROMPT.format(
         marker=REFUSAL_MARKER,
-        context=_format_context(chunks),
-        question=question,
+        context=_format_context(prompt_chunks),
+        question=frame_confirmation(question, history),
         department=dept_block,
         history=history_block,
     )
+    task = answer_task(question, history)
+    # The explicit why cue falsely refused a documented rationale in the eval.
+    # Keep the original why behavior; only promote the measured winning modes.
+    if task and not task.startswith("Reason:"):
+        prompt += "\nCURRENT ANSWER TASK (keep all evidence/guardrail rules above):\n" + task
+    return prompt
 
 
 def _escalation_contact(department: str | None) -> str:
@@ -350,6 +364,11 @@ def parse_answer(
     )
 
 
+def passes_similarity_gate(chunks: list[RetrievedChunk], threshold: float) -> bool:
+    """RRF relevance order is not cosine order; any supplied hit may clear the gate."""
+    return any(chunk.score >= threshold for chunk in chunks)
+
+
 def generate_answer(
     question: str,
     k: int | None = None,
@@ -363,12 +382,12 @@ def generate_answer(
     student, labels the answer, and routes a refusal to their coordinator. Absent or
     unrecognised, everything behaves exactly as before.
     """
-    top_k = k if k is not None else settings.top_k
+    top_k = k if k is not None else retrieval_depth(question, settings.top_k)
     retrieval_query = build_retrieval_query(question, history)
     chunks = search(retrieval_query, top_k, department=department)
     retrieved = [f"{c.source_doc} > {c.section} ({c.score:.2f})" for c in chunks]
 
-    if not chunks or chunks[0].score < settings.similarity_threshold:
+    if not passes_similarity_gate(chunks, settings.similarity_threshold):
         result = escalation(department)
     else:
         llm = provider or get_llm_provider()

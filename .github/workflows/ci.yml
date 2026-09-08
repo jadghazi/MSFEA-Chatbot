@@ -64,3 +64,4 @@ jobs:
           python -m msfea_bot.skeleton ingest
           python -m eval.retrieval_eval
           python -m eval.threshold_eval
+          python -m eval.synthesis_gate

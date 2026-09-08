@@ -6,6 +6,17 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-08 — Local synthesis experiments
+
+Frozen 12 synthesis/follow-up cases before production edits; tested prompt, context
+depth, two-call composition, decoding, model and intent-framing hypotheses, then
+retested combinations. Selected adaptive retrieval, corrected similarity gating
+and narrow task cues: 4.64/5 vs 3.09, with no unsupported answers in the reviewed
+final run. A broader condition-boundary regression was caught and fixed before release. See ADR-0022 and
+`eval/results/synthesis/reviewed_results.md` for actual outputs and tradeoffs.
+Local Docker app rebuilt and verified before release; Oracle was not contacted by
+the evaluation runs.
+
 ## 2026-09-07 — Oracle pilot deployment verified
 
 Deployed the production Compose stack on an Always Free ARM64 Oracle A1 VM with

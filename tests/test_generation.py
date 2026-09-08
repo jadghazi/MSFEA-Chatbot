@@ -250,3 +250,39 @@ def test_similarity_threshold_boundary_calls_llm(monkeypatch: pytest.MonkeyPatch
 
     assert result.refused is False
     assert provider.calls == 1
+
+
+def test_hybrid_first_hit_cannot_hide_stronger_retrieved_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    low = RetrievedChunk(**{**CHUNKS[0].__dict__, "score": 0.59})
+    strong = RetrievedChunk(**{**CHUNKS[0].__dict__, "id": "doc.md#02", "score": 0.64})
+    monkeypatch.setattr("msfea_bot.generation.answer.search", lambda *args, **kwargs: [low, strong])
+    monkeypatch.setattr(settings, "similarity_threshold", 0.60)
+    provider = _RecordingProvider()
+    assert not generate_answer("Explain the arrangement", provider=provider).refused
+    assert provider.calls == 1
+
+
+def test_prompt_frames_confirmation_but_keeps_why_question_intact() -> None:
+    history = [ConversationMessage("user", "Explain the arrangement")]
+    confirm = build_prompt("so two weeks of research", CHUNKS, history=history)
+    assert "Is my understanding of our conversation correct: two weeks of research?" in confirm
+    assert confirm.endswith("Do not add forms, reports, procedures, or alternative arrangements.")
+    why = build_prompt("Why two weeks rather than one?", CHUNKS, history=history)
+    assert why.endswith("Question: Why two weeks rather than one?\n")
+
+
+def test_conditional_decision_places_best_candidate_nearest_question() -> None:
+    first = RetrievedChunk(
+        id="specific", text="SPECIFIC CONDITION", source_doc="specific.md",
+        section="Condition", score=0.9,
+    )
+    second = RetrievedChunk(
+        id="general", text="GENERAL RULE", source_doc="general.md",
+        section="General", score=0.8,
+    )
+    focused = build_prompt("I am also taking a course. Is this enough?", [first, second])
+    ordinary = build_prompt("Is this enough for the option?", [first, second])
+    assert focused.index("GENERAL RULE") < focused.index("SPECIFIC CONDITION")
+    assert ordinary.index("SPECIFIC CONDITION") < ordinary.index("GENERAL RULE")

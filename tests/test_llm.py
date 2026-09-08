@@ -35,8 +35,9 @@ class _FakeModels:
 
 
 class _FakeClient:
-    def __init__(self, api_key: str = "") -> None:
+    def __init__(self, api_key: str = "", **kwargs: Any) -> None:
         self.models = _FakeModels()
+        self.http_options = kwargs.get("http_options")
 
 
 class _RateLimitedModels:
@@ -50,7 +51,7 @@ class _RateLimitedModels:
 
 
 class _RateLimitedClient:
-    def __init__(self, api_key: str = "") -> None:
+    def __init__(self, api_key: str = "", **kwargs: Any) -> None:
         self.models = _RateLimitedModels()
 
 
@@ -83,6 +84,8 @@ def test_gemini_passes_sampling_params_to_the_sdk(monkeypatch: pytest.MonkeyPatc
     assert call["config"].temperature == 0.25
     assert call["config"].seed == 99
     assert call["config"].max_output_tokens == 777
+    assert cast(_FakeClient, provider._client).http_options.timeout == 30_000
+    assert cast(_FakeClient, provider._client).http_options.retry_options.attempts == 1
 
 
 def test_defaults_are_deterministic() -> None:
@@ -126,3 +129,25 @@ def test_provider_factory_reuses_one_client(monkeypatch: pytest.MonkeyPatch) -> 
         assert llm_module.get_llm_provider() is llm_module.get_llm_provider()
     finally:
         llm_module.get_llm_provider.cache_clear()
+
+
+@pytest.mark.parametrize("text,finish_reason", [("", "STOP"), ("You must complete", "MAX_TOKENS")])
+def test_gemini_never_returns_empty_or_truncated_policy_answers(
+    monkeypatch: pytest.MonkeyPatch, text: str, finish_reason: str
+) -> None:
+    pytest.importorskip("google.genai")
+    from google import genai
+
+    from msfea_bot.llm import LLMServiceError
+    from msfea_bot.llm.gemini import GeminiProvider
+
+    class IncompleteModels:
+        def generate_content(self, **kwargs: Any) -> SimpleNamespace:
+            return SimpleNamespace(
+                text=text, candidates=[SimpleNamespace(finish_reason=finish_reason)]
+            )
+
+    monkeypatch.setattr(genai, "Client", lambda **kwargs: SimpleNamespace(models=IncompleteModels()))
+    monkeypatch.setattr(settings, "llm_api_key", "test-key")
+    with pytest.raises(LLMServiceError):
+        GeminiProvider().generate("Question about a policy")

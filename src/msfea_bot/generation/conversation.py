@@ -23,6 +23,14 @@ _CONTINUATION_RE = re.compile(
     r"^(and|also|but|okay|ok|so|then|what about|how about)\b", re.IGNORECASE
 )
 _SHORT_QUESTION_RE = re.compile(r"^(where|when|who|why|how)\b", re.IGNORECASE)
+_CONFIRMATION_RE = re.compile(
+    r"^(?:so(?: basically)?|in other words|just to confirm)[,:]?\s+(.+)", re.IGNORECASE
+)
+_QUESTION_START_RE = re.compile(
+    r"^(what|which|who|whose|where|when|why|how|am|is|are|was|were|do|does|did|"
+    r"can|could|should|would|will|must|may|have|has|had)\b", re.IGNORECASE
+)
+_EXPLICIT_CONDITION_RE = re.compile(r"\b(also|while|when|if|during)\b", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -31,6 +39,87 @@ class ConversationMessage:
 
     role: Literal["user", "assistant"]
     content: str
+
+
+def frame_confirmation(question: str, history: Sequence[ConversationMessage] | None) -> str:
+    """Make an explicit tentative restatement a question without adding policy facts.
+
+    The original remains the retrieval/logging input. Do not rewrite why/how or
+    other complete questions: doing so can erase the very thing the student asks.
+    """
+    if not any(m.role == "user" for m in bounded_history(history)):
+        return question
+    match = _CONFIRMATION_RE.match(question.strip())
+    if not match:
+        return question
+    statement = match.group(1).strip().rstrip("?.!").strip()
+    if not statement or _QUESTION_START_RE.match(statement):
+        return question
+    return f"Is my understanding of our conversation correct: {statement}?"
+
+
+def answer_task(question: str, history: Sequence[ConversationMessage] | None) -> str:
+    """A small source-independent task cue; contains no CDC topics or policy facts."""
+    if frame_confirmation(question, history) != question:
+        return (
+            "Confirmation: check only the student's interpretation of the conversation. "
+            "Start with Yes/Correct or No/Not quite, then one clarifying sentence. "
+            "Do not add forms, reports, procedures, or alternative arrangements."
+        )
+    if re.search(r"\b(compare|comparison|difference|versus|vs)\b", question, re.I):
+        return (
+            "Comparison: explicitly contrast every dimension the student asks about. "
+            "Keep each program's conditions attached to it. If a requested dimension "
+            "has no supporting evidence, do not invent it."
+        )
+    if re.match(r"^(?:so\s+)?why\b", question.strip(), re.I):
+        return (
+            "Reason: answer why, including the tension the student raises. Only give "
+            "a rationale stated in the sources. A documented rule does not establish "
+            "its reason; if the requested reason is absent, refuse."
+        )
+    if (
+        re.search(r"\b(enough|complete(?:d)?|sufficient)\b", question, re.I)
+        and re.search(r"\b(option|arrangement)\b", question, re.I)
+        and not needs_condition_focus(question)
+    ):
+        return (
+            "Named arrangement completion: decide only whether the student's stated "
+            "components complete the named option or arrangement. Start with Yes or No, "
+            "then name its missing component. Do not substitute or describe an alternative "
+            "pathway."
+        )
+    if re.search(r"\b(enough|eligible|qualify|sufficient)\b", question, re.I):
+        return (
+            "Decision: apply the rule for the circumstances the student actually states. "
+            "Start with Yes or No to the exact eligibility or sufficiency question, then give "
+            "the decisive reason. Before deciding, silently list every circumstance the "
+            "student states, including an extra circumstance introduced by words such as "
+            "'also', 'while', 'when', or 'if'. Match all of them to the source conditions. "
+            "A source block specifically about an extra stated circumstance controls over a "
+            "general rule. If the question names an option or arrangement, describe only that "
+            "option unless a matching extra circumstance explicitly changes the applicable "
+            "rule. Do not combine a number or rule from a circumstance the student did not "
+            "state, ignore a stated condition, or offer an incompatible general rule."
+        )
+    if re.match(r"^(explain\b|what(?:'s| is)\b)", question.strip(), re.I) and not re.search(
+        r"\b(how|why|requirements?|deliverables?|deadlines?|steps?|documents?|forms?)\b",
+        question, re.I,
+    ):
+        return (
+            "Definition: explain what the thing means in one or two sentences, including "
+            "essential conditions. Do not turn a definition into a checklist of associated "
+            "forms, reports, deadlines or procedures."
+        )
+    return ""
+
+
+def needs_condition_focus(question: str) -> bool:
+    """Whether a decision question states an additional conditional circumstance."""
+    return bool(
+        re.search(r"\b(enough|eligible|qualify|sufficient)\b", question, re.IGNORECASE)
+        and _EXPLICIT_CONDITION_RE.search(question)
+    )
 
 
 def bounded_history(history: Sequence[ConversationMessage] | None) -> list[ConversationMessage]:
