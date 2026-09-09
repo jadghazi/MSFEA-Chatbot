@@ -20,7 +20,7 @@ from typing import Literal
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from msfea_bot import departments
 from msfea_bot.api.security import RateLimiter, sanitize
@@ -37,6 +37,12 @@ from msfea_bot.generation.conversation import (
     MAX_HISTORY_MESSAGES,
     MAX_HISTORY_MESSAGE_CHARS,
     ConversationMessage,
+)
+from msfea_bot.experience import (
+    ALLOWED_TAGS,
+    initialize_schema as initialize_experience_schema,
+    save_feedback as save_experience_feedback,
+    summary as experience_summary,
 )
 from msfea_bot.ingestion.embeddings import warm_embedding_model
 from msfea_bot.llm import LLMConfigurationError, LLMRateLimitError, LLMServiceError
@@ -64,6 +70,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         warm_anonymizer()
     initialize_retrieval_schema()
     initialize_observability_schema()
+    initialize_experience_schema()
     yield
 
 
@@ -77,6 +84,7 @@ app.add_middleware(
 )
 
 _limiter = RateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds)
+_experience_limiter = RateLimiter(max_requests=5, window_seconds=3600)
 
 
 def _client_key(request: Request) -> str:
@@ -94,6 +102,12 @@ def rate_limit(request: Request) -> None:
             status_code=429,
             detail="Too many requests — please slow down and try again shortly.",
         )
+
+
+def experience_rate_limit(request: Request) -> None:
+    """A separate low-volume abuse bucket; client keys are never persisted."""
+    if not _experience_limiter.allow(_client_key(request)):
+        raise HTTPException(status_code=429, detail="Feedback limit reached. Please try again later.")
 
 
 class HistoryMessage(BaseModel):
@@ -207,6 +221,7 @@ def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
 class RateRequest(BaseModel):
     interaction_id: int
     rating: int  # +1 (helpful) or -1 (not helpful)
+    reason: str | None = Field(default=None, max_length=64)
 
 
 @app.post("/rate")
@@ -214,7 +229,31 @@ def rate(req: RateRequest, _rl: None = Depends(rate_limit)) -> dict[str, bool]:
     """Record a student's thumbs up/down on an answer."""
     if req.rating not in (1, -1):
         raise HTTPException(status_code=422, detail="rating must be +1 or -1")
-    return {"ok": set_rating(req.interaction_id, req.rating)}
+    allowed_reasons = {"Incorrect", "Unclear", "Missing information", "Wrong department"}
+    if req.reason is not None and (req.rating != -1 or req.reason not in allowed_reasons):
+        raise HTTPException(status_code=422, detail="invalid reason for this rating")
+    return {"ok": set_rating(req.interaction_id, req.rating, req.reason)}
+
+
+class ExperienceFeedbackRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    rating: int = Field(ge=1, le=5)
+    tags: list[str] = Field(default_factory=list, max_length=len(ALLOWED_TAGS))
+    comment: str | None = Field(default=None, max_length=500)
+
+
+@app.post("/experience-feedback", status_code=201)
+def experience_feedback(
+    req: ExperienceFeedbackRequest, _rl: None = Depends(experience_rate_limit)
+) -> dict[str, bool]:
+    """Store anonymous overall feedback without chat or client identifiers."""
+    if len(set(req.tags)) != len(req.tags) or any(tag not in ALLOWED_TAGS for tag in req.tags):
+        raise HTTPException(status_code=422, detail="one or more feedback tags are invalid")
+    comment = req.comment.strip() if req.comment else None
+    if not save_experience_feedback(req.rating, req.tags, comment):
+        raise HTTPException(status_code=503, detail="Feedback could not be saved. Please try again.")
+    return {"ok": True}
 
 
 # --------------------------------------------------------------------------- #
@@ -237,6 +276,7 @@ class FeedbackOut(BaseModel):
     answer: str
     refused: bool
     rating: int | None
+    rating_reason: str | None
     retrieved: list[str]
 
 
@@ -256,10 +296,40 @@ def admin_feedback(_: None = Depends(require_admin)) -> list[FeedbackOut]:
             answer=f.answer,
             refused=f.refused,
             rating=f.rating,
+            rating_reason=f.rating_reason,
             retrieved=f.retrieved,
         )
         for f in feedback_items()
     ]
+
+
+class ExperienceCommentOut(BaseModel):
+    ts: str
+    rating: int
+    comment: str
+
+
+class ExperienceSummaryOut(BaseModel):
+    total: int
+    average_rating: float | None
+    rating_distribution: dict[str, int]
+    tag_counts: dict[str, int]
+    recent_comments: list[ExperienceCommentOut]
+
+
+@app.get("/admin/api/experience-feedback", response_model=ExperienceSummaryOut)
+def admin_experience_feedback(_: None = Depends(require_admin)) -> ExperienceSummaryOut:
+    data = experience_summary()
+    return ExperienceSummaryOut(
+        total=data["total"],
+        average_rating=data["average_rating"],
+        rating_distribution=data["rating_distribution"],
+        tag_counts=data["tag_counts"],
+        recent_comments=[
+            ExperienceCommentOut(ts=item.ts.isoformat(), rating=item.rating, comment=item.comment)
+            for item in data["recent_comments"]
+        ],
+    )
 
 
 class CurateRequest(BaseModel):

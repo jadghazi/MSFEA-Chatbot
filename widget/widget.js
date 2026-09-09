@@ -60,6 +60,13 @@
   var ICON_SEND =
     '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
     '<path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>';
+  var ICON_COPY =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 8V5.8A1.8 1.8 0 0 1 9.8 4h8.4A1.8 1.8 0 0 1 20 5.8v8.4a1.8 1.8 0 0 1-1.8 1.8H16M5.8 8h8.4A1.8 1.8 0 0 1 16 9.8v8.4a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 18.2V9.8A1.8 1.8 0 0 1 5.8 8Z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+  var ICON_UP =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10v10H4V10h3Zm3 10h7.2a2 2 0 0 0 1.9-1.4l1.7-5.5A2 2 0 0 0 18.9 10H15l.6-3.1A2.5 2.5 0 0 0 13.2 4L9 10v10Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+  var ICON_DOWN = ICON_UP.replace('<svg ', '<svg style="transform:rotate(180deg)" ');
+  var ICON_RETRY =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 8V4m0 0h-4m4 0-3.2 3.2A7 7 0 1 0 19 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   /* Styles are scoped under .msfea-w and reset the properties a host page is
      most likely to inherit onto the widget (font, box-sizing, line-height).
@@ -348,6 +355,93 @@
   .msfea-w.is-standalone .msfea-foot{padding:10px 11px 12px}
   .msfea-w.is-standalone .msfea-hint{display:none}
 }
+
+/* ---------- restrained service UI additions ---------- */
+.msfea-head{background:var(--m);padding:13px 15px;gap:10px}
+.msfea-crest{border-radius:3px;background:#fff;color:var(--m);border:0;box-shadow:none}
+.msfea-head-actions{display:flex;align-items:center;gap:4px}
+.msfea-head-btn{min-height:36px;padding:7px 9px;border:0;border-radius:5px;background:transparent;color:inherit;cursor:pointer;font-size:12px;font-weight:650}
+.msfea-head-btn:hover{background:rgba(255,255,255,.14)}
+.msfea-head-btn:focus-visible,.msfea-action:focus-visible,.msfea-icon-btn:focus-visible,.msfea-rate button:focus-visible,.msfea-reason:focus-visible{outline:2px solid var(--m);outline-offset:2px}
+.msfea-deptpill{display:block;background:transparent;border:0;padding:0;color:inherit;text-align:left;border-radius:2px;font-weight:500;text-decoration:underline;text-underline-offset:2px}
+.msfea-notice{padding:8px 14px;border-bottom:1px solid var(--line);background:#faf8f6;color:var(--ink-soft);font-size:11px;line-height:1.45}
+.msfea-notice strong{color:var(--ink);font-weight:650}
+.msfea-msgs{background:#f5f4f2}
+.msfea-msg{border-radius:8px;box-shadow:none}
+.msfea-user{border-bottom-right-radius:2px;box-shadow:none}
+.msfea-bot{border-bottom-left-radius:2px}
+.msfea-bot.err{background:#fff7f6;border-color:#efcfcc;border-left:3px solid #a72d25}
+.msfea-bot.esc{background:#fffbf2;border-color:#ead9b8;border-left:3px solid #a66b16}
+.msfea-answer-tools{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+.msfea-icon-btn,.msfea-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink-soft);padding:6px 9px;cursor:pointer;font-size:11.5px;font-weight:600}
+.msfea-icon-btn:hover,.msfea-action:hover{border-color:#c8a7ad;color:var(--m);background:#fdf9f9}
+.msfea-icon-btn svg,.msfea-action svg,.msfea-rate svg{width:16px;height:16px}
+.msfea-copy-status{color:#236b3a;font-size:11px;font-weight:650}
+.msfea-cite{margin-top:9px;padding-top:0;border-top:0}
+.msfea-cite summary{display:inline-flex;align-items:center;min-height:34px;color:var(--m);font-size:11.5px;font-weight:650;cursor:pointer;border-radius:3px}
+.msfea-cite summary:focus-visible{outline:2px solid var(--m);outline-offset:2px}
+.msfea-source-list{margin:7px 0 0;padding:8px 10px 8px 25px;border-left:2px solid #d9c4c8;background:#faf8f8;color:var(--ink-soft);font-size:11.5px;overflow-wrap:anywhere}
+.msfea-source-list li+li{margin-top:5px}
+.msfea-source-list a{color:var(--m);overflow-wrap:anywhere}
+.msfea-disc{padding:8px 10px;background:#f7f7f7;border-radius:4px}
+.msfea-disc::before{content:"i";display:grid;place-items:center;width:15px;height:15px;border:1px solid currentColor;border-radius:50%;font-size:9px;font-weight:700}
+.msfea-rate{align-items:flex-start;flex-wrap:wrap}
+.msfea-rate-label{font-size:11.5px;color:var(--ink-soft);line-height:34px}
+.msfea-rate button{display:grid;place-items:center;width:34px;height:34px;padding:0;border-radius:5px;font-size:0}
+.msfea-reasons{width:100%;padding-top:5px;display:flex;flex-wrap:wrap;gap:5px}
+.msfea-reason{min-height:32px!important;width:auto!important;padding:5px 8px!important;font-size:11px!important}
+.msfea-retry{margin-top:10px}
+.msfea-experience-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 14px;border-top:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:11px}
+.msfea-exp-link{border:0;background:none;color:var(--m);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-size:11.5px;padding:6px 2px}
+.msfea-invite{background:#faf5f6;border-bottom:1px solid #eadadd;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--ink-soft)}
+.msfea-invite[hidden]{display:none}
+.msfea-invite button{white-space:nowrap}
+.msfea-modal-backdrop{position:fixed;inset:0;z-index:2147483640;background:rgba(25,18,20,.48);display:grid;place-items:center;padding:18px}
+.msfea-modal{width:min(440px,100%);max-height:min(680px,calc(100dvh - 36px));overflow:auto;background:#fff;border-radius:8px;box-shadow:0 18px 54px rgba(20,10,14,.25);padding:22px;color:var(--ink);font-family:var(--font)}
+.msfea-modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.msfea-modal h2{font:600 21px/1.25 Georgia,serif;margin:0;color:var(--m-dark)}
+.msfea-modal p{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin:7px 0 16px}
+.msfea-modal-close{width:36px;height:36px;border:0;background:#f3f3f3;border-radius:4px;cursor:pointer;color:var(--ink)}
+.msfea-modal-close svg{width:16px;height:16px}
+.msfea-fieldset{border:0;padding:0;margin:0 0 17px}
+.msfea-fieldset legend,.msfea-comment-label{font-size:12px;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.msfea-stars{display:flex;gap:6px}
+.msfea-star{width:43px;height:43px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--m);font-size:16px;font-weight:700;cursor:pointer}
+.msfea-star[aria-checked="true"]{background:var(--m);color:#fff;border-color:var(--m)}
+.msfea-tags{display:flex;flex-wrap:wrap;gap:7px}
+.msfea-tag{position:relative}
+.msfea-tag input{position:absolute;opacity:0;pointer-events:none}
+.msfea-tag span{display:block;border:1px solid var(--line);border-radius:5px;padding:7px 9px;font-size:11.5px;cursor:pointer}
+.msfea-tag input:checked+span{border-color:var(--m);background:#f8edef;color:var(--m-dark)}
+.msfea-tag input:focus-visible+span{outline:2px solid var(--m);outline-offset:2px}
+.msfea-modal textarea{width:100%;min-height:92px;resize:vertical;border:1px solid var(--line);border-radius:5px;padding:9px;font:13px/1.45 var(--font)}
+.msfea-modal textarea:focus{outline:2px solid var(--m);outline-offset:1px}
+.msfea-modal-meta{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-faint);margin:4px 0 15px}
+.msfea-modal-actions{display:flex;align-items:center;gap:10px}
+.msfea-submit{min-height:40px;border:0;border-radius:5px;background:var(--m);color:#fff;padding:9px 15px;font-weight:650;cursor:pointer}
+.msfea-submit:disabled{opacity:.55;cursor:not-allowed}
+.msfea-form-status{font-size:11.5px;color:#a72d25}
+.msfea-success{text-align:center;padding:24px 6px}
+.msfea-success h2{margin-bottom:8px}
+.msfea-w.is-standalone .msfea-panel{border-radius:8px;box-shadow:0 6px 24px rgba(58,26,31,.08)}
+.msfea-w.is-standalone .msfea-head{background:#fff;padding:12px 16px}
+.msfea-w.is-standalone .msfea-crest{border-radius:3px;background:var(--m);box-shadow:none}
+.msfea-w.is-standalone .msfea-head-btn:hover{background:#f4ecee}
+.msfea-w.is-standalone .msfea-deptpill{color:var(--m-dark)}
+@media(max-width:600px){
+  .msfea-panel,.msfea-w.is-standalone .msfea-panel{height:100dvh;min-height:0}
+  .msfea-w.is-standalone{height:100dvh;min-height:0}
+  .msfea-head{padding:10px 11px}
+  .msfea-title{font-size:14px}
+  .msfea-sub{display:none}
+  .msfea-head-btn{min-width:44px;min-height:44px;padding:5px}
+  .msfea-notice{padding:7px 11px}
+  .msfea-msgs{padding:13px 11px}
+  .msfea-foot{padding:9px 10px max(9px,env(safe-area-inset-bottom))}
+  .msfea-inputwrap{padding-left:10px}
+  .msfea-send{width:44px;height:44px}
+  .msfea-experience-bar{padding:4px 11px}
+}
 `;
 
   var style = document.createElement("style");
@@ -378,9 +472,15 @@
         '<div class="msfea-sub">Source-grounded internship &amp; CDC guidance</div>' +
         '<button class="msfea-deptpill hidden" type="button"></button>' +
       "</div>" +
-      '<button class="msfea-x" type="button" aria-label="Close chat">' + ICON_CLOSE + "</button>" +
+      '<div class="msfea-head-actions">' +
+        '<button class="msfea-head-btn msfea-new" type="button">New chat</button>' +
+        '<button class="msfea-x" type="button" aria-label="Close chat">' + ICON_CLOSE + "</button>" +
+      "</div>" +
     "</div>" +
+    '<div class="msfea-notice"><strong>Temporary chat.</strong> Messages reset when you refresh or close this page. Do not enter your name, student ID, phone number, or personal email.</div>' +
+    '<div class="msfea-invite" hidden><span>Three answers in — would you rate this experience?</span><button class="msfea-exp-link msfea-invite-open" type="button">Rate now</button><button class="msfea-head-btn msfea-invite-close" type="button" aria-label="Dismiss rating invitation">Dismiss</button></div>' +
     '<div class="msfea-msgs" role="log" aria-live="polite" aria-atomic="false"></div>' +
+    '<div class="msfea-experience-bar"><span>Anonymous feedback helps improve this pilot.</span><button class="msfea-exp-link msfea-exp-open" type="button">Rate your experience</button></div>' +
     '<div class="msfea-foot">' +
       '<div class="msfea-inputwrap">' +
         '<textarea rows="1" maxlength="' + MAX_CHARS + '" ' +
@@ -410,7 +510,10 @@
   var input = panel.querySelector("textarea");
   var sendBtn = panel.querySelector(".msfea-send");
   var closeBtn = panel.querySelector(".msfea-x");
+  var newBtn = panel.querySelector(".msfea-new");
   var counter = panel.querySelector(".msfea-count");
+  var completedAnswers = 0;
+  var inviteHandled = false;
 
   function el(cls, text) {
     var d = document.createElement("div");
@@ -465,7 +568,7 @@
     var pill = panel.querySelector(".msfea-deptpill");
     var abbr = deptLabel(getDept());
     if (abbr) {
-      pill.textContent = abbr + " · change";
+      pill.textContent = "Department: " + abbr + " · Change";
       pill.setAttribute("aria-label", "Your department is " + abbr + ". Change it.");
       pill.classList.remove("hidden");
     } else {
@@ -485,7 +588,7 @@
     // retrieval context must reset at the same time.
     conversation = [];
     var w = el("msfea-welcome");
-    w.appendChild(el("msfea-hi", "Hello 👋"));
+    w.appendChild(el("msfea-hi", "Welcome"));
     w.appendChild(
       el(
         "msfea-hi-sub",
@@ -527,7 +630,7 @@
 
   function showWelcome() {
     var w = el("msfea-welcome");
-    w.appendChild(el("msfea-hi", "Hello 👋"));
+    w.appendChild(el("msfea-hi", "How can I help?"));
     w.appendChild(
       el(
         "msfea-hi-sub",
@@ -539,7 +642,7 @@
     w.appendChild(
       el(
         "msfea-privacy",
-        "Please don't include your name, student ID, phone number, or personal email."
+        "This conversation is temporary. Please don't include your name, student ID, phone number, or personal email."
       )
     );
     w.appendChild(el("msfea-sg-h", "Try asking"));
@@ -635,6 +738,28 @@
     return rest ? doc + " › " + rest : doc;
   }
 
+  function citationItem(citation) {
+    var li = document.createElement("li");
+    var value = String(citation);
+    var url = value.match(/https?:\/\/[^\s<>"']+/i);
+    if (!url) {
+      li.textContent = value;
+      li.title = value;
+      return li;
+    }
+    var before = value.slice(0, url.index).trim();
+    if (before) li.appendChild(document.createTextNode(before + " "));
+    var href = url[0].replace(/[.,;:!?)\]]+$/, "");
+    var a = document.createElement("a");
+    a.href = href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = href;
+    a.title = href;
+    li.appendChild(a);
+    return li;
+  }
+
   /* Minimal markdown -> DOM. Deliberately NOT a markdown parser: only the few
    * things the model actually emits (bold, bullet lists, numbered lists), each
    * built as real elements. Same safety rule as linkify — no innerHTML anywhere,
@@ -700,7 +825,7 @@
     return frag;
   }
 
-  function addBot(data) {
+  function addBot(data, failedQuestion) {
     var stateClass = data.error_code ? " err" : (data.refused ? " esc" : "");
     var wrap = el("msfea-msg msfea-bot" + stateClass);
     var bodyEl = el("");
@@ -708,41 +833,113 @@
     wrap.appendChild(bodyEl);
 
     if (data.citations && data.citations.length && !data.refused) {
-      var c = el("msfea-cite");
-      c.appendChild(el("msfea-cite-h", "Sources"));
+      var c = document.createElement("details");
+      c.className = "msfea-cite";
+      var summary = document.createElement("summary");
+      summary.textContent = "View sources (" + data.citations.length + ")";
+      c.appendChild(summary);
+      var sourceList = document.createElement("ol");
+      sourceList.className = "msfea-source-list";
       data.citations.forEach(function (s) {
-        var chip = el("msfea-chip", prettyCitation(s));
-        chip.title = s; // exact label, for anyone verifying
-        c.appendChild(chip);
+        sourceList.appendChild(citationItem(s));
       });
+      c.appendChild(sourceList);
       wrap.appendChild(c);
     }
     if (data.disclaimer) wrap.appendChild(el("msfea-disc", data.disclaimer));
-    if (data.interaction_id) wrap.appendChild(ratingUI(data.interaction_id));
+    if (!data.refused && !data.error_code && data.answer) {
+      var tools = el("msfea-answer-tools");
+      var copy = document.createElement("button");
+      copy.className = "msfea-icon-btn";
+      copy.type = "button";
+      copy.innerHTML = ICON_COPY + "<span>Copy answer</span>";
+      copy.setAttribute("aria-label", "Copy answer text");
+      var copyStatus = el("msfea-copy-status");
+      copy.addEventListener("click", function () {
+        var answerText = String(data.answer || "");
+        var copied = navigator.clipboard && navigator.clipboard.writeText
+          ? navigator.clipboard.writeText(answerText)
+          : Promise.reject(new Error("Clipboard unavailable"));
+        copied.then(function () {
+          copyStatus.textContent = "Copied";
+          setTimeout(function () { copyStatus.textContent = ""; }, 1800);
+        }).catch(function () {
+          copyStatus.textContent = "Could not copy. Select the answer text instead.";
+        });
+      });
+      tools.appendChild(copy);
+      tools.appendChild(copyStatus);
+      wrap.appendChild(tools);
+    }
+    if (data.error_code && failedQuestion) {
+      var retry = document.createElement("button");
+      retry.className = "msfea-action msfea-retry";
+      retry.type = "button";
+      retry.innerHTML = ICON_RETRY + "<span>Try again</span>";
+      retry.addEventListener("click", function () {
+        retry.disabled = true;
+        send(failedQuestion, true);
+      });
+      wrap.appendChild(retry);
+    }
+    if (data.interaction_id && !data.error_code) wrap.appendChild(ratingUI(data.interaction_id));
     row("b", wrap);
   }
 
   function ratingUI(interactionId) {
     var box = el("msfea-rate");
-    function vote(value) {
-      fetch(API + "/rate", {
+    box.appendChild(el("msfea-rate-label", "Was this helpful?"));
+    function finish() {
+      box.textContent = "";
+      box.appendChild(el("msfea-thanks", "Thanks for the feedback."));
+    }
+    function vote(value, reason, onSuccess) {
+      return fetch(API + "/rate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ interaction_id: interactionId, rating: value }),
-      }).catch(function () {});
-      box.textContent = "";
-      box.appendChild(el("msfea-thanks", "Thanks for the feedback!"));
+        body: JSON.stringify({ interaction_id: interactionId, rating: value, reason: reason || null }),
+      }).then(function (r) {
+        if (!r.ok) throw new Error("feedback failed");
+        if (onSuccess) onSuccess();
+      }).catch(function () {
+        var status = box.querySelector(".msfea-thanks");
+        if (!status) { status = el("msfea-thanks"); box.appendChild(status); }
+        status.textContent = "Feedback could not be saved. Please try again.";
+      });
     }
     var up = document.createElement("button");
     up.type = "button";
-    up.textContent = "👍";
+    up.innerHTML = ICON_UP;
     up.setAttribute("aria-label", "This answer was helpful");
-    up.addEventListener("click", function () { vote(1); });
+    up.addEventListener("click", function () { vote(1, null, finish); });
     var down = document.createElement("button");
     down.type = "button";
-    down.textContent = "👎";
+    down.innerHTML = ICON_DOWN;
     down.setAttribute("aria-label", "This answer was not helpful");
-    down.addEventListener("click", function () { vote(-1); });
+    down.setAttribute("aria-expanded", "false");
+    down.addEventListener("click", function () {
+      if (box.querySelector(".msfea-reasons")) return;
+      vote(-1, null, null);
+      down.setAttribute("aria-expanded", "true");
+      var reasons = el("msfea-reasons");
+      reasons.appendChild(el("msfea-rate-label", "What was the issue? (optional)"));
+      ["Incorrect", "Unclear", "Missing information", "Wrong department"].forEach(function (reason) {
+        var b = document.createElement("button");
+        b.className = "msfea-reason";
+        b.type = "button";
+        b.textContent = reason;
+        b.addEventListener("click", function () { vote(-1, reason, finish); });
+        reasons.appendChild(b);
+      });
+      var skip = document.createElement("button");
+      skip.className = "msfea-reason";
+      skip.type = "button";
+      skip.textContent = "Skip";
+      skip.addEventListener("click", finish);
+      reasons.appendChild(skip);
+      box.appendChild(reasons);
+      reasons.querySelector("button").focus();
+    });
     box.appendChild(up);
     box.appendChild(down);
     return box;
@@ -788,7 +985,139 @@
     input.disabled = busy;
   }
 
-  function send(preset) {
+  function resetChat() {
+    if (sendBtn.disabled) return;
+    if (msgs.querySelector(".msfea-row") && !window.confirm("Start a new chat? The current messages will be cleared.")) return;
+    conversation = [];
+    completedAnswers = 0;
+    msgs.textContent = "";
+    if (getDept()) showWelcome();
+    else showDepartmentPicker();
+    input.value = "";
+    autoGrow();
+    updateCount();
+    input.focus();
+  }
+
+  function maybeInvite() {
+    if (completedAnswers < 3 || inviteHandled) return;
+    var invite = panel.querySelector(".msfea-invite");
+    invite.hidden = false;
+  }
+
+  function openExperienceModal() {
+    inviteHandled = true;
+    panel.querySelector(".msfea-invite").hidden = true;
+    var backdrop = el("msfea-modal-backdrop");
+    var modal = document.createElement("section");
+    modal.className = "msfea-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "msfea-exp-title");
+    modal.innerHTML =
+      '<div class="msfea-modal-head"><div><h2 id="msfea-exp-title">Rate your experience</h2>' +
+      '<p>Your feedback is anonymous. We store only the rating, selected reasons, optional comment, and submission time.</p></div>' +
+      '<button class="msfea-modal-close" type="button" aria-label="Close feedback form">' + ICON_CLOSE + '</button></div>' +
+      '<fieldset class="msfea-fieldset"><legend>Overall rating</legend><div class="msfea-stars" role="radiogroup" aria-label="Overall rating from 1 to 5"></div></fieldset>' +
+      '<fieldset class="msfea-fieldset"><legend>Reasons (optional)</legend><div class="msfea-tags"></div></fieldset>' +
+      '<label class="msfea-comment-label" for="msfea-exp-comment">Comment (optional)</label>' +
+      '<textarea id="msfea-exp-comment" maxlength="500" placeholder="What worked well, or what should improve?"></textarea>' +
+      '<div class="msfea-modal-meta"><span>Do not include personal information.</span><span class="msfea-comment-count">0 / 500</span></div>' +
+      '<div class="msfea-modal-actions"><button class="msfea-submit" type="button" disabled>Submit anonymous feedback</button><span class="msfea-form-status" role="status"></span></div>';
+    backdrop.appendChild(modal);
+    root.appendChild(backdrop);
+
+    var chosenRating = 0;
+    var stars = modal.querySelector(".msfea-stars");
+    for (var i = 1; i <= 5; i++) {
+      (function (rating) {
+        var b = document.createElement("button");
+        b.className = "msfea-star";
+        b.type = "button";
+        b.setAttribute("role", "radio");
+        b.setAttribute("aria-checked", "false");
+        b.setAttribute("aria-label", rating + (rating === 1 ? " star" : " stars"));
+        b.textContent = String(rating);
+        b.addEventListener("click", function () {
+          chosenRating = rating;
+          Array.prototype.forEach.call(stars.children, function (x) {
+            x.setAttribute("aria-checked", x === b ? "true" : "false");
+          });
+          modal.querySelector(".msfea-submit").disabled = false;
+        });
+        stars.appendChild(b);
+      })(i);
+    }
+    ["Answers were helpful", "Easy to use", "Information was unclear", "Could not find my answer", "Technical problem"].forEach(function (tag, index) {
+      var label = document.createElement("label");
+      label.className = "msfea-tag";
+      var check = document.createElement("input");
+      check.type = "checkbox";
+      check.value = tag;
+      check.id = "msfea-exp-tag-" + index;
+      var span = document.createElement("span");
+      span.textContent = tag;
+      label.appendChild(check);
+      label.appendChild(span);
+      modal.querySelector(".msfea-tags").appendChild(label);
+    });
+    var comment = modal.querySelector("textarea");
+    comment.addEventListener("input", function () {
+      modal.querySelector(".msfea-comment-count").textContent = comment.value.length + " / 500";
+    });
+
+    var previouslyFocused = document.activeElement;
+    function closeModal() {
+      backdrop.remove();
+      if (previouslyFocused && previouslyFocused.focus) previouslyFocused.focus();
+    }
+    modal.querySelector(".msfea-modal-close").addEventListener("click", closeModal);
+    backdrop.addEventListener("click", function (event) { if (event.target === backdrop) closeModal(); });
+    modal.querySelector(".msfea-submit").addEventListener("click", function () {
+      var submit = modal.querySelector(".msfea-submit");
+      var status = modal.querySelector(".msfea-form-status");
+      var selectedTags = Array.prototype.map.call(modal.querySelectorAll(".msfea-tag input:checked"), function (x) { return x.value; });
+      submit.disabled = true;
+      status.textContent = "Submitting…";
+      fetch(API + "/experience-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating: chosenRating, tags: selectedTags, comment: comment.value.trim() || null }),
+      }).then(function (r) {
+        if (!r.ok) throw new Error("Your feedback could not be saved. Please try again.");
+        modal.textContent = "";
+        var success = el("msfea-success");
+        var heading = document.createElement("h2");
+        heading.textContent = "Thank you";
+        success.appendChild(heading);
+        success.appendChild(el("", "Your anonymous feedback was submitted."));
+        var done = document.createElement("button");
+        done.className = "msfea-submit";
+        done.type = "button";
+        done.textContent = "Done";
+        done.addEventListener("click", closeModal);
+        success.appendChild(done);
+        modal.appendChild(success);
+        done.focus();
+      }).catch(function (error) {
+        submit.disabled = false;
+        status.textContent = error.message;
+      });
+    });
+    backdrop.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") { event.preventDefault(); closeModal(); return; }
+      if (event.key !== "Tab") return;
+      var focusable = modal.querySelectorAll('button:not(:disabled),input,textarea');
+      if (!focusable.length) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+    modal.querySelector(".msfea-modal-close").focus();
+  }
+
+  function send(preset, isRetry) {
     var q = (preset !== undefined ? preset : input.value).trim();
     if (!q || sendBtn.disabled) return;
     clearWelcome();
@@ -822,7 +1151,7 @@
       })
       .then(function (data) {
         hideTyping();
-        addBot(data);
+        addBot(data, q);
         // Provider/network failures are not dialogue and should not contaminate
         // the next retrieval query.
         if (!data.error_code) {
@@ -837,16 +1166,18 @@
             });
           }
           conversation = conversation.slice(-MAX_HISTORY_MESSAGES);
+          completedAnswers += 1;
+          maybeInvite();
         }
       })
-      .catch(function (err) {
+      .catch(function () {
         hideTyping();
         addBot({
-          answer: (err && err.message) || "Sorry, I couldn't reach the assistant. Please check your connection and try again.",
+          answer: "I couldn't reach the assistant. Check your connection, then choose Try again.",
           refused: true,
           disclaimer: "",
           error_code: "request_failed",
-        });
+        }, q);
       })
       .finally(function () {
         setBusy(false);
@@ -867,7 +1198,7 @@
       if (getDept()) showWelcome();
       else showDepartmentPicker();
     }
-    setTimeout(function () { input.focus(); }, 120);
+    if (!STANDALONE) setTimeout(function () { input.focus(); }, 120);
   }
 
   function closePanel() {
@@ -883,8 +1214,15 @@
     else openPanel();
   });
   closeBtn.addEventListener("click", closePanel);
+  newBtn.addEventListener("click", resetChat);
   sendBtn.addEventListener("click", function () { send(); });
   panel.querySelector(".msfea-deptpill").addEventListener("click", showDepartmentPicker);
+  panel.querySelector(".msfea-exp-open").addEventListener("click", openExperienceModal);
+  panel.querySelector(".msfea-invite-open").addEventListener("click", openExperienceModal);
+  panel.querySelector(".msfea-invite-close").addEventListener("click", function () {
+    inviteHandled = true;
+    panel.querySelector(".msfea-invite").hidden = true;
+  });
 
   input.addEventListener("input", function () {
     autoGrow();
@@ -897,6 +1235,7 @@
     }
   });
   document.addEventListener("keydown", function (e) {
+    if (root.querySelector(".msfea-modal-backdrop")) return;
     if (!STANDALONE && e.key === "Escape" && root.classList.contains("is-open")) closePanel();
   });
   if (STANDALONE) openPanel();

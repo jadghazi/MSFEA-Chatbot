@@ -88,7 +88,13 @@ quota.
 ## 5. Backups
 
 The vector index is rebuildable from source, but **admin-curated answers and the
-interaction logs are not** — back up the database.
+interaction logs and anonymous experience feedback are not** — back up the database.
+
+The application performs an additive schema initialization at startup. Deploying this
+version creates `experience_feedback` and adds the nullable `interactions.rating_reason`
+column if needed; no separate migration command is required. The database role configured
+by `DATABASE_URL` must retain its existing `CREATE TABLE` and `ALTER TABLE` permissions for
+that first startup.
 
 ```bash
 ./deploy/backup.sh          # -> ./backups/msfea-YYYYmmdd-HHMMSS.sql.gz

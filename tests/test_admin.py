@@ -16,7 +16,7 @@ def _fresh_limiter(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_rate_records(monkeypatch: pytest.MonkeyPatch) -> None:
     _fresh_limiter(monkeypatch)
-    monkeypatch.setattr(app_module, "set_rating", lambda i, r: True)
+    monkeypatch.setattr(app_module, "set_rating", lambda i, r, reason=None: True)
     resp = client.post("/rate", json={"interaction_id": 1, "rating": -1})
     assert resp.status_code == 200
     assert resp.json()["ok"] is True
@@ -24,8 +24,85 @@ def test_rate_records(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_rate_rejects_bad_value(monkeypatch: pytest.MonkeyPatch) -> None:
     _fresh_limiter(monkeypatch)
-    monkeypatch.setattr(app_module, "set_rating", lambda i, r: True)
+    monkeypatch.setattr(app_module, "set_rating", lambda i, r, reason=None: True)
     assert client.post("/rate", json={"interaction_id": 1, "rating": 5}).status_code == 422
+
+
+def test_rate_records_allowed_negative_reason(monkeypatch: pytest.MonkeyPatch) -> None:
+    _fresh_limiter(monkeypatch)
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(
+        app_module,
+        "set_rating",
+        lambda i, r, reason=None: seen.update(id=i, rating=r, reason=reason) or True,
+    )
+    resp = client.post(
+        "/rate",
+        json={"interaction_id": 8, "rating": -1, "reason": "Missing information"},
+    )
+    assert resp.status_code == 200
+    assert seen == {"id": 8, "rating": -1, "reason": "Missing information"}
+
+
+@pytest.mark.parametrize("reason", ["Other", "", "Technical problem"])
+def test_rate_rejects_invalid_negative_reason(
+    monkeypatch: pytest.MonkeyPatch, reason: str
+) -> None:
+    _fresh_limiter(monkeypatch)
+    monkeypatch.setattr(app_module, "set_rating", lambda i, r, reason=None: True)
+    resp = client.post("/rate", json={"interaction_id": 1, "rating": -1, "reason": reason})
+    assert resp.status_code == 422
+
+
+def test_rate_rejects_reason_on_thumbs_up(monkeypatch: pytest.MonkeyPatch) -> None:
+    _fresh_limiter(monkeypatch)
+    monkeypatch.setattr(app_module, "set_rating", lambda i, r, reason=None: True)
+    resp = client.post(
+        "/rate", json={"interaction_id": 1, "rating": 1, "reason": "Incorrect"}
+    )
+    assert resp.status_code == 422
+
+
+def test_experience_feedback_accepts_only_anonymous_fields(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        app_module, "_experience_limiter", RateLimiter(max_requests=100, window_seconds=60)
+    )
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(
+        app_module,
+        "save_experience_feedback",
+        lambda rating, tags, comment: seen.update(rating=rating, tags=tags, comment=comment) or True,
+    )
+    resp = client.post(
+        "/experience-feedback",
+        json={"rating": 5, "tags": ["Easy to use"], "comment": "  Clear and quick.  "},
+    )
+    assert resp.status_code == 201
+    assert seen == {"rating": 5, "tags": ["Easy to use"], "comment": "Clear and quick."}
+    assert set(resp.json()) == {"ok"}
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"rating": 0},
+        {"rating": 6},
+        {"rating": 4, "tags": ["Unknown"]},
+        {"rating": 4, "tags": ["Easy to use", "Easy to use"]},
+        {"rating": 4, "comment": "x" * 501},
+        {"rating": 4, "name": "Student Name"},
+    ],
+)
+def test_experience_feedback_rejects_invalid_payload(
+    monkeypatch: pytest.MonkeyPatch, payload: dict[str, object]
+) -> None:
+    monkeypatch.setattr(
+        app_module, "_experience_limiter", RateLimiter(max_requests=100, window_seconds=60)
+    )
+    monkeypatch.setattr(app_module, "save_experience_feedback", lambda *args: True)
+    assert client.post("/experience-feedback", json=payload).status_code == 422
 
 
 def test_admin_disabled_without_token(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -45,6 +122,34 @@ def test_admin_feedback_ok(monkeypatch: pytest.MonkeyPatch) -> None:
     resp = client.get("/admin/api/feedback", headers={"Authorization": "Bearer secret"})
     assert resp.status_code == 200
     assert resp.json() == []
+
+
+def test_admin_experience_feedback_is_protected_and_returns_summary(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from datetime import datetime
+
+    from msfea_bot.experience import ExperienceComment
+
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(
+        app_module,
+        "experience_summary",
+        lambda: {
+            "total": 2,
+            "average_rating": 4.5,
+            "rating_distribution": {str(i): int(i == 4 or i == 5) for i in range(1, 6)},
+            "tag_counts": {"Easy to use": 2},
+            "recent_comments": [ExperienceComment(datetime(2026, 9, 8), 5, "Useful")],
+        },
+    )
+    assert client.get("/admin/api/experience-feedback").status_code == 401
+    resp = client.get(
+        "/admin/api/experience-feedback", headers={"Authorization": "Bearer secret"}
+    )
+    assert resp.status_code == 200
+    assert resp.json()["average_rating"] == 4.5
+    assert resp.json()["recent_comments"][0]["comment"] == "Useful"
 
 
 def test_admin_curate_ok(monkeypatch: pytest.MonkeyPatch) -> None:

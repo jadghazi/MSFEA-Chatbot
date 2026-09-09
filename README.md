@@ -153,6 +153,21 @@ the notice is defense in depth because name detection cannot be perfect.
 Gemini quotas vary by model, project, and account. Check the active RPM/TPM/RPD limits
 in Google AI Studio before a pilot; do not size traffic from an old hard-coded number.
 
+### Student controls and anonymous feedback
+
+The standalone page and embedded widget share the same accessible vanilla-JavaScript
+client. **New chat** clears visible messages and the bounded in-memory follow-up context
+without changing the chosen department. Successful answers can be copied without their
+citations or disclaimer, sources expand from a compact disclosure, and temporary failures
+offer a student-triggered retry. Messages are never persisted in browser storage.
+
+Students can submit a separate 1–5 experience rating with optional approved reason tags
+and a comment of at most 500 characters. The `experience_feedback` table contains only an
+ID, timestamp, rating, tags, and comment; it has no interaction, conversation, session,
+network, device, or identity fields. The protected dashboard's **Experience feedback** tab
+shows totals, average, distribution, tag counts, and recent escaped comments. Thumbs-down
+feedback can also carry one optional predefined reason on the existing interaction row.
+
 ### Updating the knowledge base
 
 1. Add/edit the official doc under `kb/source/` and its cleaned version under

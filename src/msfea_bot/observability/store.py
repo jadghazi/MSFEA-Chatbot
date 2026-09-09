@@ -29,6 +29,7 @@ class FeedbackItem:
     answer: str
     refused: bool
     rating: int | None
+    rating_reason: str | None
     retrieved: list[str]
 
 
@@ -62,6 +63,7 @@ def _init_schema(conn: Any) -> None:
     )
     # Migrations for tables created before these columns existed.
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS rating SMALLINT")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS rating_reason TEXT")
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS resolved_at TIMESTAMPTZ")
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS error_code TEXT")
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_input_tokens INTEGER")
@@ -124,7 +126,7 @@ def log_interaction(question: str, answer: Answer) -> int | None:
         return None
 
 
-def set_rating(interaction_id: int, rating: int) -> bool:
+def set_rating(interaction_id: int, rating: int, reason: str | None = None) -> bool:
     """Record a +1/-1 rating for an interaction. Returns True if a row was updated."""
     if rating not in (1, -1):
         raise ValueError("rating must be +1 or -1")
@@ -132,7 +134,8 @@ def set_rating(interaction_id: int, rating: int) -> bool:
         with _connect() as conn:
             _ensure_schema(conn)
             cur = conn.execute(
-                "UPDATE interactions SET rating = %s WHERE id = %s", (rating, interaction_id)
+                "UPDATE interactions SET rating = %s, rating_reason = %s WHERE id = %s",
+                (rating, reason, interaction_id),
             )
             return bool(cur.rowcount > 0)
     except Exception as exc:  # noqa: BLE001 - non-critical; don't break the widget
@@ -236,10 +239,12 @@ def feedback_items(limit: int = 100) -> list[FeedbackItem]:
     with _connect() as conn:
         _ensure_schema(conn)
         rows = conn.execute(
-            "SELECT id, ts, question, answer, refused, rating, retrieved"
+            "SELECT id, ts, question, answer, refused, rating, rating_reason, retrieved"
             " FROM interactions WHERE (refused OR rating = -1) AND error_code IS NULL"
             " AND resolved_at IS NULL"
             " ORDER BY ts DESC LIMIT %s",
             (limit,),
         ).fetchall()
-    return [FeedbackItem(r[0], r[1], r[2], r[3], r[4], r[5], list(r[6])) for r in rows]
+    return [
+        FeedbackItem(r[0], r[1], r[2], r[3], r[4], r[5], r[6], list(r[7])) for r in rows
+    ]

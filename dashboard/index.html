@@ -181,6 +181,22 @@
       .edit-form textarea { width: 100%; min-height: 70px; resize: vertical; }
       .edit-form .label { font-size: 12.5px; font-weight: 650; display: block; margin-bottom: 5px; }
 
+      /* ---------- anonymous experience feedback ---------- */
+      .experience-summary { display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:14px;margin-bottom:22px; }
+      .experience-block { background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm); }
+      .experience-block .n { color:var(--m);font-size:30px;font-weight:700;line-height:1; }
+      .experience-block .l { margin-top:7px;color:var(--ink-soft);font-size:12.5px; }
+      .feedback-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px; }
+      .feedback-grid h3,.comments h3 { margin:0 0 13px;font-size:15px; }
+      .metric-row { display:grid;grid-template-columns:minmax(115px,1fr) 3fr 34px;align-items:center;gap:9px;font-size:12px;margin:8px 0; }
+      .metric-bar { height:8px;background:#ece9e7;border-radius:2px;overflow:hidden; }
+      .metric-bar span { display:block;height:100%;background:var(--m); }
+      .metric-count { text-align:right;color:var(--ink-soft); }
+      .comment { border-top:1px solid var(--line);padding:13px 0; }
+      .comment:first-of-type { border-top:0;padding-top:0; }
+      .comment-meta { color:var(--ink-faint);font-size:11px;margin-bottom:4px; }
+      .comment-text { white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px; }
+
       /* ---------- states ---------- */
       .empty {
         text-align: center; padding: 60px 20px; color: var(--ink-faint);
@@ -203,6 +219,8 @@
         .tabs { width: 100%; }
         .tab { flex: 1; padding: 9px 8px; font-size: 12.5px; }
         .login { margin-top: 4vh; padding: 24px; }
+        .feedback-grid { grid-template-columns:1fr; }
+        .experience-summary { grid-template-columns:1fr 1fr; }
       }
       @media (prefers-reduced-motion: reduce) {
         * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -250,6 +268,7 @@
               Published answers <span id="curated-badge" class="badge zero">0</span>
             </button>
             <button class="tab" data-tab="usage">Usage</button>
+            <button class="tab" data-tab="experience">Experience feedback</button>
           </div>
           <div class="refresh-wrap">
             <span id="updated" class="updated"></span>
@@ -283,6 +302,12 @@
         <div id="tab-usage" class="hidden">
           <p class="intro">A quick read on how the chatbot is being used. These are totals only — no student names or emails are ever stored.</p>
           <div id="stats" class="stats"></div>
+        </div>
+
+        <!-- Tab: anonymous experience feedback -->
+        <div id="tab-experience" class="hidden">
+          <p class="intro">Anonymous whole-experience ratings. These submissions are not linked to questions, answers, sessions, or client identifiers.</p>
+          <div id="experience"></div>
         </div>
       </section>
     </main>
@@ -341,7 +366,7 @@
       }
 
       // ---- Tabs ----
-      var TABS = ["attention", "curated", "usage"];
+      var TABS = ["attention", "curated", "usage", "experience"];
       function selectTab(name) {
         TABS.forEach(function (t) {
           $("tab-" + t).classList.toggle("hidden", t !== name);
@@ -362,6 +387,7 @@
           fetch(API + "/admin/api/stats", { headers: headers() }),
           fetch(API + "/admin/api/feedback", { headers: headers() }),
           fetch(API + "/admin/api/curated", { headers: headers() }),
+          fetch(API + "/admin/api/experience-feedback", { headers: headers() }),
         ])
           .then(function (rs) {
             if (rs.some(function (r) { return r.status === 401; })) throw new Error("That access code isn't valid. Please check it and try again.");
@@ -373,6 +399,7 @@
             renderStats(data[0]);
             renderList(data[1]);
             renderCurated(data[2]);
+            renderExperience(data[3]);
             $("updated").textContent = "Updated " + new Date().toLocaleTimeString();
             restore();
             if (done) done(true);
@@ -420,6 +447,36 @@
         }).join("");
       }
 
+      function renderExperience(data) {
+        var total = data.total || 0;
+        var average = data.average_rating == null ? "—" : Number(data.average_rating).toFixed(2);
+        function metricRows(values, labels) {
+          var max = Math.max.apply(null, Object.keys(labels).map(function (key) { return values[key] || 0; }).concat([1]));
+          return Object.keys(labels).map(function (key) {
+            var count = values[key] || 0;
+            return '<div class="metric-row"><span>' + esc(labels[key]) + '</span><span class="metric-bar"><span style="width:' +
+              Math.round((count / max) * 100) + '%"></span></span><span class="metric-count">' + esc(count) + '</span></div>';
+          }).join("");
+        }
+        var ratingLabels = { "5":"5 stars", "4":"4 stars", "3":"3 stars", "2":"2 stars", "1":"1 star" };
+        var tagLabels = {
+          "Answers were helpful":"Answers were helpful", "Easy to use":"Easy to use",
+          "Information was unclear":"Information was unclear", "Could not find my answer":"Could not find my answer",
+          "Technical problem":"Technical problem"
+        };
+        var comments = data.recent_comments || [];
+        var commentHtml = comments.length ? comments.map(function (item) {
+          return '<div class="comment"><div class="comment-meta">' + esc(item.rating) + '/5 · ' + esc(new Date(item.ts).toLocaleString()) +
+            '</div><div class="comment-text">' + esc(item.comment) + '</div></div>';
+        }).join("") : '<p class="intro">No optional comments submitted yet.</p>';
+        $("experience").innerHTML =
+          '<div class="experience-summary"><div class="experience-block"><div class="n">' + esc(total) + '</div><div class="l">Total submissions</div></div>' +
+          '<div class="experience-block"><div class="n">' + esc(average) + '</div><div class="l">Average rating out of 5</div></div></div>' +
+          '<div class="feedback-grid"><section class="experience-block"><h3>Rating distribution</h3>' + metricRows(data.rating_distribution || {}, ratingLabels) + '</section>' +
+          '<section class="experience-block"><h3>Reasons selected</h3>' + metricRows(data.tag_counts || {}, tagLabels) + '</section></div>' +
+          '<section class="experience-block comments"><h3>Recent comments</h3>' + commentHtml + '</section>';
+      }
+
       function renderList(items) {
         var list = $("list");
         if (!items.length) {
@@ -439,6 +496,7 @@
         var badges = "";
         if (it.refused) badges += '<span class="badge refused">Bot couldn\'t answer</span>';
         if (it.rating === -1) badges += '<span class="badge down">Marked not helpful</span>';
+        if (it.rating_reason) badges += '<span class="badge time">' + esc(it.rating_reason) + '</span>';
         if (it.ts) badges += '<span class="badge time">' + esc(timeAgo(it.ts)) + '</span>';
 
         // "Bot said" block only when it actually answered (a thumbs-down case).
