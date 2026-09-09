@@ -1,6 +1,6 @@
 # ADR-0023: Local usage guards for the single-worker pilot
 
-Status: Accepted for local implementation; deployment pending.
+Status: Accepted and deployed.
 Date: 2026-09-09
 
 The free-tier usage audit found that bounded prompts and provider retry controls

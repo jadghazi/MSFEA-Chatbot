@@ -19,8 +19,10 @@ questions: 5 -> 1. No local false blocks across 74 golden questions. Python test
 214 passed; JavaScript submission tests: 3 passed; Ruff and strict mypy passed.
 Retrieval context recall: 67/68; threshold: 109/109 valid accepted, 11/20 off-topic
 blocked; synthesis all-premise/threshold gate: 11/11.
-No live Gemini calls or deployment performed. Existing local rate override remains
-20 requests/minute; example/default now allow more shared-network headroom.
+Deployed commit `68fbde0` to the Oracle pilot and verified the app/database health,
+HTTPS `/health` and `/ready`, and a production local acknowledgement. Usage counters
+showed one chat request and one local reply with no Gemini call. Existing local rate
+override remains 20 requests/minute; example/default now allow more shared-network headroom.
 
 ## 2026-09-08 — Local synthesis experiments
 
