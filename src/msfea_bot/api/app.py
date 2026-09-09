@@ -12,18 +12,24 @@ widget to call the API from an explicitly configured origin.
 from __future__ import annotations
 
 import hmac
+import json
+from time import perf_counter
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Literal
+from typing import Literal, cast
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from msfea_bot import departments
 from msfea_bot.api.security import RateLimiter, sanitize
+from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, local_reply
+from msfea_bot.observability.usage import count, snapshot
 from msfea_bot.config import settings
 from msfea_bot.curation.service import (
     edit_curated_answer,
@@ -37,6 +43,8 @@ from msfea_bot.generation.conversation import (
     MAX_HISTORY_MESSAGES,
     MAX_HISTORY_MESSAGE_CHARS,
     ConversationMessage,
+    frame_confirmation,
+    is_contextual_followup,
 )
 from msfea_bot.experience import (
     ALLOWED_TAGS,
@@ -76,6 +84,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title="MSFEA CDC Chatbot API", lifespan=lifespan)
 
+app.add_middleware(BodyLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -84,6 +93,11 @@ app.add_middleware(
 )
 
 _limiter = RateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds)
+_burst_limiter = RateLimiter(12, 5)
+_hour_limiter = RateLimiter(300, 3600)
+_session_limiter = RateLimiter(20, 60)
+_session_hour_limiter = RateLimiter(80, 3600)
+_guard = RequestGuard()
 _experience_limiter = RateLimiter(max_requests=5, window_seconds=3600)
 
 
@@ -91,23 +105,28 @@ def _client_key(request: Request) -> str:
     if settings.trust_proxy_headers:
         forwarded = request.headers.get("x-forwarded-for")
         if forwarded:
-            return forwarded.split(",")[0].strip()
+            return forwarded.split(",")[-1].strip()
     return request.client.host if request.client else "unknown"
 
 
 def rate_limit(request: Request) -> None:
     """Per-client rate-limit dependency; raises 429 when the limit is exceeded."""
-    if not _limiter.allow(_client_key(request)):
+    key = _client_key(request)
+    if not all(limiter.allow(key) for limiter in (_limiter, _burst_limiter, _hour_limiter)):
+        count("rate_limit_hits")
         raise HTTPException(
             status_code=429,
             detail="Too many requests — please slow down and try again shortly.",
+            headers={"Retry-After": "60"},
         )
 
 
 def experience_rate_limit(request: Request) -> None:
     """A separate low-volume abuse bucket; client keys are never persisted."""
     if not _experience_limiter.allow(_client_key(request)):
-        raise HTTPException(status_code=429, detail="Feedback limit reached. Please try again later.")
+        raise HTTPException(
+            status_code=429, detail="Feedback limit reached. Please try again later."
+        )
 
 
 class HistoryMessage(BaseModel):
@@ -116,6 +135,9 @@ class HistoryMessage(BaseModel):
 
 
 class ChatRequest(BaseModel):
+    session_id: str | None = Field(
+        default=None, min_length=16, max_length=64, pattern=r"^[A-Za-z0-9_-]+$"
+    )
     question: str = Field(min_length=1, max_length=2000)
     # Optional so existing embeds keep working. Untrusted: `departments.from_code`
     # ignores anything not on the known list, so a bad value degrades to an
@@ -133,6 +155,7 @@ class ChatResponse(BaseModel):
     disclaimer: str
     interaction_id: int | None = None
     error_code: str | None = None
+    local: bool = False
 
 
 def _temporary_failure(code: str, department: str | None) -> Answer:
@@ -145,7 +168,7 @@ def _temporary_failure(code: str, department: str | None) -> Answer:
     )
     if code == "rate_limited":
         text = (
-            "The assistant has reached its current usage limit. Please try again in "
+            "The assistant is temporarily busy. Please try again in "
             f"a few minutes. If it is still unavailable later today, contact {contact}."
         )
     else:
@@ -172,29 +195,77 @@ def ready() -> dict[str, str]:
     return {"status": "ready"}
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_error(request: Request, exc: RequestValidationError) -> JSONResponse:
+    # Do not echo invalid inputs (potential PII or enormous values) in errors.
+    count("validation_hits")
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": "Please send a question of 1–2,000 characters with at most four recent "
+            "messages of up to 1,200 characters each."
+            if request.url.path == "/chat"
+            else "Please check the submitted fields."
+        },
+    )
+
+
 @app.post("/chat", response_model=ChatResponse)
-def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
-    """Answer a question via the guarded bot; degrade gracefully on backend errors."""
-    # Sanitize, then anonymize once; use the same text for the LLM and the log
-    # (CLAUDE.md §7).
-    question = anonymize(sanitize(req.question))
-    history = [
-        ConversationMessage(message.role, cleaned)
-        for message in req.history
-        if (cleaned := anonymize(sanitize(message.content)))
-    ]
-    # Normalised here so an unknown value is dropped once, at the edge, rather than
-    # being passed down and re-validated in retrieval, generation and logging.
+def chat(req: ChatRequest, request: Request, _rl: None = Depends(rate_limit)) -> ChatResponse:
+    """Gate locally before NER, embeddings, database work or generation."""
+    started = perf_counter()
+    ip = _client_key(request)
+    session = fingerprint(ip + ":" + req.session_id) if req.session_id else None
+    if session and not all(
+        limiter.allow(session) for limiter in (_session_limiter, _session_hour_limiter)
+    ):
+        count("rate_limit_hits")
+        raise HTTPException(
+            429, "Please slow down and try again shortly.", headers={"Retry-After": "60"}
+        )
+    question = sanitize(req.question)
+    reply = local_reply(question, has_history=bool(req.history))
+    if reply:
+        count("local_replies")
+        return ChatResponse(
+            answer=reply,
+            citations=[],
+            refused=False,
+            disclaimer=Answer(text="").disclaimer,
+            local=True,
+        )
+
     dept = departments.from_code(req.department)
     dept_code = dept.code if dept else None
-
-    if not question:
-        result = Answer(
-            text="Please type a question about internships or CDC programs.",
-            citations=[],
-            refused=True,
+    # Exact sanitized context: do not normalize away punctuation or user facts.
+    prior = [ConversationMessage(m.role, sanitize(m.content)) for m in req.history]
+    needs_history = (
+        is_contextual_followup(question, prior) or frame_confirmation(question, prior) != question
+    )
+    effective_history = prior if needs_history else []
+    key = fingerprint(
+        json.dumps(
+            [
+                _guard.version,
+                ip,
+                session,
+                question,
+                dept_code,
+                [(m.role, m.content) for m in effective_history],
+            ]
         )
-    else:
+    )
+    cached = _guard.begin(ip, session, key)
+    if cached is not None:
+        return cast(ChatResponse, cached).model_copy(deep=True)
+    response = None
+    try:
+        question = anonymize(question)
+        history = [
+            ConversationMessage(message.role, cleaned)
+            for message in req.history
+            if (cleaned := anonymize(sanitize(message.content)))
+        ]
         try:
             result = generate_answer(question, department=dept_code, history=history)
         except LLMRateLimitError:
@@ -203,19 +274,24 @@ def chat(req: ChatRequest, _rl: None = Depends(rate_limit)) -> ChatResponse:
             result = _temporary_failure("configuration_error", dept_code)
         except LLMServiceError:
             result = _temporary_failure("service_unavailable", dept_code)
-        except Exception:  # noqa: BLE001 - never expose an internal 500 to a student
+        except Exception:  # noqa: BLE001 - never expose backend details
+            count("backend_errors")
             result = _temporary_failure("service_unavailable", dept_code)
-
-    interaction_id = log_interaction(question, result)  # fail-safe; never breaks the response
-
-    return ChatResponse(
-        answer=result.text,
-        citations=result.citations,
-        refused=result.refused,
-        disclaimer=result.disclaimer,
-        interaction_id=interaction_id,
-        error_code=result.error_code,
-    )
+        interaction_id = log_interaction(question, result)
+        response = ChatResponse(
+            answer=result.text,
+            citations=result.citations,
+            refused=result.refused,
+            disclaimer=result.disclaimer,
+            interaction_id=interaction_id,
+            error_code=result.error_code,
+        )
+        return response
+    finally:
+        # Also briefly replay failures to stop rapid retry storms. No repeated logs
+        # or token accounting for a replay. A fresh request works after 30 seconds.
+        _guard.finish(ip, session, key, response)
+        count("chat_processing_ms", round((perf_counter() - started) * 1000))
 
 
 class RateRequest(BaseModel):
@@ -252,7 +328,9 @@ def experience_feedback(
         raise HTTPException(status_code=422, detail="one or more feedback tags are invalid")
     comment = req.comment.strip() if req.comment else None
     if not save_experience_feedback(req.rating, req.tags, comment):
-        raise HTTPException(status_code=503, detail="Feedback could not be saved. Please try again.")
+        raise HTTPException(
+            status_code=503, detail="Feedback could not be saved. Please try again."
+        )
     return {"ok": True}
 
 
@@ -283,6 +361,12 @@ class FeedbackOut(BaseModel):
 @app.get("/admin/api/stats")
 def admin_stats(_: None = Depends(require_admin)) -> dict[str, int]:
     return stats()
+
+
+@app.get("/admin/api/usage")
+def admin_usage(_: None = Depends(require_admin)) -> dict[str, int]:
+    """Content-free operational counters for this worker since startup."""
+    return snapshot()
 
 
 @app.get("/admin/api/feedback")
@@ -345,6 +429,7 @@ def admin_curate(req: CurateRequest, _: None = Depends(require_admin)) -> dict[s
     question is marked resolved, so it stops re-appearing after a refresh.
     """
     curated_id = publish_curated_answer(req.question, req.answer, author="admin")
+    _guard.invalidate()
     resolved = resolve_by_question(req.question)
     return {"curated_id": curated_id, "resolved": resolved}
 
@@ -384,7 +469,10 @@ def admin_curated_edit(
     req: EditCuratedRequest, _: None = Depends(require_admin)
 ) -> dict[str, bool]:
     """Update a published answer's text and re-index it. False if it's gone/retired."""
-    return {"ok": edit_curated_answer(req.id, req.question, req.answer)}
+    updated = edit_curated_answer(req.id, req.question, req.answer)
+    if updated:
+        _guard.invalidate()
+    return {"ok": updated}
 
 
 class RetireCuratedRequest(BaseModel):
@@ -396,7 +484,10 @@ def admin_curated_retire(
     req: RetireCuratedRequest, _: None = Depends(require_admin)
 ) -> dict[str, bool]:
     """Retire a published answer so the bot stops using it (row kept for history)."""
-    return {"ok": retire_curated_answer(req.id)}
+    retired = retire_curated_answer(req.id)
+    if retired:
+        _guard.invalidate()
+    return {"ok": retired}
 
 
 class ResolveRequest(BaseModel):

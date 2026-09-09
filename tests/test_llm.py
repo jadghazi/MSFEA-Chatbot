@@ -147,7 +147,39 @@ def test_gemini_never_returns_empty_or_truncated_policy_answers(
                 text=text, candidates=[SimpleNamespace(finish_reason=finish_reason)]
             )
 
-    monkeypatch.setattr(genai, "Client", lambda **kwargs: SimpleNamespace(models=IncompleteModels()))
+    monkeypatch.setattr(
+        genai, "Client", lambda **kwargs: SimpleNamespace(models=IncompleteModels())
+    )
     monkeypatch.setattr(settings, "llm_api_key", "test-key")
     with pytest.raises(LLMServiceError):
         GeminiProvider().generate("Question about a policy")
+
+
+@pytest.mark.parametrize("failure", ["timeout", "429", "500", "503"])
+def test_provider_failures_make_exactly_one_attempt(monkeypatch, failure):
+    pytest.importorskip("google.genai")
+    from google import genai
+    from google.genai import errors
+    from msfea_bot.llm import LLMRateLimitError, LLMServiceError
+    from msfea_bot.llm.gemini import GeminiProvider
+
+    calls = []
+
+    def generate(**kwargs):
+        calls.append(1)
+        if failure == "timeout":
+            raise TimeoutError("private transport details")
+        code = int(failure)
+        cls = errors.ClientError if code == 429 else errors.ServerError
+        raise cls(code, {"error": {"code": code, "message": "private provider details"}})
+
+    monkeypatch.setattr(
+        genai,
+        "Client",
+        lambda **kw: SimpleNamespace(models=SimpleNamespace(generate_content=generate)),
+    )
+    monkeypatch.setattr(settings, "llm_api_key", "test-key")
+    with pytest.raises((LLMRateLimitError, LLMServiceError)) as exc:
+        GeminiProvider().generate("Requirements?")
+    assert "private" not in str(exc.value)
+    assert len(calls) == 1

@@ -67,7 +67,7 @@ class Settings(BaseSettings):
     cors_allow_origins: str = ""
 
     # Safety (Phase 8)
-    rate_limit_requests: int = 20  # max requests per client per window
+    rate_limit_requests: int = 60  # max requests per client per window
     rate_limit_window_seconds: float = 60.0
     trust_proxy_headers: bool = False  # set True only behind a trusted reverse proxy
     # Docker enables this so readiness means the local embedding/NER models are

@@ -24,6 +24,7 @@ professors and the CDC.
 - [`docs/pilot-readiness.md`](docs/pilot-readiness.md) — current small-pilot release checklist.
 - [`docs/backlog.md`](docs/backlog.md) — captured-but-not-yet-built ideas.
 - [`docs/progress.md`](docs/progress.md) — dated development journal.
+- [`docs/usage-audit.md`](docs/usage-audit.md) — usage guards, measured savings, limits and remaining risks.
 
 ## Project layout
 

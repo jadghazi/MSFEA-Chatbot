@@ -52,6 +52,10 @@ class RateLimiter:
             if now - self._last_sweep > self.window_seconds:
                 self._sweep(cutoff)
                 self._last_sweep = now
+            if key not in self._hits and len(self._hits) >= 10_000:
+                self._sweep(cutoff)
+                if len(self._hits) >= 10_000:
+                    return False
             hits = self._hits[key]
             while hits and hits[0] < cutoff:
                 hits.popleft()

@@ -30,6 +30,17 @@ CHUNKS = [
     )
 ]
 
+
+def test_excessive_rag_context_never_calls_provider(monkeypatch):
+    import msfea_bot.generation.answer as generation
+    huge = RetrievedChunk(id="huge", text="x" * 24_001,
+                          source_doc="doc", section="section", score=0.9)
+    monkeypatch.setattr(generation, "search", lambda *a, **kw: [huge])
+    monkeypatch.setattr(generation, "get_llm_provider", lambda: pytest.fail("LLM called"))
+    result = generate_answer("Requirements?")
+    assert result.error_code == "context_too_large"
+    assert "one part" in result.text
+
 # Multi-section context, for the source-line parsing tests. Citations are validated
 # against what was supplied, so a test that cites [doc.md > FAQs] has to supply it —
 # a model citing a section it was never given is the case validation now rejects.

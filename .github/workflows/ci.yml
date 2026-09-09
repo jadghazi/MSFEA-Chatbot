@@ -51,6 +51,9 @@ jobs:
       - name: Lint (ruff)
         run: ruff check src tests eval
 
+      - name: Widget submission guards
+        run: node --test tests/widget_submission.test.cjs
+
       - name: Type-check (mypy --strict)
         run: mypy --strict src eval
 

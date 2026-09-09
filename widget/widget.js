@@ -1117,6 +1117,18 @@
     modal.querySelector(".msfea-modal-close").focus();
   }
 
+  // Ephemeral per-tab identity, survives refresh for short retry protection.
+  var sessionId;
+  try {
+    sessionId = sessionStorage.getItem("msfea-session");
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      sessionStorage.setItem("msfea-session", sessionId);
+    }
+  } catch (_) {
+    sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+
   function send(preset, isRetry) {
     var q = (preset !== undefined ? preset : input.value).trim();
     if (!q || sendBtn.disabled) return;
@@ -1137,6 +1149,7 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         question: q,
+        session_id: sessionId,
         department: dept && dept !== "skipped" ? dept : null,
         history: history,
       }),
@@ -1144,7 +1157,10 @@
       .then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (data) {
           if (!r.ok) {
-            throw new Error(data.detail || "The assistant could not process that request.");
+            var failure = new Error(typeof data.detail === "string" ? data.detail :
+              "The assistant could not process that request.");
+            failure.userMessage = true;
+            throw failure;
           }
           return data;
         });
@@ -1154,7 +1170,7 @@
         addBot(data, q);
         // Provider/network failures are not dialogue and should not contaminate
         // the next retrieval query.
-        if (!data.error_code) {
+        if (!data.error_code && !data.local) {
           conversation.push({
             role: "user",
             content: q.slice(0, MAX_HISTORY_MESSAGE_CHARS),
@@ -1170,10 +1186,11 @@
           maybeInvite();
         }
       })
-      .catch(function () {
+      .catch(function (error) {
         hideTyping();
         addBot({
-          answer: "I couldn't reach the assistant. Check your connection, then choose Try again.",
+          answer: error.userMessage ? error.message :
+            "I couldn't reach the assistant. Check your connection, then choose Try again.",
           refused: true,
           disclaimer: "",
           error_code: "request_failed",

@@ -25,6 +25,7 @@ from typing import Sequence
 
 from msfea_bot import departments
 from msfea_bot.config import settings
+from msfea_bot.observability.usage import count
 from msfea_bot.generation.conversation import (
     ConversationMessage,
     answer_task,
@@ -35,6 +36,8 @@ from msfea_bot.generation.conversation import (
 )
 from msfea_bot.llm import LLMProvider, get_llm_provider
 from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth, search
+
+MAX_CONTEXT_CHARS = 24_000
 
 DISCLAIMER = "AI-generated — please verify with official CDC sources."
 REFUSAL_MARKER = "INSUFFICIENT_CONTEXT"
@@ -387,7 +390,14 @@ def generate_answer(
     chunks = search(retrieval_query, top_k, department=department)
     retrieved = [f"{c.source_doc} > {c.section} ({c.score:.2f})" for c in chunks]
 
-    if not passes_similarity_gate(chunks, settings.similarity_threshold):
+    if len(_format_context(chunks)) > MAX_CONTEXT_CHARS:
+        count("context_size_hits")
+        result = Answer(
+            text="That question needs too much material at once. Please ask about one part at a time.",
+            refused=True, error_code="context_too_large",
+        )
+    elif not passes_similarity_gate(chunks, settings.similarity_threshold):
+        count("similarity_gate_refusals")
         result = escalation(department)
     else:
         llm = provider or get_llm_provider()

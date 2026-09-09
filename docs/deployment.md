@@ -44,6 +44,12 @@ and the cert paths). It proxies to the app on `127.0.0.1:8000`.
 
 ## 2. Proxy ↔ rate-limit setting (important, easy to get wrong)
 
+Run one application worker. The usage limits, concurrency guard, 30-second response
+cache and usage counters are process-local; see [the usage audit](usage-audit.md)
+for exact limits and shared-campus-network considerations. Restart the app after
+offline KB re-ingestion to invalidate cached responses. Admin curation invalidates
+them automatically.
+
 The per-client rate limiter keys on the client's IP. Behind a proxy, **every**
 request arrives from the *proxy's* IP unless you trust the forwarded header:
 
@@ -56,6 +62,10 @@ request arrives from the *proxy's* IP unless you trust the forwarded header:
 
 Rule of thumb: `TRUST_PROXY_HEADERS` should be `true` **iff** there's a trusted
 proxy in front.
+
+The backend must also be inaccessible directly from the public network. The supplied
+templates assume one edge proxy: nginx overwrites `X-Forwarded-For`, and the app uses
+its rightmost address. Review trust configuration before adding a CDN or more hops.
 
 ---
 

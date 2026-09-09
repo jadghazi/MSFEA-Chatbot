@@ -50,3 +50,4 @@ file layout). Keep the log signal-heavy.
 | 0020 | Calibrated pre-LLM similarity threshold of 0.60 | Accepted |
 | 0021 | Intent-aware grounded answer planning in one LLM call | Accepted |
 | 0022 | Measured synthesis, adaptive comparison retrieval and confirmations | Local testing |
+| 0023 | Local usage guards for the single-worker pilot | Accepted (local implementation) |

@@ -111,26 +111,26 @@ def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
 
 
 def test_chat_passes_a_valid_department_through(client: TestClient) -> None:
-    r = client.post("/chat", json={"question": "hi", "department": "cee"})
+    r = client.post("/chat", json={"question": "Internship duration?", "department": "cee"})
     assert r.status_code == 200
     assert client.seen["department"] == "cee"  # type: ignore[attr-defined]
 
 
 def test_chat_normalises_case(client: TestClient) -> None:
-    r = client.post("/chat", json={"question": "hi", "department": "CEE"})
+    r = client.post("/chat", json={"question": "Internship duration?", "department": "CEE"})
     assert r.status_code == 200
     assert client.seen["department"] == "cee"  # type: ignore[attr-defined]
 
 
 def test_chat_drops_an_unknown_department_rather_than_failing(client: TestClient) -> None:
     """Untrusted client input: degrade to unscoped, never 4xx/5xx the student."""
-    r = client.post("/chat", json={"question": "hi", "department": "'; DROP TABLE--"})
+    r = client.post("/chat", json={"question": "Internship duration?", "department": "'; DROP TABLE--"})
     assert r.status_code == 200
     assert client.seen["department"] is None  # type: ignore[attr-defined]
 
 
 def test_chat_without_a_department_is_unchanged(client: TestClient) -> None:
     """Existing embeds that never send the field must keep working."""
-    r = client.post("/chat", json={"question": "hi"})
+    r = client.post("/chat", json={"question": "Internship duration?"})
     assert r.status_code == 200
     assert client.seen["department"] is None  # type: ignore[attr-defined]

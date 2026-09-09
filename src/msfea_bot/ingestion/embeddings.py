@@ -9,6 +9,7 @@ from functools import lru_cache
 from typing import TYPE_CHECKING
 
 from msfea_bot.config import settings
+from msfea_bot.observability.usage import count
 
 if TYPE_CHECKING:
     from sentence_transformers import SentenceTransformer
@@ -45,6 +46,7 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
 
 def embed_query(text: str) -> list[float]:
     """Embed a single query string."""
+    count("embedding_queries")
     return embed_texts([text])[0]
 
 
