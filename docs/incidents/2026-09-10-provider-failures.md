@@ -1,4 +1,4 @@
-# Oracle intermittent chat failures — 2026-09-10
+# Oracle intermittent chat failures â€” 2026-09-10
 
 ## Evidence collected before changes
 
@@ -47,7 +47,7 @@ Final check and production deployment results are recorded in docs/progress.md.
 
 Deployed 071d9df to Oracle through a Git bundle and normal production Compose
 build. Public HTTPS health/readiness passed. Four real HTTP turns completed
-without operational errors (interaction IDs 64–67). The final employer-letter
+without operational errors (interaction IDs 64â€“67). The final employer-letter
 follow-up reproduced the upstream fault:
 
     llm_failure model=gemini-flash-lite-latest reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29592 retry=True

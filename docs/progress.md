@@ -6,6 +6,18 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-10 — Oracle provider timeout recovery
+
+Inspected production DB records, Docker logs and process counters. Fixed transient
+failure caching and added one bounded retry plus safe provider diagnostics
+(071d9df). Deployed to Oracle; HTTPS health/readiness passed. Four live HTTP turns
+succeeded. The employer-letter follow-up reproduced Gemini HTTP 504 after 29.592
+seconds; retry recovered with a cited answer in 38.44 seconds total. Previously
+this would surface an error and replay it for 30 seconds. 216 Python tests, three
+widget tests, Ruff and strict mypy passed. Historical exception detail was not
+recorded. See docs/incidents/2026-09-10-provider-failures.md for evidence and the
+separate answer-quality issue. No retrieval, prompt, KB or model changes.
+
 ## 2026-09-09 — LLM/API usage audit
 
 Inspected existing protections before adding local acknowledgement/noise replies,
