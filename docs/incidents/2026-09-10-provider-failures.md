@@ -42,3 +42,22 @@ Hermetic timeout/503-then-success cases now recover in two attempts (previously
 failed on the first). Persistent transient failures stop at two; quota at one.
 Repeated user retries make fresh attempts and release concurrency slots.
 Final check and production deployment results are recorded in docs/progress.md.
+
+## Live reproduction after deployment
+
+Deployed 071d9df to Oracle through a Git bundle and normal production Compose
+build. Public HTTPS health/readiness passed. Four real HTTP turns completed
+without operational errors (interaction IDs 64–67). The final employer-letter
+follow-up reproduced the upstream fault:
+
+    llm_failure model=gemini-flash-lite-latest reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29592 retry=True
+
+The second attempt succeeded with a cited answer; total HTTP duration was
+38.44 seconds. Under the previous one-attempt behavior this 504 would have
+returned service_unavailable. This is direct evidence of a Gemini upstream
+504 timeout causing the same symptom, although the exact exception for the
+older rows remains unavailable. Other live timings: 2.34, 7.08, 10.44 seconds.
+
+Full suite: 216 passed; widget: 3 passed; Ruff passed; strict mypy passed for
+41 files. Persistent-provider failure remains possible after both attempts;
+the fix does not promise zero outages or eliminate provider latency.
