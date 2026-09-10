@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hmac
 import json
+import logging
 from time import perf_counter
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -274,8 +275,9 @@ def chat(req: ChatRequest, request: Request, _rl: None = Depends(rate_limit)) ->
             result = _temporary_failure("configuration_error", dept_code)
         except LLMServiceError:
             result = _temporary_failure("service_unavailable", dept_code)
-        except Exception:  # noqa: BLE001 - never expose backend details
+        except Exception as exc:  # noqa: BLE001 - never expose backend details
             count("backend_errors")
+            logging.getLogger(__name__).error("chat_backend_failure type=%s", type(exc).__name__)
             result = _temporary_failure("service_unavailable", dept_code)
         interaction_id = log_interaction(question, result)
         response = ChatResponse(
@@ -288,9 +290,10 @@ def chat(req: ChatRequest, request: Request, _rl: None = Depends(rate_limit)) ->
         )
         return response
     finally:
-        # Also briefly replay failures to stop rapid retry storms. No repeated logs
-        # or token accounting for a replay. A fresh request works after 30 seconds.
-        _guard.finish(ip, session, key, response)
+        # Retry must make a fresh attempt after a transient failure. Quota failures
+        # retain the cooldown; existing rate/concurrency limits still bound retries.
+        cacheable = response if response and response.error_code != "service_unavailable" else None
+        _guard.finish(ip, session, key, cacheable)
         count("chat_processing_ms", round((perf_counter() - started) * 1000))
 
 

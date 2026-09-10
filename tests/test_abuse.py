@@ -285,7 +285,7 @@ def test_forwarded_header_spoof_does_not_pick_attacker_prefix(monkeypatch):
     assert api._client_key(request) == "10.0.0.2"
 
 
-def test_failure_replay_expires_and_lock_released(monkeypatch):
+def test_transient_failure_retry_is_fresh_and_lock_released(monkeypatch):
     from msfea_bot.llm import LLMServiceError
     import msfea_bot.api.abuse as abuse
 
@@ -303,8 +303,8 @@ def test_failure_replay_expires_and_lock_released(monkeypatch):
     for _ in range(2):
         response = client.post("/chat", json=payload)
         assert "private provider" not in response.text
-    assert len(calls) == 1
+    assert len(calls) == 2
     clock[0] += 31
     assert client.post("/chat", json=payload).status_code == 200
-    assert len(calls) == 2
+    assert len(calls) == 3
     assert not api._guard.active

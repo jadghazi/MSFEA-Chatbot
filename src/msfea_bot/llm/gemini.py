@@ -7,13 +7,15 @@ lazily so the core package does not require it unless Gemini is actually used
 
 from __future__ import annotations
 
-from time import perf_counter
+import logging
+from time import perf_counter, sleep
 
 from msfea_bot.config import settings
 from msfea_bot.observability.usage import count
 from msfea_bot.llm.base import (
     GenerationResult,
     LLMConfigurationError,
+    LLMError,
     LLMRateLimitError,
     LLMServiceError,
 )
@@ -46,6 +48,35 @@ class GeminiProvider:
         )
 
     def generate(self, prompt: str) -> GenerationResult:
+        from google.genai import errors
+        from httpx import TransportError
+
+        started = perf_counter()
+        for attempt in range(2):
+            try:
+                return self._generate_once(prompt)
+            except LLMError as exc:
+                cause = exc.__cause__
+                status = getattr(cause, "code", None)
+                transient = (
+                    isinstance(cause, (TimeoutError, ConnectionError, TransportError))
+                    or isinstance(cause, errors.ServerError) and status in (500, 502, 503, 504)
+                    or isinstance(cause, errors.ClientError) and status == 408
+                )
+                # Never log SDK messages, prompts, URLs or response bodies: they can
+                # contain student text or credentials. These fields identify failures.
+                logging.getLogger(__name__).warning(
+                    "llm_failure model=%s reason=%s cause=%s status=%s attempt=%d elapsed_ms=%d retry=%s",
+                    self._model, str(exc), type(cause).__name__, status, attempt + 1,
+                    round((perf_counter() - started) * 1000), transient and attempt == 0,
+                )
+                if not transient or attempt == 1:
+                    raise
+                count("provider_retries")
+                sleep(0.5)
+        raise AssertionError("unreachable")
+
+    def _generate_once(self, prompt: str) -> GenerationResult:
         # Import here as well as in __init__: the SDK remains an optional extra and
         # importing msfea_bot.llm never forces it on non-Gemini deployments.
         from google.genai import errors, types

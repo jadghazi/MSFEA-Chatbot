@@ -1,3 +1,9 @@
+> Updated 2026-09-10: transient transport/408/500/502/503/504 failures now get
+> one retry after 0.5 seconds (two 30-second attempts maximum). SDK retries
+> remain disabled. Transient error responses are no longer cached; rate-limit
+> responses retain the 30-second cooldown. Safe failure diagnostics are logged.
+> The original audit measurements below describe the September 9 implementation.
+
 # LLM/API usage audit — 2026-09-09
 
 The audit inspected the existing API, security helpers, widget, conversation logic,

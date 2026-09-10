@@ -156,13 +156,14 @@ def test_gemini_never_returns_empty_or_truncated_policy_answers(
 
 
 @pytest.mark.parametrize("failure", ["timeout", "429", "500", "503"])
-def test_provider_failures_make_exactly_one_attempt(monkeypatch, failure):
+def test_provider_failures_have_bounded_attempts(monkeypatch, failure):
     pytest.importorskip("google.genai")
     from google import genai
     from google.genai import errors
     from msfea_bot.llm import LLMRateLimitError, LLMServiceError
     from msfea_bot.llm.gemini import GeminiProvider
 
+    monkeypatch.setattr("msfea_bot.llm.gemini.sleep", lambda _: None)
     calls = []
 
     def generate(**kwargs):
@@ -182,4 +183,31 @@ def test_provider_failures_make_exactly_one_attempt(monkeypatch, failure):
     with pytest.raises((LLMRateLimitError, LLMServiceError)) as exc:
         GeminiProvider().generate("Requirements?")
     assert "private" not in str(exc.value)
-    assert len(calls) == 1
+    assert len(calls) == (1 if failure == "429" else 2)
+
+@pytest.mark.parametrize("failure", ["timeout", "503"])
+def test_transient_failure_recovers_once_without_logging_private_details(monkeypatch, caplog, failure):
+    pytest.importorskip("google.genai")
+    from google import genai
+    from google.genai import errors
+    from msfea_bot.llm.gemini import GeminiProvider
+
+    calls = []
+
+    def generate(**kwargs):
+        calls.append(1)
+        if len(calls) == 1:
+            if failure == "timeout":
+                raise TimeoutError("private student text and key")
+            raise errors.ServerError(503, {"error": {"message": "private student text and key"}})
+        return _FakeResponse()
+
+    monkeypatch.setattr(genai, "Client", lambda **kw: SimpleNamespace(
+        models=SimpleNamespace(generate_content=generate)))
+    monkeypatch.setattr(settings, "llm_api_key", "test-key")
+    monkeypatch.setattr("msfea_bot.llm.gemini.sleep", lambda _: None)
+    assert GeminiProvider().generate("private question").text == "ok"
+    assert len(calls) == 2
+    assert "llm_failure" in caplog.text
+    assert "retry=True" in caplog.text
+    assert "private" not in caplog.text
