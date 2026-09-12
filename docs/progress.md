@@ -1244,3 +1244,12 @@ and a live department-scoped request returned the correct grounded answer. Durin
 gate, pytest exposed that the dev service shared the demo database and could replace
 its chunks with fixtures; the workflow now uses a separate tmpfs-backed `test-db`, and
 the canonical 206-chunk demo index was immediately restored by normal ingestion.
+# 2026-09-12 — Nested department-scope regression
+
+- Traced a MECH 6+2 answer to ECE child sections indexed as `department=all`.
+- Changed section-aware chunking to inherit the nearest department-scoped parent
+  across nested Markdown headings and reset that scope at sibling boundaries.
+- Split the generally applicable second-internship forms from the ECE research
+  two-week form and added an explicit grounded MECH clarification.
+- Added paired MECH/ECE answer cases using the same question, plus unit coverage
+  for multi-level heading inheritance. The deployment requires a full KB re-index.

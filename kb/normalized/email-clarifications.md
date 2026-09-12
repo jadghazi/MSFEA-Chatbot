@@ -87,13 +87,17 @@ department: all
 
 **Answer:** Ask another authorized company representative, such as HR or the supervisor's manager, whether they can issue the official document. Contact the coordinator before substituting a different signatory or document.
 
-## Forms for additional internship components
+## Forms for a second internship
 
 **Department:** All departments
 
 **Question/topic:** Which forms are used for a second internship?
 
 **Answer:** Use the Moodle forms specifically labelled for a second internship when available, such as Proposal - Second Internship ONLY and Notice of Arrival - Second Internship ONLY. Submit the Proposal when the internship is confirmed and the Notice of Arrival after starting.
+
+## Research two-week form (ECE)
+
+**Department:** Electrical and Computer Engineering (ECE)
 
 **Question/topic:** What form is used for a two-week research component?
 
@@ -208,6 +212,14 @@ department: all
 **Question/topic:** Is a gap allowed between approved internship components?
 
 **Answer:** A gap may be accepted if both components are approved and completed within the permitted period. The complete arrangement must be described in the petition and approved in writing.
+
+## Company internship plus research (MECH)
+
+**Department:** Mechanical Engineering (MECH)
+
+**Question/topic:** Can a MECH student combine a six-week company internship with two weeks of faculty research?
+
+**Answer:** No. The six-week company internship plus two-week faculty-research arrangement is not a MECH completion option. MECH students must complete at least eight weeks of approved internship. A MECH research internship may count as an internship only when it is approved and includes hands-on engineering work; it is not a two-week add-on to a six-week company internship.
 
 ## Taking another summer course (ECE)
 

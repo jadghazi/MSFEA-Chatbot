@@ -221,6 +221,16 @@ def test_prompt_allows_grounded_rule_application() -> None:
     assert "facts the student explicitly provides" in prompt
 
 
+def test_proposed_combination_requires_department_specific_authorization() -> None:
+    prompt = build_prompt(
+        "Can I do six weeks internship and two weeks research?", CHUNKS, "mech"
+    )
+    assert "documented option for their department" in prompt
+    assert "general minimum duration does not authorize" in prompt
+    assert "different breakdown or set of components" in prompt
+    assert "Do not add forms" in prompt
+
+
 def test_prompt_requests_minimum_sufficient_sources() -> None:
     prompt = build_prompt("How long?", MULTI_CHUNKS)
     assert "Usually one source is enough" in prompt

@@ -202,6 +202,8 @@ def chunk_markdown(
     """Split one Markdown document into section chunks (oversized sections windowed)."""
     meta, body = parse_frontmatter(md)
     section = meta.get("title", source_doc)
+    section_department = departments.from_heading(section)
+    department_by_level = {1: section_department}
     chunks: list[Chunk] = []
     buffer: list[str] = []
 
@@ -228,10 +230,9 @@ def chunk_markdown(
         # apply to one department only. Tagging them lets retrieval tell a
         # department-conditional chunk from a general one (backlog B-2). Sections with
         # no department keep the document-level default ("all").
-        section_dept = departments.from_heading(section)
         chunk_meta = dict(meta)  # per-chunk copy: `meta` is shared across the document
-        if section_dept is not None:
-            chunk_meta["department"] = section_dept.code
+        if section_department is not None:
+            chunk_meta["department"] = section_department.code
 
         def with_heading(body_lines: list[str]) -> str:
             joined = "\n".join(body_lines)
@@ -255,9 +256,26 @@ def chunk_markdown(
             )
 
     for line in body.splitlines():
-        if _heading_level(line) >= 2:
+        level = _heading_level(line)
+        if level >= 2:
             flush()
             section = line.lstrip("#").strip()
+            heading_department = departments.from_heading(section)
+            department_by_level = {
+                parent_level: scoped_department
+                for parent_level, scoped_department in department_by_level.items()
+                if parent_level < level
+            }
+            inherited_department = next(
+                (
+                    department_by_level[parent_level]
+                    for parent_level in sorted(department_by_level, reverse=True)
+                    if department_by_level[parent_level] is not None
+                ),
+                None,
+            )
+            section_department = heading_department or inherited_department
+            department_by_level[level] = section_department
             buffer = [line]
         else:
             buffer.append(line)

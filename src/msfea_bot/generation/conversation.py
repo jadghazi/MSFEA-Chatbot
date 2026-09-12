@@ -80,6 +80,17 @@ def answer_task(question: str, history: Sequence[ConversationMessage] | None) ->
             "question as asking whether the partial activity is allowed. Do not add forms, "
             "reports, deadlines, or a rule for an unstated circumstance."
         )
+    if re.match(r"^(?:can|could)\s+i\s+(?:do|complete|combine)\b", question.strip(), re.I):
+        return (
+            "Decision: decide whether the student's exact proposed combination is a "
+            "documented option for their department. A general minimum duration does not "
+            "authorize adding unlike components together; require a source that explicitly "
+            "allows that arrangement for the student's department. If it is not documented, "
+            "say that directly and use the applicable general minimum; do not substitute a "
+            "nearby rule about a different breakdown or set of components. Start with Yes or "
+            "No, then give the decisive reason. Do not add forms, reports, deadlines, or "
+            "other procedures unless the student asks for them."
+        )
     if frame_confirmation(question, history) != question:
         return (
             "Confirmation: check the student's proposed understanding against source evidence. "

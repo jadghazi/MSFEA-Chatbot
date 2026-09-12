@@ -115,3 +115,37 @@ def test_chunk_real_kb() -> None:
     assert any("Mechanical" in c.section for c in chunks)
     assert all(c.source_doc.endswith(".md") for c in chunks)
     assert all(c.id for c in chunks)
+
+
+def test_research_two_week_form_is_scoped_to_ece() -> None:
+    chunks = chunk_normalized_dir()
+    matches = [c for c in chunks if "research two-week form" in c.text.lower()]
+    assert len(matches) == 1
+    assert matches[0].section == "Research two-week form (ECE)"
+    assert matches[0].metadata["department"] == "ece"
+
+
+def test_nested_sections_inherit_parent_department() -> None:
+    chunks = chunk_markdown(
+        """---
+department: all
+---
+## Combined arrangements (ECE)
+### 6+2 definition
+ECE-only rule.
+#### Approval
+Still ECE-only.
+### Reporting
+ECE-only procedure.
+## General forms
+Applies to all departments.
+""",
+        "nested.md",
+    )
+    assert [c.metadata["department"] for c in chunks] == [
+        "ece",
+        "ece",
+        "ece",
+        "ece",
+        "all",
+    ]

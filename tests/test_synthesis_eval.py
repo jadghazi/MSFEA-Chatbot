@@ -40,7 +40,7 @@ def test_followup_regression_cases_are_valid_and_source_grounded() -> None:
     cases = [json.loads(line) for line in
              (root / "eval/followup_set.jsonl").read_text(encoding="utf-8").splitlines()]
     chunks = [c.text for c in chunk_normalized_dir()]
-    assert len(cases) == 7
+    assert len(cases) == 9
     for case in cases:
         GoldenItem.model_validate(case)
         assert all(any(e.lower() in c.lower() for c in chunks) for e in case["evidence_all"])
