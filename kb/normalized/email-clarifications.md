@@ -179,17 +179,31 @@ department: all
 
 **Department:** Electrical and Computer Engineering (ECE)
 
+### 6+2 arrangement definition
+
 **Question/topic:** How does a six-week internship plus two-week research arrangement work?
 
-**Answer:** The six company weeks and two faculty-research weeks must be approved and documented. Submit the Progress Report at the end of Week 4 of the company internship and cover only the company internship in that report.
+**Answer:** The six company weeks and two faculty-research weeks (two weeks of research with an MSFEA faculty member) must be approved and documented.
+
+### Progress reporting for a 6+2 arrangement
+
+**Question/topic:** When is the Progress Report due for a six-week internship plus two-week research arrangement, and what should it cover?
+
+**Answer:** Submit the Progress Report at the end of Week 4 of the company internship and cover only the company internship in that report.
+
+### Combining two company internships
 
 **Question/topic:** Can two internships be combined to meet the duration requirement?
 
 **Answer:** A combined arrangement requires prior written approval or petition. Each internship must be documented and technically relevant, and the total approved duration must satisfy EECE500 requirements. Use the second-internship forms when instructed.
 
+### 4+4 company-internship split
+
 **Question/topic:** Can EECE500 be split into two four-week internships?
 
 **Answer:** Do not assume a 4+4 split is accepted. It is case-specific and requires a formal petition and written approval before either component is counted.
+
+### Gap between approved components
 
 **Question/topic:** Is a gap allowed between approved internship components?
 
@@ -201,7 +215,7 @@ department: all
 
 **Question/topic:** Can I take another summer course while completing EECE500?
 
-**Answer:** Yes, with the required EECE500 and departmental approval. The student must complete ten weeks of approved internship: either ten weeks at one company or six weeks at one company plus four weeks at another company. Both companies require the applicable forms and employer documentation.
+**Answer:** Yes, with the required EECE500 and departmental approval. Only when the student takes another summer course, the student must complete ten weeks of approved internship: either ten weeks at one company or six weeks at one company plus four weeks at another company. This ten-week rule does not apply when the student is not taking another summer course. Both companies require the applicable forms and employer documentation.
 
 ## Final Report requirements (ECE)
 

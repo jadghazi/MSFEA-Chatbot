@@ -51,3 +51,4 @@ file layout). Keep the log signal-heavy.
 | 0021 | Intent-aware grounded answer planning in one LLM call | Accepted |
 | 0022 | Measured synthesis, adaptive comparison retrieval and confirmations | Local testing |
 | 0023 | Local usage guards for the single-worker pilot | Accepted and deployed |
+| 0024 | Department-aware retrieval and stronger follow-up synthesis | Accepted |

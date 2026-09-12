@@ -330,13 +330,17 @@ def search(
     """
     qv = embed_query(query)
     dept = departments.from_code(department)
+    # The selected department is useful retrieval context, not just a filter.
+    # Keep the original query vector for the calibrated similarity gate: adding
+    # a department must not make an unrelated question appear in scope.
+    ranking_vector = embed_query(f"{query}\nDepartment: {dept.abbr}") if dept else qv
     # Untrusted input: an unknown code degrades to no scoping rather than an error.
     #
     # Note: with NO department we deliberately leave department chunks in. Excluding
     # them was tried and measured worse — the golden case `dept-split-internship`
     # expects an unplaced student to still learn that the rule *depends* on their
     # department, and exclusion removes the only content that can say so.
-    params: dict[str, Any] = {"qv": qv, "cand": candidates}
+    params: dict[str, Any] = {"qv": ranking_vector, "cand": candidates}
     if dept is None:
         scope = ""
     else:

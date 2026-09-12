@@ -35,6 +35,20 @@ def test_explicit_continuation_uses_history() -> None:
     assert is_contextual_followup("What about CO-OP?", _history())
 
 
+def test_what_about_cue_answers_the_option_without_unasked_paperwork() -> None:
+    cue = answer_task("what about the 6+2", _history())
+    assert cue.startswith("Alternative or missing component:")
+    assert "correct it explicitly" in cue
+    assert "Do not discuss reports" in cue
+
+
+def test_only_cue_decides_whether_the_exact_plan_is_sufficient() -> None:
+    cue = answer_task("Can I do 6 weeks of internship only?", [])
+    assert cue.startswith("Plan sufficiency:")
+    assert "otherwise start with No" in cue
+    assert "partial activity is allowed" in cue
+
+
 def test_short_elliptical_question_uses_history() -> None:
     assert is_contextual_followup("Where do I submit?", _history())
 

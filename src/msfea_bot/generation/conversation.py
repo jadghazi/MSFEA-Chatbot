@@ -60,9 +60,30 @@ def frame_confirmation(question: str, history: Sequence[ConversationMessage] | N
 
 def answer_task(question: str, history: Sequence[ConversationMessage] | None) -> str:
     """A small source-independent task cue; contains no CDC topics or policy facts."""
+    if re.match(r"^(?:and\s+)?(?:what|how) about\b", question.strip(), re.I):
+        return (
+            "Alternative or missing component: answer what the newly mentioned option or "
+            "component means for the student's original plan. Explain it in at most two "
+            "sentences, using the source definition and its eligibility conditions. "
+            "If the earlier assistant answer omitted that option or used an inapplicable "
+            "rule, correct it explicitly rather than defending or extending the mistake. "
+            "Recompute any total from the actual components; do not carry a total over "
+            "from another option. Do not discuss reports, forms, paperwork, deadlines or "
+            "submission procedures unless the CURRENT question explicitly asks about them."
+        )
+    if re.search(r"\b(?:only|alone)\b", question, re.I):
+        return (
+            "Plan sufficiency: decide whether the exact plan stated by the student is "
+            "sufficient on its own. Start with Yes only if that plan alone completes the "
+            "documented requirement; otherwise start with No, identify what is missing, "
+            "and give the closest documented completion option. Do not reinterpret the "
+            "question as asking whether the partial activity is allowed. Do not add forms, "
+            "reports, deadlines, or a rule for an unstated circumstance."
+        )
     if frame_confirmation(question, history) != question:
         return (
-            "Confirmation: check only the student's interpretation of the conversation. "
+            "Confirmation: check the student's proposed understanding against source evidence. "
+            "Correct an earlier assistant mistake if necessary; history is not authority. "
             "Start with Yes/Correct or No/Not quite, then one clarifying sentence. "
             "Do not add forms, reports, procedures, or alternative arrangements."
         )

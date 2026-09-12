@@ -6,6 +6,18 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-12 — Follow-up synthesis quality and pilot model preserved
+
+Fixed the reported six-week/6+2 conversation through measured retrieval, source,
+and answer-planning changes. The selected department now informs semantic ranking;
+the 6+2 definition is separated from reporting procedures; earlier assistant turns
+are treated as fallible; and direct sufficiency and `what about` questions receive
+focused task cues. Answers no longer open with `For ECE students` unless a department
+comparison is material. The existing `gemini-flash-lite-latest` pilot model remains
+unchanged because its quota is better suited to student traffic. The frozen answer
+quality set improved from 1/7 to 7/7 and required evidence retrieval from 6/11 to
+11/11.
+
 ## 2026-09-10 — Oracle provider timeout recovery
 
 Inspected production DB records, Docker logs and process counters. Fixed transient

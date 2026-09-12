@@ -15,6 +15,7 @@ from msfea_bot.generation.answer import (
     escalation,
     generate_answer,
     parse_answer,
+    _answer_context,
 )
 from msfea_bot.generation.conversation import ConversationMessage
 from msfea_bot.llm import GenerationResult
@@ -90,6 +91,35 @@ def test_build_prompt_includes_history_only_for_a_followup() -> None:
     assert "Conversation history:" in followup
     assert "support letter" in followup
     assert "Conversation history:" not in topic_switch
+
+
+def test_department_context_does_not_force_a_repetitive_answer_prefix() -> None:
+    prompt = build_prompt("Can I do six weeks?", CHUNKS, department="ece")
+    assert 'Address the student naturally as "you"' in prompt
+    assert 'Do not open with "For ECE students"' in prompt
+
+
+def test_option_followup_context_omits_unasked_procedure_sections() -> None:
+    meaning = RetrievedChunk("meaning", "Six plus two meaning", "doc", "Options", 0.9)
+    report = RetrievedChunk("report", "Submit a report", "doc", "Report requirements", 0.8)
+    history = [ConversationMessage("user", "Are six weeks enough?")]
+    assert _answer_context("what about the other option", [meaning, report], history) == [meaning]
+    assert _answer_context("what report is required?", [meaning, report], history) == [meaning, report]
+
+
+def test_ordinary_sufficiency_context_omits_unstated_conditional_section() -> None:
+    general = RetrievedChunk(
+        id="general", text="GENERAL", source_doc="rules.md",
+        section="Duration options", score=0.9,
+    )
+    conditional = RetrievedChunk(
+        id="conditional", text="CONDITIONAL", source_doc="rules.md",
+        section="Taking another course", score=0.8,
+    )
+    assert _answer_context("Is six weeks enough?", [general, conditional], []) == [general]
+    assert _answer_context(
+        "Is six weeks enough while taking another course?", [general, conditional], []
+    ) == [general, conditional]
 
 
 def test_parse_refusal_marker_escalates() -> None:
