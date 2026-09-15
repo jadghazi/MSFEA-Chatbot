@@ -37,6 +37,7 @@ from msfea_bot.curation.service import (
     publish_curated_answer,
     retire_curated_answer,
 )
+from msfea_bot.curation.migrations import migrate as migrate_curation
 from msfea_bot.curation.store import list_curated
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
@@ -77,6 +78,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     if settings.warm_models_on_startup:
         warm_embedding_model()
         warm_anonymizer()
+    migrate_curation()
     initialize_retrieval_schema()
     initialize_observability_schema()
     initialize_experience_schema()

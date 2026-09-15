@@ -6,6 +6,20 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-15 — KB publication guard Step 2 versioned migration
+
+- Added a checksum-verified transactional migration runner with a PostgreSQL advisory
+  lock and an operator CLI.
+- Added the guarded curation schema: stable entries, immutable revisions, separate
+  workflow state, validation results, human reviews, events, jobs, and outbox.
+- Legacy rows migrate one-for-one with IDs/state preserved and
+  `provenance_status=needs_review`; missing scope/evidence/approval is not fabricated.
+- Rehearsed non-empty active/retired migration, idempotency, identity advancement,
+  audit parity, and database immutability in isolated temporary databases.
+- Documented that the additive schema supports student-serving rollback, while old
+  admin writes must be disabled because they bypass the guard. Oracle remains
+  unchanged; the migration has only run against disposable local databases.
+
 ## 2026-09-15 — KB publication guard Step 1 scope/provenance audit
 
 - Added the five-department high-risk rule/provenance matrix in

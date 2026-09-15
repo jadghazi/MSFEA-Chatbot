@@ -58,7 +58,7 @@ def test_email_clarifications_have_reviewable_provenance(path: Path) -> None:
 
 @pytest.mark.xfail(
     strict=True,
-    reason="Step 2 revision storage must replace legacy unscoped curated chunks",
+    reason="Step 3 draft semantics must replace legacy unscoped direct publication",
 )
 def test_legacy_curated_chunks_are_not_publishable_without_explicit_scope() -> None:
     """Keep the current direct-curation defect visible until the revision migration."""

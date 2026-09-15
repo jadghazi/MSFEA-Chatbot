@@ -1,6 +1,6 @@
 # Knowledge-base scope and provenance audit
 
-Date: 2026-09-15  
+Date: 2026-09-15
 Implementation stage: KB publication guard Step 1
 
 ## Result
