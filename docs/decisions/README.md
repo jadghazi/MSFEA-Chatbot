@@ -53,3 +53,4 @@ file layout). Keep the log signal-heavy.
 | 0023 | Local usage guards for the single-worker pilot | Accepted and deployed |
 | 0024 | Department-aware retrieval and stronger follow-up synthesis | Accepted |
 | 0025 | Inherit department scope in nested chunks | Accepted |
+| 0026 | Guarded KB publication with n8n coordination | Accepted |

@@ -23,6 +23,11 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
 - `threshold_set.jsonl` + `threshold_eval.py` — retrieval-only calibration for the
   pre-LLM similarity gate. It includes terse/misspelled valid questions and varied
   off-topic prompts, runs without an API key, and is gated in CI (ADR-0020).
+- `publication_guard_baseline_set.jsonl` — the frozen pre-publication-guard answer
+  preservation sample across all departments, unknown department, follow-ups,
+  comparison, topic switching, and refusal. The reviewed baseline and raw traces are
+  documented in `docs/kb-publication-guard-baseline.md` and
+  `results/publication_guard/`.
 
 ## What is wired vs. pending
 

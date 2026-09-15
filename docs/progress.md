@@ -6,6 +6,37 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-15 — KB publication guard Step 0 baseline
+
+Accepted ADR-0026: n8n Community coordinates durable workflow steps while
+Python/FastAPI remains the validation, authorization, audit and publication authority;
+every exact revision requires recorded human source/conflict review. Frozen the current
+student RAG configuration and added a ten-case answer-preservation set spanning all five
+departments, unknown department, follow-up, comparison, topic switch and refusal.
+
+The isolated baseline is green: Ruff, strict mypy, three widget tests and 225 Python
+tests passed; clean ingestion indexed 210 chunks; production-depth context recall is
+67/68 (98.5%, the existing `internship-vs-coop` miss); threshold calibration accepts
+109/109 valid questions and blocks 11/20 off-topic questions; synthesis/follow-up
+premise coverage is 19/19. The ten-case live run used the unchanged Flash Lite alias
+and one call per case. Eight cases fully met their expected behavior. Unknown-department
+split guidance refused despite retrieving both scoped rules, and the corrective 6+2
+follow-up omitted approval/documentation conditions; both are preserved as explicit
+baseline failures for Step 1.
+
+Public production `/health` and `/ready` returned HTTP 200. SSH timed out, so current
+deployed commit, curated/index counts, Oracle headroom, backup state and restore evidence
+remain unverified. Historical capacity figures are not accepted for n8n deployment.
+See `docs/kb-publication-guard-baseline.md` for commands, review and constraints.
+
+Baseline SHA-256 fingerprints: case set
+`455c3cace32eab602b21ac2c22b8a6b041e544db7a8ecd1673d6b61f7b8939d1`; live answers
+`e1f454cec462bc7c639f03d890e07da9a43e5d42f2b95aa69183a8d0a11180a8`; answer-case
+retrieval `2455a52e8876fb8f8f9e0af3bdfd91569564a416c190c70bcf76cec150ec7c4f`;
+golden retrieval `acc1c3a992170cc4519d1976a0c7ca94ea7dd05da756a0cd5a1b6f57be752e76`;
+synthesis retrieval `ccee6a4c1e13c7e3f8f6829a8fcdf5238f809f40bccc65ad57e5c956f858d144`;
+follow-up retrieval `09c289373532b2d2ad56889172ef9548a67ea3025e45f589b65bd071a7213376`.
+
 ## 2026-09-12 — Follow-up synthesis quality and pilot model preserved
 
 Fixed the reported six-week/6+2 conversation through measured retrieval, source,
