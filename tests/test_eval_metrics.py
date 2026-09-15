@@ -20,6 +20,13 @@ def test_evidence_present() -> None:
     assert evidence_present([], "x") is False
 
 
+def test_evidence_present_ignores_markdown_emphasis_inside_phrase() -> None:
+    assert evidence_present(
+        ["You must have completed a **minimum of 90 credits**."],
+        "minimum of 90 credits",
+    )
+
+
 def test_recall_at_k() -> None:
     assert recall_at_k(["a", "b", "c"], "b", 2) is True
     assert recall_at_k(["a", "b", "c"], "c", 2) is False

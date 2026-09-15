@@ -14,6 +14,7 @@ Everything here is a pure function so it is unit-testable now, before a retrieve
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 # --------------------------------------------------------------------------- #
@@ -46,8 +47,14 @@ def evidence_present(chunk_texts: list[str], evidence: str) -> bool:
     This is the *context-recall* signal: did retrieval actually surface the
     passage that contains the answer? It is stricter than document-level recall.
     """
-    needle = evidence.lower()
-    return any(needle in text.lower() for text in chunk_texts)
+    # Probes describe source words, not presentation syntax. Markdown emphasis can
+    # legitimately sit inside a phrase ("minimum of **90 credits**"), so compare a
+    # plain-text view while retaining punctuation, numbers, and word order.
+    def plain(value: str) -> str:
+        return re.sub(r"\s+", " ", re.sub(r"[*_`]", "", value)).strip().casefold()
+
+    needle = plain(evidence)
+    return any(needle in plain(text) for text in chunk_texts)
 
 
 # --------------------------------------------------------------------------- #

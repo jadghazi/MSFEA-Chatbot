@@ -144,6 +144,28 @@ def test_chunk_metadata_is_persisted(restore_index: None) -> None:
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_search_returns_chunk_metadata(restore_index: None) -> None:
+    """Generation needs applicability metadata, not only the database filter."""
+    from msfea_bot.ingestion.chunking import Chunk
+    from msfea_bot.retrieval.store import index_chunks, search
+
+    index_chunks(
+        [
+            Chunk(
+                id="meta-search-1",
+                text="The scoped marker is ORCHID-29.",
+                source_doc="rules.md",
+                section="Scoped rule",
+                metadata={"department": "cee", "program": "internship"},
+            )
+        ]
+    )
+
+    result = next(chunk for chunk in search("ORCHID-29", k=1) if chunk.id == "meta-search-1")
+    assert result.metadata == {"department": "cee", "program": "internship"}
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
 def test_department_scoping_excludes_other_departments() -> None:
     """A student must never be shown another department's contradictory rule.
 

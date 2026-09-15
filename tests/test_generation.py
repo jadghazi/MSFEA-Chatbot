@@ -99,6 +99,47 @@ def test_department_context_does_not_force_a_repetitive_answer_prefix() -> None:
     assert 'Do not open with "For ECE students"' in prompt
 
 
+def test_unknown_department_context_labels_scoped_rules() -> None:
+    cee = RetrievedChunk(
+        id="rules.md#cee",
+        text="Splitting is allowed with a civil/construction condition.",
+        source_doc="rules.md",
+        section="Splitting",
+        score=0.9,
+        metadata={"department": "cee", "program": "internship"},
+    )
+    mech = RetrievedChunk(
+        id="rules.md#mech",
+        text="Splitting is not allowed.",
+        source_doc="rules.md",
+        section="Splitting",
+        score=0.89,
+        metadata={"department": "mech", "program": "internship"},
+    )
+
+    prompt = build_prompt("Can I split my internship?", [cee, mech])
+
+    assert "Applicability: Civil and Environmental Engineering (CEE) only." in prompt
+    assert "Applicability: Mechanical Engineering (MECH) only." in prompt
+    assert "do not refuse merely because the student's department is unknown" in prompt
+
+
+def test_known_department_prompt_does_not_add_unknown_scope_instructions() -> None:
+    scoped = RetrievedChunk(
+        id="rules.md#cee",
+        text="CEE rule.",
+        source_doc="rules.md",
+        section="Civil and Environmental Engineering (CEE)",
+        score=0.9,
+        metadata={"department": "cee", "program": "internship"},
+    )
+
+    prompt = build_prompt("Can I split my internship?", [scoped], department="cee")
+
+    assert "Applicability:" not in prompt
+    assert "do not refuse merely because the student's department is unknown" not in prompt
+
+
 def test_option_followup_context_omits_unasked_procedure_sections() -> None:
     meaning = RetrievedChunk("meaning", "Six plus two meaning", "doc", "Options", 0.9)
     report = RetrievedChunk("report", "Submit a report", "doc", "Report requirements", 0.8)

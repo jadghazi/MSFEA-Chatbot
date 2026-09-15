@@ -8,7 +8,7 @@ reproducible and is never hand-edited.
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import psycopg
@@ -35,6 +35,7 @@ class RetrievedChunk:
     source_doc: str
     section: str
     score: float
+    metadata: dict[str, str] = field(default_factory=dict)
 
 
 def _connect(autocommit: bool = True, ensure_extension: bool = False) -> Any:
@@ -381,7 +382,7 @@ def search(
         # Fetch content + cosine score for the fused ids in one query.
         rows = conn.execute(
             "SELECT id, text, source_doc, section,"
-            " 1 - (embedding <=> %s::vector) AS score, display_prefix"
+            " 1 - (embedding <=> %s::vector) AS score, display_prefix, metadata"
             " FROM chunks WHERE id = ANY(%s)",
             (qv, fused),
         ).fetchall()
@@ -393,7 +394,12 @@ def search(
             text = _with_display_prefix(r[1], r[5])
             out.append(
                 RetrievedChunk(
-                    id=r[0], text=text, source_doc=r[2], section=r[3], score=float(r[4])
+                    id=r[0],
+                    text=text,
+                    source_doc=r[2],
+                    section=r[3],
+                    score=float(r[4]),
+                    metadata=dict(r[6]),
                 )
             )
     return out

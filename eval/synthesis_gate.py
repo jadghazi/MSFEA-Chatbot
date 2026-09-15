@@ -13,7 +13,11 @@ from msfea_bot.retrieval.store import retrieval_depth, search
 
 
 def main() -> None:
-    cases = [json.loads(line) for name in ("synthesis_set.jsonl", "followup_set.jsonl")
+    cases = [json.loads(line) for name in (
+                 "synthesis_set.jsonl",
+                 "followup_set.jsonl",
+                 "scope_regression_set.jsonl",
+             )
              for line in (Path(__file__).parent / name).read_text(encoding="utf-8").splitlines()]
     passed = 0
     answerable = [c for c in cases if not c["should_refuse"]]

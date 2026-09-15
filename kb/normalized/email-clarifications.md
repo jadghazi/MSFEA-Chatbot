@@ -1,6 +1,11 @@
 ---
 title: Approved Internship Email Clarifications
 department: all
+program: internship
+last_updated: 2026-09
+source_id: approved-internship-email-clarifications
+source_type: approved_clarification
+approval_reference: project-review-2026-09
 ---
 
 ## Moodle access and registration

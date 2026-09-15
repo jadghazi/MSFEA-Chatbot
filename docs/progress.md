@@ -6,6 +6,27 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-15 — KB publication guard Step 1 scope/provenance audit
+
+- Added the five-department high-risk rule/provenance matrix in
+  `docs/kb-scope-provenance-audit.md`, retaining unresolved owner questions instead
+  of manufacturing rules.
+- Added verified program and project-review provenance to both copies of the approved
+  email clarifications. Passage text, headings, and chunk boundaries are unchanged.
+- Retrieval now carries stored metadata into generation. Unknown-department prompts
+  label department-only evidence and request the department while preserving
+  conditional guidance; known-department prompt behavior is unchanged.
+- Added eight independent scope regression cases to the deterministic synthesis gate.
+  It now passes 27/27 all-premise retrieval/threshold cases (the original 19 plus 8).
+- Corrected a Markdown-sensitive evidence metric. Production-depth context recall
+  remains 67/68 (98.5%), with only the known `internship-vs-coop` miss; thresholds
+  remain unchanged.
+- Targeted live probes fixed the unknown-department split behavior. The known 6+2
+  follow-up still omits approval/documentation, and remains recorded as a baseline
+  limitation rather than hidden.
+- Oracle production was not changed. All indexing and database tests used the local
+  disposable `test-db`.
+
 ## 2026-09-15 — KB publication guard Step 0 baseline
 
 Accepted ADR-0026: n8n Community coordinates durable workflow steps while

@@ -165,6 +165,15 @@ difference between departments. Never present another department's rule as if it
 applies to them.
 """
 
+_UNKNOWN_DEPARTMENT_RULE = (
+    "\nThe student has not provided a known department, and the Context contains "
+    "rules\nwith explicit department applicability. Keep each rule attached to its\n"
+    "Applicability label. When the sources fully state the alternatives, explain "
+    "the\nconditional outcomes and ask which department applies; do not refuse "
+    "merely because the student's department is unknown. Never imply that a "
+    "department-only\nrule applies to every student.\n"
+)
+
 
 @dataclass
 class Answer:
@@ -187,8 +196,19 @@ class Answer:
     llm_latency_ms: int | None = None
 
 
-def _format_context(chunks: list[RetrievedChunk]) -> str:
-    return "\n\n".join(f"[{c.source_doc} > {c.section}]\n{c.text}" for c in chunks)
+def _format_context(
+    chunks: list[RetrievedChunk], *, include_applicability: bool = False
+) -> str:
+    blocks: list[str] = []
+    for chunk in chunks:
+        lines = [f"[{chunk.source_doc} > {chunk.section}]"]
+        if include_applicability:
+            scope = departments.describe(chunk.metadata.get("department"))
+            if scope is not None:
+                lines.append(f"Applicability: {scope} only.")
+        lines.append(chunk.text)
+        blocks.append("\n".join(lines))
+    return "\n\n".join(blocks)
 
 
 _PROCEDURE_SECTION_RE = re.compile(
@@ -250,9 +270,16 @@ def build_prompt(
     history: Sequence[ConversationMessage] | None = None,
 ) -> str:
     dept = departments.from_code(department)
-    dept_block = (
-        "" if dept is None else _DEPARTMENT_RULE.format(label=dept.label, abbr=dept.abbr)
+    has_scoped_context = any(
+        departments.from_code(chunk.metadata.get("department")) is not None
+        for chunk in chunks
     )
+    if dept is not None:
+        dept_block = _DEPARTMENT_RULE.format(label=dept.label, abbr=dept.abbr)
+    elif has_scoped_context:
+        dept_block = _UNKNOWN_DEPARTMENT_RULE
+    else:
+        dept_block = ""
     prior = format_prompt_history(question, history)
     history_block = "" if not prior else f"Conversation history:\n{prior}\n"
     # Flash Lite sometimes drops a stated secondary condition when the matching
@@ -262,7 +289,7 @@ def build_prompt(
     prompt_chunks = list(reversed(chunks)) if needs_condition_focus(question) else chunks
     prompt = _PROMPT.format(
         marker=REFUSAL_MARKER,
-        context=_format_context(prompt_chunks),
+        context=_format_context(prompt_chunks, include_applicability=dept is None),
         question=frame_confirmation(question, history),
         department=dept_block,
         history=history_block,
@@ -459,7 +486,12 @@ def generate_answer(
     chunks = search(retrieval_query, top_k, department=department)
     retrieved = [f"{c.source_doc} > {c.section} ({c.score:.2f})" for c in chunks]
 
-    if len(_format_context(chunks)) > MAX_CONTEXT_CHARS:
+    if len(
+        _format_context(
+            chunks,
+            include_applicability=departments.from_code(department) is None,
+        )
+    ) > MAX_CONTEXT_CHARS:
         count("context_size_hits")
         result = Answer(
             text="That question needs too much material at once. Please ask about one part at a time.",

@@ -28,6 +28,9 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   comparison, topic switching, and refusal. The reviewed baseline and raw traces are
   documented in `docs/kb-publication-guard-baseline.md` and
   `results/publication_guard/`.
+- `scope_regression_set.jsonl` — independently source-grounded department,
+  condition-boundary, paraphrase, and follow-up cases added by publication-guard
+  Step 1. The synthesis gate runs these without replacing the older sets.
 
 ## What is wired vs. pending
 
