@@ -12,6 +12,14 @@ from psycopg.conninfo import conninfo_to_dict, make_conninfo
 
 from msfea_bot.config import settings
 from msfea_bot.curation.migrations import migrate, migration_status
+from msfea_bot.curation.revisions import (
+    DraftPayload,
+    EvidenceReference,
+    create_draft,
+    create_successor_draft,
+    list_revisions,
+    validate_payload,
+)
 
 
 def _db_available() -> bool:
@@ -38,6 +46,27 @@ def isolated_database() -> Iterator[str]:
             conn.execute(
                 sql.SQL("DROP DATABASE {} WITH (FORCE)").format(sql.Identifier(name))
             )
+
+
+def _payload(answer: str = "A source-backed answer.", department: str = "ece") -> DraftPayload:
+    return DraftPayload(
+        question="What is the reviewed rule?",
+        answer=answer,
+        department=department,
+        programs=("internship",),
+        evidence_refs=(
+            EvidenceReference(
+                "summer-training-guidelines-2026.md",
+                "Eligibility",
+                "minimum of 90 credits",
+            ),
+        ),
+        representative_question="What is the rule?",
+        paraphrase_question="Could you explain the rule?",
+        expected_evidence="minimum of 90 credits",
+        change_reason="Resolve a reviewed content gap.",
+        linked_feedback_ids=(4,),
+    )
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
@@ -127,3 +156,43 @@ def test_submitted_revision_payload_is_database_immutable(
             "SELECT answer FROM curated_revisions WHERE id = %s", (revision_id,)
         ).fetchone()
     assert stored is not None and stored[0] == "A."
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_draft_and_successor_survive_without_becoming_active(
+    isolated_database: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    migrate(isolated_database)
+    monkeypatch.setattr(settings, "database_url", isolated_database)
+
+    entry_id, first_id = create_draft(_payload())
+    second_id = create_successor_draft(entry_id, _payload("A corrected draft."))
+
+    assert second_id is not None and second_id != first_id
+    revisions = list_revisions()
+    assert [(item.revision_number, item.state) for item in revisions] == [
+        (2, "draft"),
+        (1, "draft"),
+    ]
+    assert revisions[0].predecessor_revision_id == first_id
+    assert revisions[0].predecessor_answer == "A source-backed answer."
+    assert not any(item.active for item in revisions)
+
+    with psycopg.connect(isolated_database, autocommit=True) as conn:
+        legacy_count = conn.execute("SELECT count(*) FROM curated_answers").fetchone()
+        chunks_table = conn.execute("SELECT to_regclass('public.chunks')").fetchone()
+    assert legacy_count is not None and legacy_count[0] == 0
+    assert chunks_table is not None and chunks_table[0] is None
+
+    # A new connection/process can reconstruct the complete draft from durable rows.
+    assert list_revisions()[0].answer == "A corrected draft."
+    from msfea_bot.curation.service import curated_chunks
+
+    assert curated_chunks() == [], "a full ingestion must exclude every draft revision"
+
+
+def test_invalid_or_missing_admin_scope_is_rejected_before_storage() -> None:
+    with pytest.raises(ValueError, match="department"):
+        validate_payload(_payload(department=""))
+    with pytest.raises(ValueError, match="department"):
+        validate_payload(_payload(department="architecture"))

@@ -9,6 +9,20 @@ from msfea_bot.api.security import RateLimiter
 
 client = TestClient(app)
 
+DRAFT = {
+    "question": "q",
+    "answer": "a",
+    "department": "all",
+    "programs": ["internship"],
+    "evidence_refs": [
+        {"source_doc": "rules.md", "locator": "Eligibility", "excerpt": "source words"}
+    ],
+    "representative_question": "q",
+    "paraphrase_question": "Could you explain q?",
+    "expected_evidence": "source words",
+    "change_reason": "Address reviewed feedback.",
+}
+
 
 def _fresh_limiter(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module, "_limiter", RateLimiter(max_requests=100, window_seconds=60))
@@ -152,20 +166,23 @@ def test_admin_experience_feedback_is_protected_and_returns_summary(
     assert resp.json()["recent_comments"][0]["comment"] == "Useful"
 
 
-def test_admin_curate_ok(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_admin_curate_saves_draft_without_invalidating_chat(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
-    monkeypatch.setattr(app_module, "publish_curated_answer", lambda q, a, author="admin": 7)
-    monkeypatch.setattr(app_module, "resolve_by_question", lambda q: 2)
+    monkeypatch.setattr(app_module, "create_draft", lambda payload, actor="admin": (7, 11))
+    monkeypatch.setattr(
+        app_module._guard,
+        "invalidate",
+        lambda: pytest.fail("saving a draft must not invalidate student answer cache"),
+    )
     resp = client.post(
         "/admin/api/curate",
         headers={"Authorization": "Bearer secret"},
-        json={"question": "q", "answer": "a"},
+        json=DRAFT,
     )
     assert resp.status_code == 200
-    body = resp.json()
-    assert body["curated_id"] == 7
-    # Publishing clears the queue for that question (ADR-0010 / B-3a resolution).
-    assert body["resolved"] == 2
+    assert resp.json() == {"entry_id": 7, "revision_id": 11, "state": "draft"}
 
 
 def test_admin_curated_lists_published(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -195,46 +212,82 @@ def test_admin_curated_edit_ok(monkeypatch: pytest.MonkeyPatch) -> None:
     seen = {}
     monkeypatch.setattr(
         app_module,
-        "edit_curated_answer",
-        lambda i, q, a: seen.update(id=i, q=q, a=a) or True,
+        "create_successor_draft",
+        lambda i, payload, actor="admin": seen.update(id=i, payload=payload) or 12,
     )
     resp = client.post(
         "/admin/api/curated/edit",
         headers={"Authorization": "Bearer secret"},
-        json={"id": 5, "question": "new q", "answer": "new a"},
+        json={"id": 5, "draft": DRAFT},
     )
     assert resp.status_code == 200
     assert resp.json()["ok"] is True
-    assert seen == {"id": 5, "q": "new q", "a": "new a"}
+    assert resp.json()["revision_id"] == 12
+    assert seen["id"] == 5
+    assert seen["payload"].department == "all"
 
 
 def test_admin_curated_edit_missing_returns_false(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
-    monkeypatch.setattr(app_module, "edit_curated_answer", lambda i, q, a: False)
+    monkeypatch.setattr(app_module, "create_successor_draft", lambda *args, **kwargs: None)
     resp = client.post(
         "/admin/api/curated/edit",
         headers={"Authorization": "Bearer secret"},
-        json={"id": 999, "question": "q", "answer": "a"},
+        json={"id": 999, "draft": DRAFT},
     )
     assert resp.status_code == 200
     assert resp.json()["ok"] is False
 
 
-def test_admin_curated_retire_ok(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_admin_curated_retire_cannot_bypass_guard(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
-    monkeypatch.setattr(app_module, "retire_curated_answer", lambda i: True)
     resp = client.post(
         "/admin/api/curated/retire",
         headers={"Authorization": "Bearer secret"},
         json={"id": 5},
     )
-    assert resp.status_code == 200
-    assert resp.json()["ok"] is True
+    assert resp.status_code == 409
+    assert "guarded revision workflow" in resp.json()["detail"]
 
 
 def test_admin_curated_retire_requires_token() -> None:
     # Wrong/absent auth is rejected (admin is enabled via .env in this env).
     assert client.post("/admin/api/curated/retire", json={"id": 1}).status_code in (401, 403)
+
+
+def test_admin_curation_options_are_server_populated(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(app_module, "program_registry", lambda: ("co-op", "internship"))
+    monkeypatch.setattr(app_module, "source_registry", lambda: ("rules.md",))
+
+    resp = client.get(
+        "/admin/api/curation-options", headers={"Authorization": "Bearer secret"}
+    )
+
+    assert resp.status_code == 200
+    assert resp.json()["programs"] == ["co-op", "internship"]
+    assert resp.json()["sources"] == ["rules.md"]
+    assert {item["code"] for item in resp.json()["departments"]} == {
+        "all",
+        "mech",
+        "ece",
+        "chem",
+        "iem",
+        "cee",
+    }
+
+
+def test_admin_draft_rejects_unscoped_payload(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    payload = {**DRAFT, "department": ""}
+
+    resp = client.post(
+        "/admin/api/curate",
+        headers={"Authorization": "Bearer secret"},
+        json=payload,
+    )
+
+    assert resp.status_code == 422
 
 
 def test_admin_resolve_dismisses_item(monkeypatch: pytest.MonkeyPatch) -> None:

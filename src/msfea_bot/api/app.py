@@ -32,12 +32,16 @@ from msfea_bot.api.security import RateLimiter, sanitize
 from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, local_reply
 from msfea_bot.observability.usage import count, snapshot
 from msfea_bot.config import settings
-from msfea_bot.curation.service import (
-    edit_curated_answer,
-    publish_curated_answer,
-    retire_curated_answer,
-)
 from msfea_bot.curation.migrations import migrate as migrate_curation
+from msfea_bot.curation.revisions import (
+    DraftPayload,
+    EvidenceReference,
+    create_draft,
+    create_successor_draft,
+    list_revisions,
+    program_registry,
+    source_registry,
+)
 from msfea_bot.curation.store import list_curated
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
@@ -61,7 +65,6 @@ from msfea_bot.observability.store import (
     feedback_items,
     initialize_schema as initialize_observability_schema,
     log_interaction,
-    resolve_by_question,
     resolve_interaction,
     set_rating,
     stats,
@@ -424,19 +427,51 @@ def admin_experience_feedback(_: None = Depends(require_admin)) -> ExperienceSum
 class CurateRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     answer: str = Field(min_length=1, max_length=8000)
+    department: str = Field(min_length=1, max_length=32)
+    programs: list[str] = Field(min_length=1, max_length=6)
+    evidence_refs: list["EvidenceRequest"] = Field(min_length=1, max_length=8)
+    representative_question: str = Field(min_length=1, max_length=2000)
+    paraphrase_question: str = Field(min_length=1, max_length=2000)
+    expected_evidence: str = Field(min_length=1, max_length=2000)
+    change_reason: str = Field(min_length=1, max_length=2000)
+    linked_feedback_ids: list[int] = Field(default_factory=list, max_length=20)
+
+
+class EvidenceRequest(BaseModel):
+    source_doc: str = Field(min_length=1, max_length=255)
+    locator: str = Field(min_length=1, max_length=500)
+    excerpt: str = Field(min_length=1, max_length=4000)
+
+
+CurateRequest.model_rebuild()
+
+
+def _draft_payload(req: CurateRequest) -> DraftPayload:
+    return DraftPayload(
+        question=req.question,
+        answer=req.answer,
+        department=req.department,
+        programs=tuple(req.programs),
+        evidence_refs=tuple(
+            EvidenceReference(item.source_doc, item.locator, item.excerpt)
+            for item in req.evidence_refs
+        ),
+        representative_question=req.representative_question,
+        paraphrase_question=req.paraphrase_question,
+        expected_evidence=req.expected_evidence,
+        change_reason=req.change_reason,
+        linked_feedback_ids=tuple(req.linked_feedback_ids),
+    )
 
 
 @app.post("/admin/api/curate")
-def admin_curate(req: CurateRequest, _: None = Depends(require_admin)) -> dict[str, int]:
-    """Publish an admin-written answer into the KB (indexed immediately).
-
-    Publishing also clears the queue: any open feedback item asking this exact
-    question is marked resolved, so it stops re-appearing after a refresh.
-    """
-    curated_id = publish_curated_answer(req.question, req.answer, author="admin")
-    _guard.invalidate()
-    resolved = resolve_by_question(req.question)
-    return {"curated_id": curated_id, "resolved": resolved}
+def admin_curate(req: CurateRequest, _: None = Depends(require_admin)) -> dict[str, int | str]:
+    """Save an immutable draft. Drafts never change student retrieval."""
+    try:
+        entry_id, revision_id = create_draft(_draft_payload(req), actor="admin")
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {"entry_id": entry_id, "revision_id": revision_id, "state": "draft"}
 
 
 class CuratedOut(BaseModel):
@@ -465,19 +500,23 @@ def admin_curated(_: None = Depends(require_admin)) -> list[CuratedOut]:
 
 class EditCuratedRequest(BaseModel):
     id: int
-    question: str = Field(min_length=1, max_length=2000)
-    answer: str = Field(min_length=1, max_length=8000)
+    draft: CurateRequest
 
 
 @app.post("/admin/api/curated/edit")
 def admin_curated_edit(
     req: EditCuratedRequest, _: None = Depends(require_admin)
-) -> dict[str, bool]:
-    """Update a published answer's text and re-index it. False if it's gone/retired."""
-    updated = edit_curated_answer(req.id, req.question, req.answer)
-    if updated:
-        _guard.invalidate()
-    return {"ok": updated}
+) -> dict[str, bool | int | None | str]:
+    """Create a successor draft; never mutate or replace the active revision."""
+    try:
+        revision_id = create_successor_draft(req.id, _draft_payload(req.draft), actor="admin")
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {
+        "ok": revision_id is not None,
+        "revision_id": revision_id,
+        "state": "draft" if revision_id is not None else "missing",
+    }
 
 
 class RetireCuratedRequest(BaseModel):
@@ -488,11 +527,65 @@ class RetireCuratedRequest(BaseModel):
 def admin_curated_retire(
     req: RetireCuratedRequest, _: None = Depends(require_admin)
 ) -> dict[str, bool]:
-    """Retire a published answer so the bot stops using it (row kept for history)."""
-    retired = retire_curated_answer(req.id)
-    if retired:
-        _guard.invalidate()
-    return {"ok": retired}
+    """The legacy immediate-retire path is closed until guarded publication exists."""
+    raise HTTPException(
+        status_code=409,
+        detail="Immediate retirement is disabled; use the guarded revision workflow.",
+    )
+
+
+class RevisionOut(BaseModel):
+    id: int
+    entry_id: int
+    revision_number: int
+    predecessor_revision_id: int | None
+    question: str
+    answer: str
+    department: str | None
+    programs: list[str]
+    evidence_refs: list[dict[str, str]]
+    representative_question: str | None
+    paraphrase_question: str | None
+    expected_evidence: str | None
+    change_reason: str
+    provenance_status: str
+    created_by: str
+    created_at: str
+    state: str
+    state_reason: str
+    active: bool
+    predecessor_question: str | None
+    predecessor_answer: str | None
+
+
+@app.get("/admin/api/revisions", response_model=list[RevisionOut])
+def admin_revisions(_: None = Depends(require_admin)) -> list[RevisionOut]:
+    return [
+        RevisionOut(
+            **{
+                key: value
+                for key, value in revision.__dict__.items()
+                if key not in {"content_hash", "linked_feedback_ids", "created_at"}
+            },
+            created_at=revision.created_at.isoformat(),
+        )
+        for revision in list_revisions()
+    ]
+
+
+@app.get("/admin/api/curation-options")
+def admin_curation_options(_: None = Depends(require_admin)) -> dict[str, object]:
+    return {
+        "departments": [
+            {"code": "all", "label": "All departments"},
+            *[
+                {"code": department.code, "label": department.label}
+                for department in departments.DEPARTMENTS
+            ],
+        ],
+        "programs": list(program_registry()),
+        "sources": list(source_registry()),
+    }
 
 
 class ResolveRequest(BaseModel):

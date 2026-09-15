@@ -6,6 +6,26 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-15 — KB publication guard Step 3 draft API/dashboard
+
+- Replaced the admin create/edit HTTP semantics with immutable draft creation and
+  successor revisions. Neither path writes legacy active content, retrieval chunks,
+  feedback resolution, nor the student answer cache.
+- Closed the legacy immediate-retirement route with an explicit conflict response
+  until guarded retirement is implemented. Removed unused direct publish/edit/retire
+  service functions so application code cannot call the old bypass accidentally.
+- Required explicit department, reviewed program, source locator/excerpt,
+  representative question, independent paraphrase, expected evidence, change reason,
+  and optional feedback links on each draft. Options are populated from the reviewed
+  normalized content, not a separately hard-coded topic list.
+- Added authenticated revision and curation-option views, predecessor content for
+  reviewable diffs, and actionable state reasons.
+- Updated the vanilla dashboard with source/scope controls and a Drafts view. It says
+  plainly that drafts are not live and leaves Validate/Publish disabled until the
+  corresponding guarded steps exist.
+- Isolated tests prove draft/successor persistence across connections and exclusion
+  from both incremental retrieval and full-ingestion inputs. Oracle remains unchanged.
+
 ## 2026-09-15 — KB publication guard Step 2 versioned migration
 
 - Added a checksum-verified transactional migration runner with a PostgreSQL advisory

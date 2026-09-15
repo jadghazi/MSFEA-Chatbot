@@ -54,17 +54,3 @@ def test_email_clarifications_have_reviewable_provenance(path: Path) -> None:
     assert metadata["source_id"] == "approved-internship-email-clarifications"
     assert metadata["source_type"] == "approved_clarification"
     assert metadata["approval_reference"] == "project-review-2026-09"
-
-
-@pytest.mark.xfail(
-    strict=True,
-    reason="Step 3 draft semantics must replace legacy unscoped direct publication",
-)
-def test_legacy_curated_chunks_are_not_publishable_without_explicit_scope() -> None:
-    """Keep the current direct-curation defect visible until the revision migration."""
-    from msfea_bot.curation.service import _to_chunks
-
-    chunks = _to_chunks(1, "Can I split the internship?", "Yes for this department.", "admin")
-
-    assert all(chunk.metadata.get("department") in SCOPED_POLICY_EVIDENCE for chunk in chunks)
-    assert all(chunk.metadata.get("program") for chunk in chunks)

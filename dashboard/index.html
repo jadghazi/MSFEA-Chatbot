@@ -73,8 +73,8 @@
       button:disabled { opacity: .5; cursor: not-allowed; }
       .retire:hover:not(:disabled) { background: var(--danger-bg) !important; border-color: #f3c9c6 !important; color: var(--danger) !important; }
 
-      input, textarea { font: inherit; border: 1.5px solid var(--line); border-radius: 9px; padding: 10px 13px; background: #fff; color: var(--ink); transition: border-color .16s ease, box-shadow .16s ease; }
-      input:focus, textarea:focus { outline: none; border-color: var(--m); box-shadow: 0 0 0 3px rgba(134,38,51,.1); }
+      input, textarea, select { font: inherit; border: 1.5px solid var(--line); border-radius: 9px; padding: 10px 13px; background: #fff; color: var(--ink); transition: border-color .16s ease, box-shadow .16s ease; }
+      input:focus, textarea:focus, select:focus { outline: none; border-color: var(--m); box-shadow: 0 0 0 3px rgba(134,38,51,.1); }
 
       /* ---------- login ---------- */
       .login {
@@ -158,6 +158,10 @@
       .answer-box { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 15px; }
       .answer-box .label { font-size: 13px; font-weight: 650; margin-bottom: 8px; display: block; }
       .answer-box textarea { width: 100%; min-height: 88px; resize: vertical; line-height: 1.55; }
+      .draft-grid { display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px; }
+      .draft-grid label { display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:650;color:var(--ink-soft); }
+      .draft-grid .wide { grid-column:1 / -1; }
+      .draft-grid textarea { min-height:62px; }
       .actions { display: flex; align-items: center; gap: 9px; margin-top: 12px; flex-wrap: wrap; }
       .status { font-size: 13px; font-weight: 550; }
       .status.ok { color: var(--ok); }
@@ -221,6 +225,8 @@
         .login { margin-top: 4vh; padding: 24px; }
         .feedback-grid { grid-template-columns:1fr; }
         .experience-summary { grid-template-columns:1fr 1fr; }
+        .draft-grid { grid-template-columns:1fr; }
+        .draft-grid .wide { grid-column:auto; }
       }
       @media (prefers-reduced-motion: reduce) {
         * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -264,6 +270,9 @@
             <button class="tab active" data-tab="attention">
               Needs your attention <span id="pending-badge" class="badge zero">0</span>
             </button>
+            <button class="tab" data-tab="drafts">
+              Drafts <span id="drafts-badge" class="badge zero">0</span>
+            </button>
             <button class="tab" data-tab="curated">
               Published answers <span id="curated-badge" class="badge zero">0</span>
             </button>
@@ -282,10 +291,19 @@
         <div id="tab-attention">
           <p class="intro">
             These are questions the bot <strong>couldn't answer</strong>, or answers a student marked
-            <strong>not helpful</strong>. Write the correct answer and click <em>Publish</em> — the bot
-            will use it the next time someone asks. Items you handle disappear from this list.
+            <strong>not helpful</strong>. Save a source-backed draft for validation and human review.
+            Drafts are never visible to students.
           </p>
           <div id="list"></div>
+        </div>
+
+        <!-- Tab: guarded drafts -->
+        <div id="tab-drafts" class="hidden">
+          <p class="intro">
+            Immutable draft revisions and their current workflow state. “Draft” means unpublished;
+            automatic checks and final human review are required before Publish becomes available.
+          </p>
+          <div id="drafts-list"></div>
         </div>
 
         <!-- Tab: published answers -->
@@ -366,7 +384,7 @@
       }
 
       // ---- Tabs ----
-      var TABS = ["attention", "curated", "usage", "experience"];
+      var TABS = ["attention", "drafts", "curated", "usage", "experience"];
       function selectTab(name) {
         TABS.forEach(function (t) {
           $("tab-" + t).classList.toggle("hidden", t !== name);
@@ -388,6 +406,8 @@
           fetch(API + "/admin/api/feedback", { headers: headers() }),
           fetch(API + "/admin/api/curated", { headers: headers() }),
           fetch(API + "/admin/api/experience-feedback", { headers: headers() }),
+          fetch(API + "/admin/api/revisions", { headers: headers() }),
+          fetch(API + "/admin/api/curation-options", { headers: headers() }),
         ])
           .then(function (rs) {
             if (rs.some(function (r) { return r.status === 401; })) throw new Error("That access code isn't valid. Please check it and try again.");
@@ -396,10 +416,12 @@
             return Promise.all(rs.map(function (r) { return r.json(); }));
           })
           .then(function (data) {
+            _options = data[5];
             renderStats(data[0]);
             renderList(data[1]);
             renderCurated(data[2]);
             renderExperience(data[3]);
+            renderDrafts(data[4]);
             $("updated").textContent = "Updated " + new Date().toLocaleTimeString();
             restore();
             if (done) done(true);
@@ -477,6 +499,71 @@
           '<section class="experience-block comments"><h3>Recent comments</h3>' + commentHtml + '</section>';
       }
 
+      var _options = { departments: [], programs: [], sources: [] };
+      function choices(items, valueKey, labelKey, selected) {
+        return (items || []).map(function (item) {
+          var value = valueKey ? item[valueKey] : item;
+          var label = labelKey ? item[labelKey] : item;
+          return '<option value="' + esc(value) + '"' + (value === selected ? ' selected' : '') + '>' + esc(label) + '</option>';
+        }).join("");
+      }
+      function draftFields(question, defaults) {
+        defaults = defaults || {};
+        return '<div class="draft-grid">' +
+          '<label>Department<select class="draft-dept"><option value="">Select…</option>' + choices(_options.departments, "code", "label", defaults.department) + '</select></label>' +
+          '<label>Program<select class="draft-program"><option value="">Select…</option>' + choices(_options.programs, null, null, (defaults.programs || [])[0]) + '</select></label>' +
+          '<label>Source document<select class="draft-source"><option value="">Select…</option>' + choices(_options.sources, null, null, defaults.source_doc) + '</select></label>' +
+          '<label>Stable section/page locator<input class="draft-locator" value="' + esc(defaults.locator || '') + '" placeholder="Section heading or page" /></label>' +
+          '<label class="wide">Exact supporting excerpt<textarea class="draft-excerpt" placeholder="Paste the source passage">' + esc(defaults.excerpt || '') + '</textarea></label>' +
+          '<label>Representative question<input class="draft-representative" value="' + esc(defaults.representative_question || question) + '" /></label>' +
+          '<label>Independent paraphrase<input class="draft-paraphrase" value="' + esc(defaults.paraphrase_question || '') + '" placeholder="How else might a student ask?" /></label>' +
+          '<label class="wide">Expected supporting evidence<input class="draft-expected" value="' + esc(defaults.expected_evidence || '') + '" placeholder="Shortest source phrase the retriever must find" /></label>' +
+          '<label class="wide">Change reason<textarea class="draft-reason" placeholder="Why is this addition or correction needed?">' + esc(defaults.change_reason || '') + '</textarea></label>' +
+        '</div>';
+      }
+      function collectDraft(root, question, answer, feedbackId) {
+        return {
+          question: question,
+          answer: answer,
+          department: root.querySelector(".draft-dept").value,
+          programs: [root.querySelector(".draft-program").value],
+          evidence_refs: [{
+            source_doc: root.querySelector(".draft-source").value,
+            locator: root.querySelector(".draft-locator").value.trim(),
+            excerpt: root.querySelector(".draft-excerpt").value.trim()
+          }],
+          representative_question: root.querySelector(".draft-representative").value.trim(),
+          paraphrase_question: root.querySelector(".draft-paraphrase").value.trim(),
+          expected_evidence: root.querySelector(".draft-expected").value.trim(),
+          change_reason: root.querySelector(".draft-reason").value.trim(),
+          linked_feedback_ids: feedbackId ? [feedbackId] : []
+        };
+      }
+
+      function renderDrafts(items) {
+        var drafts = (items || []).filter(function (item) { return !item.active; });
+        var badge = $("drafts-badge");
+        badge.textContent = drafts.length;
+        badge.classList.toggle("zero", drafts.length === 0);
+        if (!drafts.length) {
+          $("drafts-list").innerHTML = '<div class="empty"><div class="big">📝</div><p>No unpublished revisions.</p></div>';
+          return;
+        }
+        $("drafts-list").innerHTML = drafts.map(function (item) {
+          var prior = item.predecessor_answer == null ? '' :
+            '<details class="tech"><summary>Compare with previous revision</summary><div class="snippet">' + esc(item.predecessor_answer) + '</div></details>';
+          var evidence = (item.evidence_refs || []).map(function (ref) {
+            return '<div class="snippet">' + esc(ref.source_doc + ' > ' + ref.locator + '\n' + ref.excerpt) + '</div>';
+          }).join('');
+          return '<div class="card"><div class="badge-row"><span class="badge time">' + esc(item.state) + '</span><span class="badge time">Revision ' + esc(item.revision_number) + '</span></div>' +
+            '<div class="q-label">Question</div><div class="q">' + esc(item.question) + '</div>' +
+            '<div class="q-label">Proposed answer — not live</div><div class="curated-answer">' + esc(item.answer) + '</div>' +
+            '<div class="curated-meta">Scope: ' + esc(item.department) + ' · Program: ' + esc((item.programs || []).join(', ')) + '<br />' + esc(item.state_reason) + '</div>' +
+            '<details class="tech"><summary>Evidence and test cases</summary>' + evidence + '<div class="snippet">Representative: ' + esc(item.representative_question) + '\nParaphrase: ' + esc(item.paraphrase_question) + '\nExpected: ' + esc(item.expected_evidence) + '</div></details>' + prior +
+            '<div class="actions"><button disabled>Validate before publish</button></div></div>';
+        }).join('');
+      }
+
       function renderList(items) {
         var list = $("list");
         if (!items.length) {
@@ -520,10 +607,11 @@
           '<div class="q">' + esc(it.question) + '</div>' +
           botSaid +
           '<div class="answer-box">' +
-            '<label class="label">Write the answer students should get:</label>' +
+            '<label class="label">Proposed answer:</label>' +
             '<textarea placeholder="Type a clear, correct answer based on the official CDC guidelines…"></textarea>' +
+            draftFields(it.question) +
             '<div class="actions">' +
-              '<button class="publish">Publish answer</button>' +
+              '<button class="publish">Save draft</button>' +
               '<button class="dismiss secondary">Dismiss</button>' +
               '<span class="status"></span>' +
             '</div>' +
@@ -552,14 +640,19 @@
         publishBtn.addEventListener("click", function () {
           var answer = ta.value.trim();
           if (!answer) { status.className = "status err"; status.textContent = "Please write an answer first."; return; }
+          var payload = collectDraft(card, it.question, answer, it.id);
           publishBtn.disabled = true; dismissBtn.disabled = true;
-          status.className = "status"; status.textContent = "Publishing…";
+          status.className = "status"; status.textContent = "Saving draft…";
           fetch(API + "/admin/api/curate", {
             method: "POST", headers: headers(),
-            body: JSON.stringify({ question: it.question, answer: answer }),
+            body: JSON.stringify(payload),
           })
-            .then(function (r) { if (!r.ok) throw new Error("Couldn't publish (error " + r.status + ")"); return r.json(); })
-            .then(function () { resolveCard("✓ Published — the bot can now answer this."); })
+            .then(function (r) { if (!r.ok) throw new Error("Couldn't save draft (error " + r.status + ")"); return r.json(); })
+            .then(function () {
+              status.className = "status ok";
+              status.textContent = "✓ Draft saved — it is not visible to students.";
+              loadAll();
+            })
             .catch(function (e) {
               publishBtn.disabled = false; dismissBtn.disabled = false;
               status.className = "status err"; status.textContent = e.message;
@@ -625,7 +718,7 @@
             (whenStr ? " · " + esc(whenStr) : "") + '</div>' +
           '<div class="actions">' +
             '<button class="edit secondary">Edit</button>' +
-            '<button class="retire secondary">Retire</button>' +
+            '<button class="retire secondary" disabled title="Available after guarded validation">Retire</button>' +
             '<span class="status"></span>' +
           '</div>';
 
@@ -645,7 +738,8 @@
             '<textarea class="edit-q"></textarea>' +
             '<label class="label" style="margin-top:10px">Answer</label>' +
             '<textarea class="edit-a"></textarea>' +
-            '<div class="actions"><button class="save">Save changes</button>' +
+            draftFields(c.question) +
+            '<div class="actions"><button class="save">Save replacement draft</button>' +
             '<button class="cancel secondary">Cancel</button><span class="status"></span></div>';
           form.querySelector(".edit-q").value = c.question;
           form.querySelector(".edit-a").value = c.answer;
@@ -666,47 +760,19 @@
             fStatus.className = "status"; fStatus.textContent = "Saving…";
             fetch(API + "/admin/api/curated/edit", {
               method: "POST", headers: headers(),
-              body: JSON.stringify({ id: c.id, question: nq, answer: na }),
+              body: JSON.stringify({ id: c.id, draft: collectDraft(form, nq, na, null) }),
             })
               .then(function (r) { if (!r.ok) throw new Error("Couldn't save (error " + r.status + ")"); return r.json(); })
               .then(function (res) {
                 if (!res.ok) throw new Error("This answer no longer exists.");
-                c.question = nq; c.answer = na;         // update local copy
-                qDiv.innerHTML = esc(nq); aDiv.innerHTML = esc(na);
                 form.remove();
                 qDiv.classList.remove("hidden"); aDiv.classList.remove("hidden"); actions.classList.remove("hidden");
-                status.className = "status ok"; status.textContent = "✓ Saved — the bot now uses the updated answer.";
+                status.className = "status ok"; status.textContent = "✓ Replacement draft saved — the live answer is unchanged.";
                 setTimeout(function () { status.textContent = ""; status.className = "status"; }, 4000);
+                loadAll();
               })
               .catch(function (e) { saveBtn.disabled = false; fStatus.className = "status err"; fStatus.textContent = e.message; });
           });
-        });
-
-        // ---- Retire ----
-        retireBtn.addEventListener("click", function () {
-          if (!confirm("Retire this answer? The bot will stop using it. It stays in the record but won't be shown to students.")) return;
-          editBtn.disabled = true; retireBtn.disabled = true;
-          status.className = "status"; status.textContent = "Retiring…";
-          fetch(API + "/admin/api/curated/retire", {
-            method: "POST", headers: headers(),
-            body: JSON.stringify({ id: c.id }),
-          })
-            .then(function (r) { if (!r.ok) throw new Error("Couldn't retire (error " + r.status + ")"); return r.json(); })
-            .then(function () {
-              status.className = "status ok"; status.textContent = "Retired.";
-              _curated = _curated.filter(function (x) { return x.id !== c.id; });
-              var badge = $("curated-badge");
-              badge.textContent = _curated.length;
-              badge.classList.toggle("zero", _curated.length === 0);
-              setTimeout(function () {
-                card.classList.add("resolving");
-                setTimeout(function () { filterCurated(); }, 420);
-              }, 700);
-            })
-            .catch(function (e) {
-              editBtn.disabled = false; retireBtn.disabled = false;
-              status.className = "status err"; status.textContent = e.message;
-            });
         });
 
         return card;
