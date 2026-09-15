@@ -109,25 +109,40 @@ The frozen case-set SHA-256 is
 Artifact hashes are recorded alongside the Step 0 progress entry so later comparison
 can detect accidental replacement.
 
-## Production verification and unresolved facts
+## Production verification and resource feasibility
 
-On 2026-09-15, the public endpoints returned HTTP 200 with `{"status":"ok"}` and
-`{"status":"ready"}` at `https://msfea-chatbot.duckdns.org`. SSH to the configured
-`msfea-oracle` target timed out twice, so the following were **not freshly verified**:
+The Oracle inventory was read over SSH on 2026-09-15 without printing secrets. The
+public endpoints also returned HTTP 200 with `{"status":"ok"}` and
+`{"status":"ready"}` at `https://msfea-chatbot.duckdns.org`.
 
-- deployed commit and working-tree/image identity;
-- active/total curated-answer count and production chunk count;
-- current Oracle CPU, RAM, disk, and container headroom;
-- current backup timer, most recent dump, restore rehearsal, and off-VM copy.
+| Item | Verified state |
+|---|---|
+| Checkout | Clean `main` at `6a7695e753bf95291ae510f7021a264a87a94d15` |
+| Application image | Compose image ID `sha256:7d5a39e3bcf7b7704b72c62c6641051ab46fe560d7edf4599c374c73c1bf75e6`; app healthy |
+| Safe RAG configuration | Matches this baseline: Flash Lite alias, temperature 0, seed 42, 1,024-token ceiling, BGE revision, top-k 7, threshold 0.60 |
+| Production index | 210 chunks; matching embedding fingerprint |
+| Curated content | 0 active / 0 total rows |
+| Host | ARM64, 2 CPUs, 12,506,693,632 bytes RAM, no swap |
+| Available resources at snapshot | 11,131,105,280 bytes available RAM; 39,739,572,224 bytes disk available; root volume 16% used |
+| Container memory at snapshot | App 650.9 MiB; PostgreSQL 32.68 MiB; Caddy 12.37 MiB |
+| Published ports | Only Caddy publishes host ports 80/443; app and PostgreSQL remain private |
+| Backup timer | Enabled and active; last trigger 2026-09-15 02:01:40 UTC; next scheduled 2026-09-16 02:04:25 UTC |
+| Latest dump | `msfea-20260915-020140.sql.gz`, 456,110 bytes |
 
-The last repository evidence says commit `071d9df` was deployed on 2026-09-10. The
-last resource observation, from 2026-09-07, was a 12 GB VM, roughly 515 MiB warm
-container memory, and 16% use of a 45 GB boot volume. The same record says the backup
-timer was installed and at least one off-VM copy existed. These are historical facts,
-not current deployment evidence. Step 0's production/resource exit gate therefore
-remains open until operator access is restored and the read-only inventory plus a
-restore rehearsal can be recorded. No n8n or validation-worker deployment should be
-approved from the historical figures alone.
+The latest dump was restored with `ON_ERROR_STOP` into a uniquely named temporary
+database on the same PostgreSQL container. The restored copy contained 210 chunks,
+0 curated rows, and 132 interactions. The temporary database was dropped afterward;
+its absence and unchanged production counts were verified. This proves that the
+on-VM dump is readable and the documented logical restore path works without touching
+the live `msfea` database. It does not prove recovery from loss of the VM. A current
+off-VM copy could not be verified from the host and remains a deployment/handover item.
+
+Current RAM and disk headroom are sufficient for one resource-limited n8n container,
+its small database, and one-at-a-time validation work. Two CPUs and no swap make CPU
+contention the limiting risk, so validation must run outside student requests with
+explicit CPU/memory limits and operational observation before concurrency is raised.
+This is resource feasibility, not authorization to deploy n8n before its pinned ARM64
+image and recovery procedure pass Step 7.
 
 ## Reproduction commands
 

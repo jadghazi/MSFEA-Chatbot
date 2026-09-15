@@ -24,10 +24,16 @@ split guidance refused despite retrieving both scoped rules, and the corrective 
 follow-up omitted approval/documentation conditions; both are preserved as explicit
 baseline failures for Step 1.
 
-Public production `/health` and `/ready` returned HTTP 200. SSH timed out, so current
-deployed commit, curated/index counts, Oracle headroom, backup state and restore evidence
-remain unverified. Historical capacity figures are not accepted for n8n deployment.
-See `docs/kb-publication-guard-baseline.md` for commands, review and constraints.
+Public production `/health` and `/ready` returned HTTP 200. A retried SSH inventory
+verified a clean production checkout at `6a7695e`, the same frozen RAG configuration,
+210 indexed chunks, zero curated rows, private app/database ports, and current headroom
+on the 2-CPU/12-GB ARM64 VM (11.1 GB available RAM and 39.7 GB available disk at the
+snapshot). The daily timer was active with a fresh September 15 dump. That dump restored
+successfully into an isolated temporary database with 210 chunks, zero curated rows and
+132 interactions; cleanup and unchanged production counts were verified. This closes
+the Step 0 resource/restore gate. A current off-VM backup copy still needs independent
+verification before deployment. See `docs/kb-publication-guard-baseline.md` for the
+full evidence and constraints.
 
 Baseline SHA-256 fingerprints: case set
 `455c3cace32eab602b21ac2c22b8a6b041e544db7a8ecd1673d6b61f7b8939d1`; live answers
