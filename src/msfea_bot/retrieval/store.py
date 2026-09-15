@@ -7,6 +7,8 @@ reproducible and is never hand-edited.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from dataclasses import dataclass, field
 from typing import Any
@@ -38,12 +40,16 @@ class RetrievedChunk:
     metadata: dict[str, str] = field(default_factory=dict)
 
 
-def _connect(autocommit: bool = True, ensure_extension: bool = False) -> Any:
+def _connect(
+    autocommit: bool = True,
+    ensure_extension: bool = False,
+    database_url: str | None = None,
+) -> Any:
     """Connect (and register pgvector). Pass autocommit=False for a rebuild, so
     TRUNCATE + inserts land as one transaction instead of leaving a half-built
     index behind on failure."""
     conn = psycopg.connect(
-        settings.database_url, autocommit=autocommit, connect_timeout=5
+        database_url or settings.database_url, autocommit=autocommit, connect_timeout=5
     )
     if ensure_extension:
         conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
@@ -100,16 +106,32 @@ def _init_schema(conn: Any, dim: int | None = None) -> None:
     # approximate index can silently lower it.
 
 
-def initialize_schema() -> None:
+def initialize_schema(database_url: str | None = None) -> None:
     """Create retrieval tables and execute the first embedding inference."""
     # Resolve the model dimension before holding a database connection through a
     # potentially slow cold model load.
     dim = embedding_dim()
-    with _connect(ensure_extension=True) as conn:
+    with _connect(ensure_extension=True, database_url=database_url) as conn:
         _init_schema(conn, dim)
 
 
-def index_chunks(chunks: list[Chunk]) -> int:
+def _generation_hash(chunks: list[Chunk]) -> str:
+    payload = [
+        {
+            "id": chunk.id,
+            "text": chunk.text,
+            "source_doc": chunk.source_doc,
+            "section": chunk.section,
+            "metadata": chunk.metadata,
+            "display_prefix": chunk.display_prefix,
+        }
+        for chunk in chunks
+    ]
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    return "sha256:" + hashlib.sha256(encoded).hexdigest()
+
+
+def index_chunks(chunks: list[Chunk], database_url: str | None = None) -> int:
     """Embed all chunks and (re)build the store atomically. Returns the number indexed.
 
     Embedding happens before the connection opens, so the slow part runs while the
@@ -119,7 +141,9 @@ def index_chunks(chunks: list[Chunk]) -> int:
     half-built index with no way to roll back.
     """
     vectors = embed_texts([c.text for c in chunks])
-    with _connect(autocommit=False, ensure_extension=True) as conn:
+    with _connect(
+        autocommit=False, ensure_extension=True, database_url=database_url
+    ) as conn:
         _init_schema(conn)
         conn.execute("TRUNCATE chunks")
         with conn.cursor() as cur:
@@ -143,13 +167,24 @@ def index_chunks(chunks: list[Chunk]) -> int:
             " ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()",
             (model_fingerprint(),),
         )
+        conn.execute(
+            "INSERT INTO index_meta (key, value) VALUES ('kb_generation', %s)"
+            " ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()",
+            (_generation_hash(chunks),),
+        )
     return len(chunks)
 
 
-def indexed_model() -> str | None:
+def indexed_model(database_url: str | None = None) -> str | None:
     """The embedding model recorded for the current index, if any."""
-    with _connect() as conn:
+    with _connect(database_url=database_url) as conn:
         row = conn.execute("SELECT value FROM index_meta WHERE key = 'embedding_model'").fetchone()
+    return str(row[0]) if row else None
+
+
+def indexed_generation(database_url: str | None = None) -> str | None:
+    with _connect(database_url=database_url) as conn:
+        row = conn.execute("SELECT value FROM index_meta WHERE key = 'kb_generation'").fetchone()
     return str(row[0]) if row else None
 
 
@@ -306,7 +341,11 @@ def _reserve_department_slot(
 
 
 def search(
-    query: str, k: int = 5, candidates: int = 20, department: str | None = None
+    query: str,
+    k: int = 5,
+    candidates: int = 20,
+    department: str | None = None,
+    database_url: str | None = None,
 ) -> list[RetrievedChunk]:
     """Hybrid retrieval: fuse semantic (vector) and keyword (full-text) rankings.
 
@@ -348,7 +387,7 @@ def search(
         scope = f" WHERE ({_GENERAL} OR metadata->>'department' = %(dept)s)"
         params["dept"] = dept.code
 
-    with _connect() as conn:
+    with _connect(database_url=database_url) as conn:
         vec_ids = [
             r[0]
             for r in conn.execute(

@@ -42,6 +42,11 @@ from msfea_bot.curation.revisions import (
     program_registry,
     source_registry,
 )
+from msfea_bot.curation.validation import (
+    record_human_review,
+    start_validation,
+    validation_runs,
+)
 from msfea_bot.curation.store import list_curated
 from msfea_bot.generation import generate_answer
 from msfea_bot.generation.answer import Answer
@@ -586,6 +591,48 @@ def admin_curation_options(_: None = Depends(require_admin)) -> dict[str, object
         "programs": list(program_registry()),
         "sources": list(source_registry()),
     }
+
+
+class ValidateRevisionRequest(BaseModel):
+    revision_id: int
+
+
+@app.post("/admin/api/revisions/validate")
+def admin_validate_revision(
+    req: ValidateRevisionRequest, _: None = Depends(require_admin)
+) -> dict[str, str]:
+    try:
+        run_id = start_validation(req.revision_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"run_id": run_id, "status": "pending"}
+
+
+@app.get("/admin/api/validation-runs")
+def admin_validation_runs(_: None = Depends(require_admin)) -> list[dict[str, object]]:
+    return cast(list[dict[str, object]], validation_runs())
+
+
+class HumanReviewRequest(BaseModel):
+    run_id: str = Field(min_length=1, max_length=64)
+    reviewer_label: str = Field(min_length=1, max_length=200)
+    decision: Literal[
+        "confirm_no_conflict", "valid_scoped_exception", "reject", "replace_outdated"
+    ]
+    reason: str = Field(min_length=1, max_length=2000)
+
+
+@app.post("/admin/api/revisions/review")
+def admin_review_revision(
+    req: HumanReviewRequest, _: None = Depends(require_admin)
+) -> dict[str, int]:
+    try:
+        review_id = record_human_review(
+            req.run_id, req.reviewer_label, req.decision, req.reason
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"review_id": review_id}
 
 
 class ResolveRequest(BaseModel):

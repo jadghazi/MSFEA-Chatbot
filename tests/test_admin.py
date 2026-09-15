@@ -290,6 +290,75 @@ def test_admin_draft_rejects_unscoped_payload(monkeypatch: pytest.MonkeyPatch) -
     assert resp.status_code == 422
 
 
+def test_admin_validation_endpoints_are_authenticated_and_delegate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(app_module, "start_validation", lambda revision_id: f"run-{revision_id}")
+    monkeypatch.setattr(
+        app_module,
+        "validation_runs",
+        lambda: [{"id": "run-9", "revision_id": 9, "status": "pending"}],
+    )
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(
+        app_module,
+        "record_human_review",
+        lambda run_id, reviewer, decision, reason: seen.update(
+            run_id=run_id, reviewer=reviewer, decision=decision, reason=reason
+        )
+        or 17,
+    )
+
+    assert client.get("/admin/api/validation-runs").status_code == 401
+    started = client.post(
+        "/admin/api/revisions/validate",
+        headers={"Authorization": "Bearer secret"},
+        json={"revision_id": 9},
+    )
+    listed = client.get(
+        "/admin/api/validation-runs", headers={"Authorization": "Bearer secret"}
+    )
+    reviewed = client.post(
+        "/admin/api/revisions/review",
+        headers={"Authorization": "Bearer secret"},
+        json={
+            "run_id": "run-9",
+            "reviewer_label": "CDC reviewer",
+            "decision": "confirm_no_conflict",
+            "reason": "Checked the authoritative source and related passages.",
+        },
+    )
+
+    assert started.json() == {"run_id": "run-9", "status": "pending"}
+    assert listed.json()[0]["revision_id"] == 9
+    assert reviewed.json() == {"review_id": 17}
+    assert seen == {
+        "run_id": "run-9",
+        "reviewer": "CDC reviewer",
+        "decision": "confirm_no_conflict",
+        "reason": "Checked the authoritative source and related passages.",
+    }
+
+
+def test_admin_validation_conflicts_are_specific(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    monkeypatch.setattr(
+        app_module,
+        "start_validation",
+        lambda revision_id: (_ for _ in ()).throw(ValueError("revision state changed")),
+    )
+
+    response = client.post(
+        "/admin/api/revisions/validate",
+        headers={"Authorization": "Bearer secret"},
+        json={"revision_id": 9},
+    )
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "revision state changed"
+
+
 def test_admin_resolve_dismisses_item(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
     monkeypatch.setattr(app_module, "resolve_interaction", lambda i: True)

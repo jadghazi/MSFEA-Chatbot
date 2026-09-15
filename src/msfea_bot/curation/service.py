@@ -11,9 +11,7 @@ from __future__ import annotations
 
 import re
 
-from msfea_bot.curation.store import (
-    list_curated,
-)
+from msfea_bot.curation.revisions import Revision, list_revisions
 from msfea_bot.ingestion.chunking import (
     DEFAULT_MAX_CHARS,
     DEFAULT_OVERLAP,
@@ -80,8 +78,39 @@ def _drop_chunks(curated_id: int) -> None:
 
 
 def curated_chunks() -> list[Chunk]:
-    """All active curated answers as chunks (included in a full index rebuild)."""
+    """All active immutable revisions, with reviewed scope, for a full rebuild."""
     chunks: list[Chunk] = []
-    for c in list_curated(active_only=True):
-        chunks.extend(_to_chunks(c.id, c.question, c.answer, c.author))
+    for revision in list_revisions():
+        if revision.active:
+            chunks.extend(revision_chunks(revision))
     return chunks
+
+
+def revision_chunks(revision: Revision, *, candidate: bool = False) -> list[Chunk]:
+    """Window one immutable revision with explicit publish-safe applicability."""
+    header = f"Q: {revision.question[:_MAX_HEADER_CHARS]}"
+    windows = split_windows(_as_lines(revision.answer), DEFAULT_MAX_CHARS, DEFAULT_OVERLAP)
+    prefix = "candidate" if candidate else "curated"
+    metadata = {
+        "source": CURATED_SOURCE,
+        "author": revision.created_by,
+        "program": ", ".join(revision.programs),
+        "entry_id": str(revision.entry_id),
+        "revision_id": str(revision.id),
+        "provenance_status": revision.provenance_status,
+    }
+    # Legacy rows had no reviewed applicability. Omitting the key preserves their
+    # pre-migration retrieval behaviour while clearly retaining needs_review; only
+    # submitted revisions can carry an explicit department claim.
+    if revision.department:
+        metadata["department"] = revision.department
+    return [
+        Chunk(
+            id=f"{prefix}-{revision.entry_id}-r{revision.revision_number}-{index:02d}",
+            text=f"{header}\nA: {window}",
+            source_doc=CURATED_SOURCE,
+            section=revision.question[:80],
+            metadata=metadata,
+        )
+        for index, window in enumerate(windows)
+    ]

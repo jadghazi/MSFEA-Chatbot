@@ -6,6 +6,25 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-15 — KB publication guard Step 4 validation engine
+
+- Added a deterministic, durable seven-step validator with exact reproducibility
+  fingerprints and immediate blocking for missing evidence, failed checks or stale
+  configuration/source/KB state.
+- Candidate embeddings live only in a separately configured PostgreSQL database;
+  the end-to-end isolation test verifies the student-serving chunks remain byte-for-byte
+  unchanged throughout validation.
+- Added explicit per-department candidate isolation, unknown-department applicability,
+  positive retrieval and before/after regression checks.
+- Added mandatory revision-bound human source/conflict review. Related evidence is
+  shown even without flags, and automatic checks are never presented as policy approval.
+- Frozen the seven-case independent conflict-review set. Current candidate coverage is
+  7/7; heuristic flags include two known false-positive fixtures, which remain visible
+  for human resolution rather than being suppressed.
+- Added authenticated validation/run/review APIs and dashboard controls. Publication
+  remains unavailable until Step 5 adds its final transactional authorization path.
+- Oracle was not changed; all database execution used disposable local databases.
+
 ## 2026-09-15 — KB publication guard Step 3 draft API/dashboard
 
 - Replaced the admin create/edit HTTP semantics with immutable draft creation and

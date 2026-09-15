@@ -51,8 +51,13 @@ def test_admin_dashboard_uses_guarded_drafts_not_immediate_publication() -> None
     assert 'data-tab="drafts"' in page
     assert "/admin/api/revisions" in page
     assert "/admin/api/curation-options" in page
+    assert "/admin/api/validation-runs" in page
+    assert "/admin/api/revisions/validate" in page
+    assert "/admin/api/revisions/review" in page
     assert "Save draft" in page
     assert "Drafts are never visible to students" in page
     assert "Save replacement draft" in page
     assert "the live answer is unchanged" in page
+    assert "No potential conflicts flagged" in page
+    assert "Record mandatory review" in page
     assert "Publish answer" not in page

@@ -46,6 +46,11 @@ class Settings(BaseSettings):
 
     # Vector store: PostgreSQL + pgvector
     database_url: str = "postgresql://msfea:msfea@localhost:5432/msfea"
+    # Guarded validation uses a separate database. Draft vectors must never enter
+    # the student-serving store.
+    validation_database_url: str = ""
+    # Deployment commit bound into validation fingerprints.
+    app_commit: str = ""
 
     # Retrieval / generation knobs. Explicit comparisons use at least 12 hits;
     # normal questions keep this depth (see the synthesis experiments).

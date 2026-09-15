@@ -408,6 +408,7 @@
           fetch(API + "/admin/api/experience-feedback", { headers: headers() }),
           fetch(API + "/admin/api/revisions", { headers: headers() }),
           fetch(API + "/admin/api/curation-options", { headers: headers() }),
+          fetch(API + "/admin/api/validation-runs", { headers: headers() }),
         ])
           .then(function (rs) {
             if (rs.some(function (r) { return r.status === 401; })) throw new Error("That access code isn't valid. Please check it and try again.");
@@ -417,6 +418,7 @@
           })
           .then(function (data) {
             _options = data[5];
+            _validationRuns = data[6] || [];
             renderStats(data[0]);
             renderList(data[1]);
             renderCurated(data[2]);
@@ -500,6 +502,7 @@
       }
 
       var _options = { departments: [], programs: [], sources: [] };
+      var _validationRuns = [];
       function choices(items, valueKey, labelKey, selected) {
         return (items || []).map(function (item) {
           var value = valueKey ? item[valueKey] : item;
@@ -549,7 +552,32 @@
           $("drafts-list").innerHTML = '<div class="empty"><div class="big">📝</div><p>No unpublished revisions.</p></div>';
           return;
         }
+        function latestRun(revisionId) {
+          return _validationRuns.find(function (run) { return run.revision_id === revisionId; }) || null;
+        }
+        function validationMarkup(run) {
+          if (!run) return '<div class="snippet">No validation run yet.</div>';
+          var checks = (run.results || []).map(function (result) {
+            var details = result.details || {};
+            var related = (details.related || []).map(function (candidate) {
+              return '<div class="snippet">' + esc(candidate.source_doc + ' > ' + candidate.section +
+                (candidate.department ? ' · ' + candidate.department : '') + '\n' + candidate.text) + '</div>';
+            }).join('');
+            var flags = (details.flags || []).map(function (flag) {
+              return '<div class="banner err">Potential conflict: ' + esc(flag.reason) + ' (' + esc(flag.candidate_id) + ')</div>';
+            }).join('');
+            var summary = details.label ||
+              (result.step === 'conflict_review' && !(details.flags || []).length ?
+                'No potential conflicts flagged' :
+                (result.status === 'passed' ? 'Check passed' : 'Check did not pass'));
+            return '<details class="tech"><summary>' + esc(result.step + ': ' + result.status) + '</summary>' +
+              '<div class="snippet">' + esc(summary) + '</div>' + flags + related + '</details>';
+          }).join('');
+          return '<div class="curated-meta">Validation: ' + esc(run.status) + '<br />Fingerprint: ' +
+            esc(run.fingerprint) + '</div>' + checks;
+        }
         $("drafts-list").innerHTML = drafts.map(function (item) {
+          var run = latestRun(item.id);
           var prior = item.predecessor_answer == null ? '' :
             '<details class="tech"><summary>Compare with previous revision</summary><div class="snippet">' + esc(item.predecessor_answer) + '</div></details>';
           var evidence = (item.evidence_refs || []).map(function (ref) {
@@ -560,8 +588,49 @@
             '<div class="q-label">Proposed answer — not live</div><div class="curated-answer">' + esc(item.answer) + '</div>' +
             '<div class="curated-meta">Scope: ' + esc(item.department) + ' · Program: ' + esc((item.programs || []).join(', ')) + '<br />' + esc(item.state_reason) + '</div>' +
             '<details class="tech"><summary>Evidence and test cases</summary>' + evidence + '<div class="snippet">Representative: ' + esc(item.representative_question) + '\nParaphrase: ' + esc(item.paraphrase_question) + '\nExpected: ' + esc(item.expected_evidence) + '</div></details>' + prior +
-            '<div class="actions"><button disabled>Validate before publish</button></div></div>';
+            validationMarkup(run) +
+            '<div class="actions"><button class="run-validation" data-revision="' + esc(item.id) + '"' +
+              (item.state === 'validating' ? ' disabled' : '') + '>Run validation</button>' +
+              (run && run.status === 'passed' && !(run.reviews || []).length ?
+                '<button class="review-validation secondary" data-run="' + esc(run.id) + '">Record mandatory review</button>' : '') +
+              '<span class="status"></span></div></div>';
         }).join('');
+        Array.prototype.forEach.call(document.querySelectorAll('.run-validation'), function (button) {
+          button.addEventListener('click', function () {
+            button.disabled = true;
+            var status = button.parentNode.querySelector('.status');
+            status.textContent = 'Starting isolated validation…';
+            fetch(API + '/admin/api/revisions/validate', {
+              method: 'POST', headers: headers(),
+              body: JSON.stringify({ revision_id: Number(button.getAttribute('data-revision')) })
+            }).then(function (response) {
+              if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || 'Validation could not start.'); });
+              return response.json();
+            }).then(function () { loadAll(); })
+              .catch(function (error) { button.disabled = false; status.className = 'status err'; status.textContent = error.message; });
+          });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.review-validation'), function (button) {
+          button.addEventListener('click', function () {
+            var reviewer = window.prompt('Reviewer name or role:');
+            if (!reviewer) return;
+            var reason = window.prompt('Record what source, applicability, and related passages you checked:');
+            if (!reason) return;
+            button.disabled = true;
+            var status = button.parentNode.querySelector('.status');
+            fetch(API + '/admin/api/revisions/review', {
+              method: 'POST', headers: headers(),
+              body: JSON.stringify({
+                run_id: button.getAttribute('data-run'), reviewer_label: reviewer,
+                decision: 'confirm_no_conflict', reason: reason
+              })
+            }).then(function (response) {
+              if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || 'Review was not recorded.'); });
+              return response.json();
+            }).then(function () { loadAll(); })
+              .catch(function (error) { button.disabled = false; status.className = 'status err'; status.textContent = error.message; });
+          });
+        });
       }
 
       function renderList(items) {
