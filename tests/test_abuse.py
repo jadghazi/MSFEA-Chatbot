@@ -8,7 +8,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import msfea_bot.api.app as api
-from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, local_reply
+from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, local_reply
 from msfea_bot.api.security import RateLimiter
 from msfea_bot.generation.answer import Answer
 
@@ -261,6 +261,20 @@ def test_cache_is_bounded_and_invalidated():
     guard.invalidate()
     assert not guard.cache
     assert guard.version != previous
+
+
+def test_inflight_result_from_old_kb_generation_cannot_repopulate_new_namespace():
+    guard = RequestGuard()
+    old_key = fingerprint(f"{guard.version}:same question")
+    assert guard.begin("ip", "session", old_key) is None
+
+    guard.invalidate()  # publication commits while the old request is still running
+    new_key = fingerprint(f"{guard.version}:same question")
+    guard.finish("ip", "session", old_key, "old KB answer")
+
+    assert old_key in guard.cache  # harmless: no new request computes this namespace
+    assert guard.begin("ip", "session", new_key) is None
+    guard.finish("ip", "session", new_key)
 
 
 @pytest.mark.parametrize("text", ["x", "a" * 100 + "bc", "abc123" * 20, "jksdfghjklzxcvbnm"])

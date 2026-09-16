@@ -625,6 +625,10 @@ def record_human_review(
     allowed = {"confirm_no_conflict", "valid_scoped_exception", "reject", "replace_outdated"}
     if decision not in allowed:
         raise ValueError("invalid review decision")
+    if decision == "replace_outdated" and revision.predecessor_revision_id is None:
+        raise ValueError(
+            "an outdated Markdown rule must be corrected and re-ingested in its canonical source"
+        )
     if validation_fingerprint(revision) != fingerprint:
         raise ValueError("validation is stale; rerun before review")
     with _connect() as conn:

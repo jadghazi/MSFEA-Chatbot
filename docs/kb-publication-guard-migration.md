@@ -1,7 +1,7 @@
 # Guarded curation migration and compatibility
 
-Date: 2026-09-15
-Migration: `0001_guarded_curation.sql`
+Date: 2026-09-16
+Migrations: `0001_guarded_curation.sql` through `0003_publication_attempts.sql`
 
 ## Migration contract
 
@@ -26,6 +26,11 @@ Every existing legacy row is copied one-for-one with:
 
 The database rejects updates and deletes to revision payloads. Edits must create a
 successor revision; state transitions occur in `curation_revision_state`.
+
+Migration 0002 allows repeated validation runs for the same revision/fingerprint and
+stores the isolated candidate-index generation. Migration 0003 adds durable
+publication attempts and recovery status. Both are additive; neither changes or
+removes legacy content.
 
 ## Rehearsal evidence
 

@@ -86,7 +86,7 @@ def test_guarded_schema_migrates_legacy_rows_losslessly(
             " (9, 'Retired question?', 'Retired answer.', '', false)"
         )
 
-    assert migrate(isolated_database) == [1, 2]
+    assert migrate(isolated_database) == [1, 2, 3]
     assert migrate(isolated_database) == []
 
     with psycopg.connect(isolated_database, autocommit=True) as conn:
@@ -124,8 +124,8 @@ def test_guarded_schema_migrates_legacy_rows_losslessly(
     assert next_id is not None and next_id[0] > 9
 
     status = migration_status(isolated_database)
-    assert status["available"] == 2
-    assert [item["version"] for item in status["applied"]] == [1, 2]
+    assert status["available"] == 3
+    assert [item["version"] for item in status["applied"]] == [1, 2, 3]
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")

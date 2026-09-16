@@ -27,6 +27,18 @@ from msfea_bot.ingestion.embeddings import (
     model_fingerprint,
 )
 
+KB_WRITE_LOCK_ID = 4_771_102_027
+
+
+class GenerationChanged(RuntimeError):
+    """The live KB changed after a rebuild snapshot was taken."""
+
+
+@dataclass(frozen=True)
+class PreparedChunk:
+    chunk: Chunk
+    vector: list[float]
+
 
 @dataclass
 class RetrievedChunk:
@@ -125,13 +137,85 @@ def _generation_hash(chunks: list[Chunk]) -> str:
             "metadata": chunk.metadata,
             "display_prefix": chunk.display_prefix,
         }
-        for chunk in chunks
+        for chunk in sorted(chunks, key=lambda item: item.id)
     ]
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
     return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
 
-def index_chunks(chunks: list[Chunk], database_url: str | None = None) -> int:
+def prepare_chunks(chunks: list[Chunk]) -> list[PreparedChunk]:
+    """Embed chunks before a short database write transaction begins."""
+    vectors = embed_texts([chunk.text for chunk in chunks])
+    return [
+        PreparedChunk(chunk, vector)
+        for chunk, vector in zip(chunks, vectors, strict=True)
+    ]
+
+
+def acquire_kb_write_lock(conn: Any) -> None:
+    """Serialize publication, retirement, compensation, and full rebuild commits."""
+    conn.execute("SELECT pg_advisory_xact_lock(%s)", (KB_WRITE_LOCK_ID,))
+
+
+def generation_on_connection(conn: Any) -> str | None:
+    row = conn.execute("SELECT value FROM index_meta WHERE key = 'kb_generation'").fetchone()
+    return str(row[0]) if row else None
+
+
+def replace_prepared_chunks(conn: Any, id_prefix: str, prepared: list[PreparedChunk]) -> None:
+    """Replace one entry's chunks through the caller-owned transaction."""
+    conn.execute("DELETE FROM chunks WHERE id LIKE %s", (id_prefix + "%",))
+    with conn.cursor() as cur:
+        for item in prepared:
+            chunk = item.chunk
+            cur.execute(
+                "INSERT INTO chunks"
+                " (id, text, source_doc, section, embedding, display_prefix, metadata)"
+                " VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (
+                    chunk.id,
+                    chunk.text,
+                    chunk.source_doc,
+                    chunk.section,
+                    item.vector,
+                    chunk.display_prefix,
+                    Json(chunk.metadata),
+                ),
+            )
+
+
+def refresh_generation(conn: Any) -> str:
+    """Derive the generation from committed-intent chunk content in this transaction."""
+    rows = conn.execute(
+        "SELECT id, text, source_doc, section, metadata, display_prefix"
+        " FROM chunks ORDER BY id"
+    ).fetchall()
+    chunks = [
+        Chunk(
+            id=str(row[0]),
+            text=str(row[1]),
+            source_doc=str(row[2]),
+            section=str(row[3]),
+            metadata=dict(row[4]),
+            display_prefix=str(row[5]),
+        )
+        for row in rows
+    ]
+    generation = _generation_hash(chunks)
+    conn.execute(
+        "INSERT INTO index_meta (key, value) VALUES ('kb_generation', %s)"
+        " ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()",
+        (generation,),
+    )
+    return generation
+
+
+def index_chunks(
+    chunks: list[Chunk],
+    database_url: str | None = None,
+    *,
+    expected_generation: str | None = None,
+) -> int:
     """Embed all chunks and (re)build the store atomically. Returns the number indexed.
 
     Embedding happens before the connection opens, so the slow part runs while the
@@ -140,14 +224,22 @@ def index_chunks(chunks: list[Chunk], database_url: str | None = None) -> int:
     part-way through the insert loop left the live API answering from an empty or
     half-built index with no way to roll back.
     """
-    vectors = embed_texts([c.text for c in chunks])
+    prepared = prepare_chunks(chunks)
     with _connect(
         autocommit=False, ensure_extension=True, database_url=database_url
     ) as conn:
         _init_schema(conn)
+        acquire_kb_write_lock(conn)
+        if expected_generation is not None:
+            actual = generation_on_connection(conn)
+            if actual != expected_generation:
+                raise GenerationChanged(
+                    f"KB generation changed during rebuild (expected {expected_generation}, got {actual})"
+                )
         conn.execute("TRUNCATE chunks")
         with conn.cursor() as cur:
-            for chunk, vector in zip(chunks, vectors, strict=True):
+            for item in prepared:
+                chunk = item.chunk
                 cur.execute(
                     "INSERT INTO chunks"
                     " (id, text, source_doc, section, embedding, display_prefix, metadata)"
@@ -157,7 +249,7 @@ def index_chunks(chunks: list[Chunk], database_url: str | None = None) -> int:
                         chunk.text,
                         chunk.source_doc,
                         chunk.section,
-                        vector,
+                        item.vector,
                         chunk.display_prefix,
                         Json(chunk.metadata),
                     ),
@@ -208,11 +300,13 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
     """
     if not chunks:
         return 0
-    vectors = embed_texts([c.text for c in chunks])
-    with _connect(ensure_extension=True) as conn:
+    prepared = prepare_chunks(chunks)
+    with _connect(autocommit=False, ensure_extension=True) as conn:
         _init_schema(conn)
+        acquire_kb_write_lock(conn)
         with conn.cursor() as cur:
-            for chunk, vector in zip(chunks, vectors, strict=True):
+            for item in prepared:
+                chunk = item.chunk
                 cur.execute(
                     "INSERT INTO chunks"
                     " (id, text, source_doc, section, embedding, display_prefix, metadata)"
@@ -227,11 +321,12 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
                         chunk.text,
                         chunk.source_doc,
                         chunk.section,
-                        vector,
+                        item.vector,
                         chunk.display_prefix,
                         Json(chunk.metadata),
                     ),
                 )
+        refresh_generation(conn)
     return len(chunks)
 
 
@@ -241,15 +336,19 @@ def delete_chunk(chunk_id: str) -> int:
     Prefer this over `delete_chunks` when removing one known chunk — a prefix like
     "curated-1" would also match "curated-10".
     """
-    with _connect() as conn:
+    with _connect(autocommit=False) as conn:
+        acquire_kb_write_lock(conn)
         cur = conn.execute("DELETE FROM chunks WHERE id = %s", (chunk_id,))
+        refresh_generation(conn)
         return int(cur.rowcount)
 
 
 def delete_chunks(id_prefix: str) -> int:
     """Delete chunks whose id starts with `id_prefix` (bulk removal by source)."""
-    with _connect() as conn:
+    with _connect(autocommit=False) as conn:
+        acquire_kb_write_lock(conn)
         cur = conn.execute("DELETE FROM chunks WHERE id LIKE %s", (id_prefix + "%",))
+        refresh_generation(conn)
         return int(cur.rowcount)
 
 

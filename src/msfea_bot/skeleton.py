@@ -16,14 +16,15 @@ import sys
 from msfea_bot.curation.migrations import migrate as migrate_curation
 from msfea_bot.curation.service import curated_chunks
 from msfea_bot.ingestion.chunking import chunk_normalized_dir
-from msfea_bot.retrieval.store import index_chunks
+from msfea_bot.retrieval.store import index_chunks, indexed_generation
 
 
 def ingest() -> int:
     """(Re)build the vector store from the normalized KB + admin-curated answers."""
     migrate_curation()
+    generation = indexed_generation()
     chunks = chunk_normalized_dir() + curated_chunks()
-    count = index_chunks(chunks)
+    count = index_chunks(chunks, expected_generation=generation)
     print(f"Indexed {count} chunks into the vector store.")
     return count
 

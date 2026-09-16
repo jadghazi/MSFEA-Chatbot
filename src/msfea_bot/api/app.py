@@ -33,6 +33,7 @@ from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, 
 from msfea_bot.observability.usage import count, snapshot
 from msfea_bot.config import settings
 from msfea_bot.curation.migrations import migrate as migrate_curation
+from msfea_bot.curation.publication import PublicationError, publish_revision, retire_entry
 from msfea_bot.curation.revisions import (
     DraftPayload,
     EvidenceReference,
@@ -526,17 +527,19 @@ def admin_curated_edit(
 
 class RetireCuratedRequest(BaseModel):
     id: int
+    reason: str = Field(min_length=1, max_length=2000)
 
 
 @app.post("/admin/api/curated/retire")
 def admin_curated_retire(
     req: RetireCuratedRequest, _: None = Depends(require_admin)
-) -> dict[str, bool]:
-    """The legacy immediate-retire path is closed until guarded publication exists."""
-    raise HTTPException(
-        status_code=409,
-        detail="Immediate retirement is disabled; use the guarded revision workflow.",
-    )
+) -> dict[str, bool | str]:
+    """Atomically retire the active revision; n8n availability is irrelevant."""
+    try:
+        generation = retire_entry(req.id, req.reason, invalidate_cache=_guard.invalidate)
+    except PublicationError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"ok": True, "generation": generation}
 
 
 class RevisionOut(BaseModel):
@@ -633,6 +636,30 @@ def admin_review_revision(
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     return {"review_id": review_id}
+
+
+class PublishRevisionRequest(BaseModel):
+    revision_id: int
+    run_id: str = Field(min_length=1, max_length=64)
+
+
+@app.post("/admin/api/revisions/publish")
+def admin_publish_revision(
+    req: PublishRevisionRequest, _: None = Depends(require_admin)
+) -> dict[str, object]:
+    try:
+        result = publish_revision(
+            req.revision_id, req.run_id, invalidate_cache=_guard.invalidate
+        )
+    except PublicationError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {
+        "attempt_id": result.attempt_id,
+        "revision_id": result.revision_id,
+        "status": result.status,
+        "generation": result.generation,
+        "idempotent": result.idempotent,
+    }
 
 
 class ResolveRequest(BaseModel):

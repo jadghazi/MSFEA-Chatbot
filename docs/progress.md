@@ -6,6 +6,23 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-16 — KB publication guard Step 5 atomic publication
+
+- Added exact revision/run authorization requiring a complete passed result set,
+  isolated candidate generation, current fingerprint, and mandatory human review.
+- Added short shared-lock transactions for activation, retirement, compensation and
+  rebuild commit. Embeddings remain outside the lock; stale rebuild snapshots abort.
+- Added content-derived KB generations, atomic scoped chunk replacement, active pointer
+  and legacy-projection changes, audit events, outbox events and durable recovery attempts.
+- Added deterministic serving smoke, predecessor restoration/new-entry deactivation,
+  active-revision comparison for delayed failures, and crash reconciliation.
+- Linked feedback resolves only after smoke succeeds. Cache invalidation occurs after
+  activation and compensation, and in-flight old-generation results stay namespaced.
+- Fault-injection coverage exercises both sides of commit, smoke failure/exception,
+  duplicate Publish, successor replacement, delayed callbacks, retirement, crash
+  recovery and a stale concurrent rebuild.
+- Oracle remains unchanged; all tests use disposable local PostgreSQL databases.
+
 ## 2026-09-15 — KB publication guard Step 4 validation engine
 
 - Added a deterministic, durable seven-step validator with exact reproducibility

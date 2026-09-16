@@ -578,6 +578,8 @@
         }
         $("drafts-list").innerHTML = drafts.map(function (item) {
           var run = latestRun(item.id);
+          var canPublish = run && run.status === 'passed' && item.state === 'ready' &&
+            (run.reviews || []).some(function (review) { return review.decision !== 'reject'; });
           var prior = item.predecessor_answer == null ? '' :
             '<details class="tech"><summary>Compare with previous revision</summary><div class="snippet">' + esc(item.predecessor_answer) + '</div></details>';
           var evidence = (item.evidence_refs || []).map(function (ref) {
@@ -593,6 +595,8 @@
               (item.state === 'validating' ? ' disabled' : '') + '>Run validation</button>' +
               (run && run.status === 'passed' && !(run.reviews || []).length ?
                 '<button class="review-validation secondary" data-run="' + esc(run.id) + '">Record mandatory review</button>' : '') +
+              (canPublish ? '<button class="publish-revision" data-revision="' + esc(item.id) +
+                '" data-run="' + esc(run.id) + '">Publish reviewed revision</button>' : '') +
               '<span class="status"></span></div></div>';
         }).join('');
         Array.prototype.forEach.call(document.querySelectorAll('.run-validation'), function (button) {
@@ -626,6 +630,25 @@
               })
             }).then(function (response) {
               if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || 'Review was not recorded.'); });
+              return response.json();
+            }).then(function () { loadAll(); })
+              .catch(function (error) { button.disabled = false; status.className = 'status err'; status.textContent = error.message; });
+          });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.publish-revision'), function (button) {
+          button.addEventListener('click', function () {
+            if (!confirm('Publish this exact reviewed revision to student retrieval?')) return;
+            button.disabled = true;
+            var status = button.parentNode.querySelector('.status');
+            status.textContent = 'Publishing atomically and running serving smoke…';
+            fetch(API + '/admin/api/revisions/publish', {
+              method: 'POST', headers: headers(),
+              body: JSON.stringify({
+                revision_id: Number(button.getAttribute('data-revision')),
+                run_id: button.getAttribute('data-run')
+              })
+            }).then(function (response) {
+              if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || 'Publication failed.'); });
               return response.json();
             }).then(function () { loadAll(); })
               .catch(function (error) { button.disabled = false; status.className = 'status err'; status.textContent = error.message; });
@@ -787,7 +810,7 @@
             (whenStr ? " · " + esc(whenStr) : "") + '</div>' +
           '<div class="actions">' +
             '<button class="edit secondary">Edit</button>' +
-            '<button class="retire secondary" disabled title="Available after guarded validation">Retire</button>' +
+            '<button class="retire secondary">Retire</button>' +
             '<span class="status"></span>' +
           '</div>';
 
@@ -795,6 +818,24 @@
         var status = card.querySelector(".status");
         var editBtn = card.querySelector(".edit");
         var retireBtn = card.querySelector(".retire");
+
+        retireBtn.addEventListener("click", function () {
+          var reason = window.prompt("Why should this published answer be retired?");
+          if (!reason) return;
+          retireBtn.disabled = true; editBtn.disabled = true;
+          status.textContent = "Retiring atomically…";
+          fetch(API + "/admin/api/curated/retire", {
+            method: "POST", headers: headers(),
+            body: JSON.stringify({ id: c.id, reason: reason }),
+          }).then(function (response) {
+            if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || "Retirement failed."); });
+            return response.json();
+          }).then(function () { loadAll(); })
+            .catch(function (error) {
+              retireBtn.disabled = false; editBtn.disabled = false;
+              status.className = "status err"; status.textContent = error.message;
+            });
+        });
 
         // ---- Edit (inline) ----
         editBtn.addEventListener("click", function () {

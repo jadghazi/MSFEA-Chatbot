@@ -239,15 +239,31 @@ def test_admin_curated_edit_missing_returns_false(monkeypatch: pytest.MonkeyPatc
     assert resp.json()["ok"] is False
 
 
-def test_admin_curated_retire_cannot_bypass_guard(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_admin_curated_retire_is_atomic_and_invalidates_cache(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(
+        app_module,
+        "retire_entry",
+        lambda entry_id, reason, invalidate_cache: (
+            seen.update(entry_id=entry_id, reason=reason),
+            invalidate_cache(),
+            "sha256:retired",
+        )[-1],
+    )
+    invalidations: list[str] = []
+    monkeypatch.setattr(app_module._guard, "invalidate", lambda: invalidations.append("yes"))
     resp = client.post(
         "/admin/api/curated/retire",
         headers={"Authorization": "Bearer secret"},
-        json={"id": 5},
+        json={"id": 5, "reason": "Policy withdrawn."},
     )
-    assert resp.status_code == 409
-    assert "guarded revision workflow" in resp.json()["detail"]
+    assert resp.status_code == 200
+    assert resp.json() == {"ok": True, "generation": "sha256:retired"}
+    assert seen == {"entry_id": 5, "reason": "Policy withdrawn."}
+    assert invalidations == ["yes"]
 
 
 def test_admin_curated_retire_requires_token() -> None:
@@ -357,6 +373,32 @@ def test_admin_validation_conflicts_are_specific(monkeypatch: pytest.MonkeyPatch
 
     assert response.status_code == 409
     assert response.json()["detail"] == "revision state changed"
+
+
+def test_admin_publish_requires_exact_revision_and_run(monkeypatch: pytest.MonkeyPatch) -> None:
+    from msfea_bot.curation.publication import PublicationResult
+
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(
+        app_module,
+        "publish_revision",
+        lambda revision_id, run_id, invalidate_cache: seen.update(
+            revision_id=revision_id, run_id=run_id
+        )
+        or PublicationResult("attempt-1", revision_id, "active", "sha256:kb"),
+    )
+
+    response = client.post(
+        "/admin/api/revisions/publish",
+        headers={"Authorization": "Bearer secret"},
+        json={"revision_id": 12, "run_id": "run-12"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["attempt_id"] == "attempt-1"
+    assert response.json()["generation"] == "sha256:kb"
+    assert seen == {"revision_id": 12, "run_id": "run-12"}
 
 
 def test_admin_resolve_dismisses_item(monkeypatch: pytest.MonkeyPatch) -> None:
