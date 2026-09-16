@@ -175,3 +175,10 @@ are blocked.
 The final local code gates passed: Ruff, strict mypy (51 source files), 270 Python
 tests and three widget tests. The two Python warnings are upstream
 TestClient/AnyIO deprecations.
+The production image from commit `427f7e2` built and imported its app/worker
+modules and frozen eval assets on local AMD64 Docker. A local emulated ARM64
+cross-build was attempted but made no progress beyond the first PyTorch install
+step after several minutes, so it was stopped without producing an image. This
+does **not** establish an ARM64 packaging failure or success: build and smoke-test
+the exact approved commit natively on Oracle ARM64 during the authorized
+preflight, before any student-serving switch.
