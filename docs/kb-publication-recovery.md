@@ -35,11 +35,18 @@ After commit, an uncached deterministic smoke check verifies the serving index m
 the published chunk identity and its expected evidence. Linked feedback is resolved
 only after this smoke passes.
 
-If smoke or post-commit execution fails, compensation prepares the predecessor
+If the first post-commit cache callback fails, publication compensates before
+running smoke and retries cache invalidation after restoration. If smoke or other
+post-commit execution fails, compensation prepares the predecessor
 outside its write transaction, reacquires the shared lock, and restores that exact
 revision and its chunks. A new entry is deactivated. Compensation compares the
 entry's current active revision first: a delayed failure for publication A cannot
 roll back newer publication B. The cache is invalidated again after restoration.
+If both callback attempts fail, the database/index are still restored, but the
+serving process may retain a response for the cache's 30-second TTL. Treat a
+persistent callback failure as an incident: check the worker/app token and private
+connectivity, and restart the app if necessary to clear process-local state before
+resuming publication.
 
 Every commit has a durable attempt in `curation_publication_attempts`. Worker startup
 reconciliation can call `recover_committed_publications()` to compensate attempts
@@ -67,7 +74,8 @@ from source; a stale rebuild can never overwrite a newer publication.
 
 The publication test suite covers failure before commit, failure immediately after
 commit, smoke exceptions and negative smoke results, predecessor restoration,
-duplicate Publish, delayed compensation, crash recovery, retirement, stale rebuilds,
+duplicate Publish, failed cache callback, delayed compensation, crash recovery,
+retirement, stale rebuilds,
 feedback timing, and cache invalidation including old in-flight results.
 
 ## n8n outage and workflow restoration

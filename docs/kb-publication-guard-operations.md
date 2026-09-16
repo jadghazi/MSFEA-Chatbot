@@ -126,6 +126,12 @@ briefly return webhook 404, which the outbox retries.
   Compensation restores only the predecessor still associated with that exact
   attempt; it cannot undo a newer publication. See
   `docs/kb-publication-recovery.md` for the bounded post-commit exposure risk.
+- A failed post-commit app cache callback compensates before smoke and retries
+  invalidation. If the callback remains unavailable, the database/index are
+  restored but process-local cached replies can live for their 30-second TTL
+  after completion of any in-flight answer;
+  resolve the worker/app token or connectivity and restart the app before
+  resuming publication. Inspect attempt `error_code=cache_invalidation_failed`.
 - Restore the n8n database and original encryption key together on a fresh stack,
   rerun import/publish from Git, restart n8n and verify private webhooks. Execution
   history is pruned and never substitutes for the application audit backup.
@@ -166,6 +172,6 @@ across CEE, CHEM, ECE, IEM, MECH and unknown-department cases; conflict candidat
 evidence remained 7/7, with two known false-positive fixtures still reported.
 These are unchanged measured results, not a claim that all unsupported questions
 are blocked.
-The final local code gates passed: Ruff, strict mypy (51 source files), 268 Python
+The final local code gates passed: Ruff, strict mypy (51 source files), 270 Python
 tests and three widget tests. The two Python warnings are upstream
 TestClient/AnyIO deprecations.

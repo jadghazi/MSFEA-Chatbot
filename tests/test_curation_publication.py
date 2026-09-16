@@ -349,6 +349,70 @@ def test_postcommit_failures_restore_previous_revision(
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_failed_postcommit_cache_callback_compensates_before_smoke(
+    publication_database: str,
+) -> None:
+    entry_id, revision_id = create_draft(_payload())
+    run_id = _authorize(revision_id)
+    before_generation = indexed_generation()
+    callbacks: list[str] = []
+
+    def invalidate() -> None:
+        callbacks.append("invalidate")
+        if len(callbacks) == 1:
+            raise ConnectionError("injected callback outage")
+
+    with pytest.raises(PublicationError, match="compensated"):
+        publish_revision(
+            revision_id,
+            run_id,
+            invalidate_cache=invalidate,
+            smoke=lambda _: pytest.fail("smoke must not run without cache invalidation"),
+        )
+
+    assert callbacks == ["invalidate", "invalidate"]
+    assert _active_and_chunks(entry_id) == (None, [])
+    assert indexed_generation() == before_generation
+    with psycopg.connect(settings.database_url, autocommit=True) as conn:
+        attempt = conn.execute(
+            "SELECT status, error_code FROM curation_publication_attempts"
+            " WHERE revision_id = %s AND validation_run_id = %s",
+            (revision_id, run_id),
+        ).fetchone()
+    assert attempt == ("compensated", "cache_invalidation_failed")
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_persistent_cache_callback_failure_still_restores_database(
+    publication_database: str,
+) -> None:
+    entry_id, revision_id = create_draft(_payload())
+    run_id = _authorize(revision_id)
+    before_generation = indexed_generation()
+
+    def unavailable() -> None:
+        raise ConnectionError("injected persistent callback outage")
+
+    with pytest.raises(PublicationError, match="requires recovery"):
+        publish_revision(
+            revision_id,
+            run_id,
+            invalidate_cache=unavailable,
+            smoke=lambda _: pytest.fail("smoke must not run without cache invalidation"),
+        )
+
+    assert _active_and_chunks(entry_id) == (None, [])
+    assert indexed_generation() == before_generation
+    with psycopg.connect(settings.database_url, autocommit=True) as conn:
+        attempt = conn.execute(
+            "SELECT status, error_code FROM curation_publication_attempts"
+            " WHERE revision_id = %s AND validation_run_id = %s",
+            (revision_id, run_id),
+        ).fetchone()
+    assert attempt == ("compensated", "cache_invalidation_failed")
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
 def test_successor_replaces_predecessor_and_retirement_is_atomic(
     publication_database: str,
 ) -> None:

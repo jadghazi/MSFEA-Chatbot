@@ -179,6 +179,7 @@ def compensate_publication(
     reason: str,
     *,
     invalidate_cache: CacheInvalidator = lambda: None,
+    error_code: str = "smoke_failed",
 ) -> PublicationResult:
     """Restore the prior active revision only if this attempt is still active."""
     with _connect() as conn:
@@ -225,7 +226,7 @@ def compensate_publication(
         conn.execute(
             "UPDATE curation_revision_state SET state = 'blocked', reason = %s,"
             " state_version = state_version + 1, updated_at = now() WHERE revision_id = %s",
-            ("Post-publication smoke failed: " + reason, revision.id),
+            ("Publication compensated: " + reason, revision.id),
         )
         if prior is not None:
             conn.execute(
@@ -238,8 +239,8 @@ def compensate_publication(
         generation = refresh_generation(conn)
         conn.execute(
             "UPDATE curation_publication_attempts SET status = 'compensated',"
-            " error_code = 'smoke_failed', error_detail = %s, completed_at = now() WHERE id = %s",
-            (reason, attempt_id),
+            " error_code = %s, error_detail = %s, completed_at = now() WHERE id = %s",
+            (error_code, reason, attempt_id),
         )
         conn.execute(
             "INSERT INTO curation_events (entry_id, revision_id, event_type, actor_type,"
@@ -463,7 +464,27 @@ def execute_publication_intent(
             f"publication committed but was {compensated.status}: {exc}"
         ) from exc
 
-    invalidate_cache()
+    try:
+        invalidate_cache()
+    except Exception as exc:
+        # A committed revision must not be left awaiting smoke indefinitely just
+        # because the serving process could not acknowledge cache invalidation.
+        # Compensation restores the prior DB/index state and retries the callback.
+        reason = f"post-commit cache invalidation failed: {type(exc).__name__}"
+        try:
+            compensated = compensate_publication(
+                attempt_id,
+                reason,
+                invalidate_cache=invalidate_cache,
+                error_code="cache_invalidation_failed",
+            )
+        except Exception as recovery_exc:
+            raise PublicationError(
+                "cache invalidation failed after commit; compensation requires recovery"
+            ) from recovery_exc
+        raise PublicationError(
+            f"cache invalidation failed after commit; {compensated.status}"
+        ) from exc
     try:
         if fault:
             fault("before_smoke")
