@@ -6,6 +6,21 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-16 — KB publication guard Step 6 quality review
+
+- Passed Ruff, strict mypy across source/eval, all widget guards and the full 260-test
+  Python suite in the disposable database.
+- Detected one newly lost golden evidence case despite an above-floor aggregate. A
+  measured structure-based candidate-depth repair restored the exact 67/68 baseline
+  with zero losses across golden, synthesis, follow-up or scope cases.
+- Passed threshold 109/109, off-topic blocking 11/20, synthesis/scope 27/27,
+  publication-guard 9/9 and conflict candidate coverage 7/7.
+- Per-department preservation passed for all five departments and unknown department.
+- Ran the frozen ten-case live answer review with the unchanged configured Gemini
+  model and one call per case. Nine cases passed; the known stochastic 6+2 follow-up
+  approval/documentation omission remains explicit and no baseline behavior regressed.
+- Saved hashed raw traces and a human-reviewed quality report. Oracle was untouched.
+
 ## 2026-09-16 — KB publication guard Step 5 atomic publication
 
 - Added exact revision/run authorization requiring a complete passed result set,

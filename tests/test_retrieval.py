@@ -219,3 +219,12 @@ def test_comparisons_get_more_evidence_without_widening_every_question() -> None
     assert retrieval_depth("What is the difference between them?", 7) == 12
     assert retrieval_depth("Is six plus two enough with another course?", 7) == 7
     assert retrieval_depth("Compare these options", 15) == 15
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_numeric_rule_application_keeps_threshold_evidence_in_prompt_depth() -> None:
+    from msfea_bot.retrieval.store import search
+
+    chunks = search("I have completed 88 credits. Can I register for the internship?", 7)
+
+    assert any("minimum of 90 credits" in chunk.text.replace("**", "") for chunk in chunks)

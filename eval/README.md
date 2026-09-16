@@ -31,6 +31,10 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
 - `scope_regression_set.jsonl` — independently source-grounded department,
   condition-boundary, paraphrase, and follow-up cases added by publication-guard
   Step 1. The synthesis gate runs these without replacing the older sets.
+- `publication_guard_gate.py` — gates the frozen all-department/unknown/follow-up
+  preservation sample and prints per-department results.
+- `conflict_review_set.jsonl` + `conflict_gate.py` — independently measure review
+  candidate coverage and report heuristic false-positive flags.
 
 ## What is wired vs. pending
 

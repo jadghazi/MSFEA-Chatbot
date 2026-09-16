@@ -408,6 +408,11 @@ def retrieval_depth(question: str, default_k: int) -> int:
 # Chunks tagged with a specific department (see ingestion.chunking). Anything else
 # — untagged, or the document-level default "all" — applies to every student.
 _GENERAL = "(metadata->>'department' IS NULL OR metadata->>'department' = 'all')"
+_NUMERIC_DECISION = re.compile(
+    r"(?=.*\b\d+(?:\.\d+)?\b)"
+    r"(?=.*\b(?:can|eligible|qualif\w*|register|enough|meet|satisfy)\b)",
+    re.IGNORECASE,
+)
 
 
 def _reserve_department_slot(
@@ -467,6 +472,12 @@ def search(
        is wrong for them. Bounded to a single slot so it can displace at most one
        general chunk.
     """
+    # Numeric rule-application questions need a wider *candidate* pool, not more
+    # prompt chunks. Measured on the frozen sets: 40 recovers the previously passing
+    # credit-threshold case with zero lost golden/synthesis/follow-up/scope cases.
+    # The cue is question structure, not a hard-coded CDC topic or policy value.
+    if candidates == 20 and _NUMERIC_DECISION.search(query):
+        candidates = 40
     qv = embed_query(query)
     dept = departments.from_code(department)
     # The selected department is useful retrieval context, not just a filter.
