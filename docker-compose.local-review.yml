@@ -1,0 +1,10 @@
+# Disposable, loopback-only review of the guarded publication stack.
+# Use a distinct project name so its databases never share the demo or Oracle data.
+# Start selected services; the public Caddy service is deliberately disabled here.
+services:
+  app:
+    ports: !override
+      - "127.0.0.1:8000:8000"
+
+  caddy:
+    profiles: ["production-only"]
