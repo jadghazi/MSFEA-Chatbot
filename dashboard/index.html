@@ -364,6 +364,7 @@
         try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) {}
         $("token").value = "";
         showApp(false);
+        _pendingWorkflow = false;
       }
 
       function signIn() {
@@ -503,6 +504,7 @@
 
       var _options = { departments: [], programs: [], sources: [] };
       var _validationRuns = [];
+      var _pendingWorkflow = false;
       function choices(items, valueKey, labelKey, selected) {
         return (items || []).map(function (item) {
           var value = valueKey ? item[valueKey] : item;
@@ -545,6 +547,9 @@
 
       function renderDrafts(items) {
         var drafts = (items || []).filter(function (item) { return !item.active; });
+        _pendingWorkflow = drafts.some(function (item) {
+          return item.state === 'validating' || item.state === 'publishing';
+        });
         var badge = $("drafts-badge");
         badge.textContent = drafts.length;
         badge.classList.toggle("zero", drafts.length === 0);
@@ -640,7 +645,7 @@
             if (!confirm('Publish this exact reviewed revision to student retrieval?')) return;
             button.disabled = true;
             var status = button.parentNode.querySelector('.status');
-            status.textContent = 'Publishing atomically and running serving smoke…';
+            status.textContent = 'Queueing reviewed publication; the worker will activate it after final checks…';
             fetch(API + '/admin/api/revisions/publish', {
               method: 'POST', headers: headers(),
               body: JSON.stringify({
@@ -914,6 +919,11 @@
       $("token").addEventListener("keydown", function (e) { if (e.key === "Enter") signIn(); });
       $("signout").addEventListener("click", signOut);
       $("refresh").addEventListener("click", function () { loadAll(); });
+      setInterval(function () {
+        if (_pendingWorkflow && !$("app").classList.contains("hidden") && !$("refresh").disabled) {
+          loadAll();
+        }
+      }, 15000);
       $("curated-search").addEventListener("input", filterCurated);
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
         b.addEventListener("click", function () { selectTab(b.getAttribute("data-tab")); });

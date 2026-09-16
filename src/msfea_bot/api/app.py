@@ -33,7 +33,7 @@ from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, 
 from msfea_bot.observability.usage import count, snapshot
 from msfea_bot.config import settings
 from msfea_bot.curation.migrations import migrate as migrate_curation
-from msfea_bot.curation.publication import PublicationError, publish_revision, retire_entry
+from msfea_bot.curation.publication import PublicationError, request_publication, retire_entry
 from msfea_bot.curation.revisions import (
     DraftPayload,
     EvidenceReference,
@@ -361,6 +361,20 @@ def require_admin(authorization: str = Header(default="")) -> None:
         raise HTTPException(status_code=401, detail="Invalid admin token.")
 
 
+def require_worker_token(x_curation_worker_token: str = Header(default="")) -> None:
+    """Authenticate worker callbacks independently of the browser admin token."""
+    if not settings.curation_worker_token:
+        raise HTTPException(status_code=503, detail="Worker callbacks are disabled.")
+    if not hmac.compare_digest(x_curation_worker_token, settings.curation_worker_token):
+        raise HTTPException(status_code=401, detail="Invalid worker token.")
+
+
+@app.post("/internal/cache/invalidate")
+def internal_cache_invalidate(_: None = Depends(require_worker_token)) -> dict[str, int]:
+    _guard.invalidate()
+    return {"cache_version": _guard.version}
+
+
 class FeedbackOut(BaseModel):
     id: int
     ts: str
@@ -648,9 +662,7 @@ def admin_publish_revision(
     req: PublishRevisionRequest, _: None = Depends(require_admin)
 ) -> dict[str, object]:
     try:
-        result = publish_revision(
-            req.revision_id, req.run_id, invalidate_cache=_guard.invalidate
-        )
+        result = request_publication(req.revision_id, req.run_id)
     except PublicationError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     return {

@@ -17,10 +17,155 @@ services:
       # Caddy sets X-Forwarded-For; trust it so the rate limiter keys on the real
       # client IP instead of Caddy's. Only enable this when actually behind a proxy.
       TRUST_PROXY_HEADERS: "true"
+      CURATION_WORKER_TOKEN: ${CURATION_WORKER_TOKEN:?set a dedicated app-worker token}
 
   db:
     # PostgreSQL is reachable only on the private Compose network.
     ports: !reset []
+
+  validation-db-init:
+    image: pgvector/pgvector:pg16
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: msfea
+      PGPASSWORD: msfea
+      PGDATABASE: postgres
+      VALIDATION_DB_NAME: msfea_validation
+    volumes:
+      - ./deploy/init-validation-db.sh:/usr/local/bin/init-validation-db.sh:ro
+    entrypoint: ["/bin/sh", "/usr/local/bin/init-validation-db.sh"]
+    restart: "no"
+
+  curation-worker:
+    build: .
+    command:
+      - uvicorn
+      - msfea_bot.curation.worker_api:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8001"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://msfea:msfea@db:5432/msfea
+      VALIDATION_DATABASE_URL: postgresql://msfea:msfea@db:5432/msfea_validation
+      APP_INTERNAL_URL: http://app:8000
+      N8N_BASE_URL: http://n8n:5678
+      CURATION_WORKER_TOKEN: ${CURATION_WORKER_TOKEN:?set a dedicated app-worker token}
+      N8N_WEBHOOK_SECRET: ${N8N_WEBHOOK_SECRET:?set a dedicated n8n webhook secret}
+      WARM_MODELS_ON_STARTUP: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+      validation-db-init:
+        condition: service_completed_successfully
+    ports: []
+    cpus: 0.75
+    mem_limit: 2g
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import os,urllib.request; r=urllib.request.Request('http://127.0.0.1:8001/internal/health',headers={'X-Curation-Worker-Token':os.environ['CURATION_WORKER_TOKEN']}); urllib.request.urlopen(r,timeout=5)"
+      interval: 30s
+      timeout: 8s
+      start_period: 30s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - default
+      - curation_private
+
+  n8n-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: ${N8N_DB_PASSWORD:?set the n8n database password}
+      POSTGRES_DB: n8n
+    volumes:
+      - n8n_pgdata:/var/lib/postgresql/data
+    ports: []
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n -d n8n"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - curation_private
+
+  n8n-import:
+    image: n8nio/n8n:2.39.5
+    command: ["import:workflow", "--input=/workflows/kb-publication-guard.json"]
+    environment: &n8n_environment
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: n8n-db
+      DB_POSTGRESDB_PORT: "5432"
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: n8n
+      DB_POSTGRESDB_PASSWORD: ${N8N_DB_PASSWORD:?set the n8n database password}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?set a persistent n8n encryption key}
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_PERSONALIZATION_ENABLED: "false"
+      N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+      N8N_TEMPLATES_ENABLED: "false"
+      N8N_COMMUNITY_PACKAGES_ENABLED: "false"
+      N8N_UNVERIFIED_PACKAGES_ENABLED: "false"
+      N8N_PUBLIC_API_DISABLED: "true"
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+      N8N_CONCURRENCY_PRODUCTION_LIMIT: "1"
+      EXECUTIONS_DATA_PRUNE: "true"
+      EXECUTIONS_DATA_MAX_AGE: "168"
+      EXECUTIONS_DATA_PRUNE_MAX_COUNT: "10000"
+      EXECUTIONS_DATA_SAVE_ON_SUCCESS: "none"
+      EXECUTIONS_DATA_SAVE_ON_ERROR: "none"
+      EXECUTIONS_DATA_SAVE_ON_PROGRESS: "false"
+      CURATION_WORKER_TOKEN: ${CURATION_WORKER_TOKEN:?set a dedicated app-worker token}
+      N8N_WEBHOOK_SECRET: ${N8N_WEBHOOK_SECRET:?set a dedicated n8n webhook secret}
+    volumes:
+      - ./n8n/workflows:/workflows:ro
+    depends_on:
+      n8n-db:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - curation_private
+
+  n8n-publish:
+    image: n8nio/n8n:2.39.5
+    command: ["publish:workflow", "--id=kb-publication-guard"]
+    environment: *n8n_environment
+    depends_on:
+      n8n-import:
+        condition: service_completed_successfully
+    restart: "no"
+    networks:
+      - curation_private
+
+  n8n:
+    image: n8nio/n8n:2.39.5
+    environment: *n8n_environment
+    depends_on:
+      n8n-publish:
+        condition: service_completed_successfully
+    volumes:
+      - n8n_data:/home/node/.n8n
+    ports: []
+    cpus: 0.75
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5678/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 10s
+      start_period: 120s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - curation_private
 
   caddy:
     image: caddy:2
@@ -40,3 +185,9 @@ services:
 volumes:
   caddy_data:
   caddy_config:
+  n8n_data:
+  n8n_pgdata:
+
+networks:
+  curation_private:
+    internal: true

@@ -1,0 +1,269 @@
+{
+  "id": "kb-publication-guard",
+  "name": "KB Publication Guard",
+  "active": true,
+  "nodes": [
+    {
+      "id": "validation-webhook",
+      "name": "Validation Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-900, -240],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kb-validation",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "webhookId": "kb-validation"
+    },
+    {
+      "id": "validation-secret",
+      "name": "Verify Validation Secret",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-680, -240],
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2},
+          "conditions": [{
+            "id": "validation-secret-match",
+            "leftValue": "={{ $json.headers['x-webhook-secret'] }}",
+            "rightValue": "={{ $env.N8N_WEBHOOK_SECRET }}",
+            "operator": {"type": "string", "operation": "equals"}
+          }],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "schema-source",
+      "name": "Schema and Source",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-440, -240],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "http://curation-worker:8001/internal/validation/execute",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ $('Validation Webhook').first().json.body.run_id + ':schema_source' }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ run_id: $('Validation Webhook').first().json.body.run_id, step: 'schema_source' }) }}",
+        "options": {"timeout": 900000}
+      }
+    },
+    {
+      "id": "candidate-index",
+      "name": "Candidate Index",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-200, -240],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST", "url": "http://curation-worker:8001/internal/validation/execute",
+        "sendHeaders": true, "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ $('Validation Webhook').first().json.body.run_id + ':candidate_index' }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true, "contentType": "raw", "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ run_id: $('Validation Webhook').first().json.body.run_id, step: 'candidate_index' }) }}",
+        "options": {"timeout": 900000}
+      }
+    },
+    {
+      "id": "conflict-review",
+      "name": "Conflict Review",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [40, -240],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST", "url": "http://curation-worker:8001/internal/validation/execute",
+        "sendHeaders": true, "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ $('Validation Webhook').first().json.body.run_id + ':conflict_review' }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true, "contentType": "raw", "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ run_id: $('Validation Webhook').first().json.body.run_id, step: 'conflict_review' }) }}",
+        "options": {"timeout": 900000}
+      }
+    },
+    {
+      "id": "positive-retrieval",
+      "name": "Positive Retrieval",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, -240],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST", "url": "http://curation-worker:8001/internal/validation/execute",
+        "sendHeaders": true, "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ $('Validation Webhook').first().json.body.run_id + ':positive_retrieval' }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true, "contentType": "raw", "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ run_id: $('Validation Webhook').first().json.body.run_id, step: 'positive_retrieval' }) }}",
+        "options": {"timeout": 900000}
+      }
+    },
+    {
+      "id": "department-isolation",
+      "name": "Department Isolation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, -240],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST", "url": "http://curation-worker:8001/internal/validation/execute",
+        "sendHeaders": true, "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ $('Validation Webhook').first().json.body.run_id + ':department_isolation' }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true, "contentType": "raw", "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ run_id: $('Validation Webhook').first().json.body.run_id, step: 'department_isolation' }) }}",
+        "options": {"timeout": 900000}
+      }
+    },
+    {
+      "id": "unknown-department",
+      "name": "Unknown Department",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [760, -240],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST", "url": "http://curation-worker:8001/internal/validation/execute",
+        "sendHeaders": true, "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ $('Validation Webhook').first().json.body.run_id + ':unknown_department' }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true, "contentType": "raw", "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ run_id: $('Validation Webhook').first().json.body.run_id, step: 'unknown_department' }) }}",
+        "options": {"timeout": 900000}
+      }
+    },
+    {
+      "id": "regression",
+      "name": "Regression Gate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, -240],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST", "url": "http://curation-worker:8001/internal/validation/execute",
+        "sendHeaders": true, "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ $('Validation Webhook').first().json.body.run_id + ':regression' }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true, "contentType": "raw", "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ run_id: $('Validation Webhook').first().json.body.run_id, step: 'regression' }) }}",
+        "options": {"timeout": 900000}
+      }
+    },
+    {
+      "id": "publication-webhook",
+      "name": "Publication Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-900, 200],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kb-publication",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "webhookId": "kb-publication"
+    },
+    {
+      "id": "publication-secret",
+      "name": "Verify Publication Secret",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-680, 200],
+      "parameters": {
+        "conditions": {
+          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 2},
+          "conditions": [{
+            "id": "publication-secret-match",
+            "leftValue": "={{ $json.headers['x-webhook-secret'] }}",
+            "rightValue": "={{ $env.N8N_WEBHOOK_SECRET }}",
+            "operator": {"type": "string", "operation": "equals"}
+          }],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "execute-publication",
+      "name": "Execute Authorized Publication",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-440, 200],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "http://curation-worker:8001/internal/publication/execute",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [
+          {"name": "X-Curation-Worker-Token", "value": "={{ $env.CURATION_WORKER_TOKEN }}"},
+          {"name": "X-Idempotency-Key", "value": "={{ 'publication:' + $('Publication Webhook').first().json.body.attempt_id }}"},
+          {"name": "X-Workflow-Execution-Id", "value": "={{ $execution.id }}"}
+        ]},
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ attempt_id: $('Publication Webhook').first().json.body.attempt_id }) }}",
+        "options": {"timeout": 900000}
+      }
+    }
+  ],
+  "connections": {
+    "Validation Webhook": {"main": [[{"node": "Verify Validation Secret", "type": "main", "index": 0}]]},
+    "Verify Validation Secret": {"main": [[{"node": "Schema and Source", "type": "main", "index": 0}], []]},
+    "Schema and Source": {"main": [[{"node": "Candidate Index", "type": "main", "index": 0}]]},
+    "Candidate Index": {"main": [[{"node": "Conflict Review", "type": "main", "index": 0}]]},
+    "Conflict Review": {"main": [[{"node": "Positive Retrieval", "type": "main", "index": 0}]]},
+    "Positive Retrieval": {"main": [[{"node": "Department Isolation", "type": "main", "index": 0}]]},
+    "Department Isolation": {"main": [[{"node": "Unknown Department", "type": "main", "index": 0}]]},
+    "Unknown Department": {"main": [[{"node": "Regression Gate", "type": "main", "index": 0}]]},
+    "Publication Webhook": {"main": [[{"node": "Verify Publication Secret", "type": "main", "index": 0}]]},
+    "Verify Publication Secret": {"main": [[{"node": "Execute Authorized Publication", "type": "main", "index": 0}], []]}
+  },
+  "settings": {"executionOrder": "v1", "saveManualExecutions": false},
+  "staticData": null,
+  "meta": {"templateCredsSetupCompleted": true},
+  "pinData": {},
+  "versionId": "f38d27f7-337b-4be8-94e2-9fa1332a15df",
+  "tags": []
+}

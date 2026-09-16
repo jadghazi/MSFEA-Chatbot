@@ -79,8 +79,14 @@ def _project_legacy(conn: Any, revision: Revision | None, entry_id: int) -> None
 
 
 def _assert_authorized(
-    conn: Any, revision: Revision, run_id: str, expected_fingerprint: str
+    conn: Any,
+    revision: Revision,
+    run_id: str,
+    expected_fingerprint: str,
+    *,
+    allowed_states: set[str] | None = None,
 ) -> None:
+    allowed_states = allowed_states or {"ready"}
     row = conn.execute(
         "SELECT r.status, r.fingerprint, s.state, r.candidate_generation"
         " FROM curation_validation_runs r"
@@ -112,8 +118,10 @@ def _assert_authorized(
     ).fetchone()
     if review is None or review[0] == "reject":
         raise PublicationError("mandatory human source/conflict review is missing")
-    if row[2] != "ready":
-        raise PublicationError(f"revision state is {row[2]!r}, expected 'ready'")
+    if row[2] not in allowed_states:
+        raise PublicationError(
+            f"revision state is {row[2]!r}, expected one of {sorted(allowed_states)}"
+        )
 
 
 def _smoke(revision: Revision) -> tuple[bool, str]:
@@ -161,7 +169,7 @@ def _record_precommit_failure(
         conn.execute(
             "INSERT INTO curation_events (entry_id, revision_id, validation_run_id,"
             " event_type, actor_type, reason) VALUES (%s, %s, %s,"
-            " 'publication_failed_precommit', 'admin', %s)",
+            " 'publication_failed_precommit', 'worker', %s)",
             (revision.entry_id, revision.id, run_id, str(error)),
         )
 
@@ -242,29 +250,102 @@ def compensate_publication(
     return PublicationResult(attempt_id, revision.id, "compensated", generation)
 
 
-def publish_revision(
-    revision_id: int,
-    run_id: str,
+def _persist_publication_request(revision_id: int, run_id: str) -> PublicationResult:
+    revision = _revision(revision_id)
+    fingerprint = validation_fingerprint(revision)
+    with _connect() as conn:
+        existing = conn.execute(
+            "SELECT id, status, committed_generation FROM curation_publication_attempts"
+            " WHERE revision_id = %s AND validation_run_id = %s FOR UPDATE",
+            (revision.id, run_id),
+        ).fetchone()
+        if existing is not None:
+            status = "active" if existing[1] == "smoke_passed" else str(existing[1])
+            return PublicationResult(
+                str(existing[0]), revision.id, status, existing[2], idempotent=True
+            )
+        _assert_authorized(conn, revision, run_id, fingerprint)
+        entry = conn.execute(
+            "SELECT active_revision_id FROM curated_entries WHERE id = %s FOR UPDATE",
+            (revision.entry_id,),
+        ).fetchone()
+        if entry is None:
+            raise PublicationError("curated entry does not exist")
+        latest = conn.execute(
+            "SELECT id FROM curated_revisions WHERE entry_id = %s"
+            " ORDER BY revision_number DESC LIMIT 1",
+            (revision.entry_id,),
+        ).fetchone()
+        if latest is None or int(latest[0]) != revision.id:
+            raise PublicationError(
+                "a newer successor revision exists; the older reviewed revision cannot publish"
+            )
+        attempt_id = str(uuid4())
+        conn.execute(
+            "INSERT INTO curation_publication_attempts"
+            " (id, revision_id, validation_run_id, fingerprint, status)"
+            " VALUES (%s, %s, %s, %s, 'intent')",
+            (attempt_id, revision.id, run_id, fingerprint),
+        )
+        conn.execute(
+            "UPDATE curation_revision_state SET state = 'publishing',"
+            " reason = 'Authenticated publication intent queued for n8n dispatch',"
+            " state_version = state_version + 1, updated_at = now() WHERE revision_id = %s",
+            (revision.id,),
+        )
+        conn.execute(
+            "INSERT INTO curation_events (entry_id, revision_id, validation_run_id,"
+            " event_type, actor_type, reason, payload) VALUES (%s, %s, %s,"
+            " 'publication_requested', 'admin', 'Exact reviewed revision authorized', %s)",
+            (revision.entry_id, revision.id, run_id, Json({"attempt_id": attempt_id})),
+        )
+        conn.execute(
+            "INSERT INTO curation_outbox (event_type, aggregate_id, payload)"
+            " VALUES ('publication_requested', %s, %s)",
+            (attempt_id, Json({"attempt_id": attempt_id})),
+        )
+    return PublicationResult(attempt_id, revision.id, "intent", None)
+
+
+def request_publication(revision_id: int, run_id: str) -> PublicationResult:
+    """Persist one authenticated publication intent and its n8n outbox event."""
+    try:
+        return _persist_publication_request(revision_id, run_id)
+    except PublicationError as exc:
+        if str(exc).startswith("stale_validation"):
+            try:
+                start_validation(revision_id)
+            except ValueError:
+                pass
+        raise
+
+
+def execute_publication_intent(
+    attempt_id: str,
     *,
     invalidate_cache: CacheInvalidator = lambda: None,
     smoke: Callable[[Revision], tuple[bool, str]] = _smoke,
     fault: FaultHook | None = None,
 ) -> PublicationResult:
-    """Authorize and atomically activate one exact validated revision."""
-    revision = _revision(revision_id)
+    """Execute only a durable publication intent previously authorized by FastAPI."""
     with _connect() as conn:
-        completed = conn.execute(
-            "SELECT id, committed_generation FROM curation_publication_attempts"
-            " WHERE revision_id = %s AND validation_run_id = %s AND status = 'smoke_passed'",
-            (revision.id, run_id),
+        intent = conn.execute(
+            "SELECT revision_id, validation_run_id, fingerprint, status, committed_generation"
+            " FROM curation_publication_attempts WHERE id = %s",
+            (attempt_id,),
         ).fetchone()
-    if completed is not None:
+    if intent is None:
+        raise PublicationError("publication intent does not exist")
+    revision = _revision(int(intent[0]))
+    run_id = str(intent[1])
+    fingerprint = str(intent[2])
+    if intent[3] == "smoke_passed":
         return PublicationResult(
-            str(completed[0]), revision.id, "active", completed[1], idempotent=True
+            attempt_id, revision.id, "active", intent[4], idempotent=True
         )
-    fingerprint = validation_fingerprint(revision)
+    if intent[3] != "intent":
+        raise PublicationError(f"publication intent is in state {intent[3]!r}")
     prepared = prepare_chunks(revision_chunks(revision))
-    attempt_id = str(uuid4())
     committed_generation: str | None = None
     try:
         with _connect() as conn:
@@ -272,19 +353,25 @@ def publish_revision(
             if fault:
                 fault("after_lock")
             existing = conn.execute(
-                "SELECT id, status, committed_generation FROM curation_publication_attempts"
-                " WHERE revision_id = %s AND validation_run_id = %s FOR UPDATE",
-                (revision.id, run_id),
+                "SELECT status, committed_generation FROM curation_publication_attempts"
+                " WHERE id = %s FOR UPDATE",
+                (attempt_id,),
             ).fetchone()
-            if existing is not None:
-                if existing[1] == "smoke_passed":
-                    return PublicationResult(
-                        str(existing[0]), revision.id, "active", existing[2], idempotent=True
-                    )
-                raise PublicationError(
-                    f"publication attempt already exists with status {existing[1]!r}"
+            if existing is None:
+                raise PublicationError("publication intent disappeared")
+            if existing[0] == "smoke_passed":
+                return PublicationResult(
+                    attempt_id, revision.id, "active", existing[1], idempotent=True
                 )
-            _assert_authorized(conn, revision, run_id, fingerprint)
+            if existing[0] != "intent":
+                raise PublicationError(f"publication intent is in state {existing[0]!r}")
+            _assert_authorized(
+                conn,
+                revision,
+                run_id,
+                fingerprint,
+                allowed_states={"publishing"},
+            )
             active = conn.execute(
                 "SELECT active_revision_id FROM curated_entries WHERE id = %s FOR UPDATE",
                 (revision.entry_id,),
@@ -302,16 +389,8 @@ def publish_revision(
                 )
             prior_id = int(active[0]) if active[0] is not None else None
             conn.execute(
-                "INSERT INTO curation_publication_attempts"
-                " (id, revision_id, validation_run_id, fingerprint, prior_revision_id, status)"
-                " VALUES (%s, %s, %s, %s, %s, 'intent')",
-                (attempt_id, revision.id, run_id, fingerprint, prior_id),
-            )
-            conn.execute(
-                "UPDATE curation_revision_state SET state = 'publishing',"
-                " reason = 'Atomic publication transaction is running',"
-                " state_version = state_version + 1, updated_at = now() WHERE revision_id = %s",
-                (revision.id,),
+                "UPDATE curation_publication_attempts SET prior_revision_id = %s WHERE id = %s",
+                (prior_id, attempt_id),
             )
             replace_prepared_chunks(conn, f"curated-{revision.entry_id}-", prepared)
             conn.execute(
@@ -349,21 +428,23 @@ def publish_revision(
                     Json({"attempt_id": attempt_id, "generation": committed_generation}),
                 ),
             )
-            conn.execute(
-                "INSERT INTO curation_outbox (event_type, aggregate_id, payload)"
-                " VALUES ('publication_committed', %s, %s)",
-                (attempt_id, Json({"attempt_id": attempt_id})),
-            )
             if fault:
                 fault("before_commit")
         if fault:
             fault("after_commit")
     except PublicationError as exc:
-        if str(exc).startswith("stale_validation"):
+        with _connect() as conn:
+            current_attempt = conn.execute(
+                "SELECT status FROM curation_publication_attempts WHERE id = %s", (attempt_id,)
+            ).fetchone()
+        if str(exc).startswith("stale_validation") and current_attempt == ("intent",):
+            _record_precommit_failure(revision, run_id, attempt_id, fingerprint, exc)
             try:
                 start_validation(revision.id)
             except ValueError:
                 pass
+        elif current_attempt == ("intent",):
+            _record_precommit_failure(revision, run_id, attempt_id, fingerprint, exc)
         raise
     except Exception as exc:
         # If commit did not land, this leaves the validated revision blocked and
@@ -372,7 +453,7 @@ def publish_revision(
             attempt = conn.execute(
                 "SELECT status FROM curation_publication_attempts WHERE id = %s", (attempt_id,)
             ).fetchone()
-        if attempt is None:
+        if attempt is None or attempt[0] == "intent":
             _record_precommit_failure(revision, run_id, attempt_id, fingerprint, exc)
             raise PublicationError(f"publication failed before commit: {exc}") from exc
         compensated = compensate_publication(
@@ -420,6 +501,26 @@ def publish_revision(
     for feedback_id in revision.linked_feedback_ids:
         resolve_interaction(feedback_id)
     return PublicationResult(attempt_id, revision.id, "active", committed_generation)
+
+
+def publish_revision(
+    revision_id: int,
+    run_id: str,
+    *,
+    invalidate_cache: CacheInvalidator = lambda: None,
+    smoke: Callable[[Revision], tuple[bool, str]] = _smoke,
+    fault: FaultHook | None = None,
+) -> PublicationResult:
+    """Synchronous adapter used by tests and recovery-safe operator tooling."""
+    intent = request_publication(revision_id, run_id)
+    if intent.status == "active":
+        return intent
+    return execute_publication_intent(
+        intent.attempt_id,
+        invalidate_cache=invalidate_cache,
+        smoke=smoke,
+        fault=fault,
+    )
 
 
 def retire_entry(

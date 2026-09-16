@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Protocol
 from uuid import uuid4
@@ -464,7 +465,7 @@ def _save_result(
             (run_id, step, status, Json(details)),
         )
         conn.execute(
-            "UPDATE curation_jobs SET status = %s, attempts = attempts + 1,"
+            "UPDATE curation_jobs SET status = %s,"
             " updated_at = now(), last_error = %s WHERE validation_run_id = %s AND step = %s",
             ("succeeded" if passed else "failed", None if passed else json.dumps(details), run_id, step),
         )
@@ -541,11 +542,12 @@ def execute_step(run_id: str, step: str, validation_database_url: str | None = N
         ).fetchone()
         if job is None:
             raise ValueError("validation job does not exist")
-        if job[0] != "pending" or job[1] in {"failed", "stale", "cancelled"}:
+        if job[0] != "pending" or job[1] not in {"pending", "running"}:
             raise ValueError(f"validation step is not pending (job={job[0]}, run={job[1]})")
         conn.execute(
             "UPDATE curation_jobs SET status = 'leased', lease_expires_at = now() + interval '15 minutes',"
-            " updated_at = now() WHERE validation_run_id = %s AND step = %s",
+            " attempts = attempts + 1, updated_at = now()"
+            " WHERE validation_run_id = %s AND step = %s",
             (run_id, step),
         )
     revision, fingerprint, candidate_generation = _run(run_id)
@@ -611,6 +613,74 @@ def execute_step(run_id: str, step: str, validation_database_url: str | None = N
         else:
             passed, details = _regression(dsn)
     _save_result(run_id, step, passed, details)
+
+
+def execute_step_idempotent(
+    run_id: str,
+    step: str,
+    idempotency_key: str,
+    workflow_execution_id: str = "",
+) -> dict[str, Any]:
+    """Execute one n8n-requested step, returning an existing durable result on replay."""
+    expected_key = f"{run_id}:{step}"
+    if idempotency_key != expected_key:
+        raise ValueError("idempotency key does not match validation run and step")
+    with _connect() as conn:
+        existing = conn.execute(
+            "SELECT status FROM curation_validation_results"
+            " WHERE run_id = %s AND step = %s",
+            (run_id, step),
+        ).fetchone()
+        if existing is not None:
+            return {"run_id": run_id, "step": step, "status": str(existing[0]),
+                    "idempotent": True}
+        job = conn.execute(
+            "SELECT status, available_at FROM curation_jobs"
+            " WHERE validation_run_id = %s AND step = %s",
+            (run_id, step),
+        ).fetchone()
+        if job is None:
+            raise ValueError("validation job does not exist")
+        if job[0] == "leased":
+            raise ValueError("validation step is already leased")
+        if job[0] != "pending" or job[1] > datetime.now(timezone.utc):
+            raise ValueError("validation step is not ready for execution")
+        if workflow_execution_id:
+            conn.execute(
+                "UPDATE curation_validation_runs SET workflow_execution_id = %s"
+                " WHERE id = %s AND (workflow_execution_id IS NULL"
+                " OR workflow_execution_id = %s)",
+                (workflow_execution_id, run_id, workflow_execution_id),
+            )
+    try:
+        execute_step(run_id, step)
+    except Exception as exc:
+        with _connect() as conn:
+            job = conn.execute(
+                "SELECT attempts FROM curation_jobs"
+                " WHERE validation_run_id = %s AND step = %s FOR UPDATE",
+                (run_id, step),
+            ).fetchone()
+            attempts = int(job[0]) if job else 0
+            if attempts < 3:
+                conn.execute(
+                    "UPDATE curation_jobs SET status = 'pending',"
+                    " lease_expires_at = NULL, available_at = now() + (%s * interval '1 second'),"
+                    " last_error = %s, updated_at = now()"
+                    " WHERE validation_run_id = %s AND step = %s AND status = 'leased'",
+                    (min(60, 2**attempts), type(exc).__name__, run_id, step),
+                )
+        raise
+    with _connect() as conn:
+        result = conn.execute(
+            "SELECT status FROM curation_validation_results"
+            " WHERE run_id = %s AND step = %s",
+            (run_id, step),
+        ).fetchone()
+    if result is None:
+        raise RuntimeError("validation step completed without a durable result")
+    return {"run_id": run_id, "step": step, "status": str(result[0]),
+            "idempotent": False}
 
 
 def record_human_review(

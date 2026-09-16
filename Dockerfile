@@ -68,6 +68,12 @@ ENV HF_HUB_OFFLINE=1 \
 COPY src ./src
 RUN pip install --no-deps -e .
 
+# The publication validator compares candidates against frozen evaluation cases.
+# Ship only its pure metric/loader modules and required JSONL sets, not result logs.
+COPY eval/__init__.py eval/loader.py eval/metrics.py \
+     eval/golden_set.jsonl eval/synthesis_set.jsonl eval/followup_set.jsonl \
+     eval/scope_regression_set.jsonl eval/conflict_review_set.jsonl ./eval/
+
 # --- App content the API serves and ingests from -----------------------------
 # Copied last (changes more often than code/deps) for better layer caching.
 COPY kb ./kb

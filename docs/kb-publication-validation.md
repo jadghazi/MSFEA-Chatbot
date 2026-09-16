@@ -3,7 +3,8 @@
 Implementation stage: Step 4 of `kb-publication-guard-plan.md`.
 
 Draft validation is reproducible and does not call an LLM. FastAPI records a
-validation run and durable jobs; a worker executes the bounded steps. Draft vectors
+validation run, durable jobs and an outbox event; the Git-exported n8n workflow
+requests the seven named steps from a token-protected worker. Draft vectors
 are built only in `VALIDATION_DATABASE_URL`, which must differ from `DATABASE_URL`.
 The student-serving `chunks` table is never used as scratch space.
 

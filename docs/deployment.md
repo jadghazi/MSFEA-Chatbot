@@ -91,7 +91,13 @@ quota.
   `docker compose up -d` to apply. Generate one with
   `python -c "import secrets; print(secrets.token_urlsafe(24))"`.
 - The production Compose overlay automatically removes the base app/database host
-  ports. Verify only Caddy publishes 80/443 before exposing the machine.
+  ports. It adds a private curation worker and n8n with a separate PostgreSQL 17
+  database/user. Set independent `CURATION_WORKER_TOKEN`, `N8N_WEBHOOK_SECRET`,
+  `N8N_DB_PASSWORD`, and persistent `N8N_ENCRYPTION_KEY`; never reuse `ADMIN_TOKEN`.
+  Verify only Caddy publishes 80/443 before exposing the machine. Do not enable
+  `docker-compose.n8n-editor.yml` except for a maintenance session; its temporary
+  proxy binds loopback for an operator SSH tunnel only. Both Caddy and the nginx template return 404 for
+  `/internal` routes.
 
 ---
 
@@ -111,6 +117,13 @@ that first startup.
 ./deploy/restore.sh ./backups/msfea-20260727-020000.sql.gz
 ```
 Schedule `backup.sh` (e.g. daily cron) and store copies off the box (`BACKUP_DIR`).
+The application dump now also carries immutable curation revisions, validation
+results, publication attempts, outbox and audit records. Separately back up the
+n8n database with `./deploy/backup-n8n.sh` after deploying the production overlay;
+preserve its encryption key in an independent secret store. n8n execution pruning
+does not replace the application audit. Restore both dumps to disposable databases
+and rehearse the workflow import/publish before release; never overwrite the live
+application database as a routine rollback.
 
 For the Oracle pilot, install the version-controlled systemd timer:
 
@@ -123,7 +136,9 @@ systemctl list-timers msfea-chatbot-backup.timer --no-pager
 
 It runs daily at 02:00 in the VM's local timezone, catches up after downtime,
 uses a randomized delay of up to 15 minutes, and retains 14 days of compressed
-on-VM dumps. A dump must also be copied to separate storage; the local retention
+on-VM dumps for both application and n8n databases. Do not install the revised
+unit until the production n8n database exists; verify both dumps after the update.
+A dump must also be copied to separate storage; the local retention
 does not protect against losing the VM or boot volume.
 
 ---
@@ -180,4 +195,8 @@ Re-run the dependency scan periodically: `pip-audit`.
 - [ ] Ingestion run once; `/health` green.
 - [ ] `/ready` returns `{"status":"ready"}` after ingestion.
 - [ ] Backups scheduled and a restore tested.
+- [ ] n8n workflow import/publish tested, private webhook registered, internal
+      route returns 404 through public Caddy, and n8n is not host-published.
+- [ ] Current off-VM application and n8n backup copies plus the encryption key
+      are recoverable; validation database has capacity and is not student-serving.
 - [ ] Real student questions in the golden set; `eval` passing.

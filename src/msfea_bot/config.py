@@ -52,6 +52,16 @@ class Settings(BaseSettings):
     # Deployment commit bound into validation fingerprints.
     app_commit: str = ""
 
+    # Internal publication-guard coordination. These endpoints are private to the
+    # Compose network and additionally require a dedicated service token.
+    curation_worker_token: str = ""
+    n8n_webhook_secret: str = ""
+    n8n_base_url: str = "http://n8n:5678"
+    app_internal_url: str = "http://app:8000"
+    curation_outbox_max_attempts: int = Field(default=8, ge=1, le=20)
+    curation_validation_timeout_minutes: int = Field(default=60, ge=15, le=1440)
+    curation_publication_timeout_minutes: int = Field(default=60, ge=15, le=1440)
+
     # Retrieval / generation knobs. Explicit comparisons use at least 12 hits;
     # normal questions keep this depth (see the synthesis experiments).
     # Swept against context-recall after the KB grew to 183 chunks (ADR-0016):

@@ -1,0 +1,15 @@
+# Operator-only override. The n8n service itself stays on the no-egress private
+# network. This disposable proxy bridges loopback into that network for an SSH
+# tunnel and should be stopped when editing is finished.
+services:
+  n8n-editor:
+    image: caddy:2
+    command: ["caddy", "reverse-proxy", "--from", ":5678", "--to", "n8n:5678"]
+    depends_on:
+      - n8n
+    networks:
+      - default
+      - curation_private
+    ports:
+      - "127.0.0.1:5678:5678"
+    restart: "no"

@@ -11,12 +11,15 @@ from psycopg import sql
 from psycopg.conninfo import conninfo_to_dict, make_conninfo
 
 from msfea_bot.config import settings
+from msfea_bot.curation.coordination import reconcile
 from msfea_bot.curation.migrations import migrate
 from msfea_bot.curation.publication import (
     PublicationError,
     compensate_publication,
+    execute_publication_intent,
     publish_revision,
     recover_committed_publications,
+    request_publication,
     retire_entry,
 )
 from msfea_bot.curation.revisions import (
@@ -164,6 +167,61 @@ def test_publish_is_atomic_review_bound_and_idempotent(
         ).fetchone()
     assert projection == (_payload().answer, True)
     assert attempt == ("smoke_passed",)
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_publication_intent_cannot_expose_draft_before_worker_execution(
+    publication_database: str,
+) -> None:
+    entry_id, revision_id = create_draft(_payload())
+    run_id = _authorize(revision_id)
+    before_generation = indexed_generation()
+
+    intent = request_publication(revision_id, run_id)
+    duplicate_intent = request_publication(revision_id, run_id)
+
+    assert intent.status == "intent" and duplicate_intent.idempotent
+    assert duplicate_intent.attempt_id == intent.attempt_id
+    assert _active_and_chunks(entry_id) == (None, [])
+    assert indexed_generation() == before_generation
+    with psycopg.connect(settings.database_url, autocommit=True) as conn:
+        outbox = conn.execute(
+            "SELECT count(*) FROM curation_outbox WHERE event_type = 'publication_requested'"
+            " AND aggregate_id = %s",
+            (intent.attempt_id,),
+        ).fetchone()
+    assert outbox == (1,)
+
+    with pytest.raises(PublicationError, match="does not exist"):
+        execute_publication_intent(str(uuid4()), smoke=lambda _: (True, "unused"))
+    assert _active_and_chunks(entry_id) == (None, [])
+
+    result = execute_publication_intent(
+        intent.attempt_id, smoke=lambda _: (True, "passed")
+    )
+    assert result.status == "active"
+    assert execute_publication_intent(intent.attempt_id).idempotent
+    assert _active_and_chunks(entry_id)[0] == revision_id
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_abandoned_publication_intent_fails_closed(
+    publication_database: str,
+) -> None:
+    entry_id, revision_id = create_draft(_payload())
+    intent = request_publication(revision_id, _authorize(revision_id))
+    with psycopg.connect(settings.database_url, autocommit=True) as conn:
+        conn.execute(
+            "UPDATE curation_publication_attempts SET created_at ="
+            " now() - interval '2 hours' WHERE id = %s",
+            (intent.attempt_id,),
+        )
+
+    assert reconcile()["expired_publication_intents"] == 1
+    assert _active_and_chunks(entry_id) == (None, [])
+    assert next(item for item in list_revisions() if item.id == revision_id).state == "blocked"
+    with pytest.raises(PublicationError, match="failed_precommit"):
+        execute_publication_intent(intent.attempt_id)
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
@@ -421,7 +479,7 @@ def test_concurrent_successor_creation_prevents_older_revision_publication(
     assert successor_ids
     assert _active_and_chunks(entry_id) == (None, [])
     states = {item.id: item.state for item in list_revisions()}
-    assert states[revision_id] == "ready"
+    assert states[revision_id] == "blocked"
     assert states[successor_ids[0]] == "draft"
 
 

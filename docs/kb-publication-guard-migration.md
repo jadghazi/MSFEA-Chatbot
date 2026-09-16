@@ -1,7 +1,7 @@
 # Guarded curation migration and compatibility
 
 Date: 2026-09-16
-Migrations: `0001_guarded_curation.sql` through `0003_publication_attempts.sql`
+Migrations: `0001_guarded_curation.sql` through `0004_n8n_coordination.sql`
 
 ## Migration contract
 
@@ -31,6 +31,8 @@ Migration 0002 allows repeated validation runs for the same revision/fingerprint
 stores the isolated candidate-index generation. Migration 0003 adds durable
 publication attempts and recovery status. Both are additive; neither changes or
 removes legacy content.
+Migration 0004 adds a diagnostic n8n execution ID to publication attempts and an
+outbox retry index. n8n IDs are never authorization or audit authority.
 
 ## Rehearsal evidence
 
@@ -61,7 +63,9 @@ rollback is needed after guarded curation is enabled, disable admin writes (unse
 admin token or block admin routes) until the guarded release is restored. Step 5 must
 keep the legacy table as an atomic active-content projection so a read-only old binary
 can still serve the last published content. This restriction is explicit rather than
-silently claiming full rollback compatibility.
+silently claiming full rollback compatibility. The guarded release now keeps the
+legacy table as an atomic active-content projection and has exercised that path
+under publication/compensation fault injection.
 
 ## Operator command
 

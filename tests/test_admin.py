@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 import msfea_bot.api.app as app_module
 from msfea_bot.api.app import app
 from msfea_bot.api.security import RateLimiter
+from msfea_bot.config import settings
 
 client = TestClient(app)
 
@@ -382,11 +383,11 @@ def test_admin_publish_requires_exact_revision_and_run(monkeypatch: pytest.Monke
     seen: dict[str, object] = {}
     monkeypatch.setattr(
         app_module,
-        "publish_revision",
-        lambda revision_id, run_id, invalidate_cache: seen.update(
+        "request_publication",
+        lambda revision_id, run_id: seen.update(
             revision_id=revision_id, run_id=run_id
         )
-        or PublicationResult("attempt-1", revision_id, "active", "sha256:kb"),
+        or PublicationResult("attempt-1", revision_id, "intent", None),
     )
 
     response = client.post(
@@ -397,8 +398,27 @@ def test_admin_publish_requires_exact_revision_and_run(monkeypatch: pytest.Monke
 
     assert response.status_code == 200
     assert response.json()["attempt_id"] == "attempt-1"
-    assert response.json()["generation"] == "sha256:kb"
+    assert response.json()["generation"] is None
+    assert response.json()["status"] == "intent"
     assert seen == {"revision_id": 12, "run_id": "run-12"}
+
+
+def test_internal_cache_invalidation_requires_independent_worker_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(settings, "curation_worker_token", "private-worker-token")
+    before = app_module._guard.version
+    assert client.post("/internal/cache/invalidate").status_code == 401
+    assert client.post(
+        "/internal/cache/invalidate",
+        headers={"Authorization": f"Bearer {settings.admin_token}"},
+    ).status_code == 401
+    response = client.post(
+        "/internal/cache/invalidate",
+        headers={"X-Curation-Worker-Token": "private-worker-token"},
+    )
+    assert response.status_code == 200
+    assert response.json()["cache_version"] == before + 1
 
 
 def test_admin_resolve_dismisses_item(monkeypatch: pytest.MonkeyPatch) -> None:
