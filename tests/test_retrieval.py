@@ -180,8 +180,12 @@ def test_department_scoping_excludes_other_departments() -> None:
         "precondition: unscoped search should surface several departments"
     )
 
-    scoped = [c.section for c in search(q, 5, department="cee")]
+    scoped_chunks = search(q, 5, department="cee")
+    scoped = [chunk.section for chunk in scoped_chunks]
     assert any("(CEE)" in s for s in scoped), "the student's own rule must be present"
+    assert any(chunk.metadata.get("department") in {None, "all"} for chunk in scoped_chunks), (
+        "general guidance must remain available beside the selected department's rule"
+    )
     for other in ("(MECH)", "(CHEM)", "(ECE)", "(IEM)"):
         assert not any(other in s for s in scoped), f"{other} leaked into a CEE answer"
 
@@ -196,7 +200,7 @@ def test_department_slot_is_reserved_when_the_rule_would_be_crowded_out() -> Non
     """
     from msfea_bot.retrieval.store import search
 
-    q = "Do I need to give a final presentation?"
+    q = "Must I submit a final presentation?"
     assert not any("(IEM)" in c.section for c in search(q, 5)), (
         "precondition: unscoped search should NOT surface the IEM exception"
     )

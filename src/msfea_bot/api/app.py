@@ -445,11 +445,19 @@ def admin_experience_feedback(_: None = Depends(require_admin)) -> ExperienceSum
 
 
 class CurateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     question: str = Field(min_length=1, max_length=2000)
     answer: str = Field(min_length=1, max_length=8000)
+    author_name: str = Field(min_length=2, max_length=120)
+    source_kind: Literal["official_reference", "admin_authored"] = "admin_authored"
+    document_title: str = Field(default="", max_length=200)
+    authority_label: str = Field(default="", max_length=200)
+    effective_date: str | None = Field(default=None, max_length=10, pattern=r"^\d{4}-\d{2}-\d{2}$")
+    supporting_reference: str = Field(default="", max_length=1000)
     department: str = Field(min_length=1, max_length=32)
     programs: list[str] = Field(min_length=1, max_length=6)
-    evidence_refs: list["EvidenceRequest"] = Field(min_length=1, max_length=8)
+    evidence_refs: list["EvidenceRequest"] = Field(default_factory=list, max_length=8)
     representative_question: str = Field(min_length=1, max_length=2000)
     paraphrase_question: str = Field(min_length=1, max_length=2000)
     expected_evidence: str = Field(min_length=1, max_length=2000)
@@ -481,6 +489,11 @@ def _draft_payload(req: CurateRequest) -> DraftPayload:
         expected_evidence=req.expected_evidence,
         change_reason=req.change_reason,
         linked_feedback_ids=tuple(req.linked_feedback_ids),
+        source_kind=req.source_kind,
+        document_title=req.document_title,
+        authority_label=req.authority_label,
+        effective_date=req.effective_date,
+        supporting_reference=req.supporting_reference,
     )
 
 
@@ -488,7 +501,7 @@ def _draft_payload(req: CurateRequest) -> DraftPayload:
 def admin_curate(req: CurateRequest, _: None = Depends(require_admin)) -> dict[str, int | str]:
     """Save an immutable draft. Drafts never change student retrieval."""
     try:
-        entry_id, revision_id = create_draft(_draft_payload(req), actor="admin")
+        entry_id, revision_id = create_draft(_draft_payload(req), actor=req.author_name.strip())
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return {"entry_id": entry_id, "revision_id": revision_id, "state": "draft"}
@@ -500,12 +513,21 @@ class CuratedOut(BaseModel):
     answer: str
     author: str
     created_at: str
+    source_kind: str
+    document_title: str
+    authority_label: str
+    effective_date: str | None
+    supporting_reference: str
+    department: str | None
+    programs: list[str]
+    evidence_refs: list[dict[str, str]]
 
 
 @app.get("/admin/api/curated")
 def admin_curated(_: None = Depends(require_admin)) -> list[CuratedOut]:
     """List the answers admins have published into the KB (a readable view of the
     `curated_answers` table, so staff don't need database access)."""
+    active = {revision.entry_id: revision for revision in list_revisions() if revision.active}
     return [
         CuratedOut(
             id=c.id,
@@ -513,8 +535,17 @@ def admin_curated(_: None = Depends(require_admin)) -> list[CuratedOut]:
             answer=c.answer,
             author=c.author,
             created_at=c.created_at.isoformat(),
+            source_kind=active[c.id].source_kind,
+            document_title=active[c.id].document_title,
+            authority_label=active[c.id].authority_label,
+            effective_date=active[c.id].effective_date,
+            supporting_reference=active[c.id].supporting_reference,
+            department=active[c.id].department,
+            programs=active[c.id].programs,
+            evidence_refs=active[c.id].evidence_refs,
         )
         for c in list_curated(active_only=True)
+        if c.id in active
     ]
 
 
@@ -529,7 +560,9 @@ def admin_curated_edit(
 ) -> dict[str, bool | int | None | str]:
     """Create a successor draft; never mutate or replace the active revision."""
     try:
-        revision_id = create_successor_draft(req.id, _draft_payload(req.draft), actor="admin")
+        revision_id = create_successor_draft(
+            req.id, _draft_payload(req.draft), actor=req.draft.author_name.strip()
+        )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return {
@@ -573,6 +606,11 @@ class RevisionOut(BaseModel):
     provenance_status: str
     created_by: str
     created_at: str
+    source_kind: str
+    document_title: str
+    authority_label: str
+    effective_date: str | None
+    supporting_reference: str
     state: str
     state_reason: str
     active: bool
@@ -599,7 +637,7 @@ def admin_revisions(_: None = Depends(require_admin)) -> list[RevisionOut]:
 def admin_curation_options(_: None = Depends(require_admin)) -> dict[str, object]:
     return {
         "departments": [
-            {"code": "all", "label": "All departments"},
+            {"code": "all", "label": "All departments — general guidance"},
             *[
                 {"code": department.code, "label": department.label}
                 for department in departments.DEPARTMENTS

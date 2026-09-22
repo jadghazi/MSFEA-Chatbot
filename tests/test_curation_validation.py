@@ -21,6 +21,7 @@ from msfea_bot.curation.revisions import (
 from msfea_bot.curation.validation import (
     REQUIRED_STEPS,
     execute_step,
+    expected_evidence_present,
     record_human_review,
     start_validation,
     validation_runs,
@@ -76,6 +77,34 @@ def _payload(excerpt: str = "at least five pages and 1,500 words") -> DraftPaylo
     )
 
 
+def _admin_payload() -> DraftPayload:
+    return DraftPayload(
+        question="When is the weekly CDC advising window?",
+        answer="The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+        department="all",
+        programs=("internship",),
+        evidence_refs=(),
+        representative_question="When can I attend weekly CDC advising?",
+        paraphrase_question="What time is the CDC advising window?",
+        expected_evidence="Thursday from 2 to 4 p.m.",
+        change_reason="Add a new focused CDC clarification.",
+        source_kind="admin_authored",
+        document_title="Weekly CDC advising window",
+        authority_label="MSFEA CDC",
+        effective_date="2026-09-19",
+        supporting_reference="CDC operations meeting approval.",
+    )
+
+
+def test_expected_evidence_phrase_ignores_punctuation_but_not_meaning() -> None:
+    chunks = ["A: The internship counts towards 6 credits in the engineering program."]
+
+    assert expected_evidence_present(chunks, "6 credits.")
+    assert expected_evidence_present(chunks, "6 credits")
+    assert not expected_evidence_present(chunks, "9 credits")
+    assert not expected_evidence_present(chunks, "six credits")
+
+
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
 def test_full_validation_is_isolated_complete_and_human_gated(
     isolated_pair: tuple[str, str], monkeypatch: pytest.MonkeyPatch
@@ -115,12 +144,14 @@ def test_full_validation_is_isolated_complete_and_human_gated(
     failures = [result for result in run["results"] if result["status"] != "passed"]
     assert not failures, failures
     assert list_revisions()[0].state in {"blocked", "ready"}
+    conflict = next(result for result in run["results"] if result["step"] == "conflict_review")
+    assert conflict["details"]["flags"], "the source-backed duplicate must be surfaced"
 
     review_id = record_human_review(
         run_id,
         "CDC reviewer",
-        "confirm_no_conflict",
-        "Verified the source, applicability, and related passages.",
+        "valid_scoped_exception",
+        "Verified this is an authorized clarification of the cited rule and not a new conflict.",
     )
     assert review_id > 0
     assert list_revisions()[0].state == "ready"
@@ -150,6 +181,38 @@ def test_bad_evidence_blocks_immediately_with_precise_result(
         record_human_review(
             run_id, "Reviewer", "confirm_no_conflict", "I want to override the failure."
         )
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_admin_authored_source_validates_without_fake_official_evidence(
+    isolated_pair: tuple[str, str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    production_dsn, validation_dsn = isolated_pair
+    monkeypatch.setattr(settings, "database_url", production_dsn)
+    monkeypatch.setattr(settings, "validation_database_url", validation_dsn)
+    migrate()
+    index_chunks([Chunk("baseline", "Existing CDC guidance.", "baseline.md", "General")])
+    _, revision_id = create_draft(_admin_payload(), actor="Nadia CDC")
+    run_id = start_validation(revision_id)
+
+    execute_step(run_id, "schema_source")
+    execute_step(run_id, "candidate_index")
+    execute_step(run_id, "department_isolation")
+    execute_step(run_id, "unknown_department")
+
+    results = {result["step"]: result for result in validation_runs()[0]["results"]}
+    result = results["schema_source"]
+    assert result["status"] == "passed"
+    resolved = result["details"]["resolved_evidence"][0]
+    assert resolved["source_doc"].startswith("CDC Knowledge KB-")
+    assert resolved["authority"] == "MSFEA CDC"
+    assert resolved["source_hash"].startswith("sha256:")
+    assert results["department_isolation"]["status"] == "passed"
+    assert results["department_isolation"]["details"][
+        "candidate_returned_by_department"
+    ] == {"mech": True, "ece": True, "chem": True, "iem": True, "cee": True}
+    assert results["unknown_department"]["status"] == "passed"
+    assert results["unknown_department"]["details"]["labeled"] is True
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")

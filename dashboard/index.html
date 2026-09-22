@@ -160,6 +160,7 @@
       .answer-box textarea { width: 100%; min-height: 88px; resize: vertical; line-height: 1.55; }
       .draft-grid { display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px; }
       .draft-grid label { display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:650;color:var(--ink-soft); }
+      .draft-grid small { font-size: 11.5px; font-weight: 400; color: var(--ink-faint); line-height: 1.4; }
       .draft-grid .wide { grid-column:1 / -1; }
       .draft-grid textarea { min-height:62px; }
       .actions { display: flex; align-items: center; gap: 9px; margin-top: 12px; flex-wrap: wrap; }
@@ -181,9 +182,55 @@
       .curated-answer { font-size: 14px; color: var(--ink-soft); white-space: pre-wrap; margin: 4px 0 12px; }
       .curated-meta { font-size: 12px; color: var(--ink-faint); border-top: 1px solid var(--line); padding-top: 10px; }
       #curated-search { width: 100%; margin-bottom: 16px; }
+      .studio-hero { padding: 24px; border-radius: 18px; color: #fff; margin-bottom: 18px;
+        background: radial-gradient(circle at 90% 10%, rgba(255,255,255,.2), transparent 34%),
+                    linear-gradient(135deg, var(--m-darker), var(--m), #b34c5c); box-shadow: var(--shadow-lg); }
+      .studio-hero h2 { margin: 0 0 6px; font-size: 23px; }
+      .studio-hero p { margin: 0; max-width: 760px; color: rgba(255,255,255,.86); }
+      .workflow-rail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0; }
+      .workflow-step { position: relative; padding: 12px 12px 12px 38px; border: 1px solid var(--line);
+        border-radius: 12px; background: #fff; color: var(--ink-faint); font-size: 12px; font-weight: 650; }
+      .workflow-step::before { content: attr(data-step); position: absolute; left: 11px; top: 9px; width: 20px;
+        height: 20px; border-radius: 50%; display: grid; place-items: center; background: #e9ebef; color: #737983; }
+      .workflow-step.done { border-color: #b8ddbc; background: var(--ok-bg); color: var(--ok); }
+      .workflow-step.done::before { content: "✓"; background: var(--ok); color: #fff; }
+      .workflow-step.current { border-color: #d59da6; background: var(--m-tint); color: var(--m); box-shadow: 0 0 0 2px rgba(134,38,51,.08); }
+      .workflow-step.current::before { background: var(--m); color: #fff; box-shadow: 0 0 0 4px rgba(134,38,51,.12); }
+      .workflow-step.failed { border-color: #efc7c4; background: var(--danger-bg); color: var(--danger); }
+      .workflow-step.failed::before { content: "!"; background: var(--danger); color: #fff; }
+      .source-explainer { padding: 12px 14px; border-left: 3px solid var(--m); background: var(--m-tint); color: var(--ink-soft); border-radius: 8px; margin: 10px 0 16px; font-size: 13px; }
+      .review-panel { margin-top: 14px; padding: 15px; border: 1px solid #d8c3c7; border-radius: 12px; background: linear-gradient(135deg,#fff,#fdf7f8); }
+      .review-panel h4 { margin: 0 0 8px; }
+      .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .review-grid .wide { grid-column: 1 / -1; }
+      .source-kind-fields.hidden { display: none; }
       .edit-form { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 15px; }
       .edit-form textarea { width: 100%; min-height: 70px; resize: vertical; }
       .edit-form .label { font-size: 12.5px; font-weight: 650; display: block; margin-bottom: 5px; }
+      .validation-summary { margin: 16px 0; padding: 16px; border-radius: 12px; border: 1px solid var(--line); background: #f8f9fb; }
+      .validation-summary h4 { margin: 0 0 6px; font-size: 15px; }
+      .validation-summary p { margin: 0; color: var(--ink-soft); font-size: 13px; }
+      .validation-summary.failed { background: var(--danger-bg); border-color: #efc7c4; }
+      .validation-summary.failed h4 { color: var(--danger); }
+      .validation-summary.ready { background: var(--ok-bg); border-color: #bfddc2; }
+      .validation-summary.ready h4 { color: var(--ok); }
+      .check-list { display: grid; gap: 8px; margin: 14px 0; }
+      .check-row { display: grid; grid-template-columns: 24px minmax(150px,220px) 1fr; gap: 10px; align-items: start;
+        padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+      .check-icon { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+        background: #e9ebef; color: var(--ink-faint); font-size: 12px; font-weight: 800; }
+      .check-row.pass .check-icon { background: var(--ok); color: #fff; }
+      .check-row.fail .check-icon { background: var(--danger); color: #fff; }
+      .check-row.wait .check-icon { background: #e9ebef; color: var(--ink-faint); }
+      .check-name { font-size: 13px; font-weight: 700; }
+      .check-explain { color: var(--ink-soft); font-size: 12.5px; }
+      .finding { margin: 8px 0; padding: 11px 12px; border-left: 3px solid var(--warn); border-radius: 7px;
+        background: var(--warn-bg); font-size: 12.5px; color: #6f470f; }
+      .finding strong { display: block; margin-bottom: 3px; }
+      .fix-panel { margin-top: 12px; padding: 16px; border: 1px solid #efc7c4; border-radius: 12px; background: #fffafa; }
+      .fix-panel h4 { margin: 0 0 5px; }
+      .fix-panel > p { margin: 0 0 12px; color: var(--ink-soft); font-size: 13px; }
+      .banner.ok { background: var(--ok-bg); color: var(--ok); border: 1px solid #bfddc2; }
 
       /* ---------- anonymous experience feedback ---------- */
       .experience-summary { display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:14px;margin-bottom:22px; }
@@ -227,6 +274,9 @@
         .experience-summary { grid-template-columns:1fr 1fr; }
         .draft-grid { grid-template-columns:1fr; }
         .draft-grid .wide { grid-column:auto; }
+        .workflow-rail { grid-template-columns: 1fr 1fr; }
+        .review-grid { grid-template-columns: 1fr; }
+        .review-grid .wide { grid-column:auto; }
       }
       @media (prefers-reduced-motion: reduce) {
         * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
@@ -239,7 +289,7 @@
         <div class="crest">AUB</div>
         <div class="header-titles">
           <h1>CDC Chatbot — Admin</h1>
-          <p class="sub">Review what the bot couldn't answer, and keep an eye on usage</p>
+          <p class="sub">Create, validate, review and publish focused CDC knowledge</p>
         </div>
         <button id="signout" class="link hidden">Sign out</button>
       </div>
@@ -267,6 +317,7 @@
       <section id="app" class="hidden">
         <div class="toolbar">
           <div class="tabs">
+            <button class="tab" data-tab="create">＋ Add knowledge</button>
             <button class="tab active" data-tab="attention">
               Needs your attention <span id="pending-badge" class="badge zero">0</span>
             </button>
@@ -274,7 +325,7 @@
               Drafts <span id="drafts-badge" class="badge zero">0</span>
             </button>
             <button class="tab" data-tab="curated">
-              Published answers <span id="curated-badge" class="badge zero">0</span>
+              Published knowledge <span id="curated-badge" class="badge zero">0</span>
             </button>
             <button class="tab" data-tab="usage">Usage</button>
             <button class="tab" data-tab="experience">Experience feedback</button>
@@ -287,11 +338,25 @@
 
         <div id="banner"></div>
 
+        <div id="tab-create" class="hidden">
+          <div class="studio-hero">
+            <h2>Knowledge Studio</h2>
+            <p>Add one focused rule, guideline, or question-and-answer at a time. It remains invisible to students until automated comparison and a named human review are complete.</p>
+          </div>
+          <div class="workflow-rail">
+            <div class="workflow-step current" data-step="1">Author focused knowledge</div>
+            <div class="workflow-step" data-step="2">Validate & compare</div>
+            <div class="workflow-step" data-step="3">Review findings</div>
+            <div class="workflow-step" data-step="4">Publish to chatbot</div>
+          </div>
+          <div id="new-knowledge-card" class="card"></div>
+        </div>
+
         <!-- Tab: attention -->
         <div id="tab-attention">
           <p class="intro">
             These are questions the bot <strong>couldn't answer</strong>, or answers a student marked
-            <strong>not helpful</strong>. Save a source-backed draft for validation and human review.
+            <strong>not helpful</strong>. Turn one into a focused knowledge draft, or use Add knowledge directly.
             Drafts are never visible to students.
           </p>
           <div id="list"></div>
@@ -385,7 +450,7 @@
       }
 
       // ---- Tabs ----
-      var TABS = ["attention", "drafts", "curated", "usage", "experience"];
+      var TABS = ["create", "attention", "drafts", "curated", "usage", "experience"];
       function selectTab(name) {
         TABS.forEach(function (t) {
           $("tab-" + t).classList.toggle("hidden", t !== name);
@@ -420,6 +485,7 @@
           .then(function (data) {
             _options = data[5];
             _validationRuns = data[6] || [];
+            renderKnowledgeStudio();
             renderStats(data[0]);
             renderList(data[1]);
             renderCurated(data[2]);
@@ -514,29 +580,61 @@
       }
       function draftFields(question, defaults) {
         defaults = defaults || {};
+        var kind = defaults.source_kind || "admin_authored";
         return '<div class="draft-grid">' +
-          '<label>Department<select class="draft-dept"><option value="">Select…</option>' + choices(_options.departments, "code", "label", defaults.department) + '</select></label>' +
+          '<label>Contributor name<input class="draft-author" value="' + esc(defaults.created_by || '') + '" placeholder="Name or staff role" /></label>' +
+          '<label>Knowledge source<select class="draft-kind"><option value="admin_authored"' + (kind === 'admin_authored' ? ' selected' : '') + '>New CDC knowledge</option><option value="official_reference"' + (kind === 'official_reference' ? ' selected' : '') + '>Correction backed by an existing document</option></select></label>' +
+          '<div class="wide source-explainer">New knowledge becomes its own versioned, citable source. Choose the existing-document option only when the exact information is already present in an official file.</div>' +
+          '<div class="wide source-kind-fields admin-fields"><div class="draft-grid">' +
+            '<label>Focused document title<input class="draft-title" value="' + esc(defaults.document_title || '') + '" placeholder="e.g. CO-OP interview rescheduling" /></label>' +
+            '<label>Responsible authority / policy owner<input class="draft-authority" value="' + esc(defaults.authority_label || '') + '" placeholder="e.g. MSFEA CDC" /></label>' +
+            '<label>Effective date (optional)<input class="draft-effective" type="date" value="' + esc(defaults.effective_date || '') + '" /></label>' +
+            '<label>Supporting reference (optional)<input class="draft-support" value="' + esc(defaults.supporting_reference || '') + '" placeholder="Approved email, meeting, memo, or URL — no student data" /></label>' +
+          '</div></div>' +
+          '<div class="wide source-kind-fields official-fields"><div class="draft-grid">' +
+            '<label>Official source document<select class="draft-source"><option value="">Select…</option>' + choices(_options.sources, null, null, defaults.source_doc) + '</select></label>' +
+            '<label>Exact section heading<input class="draft-locator" value="' + esc(defaults.locator || '') + '" placeholder="Exact heading from the normalized file" /></label>' +
+            '<label class="wide">Exact supporting excerpt<textarea class="draft-excerpt" placeholder="Paste the exact source passage">' + esc(defaults.excerpt || '') + '</textarea></label>' +
+          '</div></div>' +
+          '<label>Department scope<select class="draft-dept"><option value="">Select…</option>' + choices(_options.departments, "code", "label", defaults.department) + '</select><small>“All departments” is a positive policy claim. Choose it only when this guidance truly applies to all five departments.</small></label>' +
           '<label>Program<select class="draft-program"><option value="">Select…</option>' + choices(_options.programs, null, null, (defaults.programs || [])[0]) + '</select></label>' +
-          '<label>Source document<select class="draft-source"><option value="">Select…</option>' + choices(_options.sources, null, null, defaults.source_doc) + '</select></label>' +
-          '<label>Stable section/page locator<input class="draft-locator" value="' + esc(defaults.locator || '') + '" placeholder="Section heading or page" /></label>' +
-          '<label class="wide">Exact supporting excerpt<textarea class="draft-excerpt" placeholder="Paste the source passage">' + esc(defaults.excerpt || '') + '</textarea></label>' +
-          '<label>Representative question<input class="draft-representative" value="' + esc(defaults.representative_question || question) + '" /></label>' +
-          '<label>Independent paraphrase<input class="draft-paraphrase" value="' + esc(defaults.paraphrase_question || '') + '" placeholder="How else might a student ask?" /></label>' +
-          '<label class="wide">Expected supporting evidence<input class="draft-expected" value="' + esc(defaults.expected_evidence || '') + '" placeholder="Shortest source phrase the retriever must find" /></label>' +
-          '<label class="wide">Change reason<textarea class="draft-reason" placeholder="Why is this addition or correction needed?">' + esc(defaults.change_reason || '') + '</textarea></label>' +
+          '<label>First sample student question<input class="draft-representative" value="' + esc(defaults.representative_question || question) + '" /></label>' +
+          '<label>Second way a student might ask<input class="draft-paraphrase" value="' + esc(defaults.paraphrase_question || '') + '" placeholder="Use different natural wording" /></label>' +
+          '<label class="wide">Short answer phrase to verify<input class="draft-expected" value="' + esc(defaults.expected_evidence || '') + '" placeholder="Copy a few meaningful words from the answer, for example: 6 academic credits" /><small>The private test confirms that both sample questions return this phrase. Punctuation does not matter.</small></label>' +
+          '<label class="wide">Why are you adding this?<textarea class="draft-reason" placeholder="Explain the information gap and why staff should publish this entry">' + esc(defaults.change_reason || '') + '</textarea></label>' +
         '</div>';
       }
+      function bindSourceKind(root) {
+        var select = root.querySelector('.draft-kind');
+        function sync() {
+          var admin = select.value === 'admin_authored';
+          root.querySelector('.admin-fields').classList.toggle('hidden', !admin);
+          root.querySelector('.official-fields').classList.toggle('hidden', admin);
+        }
+        select.addEventListener('change', sync); sync();
+      }
       function collectDraft(root, question, answer, feedbackId) {
-        return {
-          question: question,
-          answer: answer,
-          department: root.querySelector(".draft-dept").value,
-          programs: [root.querySelector(".draft-program").value],
-          evidence_refs: [{
+        var kind = root.querySelector(".draft-kind").value;
+        var evidence = [];
+        if (kind === "official_reference") {
+          evidence = [{
             source_doc: root.querySelector(".draft-source").value,
             locator: root.querySelector(".draft-locator").value.trim(),
             excerpt: root.querySelector(".draft-excerpt").value.trim()
-          }],
+          }];
+        }
+        return {
+          question: question,
+          answer: answer,
+          author_name: root.querySelector(".draft-author").value.trim(),
+          source_kind: kind,
+          document_title: kind === "admin_authored" ? root.querySelector(".draft-title").value.trim() : "",
+          authority_label: kind === "admin_authored" ? root.querySelector(".draft-authority").value.trim() : "",
+          effective_date: kind === "admin_authored" ? (root.querySelector(".draft-effective").value || null) : null,
+          supporting_reference: kind === "admin_authored" ? root.querySelector(".draft-support").value.trim() : "",
+          department: root.querySelector(".draft-dept").value,
+          programs: [root.querySelector(".draft-program").value],
+          evidence_refs: evidence,
           representative_question: root.querySelector(".draft-representative").value.trim(),
           paraphrase_question: root.querySelector(".draft-paraphrase").value.trim(),
           expected_evidence: root.querySelector(".draft-expected").value.trim(),
@@ -545,8 +643,61 @@
         };
       }
 
+      function renderKnowledgeStudio() {
+        var card = $("new-knowledge-card");
+        // Polling workflow status must never erase a partially written source.
+        if (card.dataset.rendered === 'true') return;
+        card.dataset.rendered = 'true';
+        card.innerHTML =
+          '<div class="q-label">One focused knowledge document</div>' +
+          '<p class="intro">Capture one rule, guideline, or answer only. Split unrelated topics into separate entries so each can be compared, revised, cited, and retired independently.</p>' +
+          '<div class="draft-grid">' +
+            '<label class="wide">Student question or topic<input class="studio-question" placeholder="What would a student ask?" /></label>' +
+            '<label class="wide">Approved knowledge text<textarea class="studio-answer" placeholder="Write the complete, authoritative answer for this one topic"></textarea></label>' +
+          '</div>' + draftFields('', { source_kind: 'admin_authored' }) +
+          '<div class="actions"><button class="save studio-save">Save immutable draft</button><span class="status"></span></div>';
+        bindSourceKind(card);
+        var question = card.querySelector('.studio-question');
+        question.addEventListener('input', function () {
+          var representative = card.querySelector('.draft-representative');
+          if (!representative.dataset.edited) representative.value = question.value;
+        });
+        card.querySelector('.draft-representative').addEventListener('input', function (event) {
+          event.target.dataset.edited = 'true';
+        });
+        card.querySelector('.studio-save').addEventListener('click', function (event) {
+          var button = event.currentTarget;
+          var status = button.parentNode.querySelector('.status');
+          var payload = collectDraft(
+            card,
+            question.value.trim(),
+            card.querySelector('.studio-answer').value.trim(),
+            null
+          );
+          button.disabled = true; status.className = 'status'; status.textContent = 'Saving immutable draft…';
+          fetch(API + '/admin/api/curate', {
+            method: 'POST', headers: headers(), body: JSON.stringify(payload)
+          }).then(function (response) {
+            return response.json().then(function (body) {
+              if (!response.ok) throw new Error(body.detail || 'Draft could not be saved.');
+              return body;
+            });
+          }).then(function () {
+            status.className = 'status ok'; status.textContent = 'Draft saved. Opening validation workflow…';
+            card.dataset.rendered = 'false';
+            loadAll(function () { selectTab('drafts'); });
+          }).catch(function (error) {
+            button.disabled = false; status.className = 'status err'; status.textContent = error.message;
+          });
+        });
+      }
+
       function renderDrafts(items) {
-        var drafts = (items || []).filter(function (item) { return !item.active; });
+        var drafts = (items || []).filter(function (item) {
+          return !item.active && !(items || []).some(function (other) {
+            return other.entry_id === item.entry_id && other.revision_number > item.revision_number;
+          });
+        });
         _pendingWorkflow = drafts.some(function (item) {
           return item.state === 'validating' || item.state === 'publishing';
         });
@@ -560,50 +711,235 @@
         function latestRun(revisionId) {
           return _validationRuns.find(function (run) { return run.revision_id === revisionId; }) || null;
         }
-        function validationMarkup(run) {
-          if (!run) return '<div class="snippet">No validation run yet.</div>';
-          var checks = (run.results || []).map(function (result) {
-            var details = result.details || {};
-            var related = (details.related || []).map(function (candidate) {
-              return '<div class="snippet">' + esc(candidate.source_doc + ' > ' + candidate.section +
-                (candidate.department ? ' · ' + candidate.department : '') + '\n' + candidate.text) + '</div>';
-            }).join('');
-            var flags = (details.flags || []).map(function (flag) {
-              return '<div class="banner err">Potential conflict: ' + esc(flag.reason) + ' (' + esc(flag.candidate_id) + ')</div>';
-            }).join('');
-            var summary = details.label ||
-              (result.step === 'conflict_review' && !(details.flags || []).length ?
-                'No potential conflicts flagged' :
-                (result.status === 'passed' ? 'Check passed' : 'Check did not pass'));
-            return '<details class="tech"><summary>' + esc(result.step + ': ' + result.status) + '</summary>' +
-              '<div class="snippet">' + esc(summary) + '</div>' + flags + related + '</details>';
+        var checkCatalog = [
+          { step: 'schema_source', name: 'Source and scope', waiting: 'Check the source, authority, department and program.' },
+          { step: 'candidate_index', name: 'Private test copy', waiting: 'Prepare a private copy without changing student answers.' },
+          { step: 'conflict_review', name: 'Related guidance', waiting: 'Compare this draft with existing guidance.' },
+          { step: 'positive_retrieval', name: 'Sample student questions', waiting: 'Make sure both sample questions find this answer.' },
+          { step: 'department_isolation', name: 'Department scope', waiting: 'Check that department-specific guidance stays in scope.' },
+          { step: 'unknown_department', name: 'Missing department', waiting: 'Check how the answer appears when a student gives no department.' },
+          { step: 'regression', name: 'Existing answers', waiting: 'Confirm existing tested answers are not lost.' }
+        ];
+        function shorten(value, limit) {
+          value = String(value || '').replace(/\s+/g, ' ').trim();
+          return value.length > limit ? value.slice(0, limit - 1) + '…' : value;
+        }
+        function flagLabel(reason) {
+          return {
+            exact_duplicate: 'Very similar guidance may already exist',
+            possible_duplicate: 'Similar guidance may already exist',
+            possible_numeric_conflict: 'A related passage uses a different number',
+            possible_negation_conflict: 'A related passage may say the opposite'
+          }[reason] || 'This related passage needs a closer look';
+        }
+        function resultExplanation(result, item) {
+          var details = result.details || {};
+          if (result.step === 'schema_source') {
+            return result.status === 'passed' ? 'The source identity, authority and scope are complete.' :
+              ((details.errors || []).join(' ') || 'Some required source information needs correction.');
+          }
+          if (result.step === 'candidate_index') return result.status === 'passed' ?
+            'A private test copy was prepared. Nothing changed for students.' : 'The private test copy could not be prepared.';
+          if (result.step === 'conflict_review') {
+            var count = (details.flags || []).length;
+            return count ? count + ' related passage' + (count === 1 ? '' : 's') +
+              (count === 1 ? ' needs' : ' need') + ' your judgment below. This is not an automatic rejection.' :
+              'No potential conflict was flagged. A person must still review the source and scope.';
+          }
+          if (result.step === 'positive_retrieval') {
+            if (result.status === 'passed') return 'Both sample student questions found this draft and its verification phrase.';
+            var cases = details.cases || [];
+            if (cases.some(function (item) { return item.candidate_hit === false; }))
+              return 'At least one sample question did not find this draft. Rewrite that sample question to match how students would naturally ask.';
+            if (cases.some(function (item) { return item.evidence_hit === false; })) {
+              var phrase = (cases.find(function (testCase) { return testCase.evidence_hit === false; }) || {}).expected_evidence || item.expected_evidence || '';
+              return 'The draft was found, but the verification phrase “' + phrase + '” was not found in its answer. Copy a short phrase directly from the answer.';
+            }
+            return 'The draft appeared, but one sample question was not similar enough to rely on safely. Make the sample wording more representative.';
+          }
+          if (result.step === 'department_isolation') return result.status === 'passed' ?
+            'The draft appears only for the departments it applies to.' : 'The department scope did not behave safely.';
+          if (result.step === 'unknown_department') return result.status === 'passed' ?
+            (item.department === 'all' ? 'Students who do not state a department can still receive this general guidance.' :
+              'Students who do not state a department still see which department this guidance applies to.') :
+            'The answer was unclear when no department was provided.';
+          if (result.step === 'regression') return result.status === 'passed' ?
+            'Existing tested answers remain retrievable.' : 'At least one existing tested answer would be lost.';
+          return result.status === 'passed' ? 'Check completed.' : 'This check needs correction.';
+        }
+        function validationMarkup(run, item) {
+          if (!run) return '<div class="validation-summary"><h4>Ready for automatic checks</h4><p>This safely tests the draft against a private copy of the knowledge base. Students will not see it.</p></div>';
+          var resultMap = {};
+          (run.results || []).forEach(function (result) { resultMap[result.step] = result; });
+          var stopped = run.status === 'failed';
+          var rows = checkCatalog.map(function (check) {
+            var result = resultMap[check.step];
+            var state = !result ? 'wait' : result.status === 'passed' ? 'pass' : 'fail';
+            var icon = state === 'pass' ? '✓' : state === 'fail' ? '!' : '·';
+            var explanation = result ? resultExplanation(result, item) :
+              (stopped ? 'Not run because an earlier check needs correction.' : check.waiting);
+            return '<div class="check-row ' + state + '"><span class="check-icon">' + icon + '</span>' +
+              '<span class="check-name">' + esc(check.name) + '</span><span class="check-explain">' + esc(explanation) + '</span></div>';
           }).join('');
-          return '<div class="curated-meta">Validation: ' + esc(run.status) + '<br />Fingerprint: ' +
-            esc(run.fingerprint) + '</div>' + checks;
+          var conflict = resultMap.conflict_review;
+          var conflictDetails = conflict ? (conflict.details || {}) : {};
+          var related = conflictDetails.related || [];
+          var flagged = (conflictDetails.flags || []).map(function (flag) {
+            var candidate = related.find(function (item) { return item.id === flag.candidate_id; });
+            return { flag: flag, candidate: candidate };
+          }).filter(function (item) { return item.candidate; });
+          var findings = flagged.slice(0, 4).map(function (item) {
+            return '<div class="finding"><strong>' + esc(flagLabel(item.flag.reason)) + '</strong>' +
+              esc(item.candidate.source_doc + ' › ' + item.candidate.section) + '<br />' +
+              esc(shorten(item.candidate.text, 430)) + '</div>';
+          }).join('');
+          if (flagged.length > 4) findings += '<p class="intro">' + esc(flagged.length - 4) + ' additional similar findings were grouped to avoid repetition.</p>';
+          var allUnflagged = related.filter(function (candidate) {
+            return !flagged.some(function (item) { return item.candidate.id === candidate.id; });
+          });
+          var unflagged = allUnflagged.slice(0, 4);
+          var relatedDetails = unflagged.length ? '<details class="tech"><summary>See other guidance checked (' +
+            esc(unflagged.length) + ' of ' + esc(allUnflagged.length) + ' shown)</summary>' +
+            unflagged.map(function (candidate) {
+              return '<div class="snippet">' + esc(candidate.source_doc + ' › ' + candidate.section + '\n' + shorten(candidate.text, 430)) + '</div>';
+            }).join('') + '</details>' : '';
+          var heading = run.status === 'passed' ? 'Automatic checks completed' :
+            run.status === 'failed' ? 'This draft needs a correction' : 'Checks are running';
+          var summary = run.status === 'passed' ? 'Next: review the related guidance and record your decision below.' :
+            run.status === 'failed' ? 'Nothing was published. Fix the failed item below; the remaining checks will run on the corrected revision.' :
+            'You can leave this page. Progress refreshes automatically.';
+          return '<div class="validation-summary ' + (run.status === 'passed' ? 'ready' : run.status === 'failed' ? 'failed' : '') +
+            '"><h4>' + heading + '</h4><p>' + summary + '</p></div><div class="check-list">' + rows + '</div>' +
+            findings + relatedDetails + '<details class="tech"><summary>Technical audit record</summary><div class="snippet">Run ' +
+            esc(run.id) + '\nStatus: ' + esc(run.status) + '\nFingerprint: ' + esc(run.fingerprint) + '</div></details>';
+        }
+        function workflowMarkup(item, run) {
+          var reviewed = run && (run.reviews || []).length > 0;
+          var validationDone = run && run.status === 'passed';
+          var validating = item.state === 'validating' || (run && ['pending','running'].indexOf(run.status) >= 0);
+          function step(n, label, done, current, failed) {
+            return '<div class="workflow-step' + (done ? ' done' : failed ? ' failed' : current ? ' current' : '') + '" data-step="' + n + '">' + label + '</div>';
+          }
+          return '<div class="workflow-rail">' +
+            step(1, 'Draft captured', true, false, false) +
+            step(2, 'Validate & compare', validationDone, !validationDone && (validating || !run), run && run.status === 'failed') +
+            step(3, 'Named human review', reviewed, validationDone && !reviewed, false) +
+            step(4, 'Publish to chatbot', false, reviewed && item.state === 'ready', false) + '</div>';
         }
         $("drafts-list").innerHTML = drafts.map(function (item) {
           var run = latestRun(item.id);
+          var reviews = run ? (run.reviews || []) : [];
+          var reviewed = reviews.length > 0;
+          var conflictResult = run && (run.results || []).find(function (result) { return result.step === 'conflict_review'; });
+          var hasFlags = !!(conflictResult && conflictResult.details && (conflictResult.details.flags || []).length);
           var canPublish = run && run.status === 'passed' && item.state === 'ready' &&
-            (run.reviews || []).some(function (review) { return review.decision !== 'reject'; });
+            reviews.some(function (review) { return review.decision !== 'reject'; });
+          var rejected = reviews.some(function (review) { return review.decision === 'reject'; });
           var prior = item.predecessor_answer == null ? '' :
             '<details class="tech"><summary>Compare with previous revision</summary><div class="snippet">' + esc(item.predecessor_answer) + '</div></details>';
-          var evidence = (item.evidence_refs || []).map(function (ref) {
+          var evidence = item.source_kind === 'admin_authored' ?
+            '<div class="snippet">This submitted text is the source artifact. It does not claim support from an existing official file.</div>' :
+            (item.evidence_refs || []).map(function (ref) {
             return '<div class="snippet">' + esc(ref.source_doc + ' > ' + ref.locator + '\n' + ref.excerpt) + '</div>';
           }).join('');
+          var reviewPanel = run && run.status === 'passed' && !reviewed ?
+            '<div class="review-panel"><h4>' + (hasFlags ? 'Resolve flagged findings' : 'Complete mandatory source review') + '</h4>' +
+              '<p class="intro">' + (hasFlags ? 'Automated comparison found a possible duplicate or conflict. Inspect the passages above and record why this entry is safe, should supersede a prior admin revision, or must be rejected.' : 'No conflict was flagged, but a person must still verify authority, scope, and related passages.') + '</p>' +
+              '<div class="review-grid"><label>Decision<select class="review-decision">' +
+                (hasFlags ? '<option value="valid_scoped_exception">Approve as justified clarification / scoped exception</option>' : '<option value="confirm_no_conflict">Confirm reviewed — no conflict found</option>') +
+                (item.predecessor_revision_id ? '<option value="replace_outdated">Supersede previous admin revision</option>' : '') +
+                '<option value="reject">Reject draft</option></select></label>' +
+                '<label>Reviewer name<input class="reviewer-name" placeholder="Your name or staff role" /></label>' +
+                '<label class="wide">Review justification<textarea class="review-reason" placeholder="What sources and related passages did you inspect, and why is this decision appropriate?"></textarea></label></div>' +
+              '<div class="actions"><button class="review-validation secondary" data-run="' + esc(run.id) + '">Record mandatory review</button><span class="status"></span></div></div>' : '';
+          var recordedReviews = reviews.map(function (review) {
+            return '<div class="banner ok"><strong>Human review recorded:</strong> ' +
+              esc(review.decision.replace(/_/g, ' ')) + ' by ' + esc(review.reviewer_label) +
+              '<br />' + esc(review.reason) + '</div>';
+          }).join('');
+          var evidenceRef = (item.evidence_refs || [])[0] || {};
+          var needsCorrection = (run && run.status === 'failed') || rejected;
+          var correctionForm = needsCorrection ?
+            '<div class="fix-panel hidden"><h4>Create a corrected revision</h4>' +
+              '<p>The original stays in the audit history. Your correction becomes a new draft and must pass the checks from the beginning.</p>' +
+              '<div class="draft-grid"><label class="wide">Student question<input class="fix-question" value="' + esc(item.question) + '" /></label>' +
+              '<label class="wide">Answer<textarea class="fix-answer">' + esc(item.answer) + '</textarea></label></div>' +
+              draftFields(item.question, {
+                created_by: item.created_by, source_kind: item.source_kind,
+                document_title: item.document_title, authority_label: item.authority_label,
+                effective_date: item.effective_date, supporting_reference: item.supporting_reference,
+                department: item.department, programs: item.programs,
+                source_doc: evidenceRef.source_doc, locator: evidenceRef.locator, excerpt: evidenceRef.excerpt,
+                representative_question: item.representative_question,
+                paraphrase_question: item.paraphrase_question,
+                expected_evidence: item.expected_evidence,
+                change_reason: 'Correct revision ' + item.revision_number + ' after validation review.'
+              }) +
+              '<div class="actions"><button class="save save-correction" data-entry="' + esc(item.entry_id) + '">Save corrected draft</button>' +
+              '<button class="secondary cancel-correction">Cancel</button><span class="status"></span></div></div>' : '';
+          var actionButton = !run ?
+            '<button class="run-validation" data-revision="' + esc(item.id) + '">Start safe checks</button>' :
+            (['pending','running'].indexOf(run.status) >= 0 ? '<button disabled>Checks running…</button>' :
+            (needsCorrection ? '<button class="fix-draft">Fix this draft</button>' : ''));
           return '<div class="card"><div class="badge-row"><span class="badge time">' + esc(item.state) + '</span><span class="badge time">Revision ' + esc(item.revision_number) + '</span></div>' +
+            workflowMarkup(item, run) +
+            '<div class="q-label">Source artifact</div><div class="q">' + esc(item.source_kind === 'admin_authored' ? item.document_title : 'Existing official document correction') + '</div>' +
+            '<div class="curated-meta">Contributed by ' + esc(item.created_by) + (item.authority_label ? ' · Authority: ' + esc(item.authority_label) : '') + (item.effective_date ? ' · Effective ' + esc(item.effective_date) : '') + '</div>' +
             '<div class="q-label">Question</div><div class="q">' + esc(item.question) + '</div>' +
             '<div class="q-label">Proposed answer — not live</div><div class="curated-answer">' + esc(item.answer) + '</div>' +
-            '<div class="curated-meta">Scope: ' + esc(item.department) + ' · Program: ' + esc((item.programs || []).join(', ')) + '<br />' + esc(item.state_reason) + '</div>' +
+            '<div class="curated-meta">Scope: ' + esc(item.department) + ' · Program: ' + esc((item.programs || []).join(', ')) + '</div>' +
             '<details class="tech"><summary>Evidence and test cases</summary>' + evidence + '<div class="snippet">Representative: ' + esc(item.representative_question) + '\nParaphrase: ' + esc(item.paraphrase_question) + '\nExpected: ' + esc(item.expected_evidence) + '</div></details>' + prior +
-            validationMarkup(run) +
-            '<div class="actions"><button class="run-validation" data-revision="' + esc(item.id) + '"' +
-              (item.state === 'validating' ? ' disabled' : '') + '>Run validation</button>' +
-              (run && run.status === 'passed' && !(run.reviews || []).length ?
-                '<button class="review-validation secondary" data-run="' + esc(run.id) + '">Record mandatory review</button>' : '') +
+            validationMarkup(run, item) +
+            recordedReviews +
+            reviewPanel +
+            correctionForm +
+            '<div class="actions">' + actionButton +
               (canPublish ? '<button class="publish-revision" data-revision="' + esc(item.id) +
-                '" data-run="' + esc(run.id) + '">Publish reviewed revision</button>' : '') +
+                '" data-run="' + esc(run.id) + '">Publish to chatbot</button>' : '') +
               '<span class="status"></span></div></div>';
         }).join('');
+        Array.prototype.forEach.call(document.querySelectorAll('.fix-panel'), function (panel) {
+          bindSourceKind(panel);
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.fix-draft'), function (button) {
+          button.addEventListener('click', function () {
+            var card = button.closest('.card');
+            card.querySelector('.fix-panel').classList.remove('hidden');
+            button.classList.add('hidden');
+          });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.cancel-correction'), function (button) {
+          button.addEventListener('click', function () {
+            var card = button.closest('.card');
+            card.querySelector('.fix-panel').classList.add('hidden');
+            card.querySelector('.fix-draft').classList.remove('hidden');
+          });
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.save-correction'), function (button) {
+          button.addEventListener('click', function () {
+            var panel = button.closest('.fix-panel');
+            var status = button.parentNode.querySelector('.status');
+            var question = panel.querySelector('.fix-question').value.trim();
+            var answer = panel.querySelector('.fix-answer').value.trim();
+            if (!question || !answer) {
+              status.className = 'status err'; status.textContent = 'Question and answer are required.'; return;
+            }
+            button.disabled = true; status.className = 'status'; status.textContent = 'Saving corrected revision…';
+            fetch(API + '/admin/api/curated/edit', {
+              method: 'POST', headers: headers(),
+              body: JSON.stringify({
+                id: Number(button.getAttribute('data-entry')),
+                draft: collectDraft(panel, question, answer, null)
+              })
+            }).then(function (response) {
+              return response.json().then(function (body) {
+                if (!response.ok) throw new Error(body.detail || 'Corrected draft could not be saved.');
+                return body;
+              });
+            }).then(function () { loadAll(); })
+              .catch(function (error) { button.disabled = false; status.className = 'status err'; status.textContent = error.message; });
+          });
+        });
         Array.prototype.forEach.call(document.querySelectorAll('.run-validation'), function (button) {
           button.addEventListener('click', function () {
             button.disabled = true;
@@ -621,17 +957,22 @@
         });
         Array.prototype.forEach.call(document.querySelectorAll('.review-validation'), function (button) {
           button.addEventListener('click', function () {
-            var reviewer = window.prompt('Reviewer name or role:');
-            if (!reviewer) return;
-            var reason = window.prompt('Record what source, applicability, and related passages you checked:');
-            if (!reason) return;
+            var panel = button.closest('.review-panel');
+            var reviewer = panel.querySelector('.reviewer-name').value.trim();
+            var reason = panel.querySelector('.review-reason').value.trim();
+            var decision = panel.querySelector('.review-decision').value;
+            if (!reviewer || !reason) {
+              panel.querySelector('.status').className = 'status err';
+              panel.querySelector('.status').textContent = 'Reviewer name and a meaningful justification are required.';
+              return;
+            }
             button.disabled = true;
             var status = button.parentNode.querySelector('.status');
             fetch(API + '/admin/api/revisions/review', {
               method: 'POST', headers: headers(),
               body: JSON.stringify({
                 run_id: button.getAttribute('data-run'), reviewer_label: reviewer,
-                decision: 'confirm_no_conflict', reason: reason
+                decision: decision, reason: reason
               })
             }).then(function (response) {
               if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || 'Review was not recorded.'); });
@@ -716,6 +1057,7 @@
           '<details class="tech"><summary>Why couldn\'t it answer? (technical details)</summary>' +
             '<p class="explain">' + esc(explain) + '</p>' + snippets +
           '</details>';
+        bindSourceKind(card);
 
         var ta = card.querySelector("textarea");
         var status = card.querySelector(".status");
@@ -744,7 +1086,7 @@
             method: "POST", headers: headers(),
             body: JSON.stringify(payload),
           })
-            .then(function (r) { if (!r.ok) throw new Error("Couldn't save draft (error " + r.status + ")"); return r.json(); })
+            .then(function (r) { return r.json().then(function (body) { if (!r.ok) throw new Error(body.detail || "Couldn't save draft."); return body; }); })
             .then(function () {
               status.className = "status ok";
               status.textContent = "✓ Draft saved — it is not visible to students.";
@@ -775,7 +1117,7 @@
         return card;
       }
 
-      // ---- Published (curated) answers ----
+      // ---- Published knowledge sources ----
       var _curated = [];
       function renderCurated(items) {
         _curated = items || [];
@@ -789,11 +1131,11 @@
         if (!_curated.length) {
           box.innerHTML =
             '<div class="empty"><div class="big">📄</div>' +
-            '<p>No answers published yet. When you answer a question in “Needs your attention,” it shows up here.</p></div>';
+            '<p>No knowledge sources published yet. Add one directly or turn an unanswered student question into a focused source.</p></div>';
           return;
         }
         if (!items.length) {
-          box.innerHTML = '<p class="intro">No published answers match your search.</p>';
+          box.innerHTML = '<p class="intro">No published knowledge matches your search.</p>';
           return;
         }
         box.innerHTML = "";
@@ -807,12 +1149,16 @@
         var whenStr = isNaN(when) ? "" : when.toLocaleDateString();
 
         card.innerHTML =
+          '<div class="badge-row"><span class="badge time">' + esc(c.source_kind === 'admin_authored' ? 'Admin-authored source' : 'Official-source correction') + '</span></div>' +
+          '<div class="q-label">Source artifact</div><div class="q">' + esc(c.document_title || 'Existing official document correction') + '</div>' +
           '<div class="q-label">Question</div>' +
           '<div class="q view-q">' + esc(c.question) + '</div>' +
           '<div class="q-label">Published answer</div>' +
           '<div class="curated-answer view-a">' + esc(c.answer) + '</div>' +
           '<div class="curated-meta">Added by ' + esc(c.author || "admin") +
-            (whenStr ? " · " + esc(whenStr) : "") + '</div>' +
+            (c.authority_label ? ' · Authority: ' + esc(c.authority_label) : '') +
+            (c.effective_date ? ' · Effective ' + esc(c.effective_date) : '') +
+            (whenStr ? " · Published " + esc(whenStr) : "") + '</div>' +
           '<div class="actions">' +
             '<button class="edit secondary">Edit</button>' +
             '<button class="retire secondary">Retire</button>' +
@@ -853,11 +1199,20 @@
             '<textarea class="edit-q"></textarea>' +
             '<label class="label" style="margin-top:10px">Answer</label>' +
             '<textarea class="edit-a"></textarea>' +
-            draftFields(c.question) +
+            draftFields(c.question, {
+              created_by: c.author, source_kind: c.source_kind, document_title: c.document_title,
+              authority_label: c.authority_label, effective_date: c.effective_date,
+              supporting_reference: c.supporting_reference, department: c.department,
+              programs: c.programs, source_doc: (c.evidence_refs[0] || {}).source_doc,
+              locator: (c.evidence_refs[0] || {}).locator, excerpt: (c.evidence_refs[0] || {}).excerpt,
+              representative_question: c.question, paraphrase_question: '', expected_evidence: '',
+              change_reason: ''
+            }) +
             '<div class="actions"><button class="save">Save replacement draft</button>' +
             '<button class="cancel secondary">Cancel</button><span class="status"></span></div>';
           form.querySelector(".edit-q").value = c.question;
           form.querySelector(".edit-a").value = c.answer;
+          bindSourceKind(form);
           // Hide view fields + main actions while editing.
           qDiv.classList.add("hidden"); aDiv.classList.add("hidden"); actions.classList.add("hidden");
           card.insertBefore(form, actions);
@@ -877,7 +1232,7 @@
               method: "POST", headers: headers(),
               body: JSON.stringify({ id: c.id, draft: collectDraft(form, nq, na, null) }),
             })
-              .then(function (r) { if (!r.ok) throw new Error("Couldn't save (error " + r.status + ")"); return r.json(); })
+              .then(function (r) { return r.json().then(function (body) { if (!r.ok) throw new Error(body.detail || "Couldn't save replacement draft."); return body; }); })
               .then(function (res) {
                 if (!res.ok) throw new Error("This answer no longer exists.");
                 form.remove();

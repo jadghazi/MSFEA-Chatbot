@@ -249,6 +249,22 @@ def _answer_context(
     """
     task = answer_task(question, history)
     focused = chunks
+    # A published admin-authored source has already passed isolated retrieval,
+    # conflict comparison, and named human review. When it is also the clearly
+    # dominant match, keep generation focused on that small source instead of
+    # letting weaker passages distract the model from the exact reviewed answer.
+    # This path is deliberately limited to new dashboard-authored knowledge; it
+    # does not change context selection for the existing official documents.
+    if chunks and chunks[0].metadata.get("source_kind") == "admin_authored":
+        strongest_other = max((chunk.score for chunk in chunks[1:]), default=0.0)
+        if chunks[0].score >= 0.85 and chunks[0].score - strongest_other >= 0.08:
+            entry_id = chunks[0].metadata.get("entry_id")
+            focused = [
+                chunk
+                for chunk in chunks
+                if chunk.metadata.get("source_kind") == "admin_authored"
+                and chunk.metadata.get("entry_id") == entry_id
+            ]
     if task.startswith("Alternative or missing component:"):
         focused = [
             chunk for chunk in focused if not _PROCEDURE_SECTION_RE.search(chunk.section)

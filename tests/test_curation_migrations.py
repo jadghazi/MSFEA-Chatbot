@@ -69,6 +69,25 @@ def _payload(answer: str = "A source-backed answer.", department: str = "ece") -
     )
 
 
+def _admin_payload() -> DraftPayload:
+    return DraftPayload(
+        question="When is the new CDC advising window?",
+        answer="The CDC advising window is held every Thursday from 2 to 4 p.m.",
+        department="all",
+        programs=("internship",),
+        evidence_refs=(),
+        representative_question="When can I attend the CDC advising window?",
+        paraphrase_question="What time is weekly CDC advising?",
+        expected_evidence="Thursday from 2 to 4 p.m.",
+        change_reason="Publish a new focused CDC clarification.",
+        source_kind="admin_authored",
+        document_title="Weekly CDC advising window",
+        authority_label="MSFEA CDC",
+        effective_date="2026-09-19",
+        supporting_reference="Approved at the CDC operations meeting.",
+    )
+
+
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
 def test_guarded_schema_migrates_legacy_rows_losslessly(
     isolated_database: str,
@@ -86,7 +105,7 @@ def test_guarded_schema_migrates_legacy_rows_losslessly(
             " (9, 'Retired question?', 'Retired answer.', '', false)"
         )
 
-    assert migrate(isolated_database) == [1, 2, 3, 4]
+    assert migrate(isolated_database) == [1, 2, 3, 4, 5]
     assert migrate(isolated_database) == []
 
     with psycopg.connect(isolated_database, autocommit=True) as conn:
@@ -124,8 +143,8 @@ def test_guarded_schema_migrates_legacy_rows_losslessly(
     assert next_id is not None and next_id[0] > 9
 
     status = migration_status(isolated_database)
-    assert status["available"] == 4
-    assert [item["version"] for item in status["applied"]] == [1, 2, 3, 4]
+    assert status["available"] == 5
+    assert [item["version"] for item in status["applied"]] == [1, 2, 3, 4, 5]
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
@@ -140,9 +159,9 @@ def test_submitted_revision_payload_is_database_immutable(
         revision_id = conn.execute(
             "INSERT INTO curated_revisions ("
             " entry_id, revision_number, question, answer, department, programs,"
-            " evidence_refs, provenance_status, content_hash)"
+            " evidence_refs, provenance_status, content_hash, source_kind)"
             " VALUES (%s, 1, 'Q?', 'A.', 'ece', '[\"internship\"]',"
-            " '[]', 'submitted', 'sha256:test') RETURNING id",
+            " '[]', 'submitted', 'sha256:test', 'legacy') RETURNING id",
             (entry_id,),
         ).fetchone()[0]
 
@@ -191,8 +210,57 @@ def test_draft_and_successor_survive_without_becoming_active(
     assert curated_chunks() == [], "a full ingestion must exclude every draft revision"
 
 
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_admin_authored_source_is_stored_as_immutable_document(
+    isolated_database: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    migrate(isolated_database)
+    monkeypatch.setattr(settings, "database_url", isolated_database)
+
+    _, revision_id = create_draft(_admin_payload(), actor="Nadia CDC")
+    revision = list_revisions()[0]
+
+    assert revision.id == revision_id
+    assert revision.source_kind == "admin_authored"
+    assert revision.document_title == "Weekly CDC advising window"
+    assert revision.authority_label == "MSFEA CDC"
+    assert revision.effective_date == "2026-09-19"
+    assert revision.evidence_refs == []
+    assert revision.created_by == "Nadia CDC"
+
+    with psycopg.connect(isolated_database, autocommit=True) as conn:
+        with pytest.raises(psycopg.errors.RaiseException):
+            conn.execute(
+                "UPDATE curated_revisions SET document_title = 'Changed' WHERE id = %s",
+                (revision_id,),
+            )
+
+    with psycopg.connect(isolated_database) as conn:
+        conn.execute(
+            "UPDATE curated_entries SET active_revision_id = %s WHERE id = %s",
+            (revision.id, revision.entry_id),
+        )
+        conn.execute(
+            "UPDATE curation_revision_state SET state = 'active' WHERE revision_id = %s",
+            (revision.id,),
+        )
+    from msfea_bot.curation.service import curated_chunks
+
+    chunks = curated_chunks()
+    assert chunks
+    assert chunks[0].source_doc == (
+        f"CDC Knowledge KB-{revision.entry_id}: Weekly CDC advising window"
+    )
+    assert chunks[0].metadata["authority"] == "MSFEA CDC"
+    assert chunks[0].metadata["source_revision"] == "1"
+
+
 def test_invalid_or_missing_admin_scope_is_rejected_before_storage() -> None:
     with pytest.raises(ValueError, match="department"):
         validate_payload(_payload(department=""))
     with pytest.raises(ValueError, match="department"):
         validate_payload(_payload(department="architecture"))
+    with pytest.raises(ValueError, match="real ISO date"):
+        validate_payload(
+            DraftPayload(**{**_admin_payload().__dict__, "effective_date": "2026-02-31"})
+        )

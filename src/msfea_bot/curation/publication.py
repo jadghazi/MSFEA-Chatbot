@@ -10,11 +10,15 @@ from uuid import uuid4
 import psycopg
 from psycopg.types.json import Json
 
-from eval.metrics import evidence_present
 from msfea_bot.config import settings
 from msfea_bot.curation.revisions import Revision, list_revisions
 from msfea_bot.curation.service import revision_chunks
-from msfea_bot.curation.validation import REQUIRED_STEPS, start_validation, validation_fingerprint
+from msfea_bot.curation.validation import (
+    REQUIRED_STEPS,
+    expected_evidence_present,
+    start_validation,
+    validation_fingerprint,
+)
 from msfea_bot.observability.store import resolve_interaction
 from msfea_bot.retrieval.store import (
     acquire_kb_write_lock,
@@ -137,7 +141,7 @@ def _smoke(revision: Revision) -> tuple[bool, str]:
     ids = {chunk.id for chunk in chunks}
     if not expected_ids & ids:
         return False, "published revision was absent from uncached serving retrieval"
-    if revision.expected_evidence and not evidence_present(
+    if revision.expected_evidence and not expected_evidence_present(
         [chunk.text for chunk in chunks], revision.expected_evidence
     ):
         return False, "published supporting evidence was absent from serving retrieval"

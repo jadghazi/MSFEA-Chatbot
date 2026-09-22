@@ -13,6 +13,8 @@ client = TestClient(app)
 DRAFT = {
     "question": "q",
     "answer": "a",
+    "author_name": "CDC reviewer",
+    "source_kind": "official_reference",
     "department": "all",
     "programs": ["internship"],
     "evidence_refs": [
@@ -171,7 +173,12 @@ def test_admin_curate_saves_draft_without_invalidating_chat(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(app_module.settings, "admin_token", "secret")
-    monkeypatch.setattr(app_module, "create_draft", lambda payload, actor="admin": (7, 11))
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(
+        app_module,
+        "create_draft",
+        lambda payload, actor="admin": seen.update(payload=payload, actor=actor) or (7, 11),
+    )
     monkeypatch.setattr(
         app_module._guard,
         "invalidate",
@@ -184,10 +191,14 @@ def test_admin_curate_saves_draft_without_invalidating_chat(
     )
     assert resp.status_code == 200
     assert resp.json() == {"entry_id": 7, "revision_id": 11, "state": "draft"}
+    assert seen["actor"] == "CDC reviewer"
+    assert isinstance(seen["payload"], app_module.DraftPayload)
+    assert seen["payload"].source_kind == "official_reference"
 
 
 def test_admin_curated_lists_published(monkeypatch: pytest.MonkeyPatch) -> None:
     from datetime import datetime
+    from types import SimpleNamespace
 
     from msfea_bot.curation.store import CuratedAnswer
 
@@ -199,13 +210,54 @@ def test_admin_curated_lists_published(monkeypatch: pytest.MonkeyPatch) -> None:
             CuratedAnswer(3, "How long?", "8 weeks.", "admin", datetime(2026, 7, 23), True)
         ],
     )
+    monkeypatch.setattr(
+        app_module,
+        "list_revisions",
+        lambda: [
+            SimpleNamespace(
+                entry_id=3,
+                active=True,
+                source_kind="admin_authored",
+                document_title="Internship duration clarification",
+                authority_label="MSFEA CDC",
+                effective_date="2026-09-19",
+                supporting_reference="CDC policy meeting",
+                department="all",
+                programs=["internship"],
+                evidence_refs=[],
+            )
+        ],
+    )
     resp = client.get("/admin/api/curated", headers={"Authorization": "Bearer secret"})
     assert resp.status_code == 200
     body = resp.json()
     assert len(body) == 1
     assert body[0]["question"] == "How long?"
     assert body[0]["answer"] == "8 weeks."
+    assert body[0]["document_title"] == "Internship duration clarification"
     assert "active" not in body[0]  # internal field not exposed
+
+
+def test_admin_authored_request_requires_source_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(app_module.settings, "admin_token", "secret")
+    payload = {
+        **DRAFT,
+        "source_kind": "admin_authored",
+        "evidence_refs": [],
+        "document_title": "",
+        "authority_label": "MSFEA CDC",
+    }
+
+    response = client.post(
+        "/admin/api/curate",
+        headers={"Authorization": "Bearer secret"},
+        json=payload,
+    )
+
+    assert response.status_code == 422
+    assert "document title" in response.json()["detail"]
 
 
 def test_admin_curated_edit_ok(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -291,6 +343,10 @@ def test_admin_curation_options_are_server_populated(monkeypatch: pytest.MonkeyP
         "chem",
         "iem",
         "cee",
+    }
+    assert resp.json()["departments"][0] == {
+        "code": "all",
+        "label": "All departments — general guidance",
     }
 
 

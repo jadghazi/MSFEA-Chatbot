@@ -22,6 +22,14 @@ SCOPED_POLICY_EVIDENCE = {
     "cee": "at least one period is in civil or construction engineering",
 }
 
+SCOPED_CONTACT_EVIDENCE = {
+    "mech": ("Mechanical Engineering internship contact (MECH)", "ek15@aub.edu.lb"),
+    "ece": ("Electrical and Computer Engineering internship contact (ECE)", "rd39@aub.edu.lb"),
+    "chem": ("Chemical Engineering internship contact (CHEM)", "ai34@aub.edu.lb"),
+    "iem": ("Industrial Engineering and Management internship contact (IEM)", "mj73@aub.edu.lb"),
+    "cee": ("Civil and Environmental Engineering internship contact (CEE)", "hk50@aub.edu.lb"),
+}
+
 
 def test_every_normalized_chunk_has_explicit_department_and_program() -> None:
     """Missing scope must not silently become general during retrieval."""
@@ -54,3 +62,18 @@ def test_email_clarifications_have_reviewable_provenance(path: Path) -> None:
     assert metadata["source_id"] == "approved-internship-email-clarifications"
     assert metadata["source_type"] == "approved_clarification"
     assert metadata["approval_reference"] == "project-review-2026-09"
+
+
+def test_contact_routing_keeps_general_and_department_contacts_separate() -> None:
+    chunks = chunk_normalized_dir()
+    general = [chunk for chunk in chunks if chunk.section == "Internship contact routing"]
+
+    assert len(general) == 1
+    assert general[0].metadata.get("department") == "all"
+    assert "fcareer@aub.edu.lb" in general[0].text
+
+    for department, (section, email) in SCOPED_CONTACT_EVIDENCE.items():
+        matches = [chunk for chunk in chunks if chunk.section == section]
+        assert len(matches) == 1
+        assert matches[0].metadata.get("department") == department
+        assert email in matches[0].text

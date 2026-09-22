@@ -4,6 +4,11 @@
 **Date:** 2026-09-15
 **Decision owner:** Jad Ghazi
 
+**Scope amendment (2026-09-19):** The dashboard is also an intake for genuinely
+new CDC knowledge, not only a correction tool for answers already present in the
+official files. A focused submitted entry is therefore a first-class, database-backed
+knowledge document. It must not claim an unrelated official file as evidence.
+
 ## Context
 
 The admin curation loop accepted in ADR-0010 writes an answer and its embeddings
@@ -38,10 +43,21 @@ publication authority stay in the application.
 
 Build versioned, source-backed curation with these boundaries:
 
+- There are two explicit source paths. `official_reference` corrects or restates
+  information that already exists in a reviewed normalized file and must resolve
+  exact file/section/excerpt evidence. `admin_authored` creates one focused CDC
+  knowledge document whose immutable submitted revision is the source artifact.
+  It requires a document title, self-reported contributor name, responsible CDC
+  office/policy owner, applicability, and optional effective date/approval reference.
+- Dashboard-created documents live alongside, never overwrite, the official source
+  files. They receive stable `KB-<entry>` citation identities and revision metadata,
+  enter full validation/conflict review, and are included in reproducible ingestion
+  only while their reviewed revision is active.
+
 - A stable curated entry points to an immutable active revision. Creating or editing
   content creates a draft revision and cannot change student retrieval.
 - A publishable revision has canonical department and program/topic applicability,
-  registered source evidence and locator/hash, representative questions, change
+  resolved official evidence or admin-source identity/hash, representative questions, change
   reason, and a recorded source/conflict review for the exact validated fingerprint.
 - Every revision receives mandatory human conflict/source review, even when
   deterministic retrieval flags no potential conflict. Similarity surfaces related
@@ -64,6 +80,9 @@ Build versioned, source-backed curation with these boundaries:
 - Legacy active curated answers are preserved as legacy revisions with
   `needs_review` provenance. Missing applicability, approval, authors, or overwritten
   history are not fabricated.
+- Contributor and reviewer names entered under the shared admin token are
+  self-reported audit labels, not authenticated individual identities or proof of
+  two-person approval. Adding accounts/SSO remains outside this feature.
 - Self-hosted n8n Community uses its own database/user, persisted encryption key,
   pinned supported image, bounded retention and resources, and no public editor,
   Docker socket, shell nodes, community nodes, or unrelated integrations.

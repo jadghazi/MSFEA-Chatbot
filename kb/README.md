@@ -1,9 +1,17 @@
 # Knowledge base — source of truth
 
-This folder holds the **source documents** the bot answers from. It is the single
-source of truth (CLAUDE.md §2, §5.1). The vector store (pgvector) is *derived*
-from these files and rebuilt from them with one command — **never hand-edit the
-vector store**. Content changes = update files here → re-run ingestion.
+This folder holds the **file-backed source documents** the bot answers from. The
+second accepted source class is a focused CDC knowledge document created through
+the guarded admin workflow and stored as an immutable database revision (ADR-0026).
+The vector store (pgvector) is *derived* from reviewed normalized files plus active
+admin-authored revisions — **never hand-edit the vector store**.
+
+Official file changes still follow normalization and Git review. Dashboard-created
+knowledge never edits or masquerades as an official file: it receives a stable
+`KB-<entry>` citation identity, version history, author/authority labels, validation,
+human conflict review, and atomic activation. Database backups preserve those source
+documents and audit history; a full ingestion deterministically reads only the active
+revision of each entry.
 
 ## Structure
 
@@ -15,8 +23,8 @@ kb/
                 ingestion; reviewable so the cleaning is auditable). TRACKED.
 ```
 
-The built vector index lives in `data/` (gitignored) — it is regenerated, never
-committed.
+The built vector index lives in PostgreSQL/pgvector — it is regenerated, never
+hand-edited or committed.
 
 ## How normalization is done
 
@@ -73,11 +81,20 @@ Record every document as it lands, so freshness (`last-updated`) is trackable.
 
 ## Adding or updating content later
 
+For a change to an existing official document:
+
 1. Drop the new/updated file into `kb/source/`.
 2. Add/update its row in the manifest above.
 3. Re-run ingestion (full rebuild by default — simple and consistent).
 4. Add matching questions to the eval golden set and re-run the eval, to confirm
    the new content is retrievable and nothing regressed.
+
+For a new focused clarification or guideline that is not in an official file, use
+the admin dashboard's **Add knowledge** flow. Enter one topic, identify the
+responsible CDC authority and scope, run the isolated checks, inspect related
+passages, record a named review decision/justification, and only then publish. An
+edit creates a successor revision; retiring or replacing it never modifies files
+under `kb/source/` or `kb/normalized/`.
 
 ## Rules
 

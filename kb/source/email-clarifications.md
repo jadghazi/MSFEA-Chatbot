@@ -8,6 +8,14 @@ source_type: approved_clarification
 approval_reference: project-review-2026-09
 ---
 
+## Approved Experience course codes
+
+**Department:** All departments
+
+**Question/topic:** What is the Approved Experience course code for each department?
+
+**Answer:** The required internship course is EECE 500 for Electrical and Computer Engineering and Computer and Communications Engineering students, MECH 500 for Mechanical Engineering, CHEN 500 for Chemical Engineering, INDE 500 for Industrial Engineering and Management, and CIVE 400 for Civil and Environmental Engineering.
+
 ## Moodle access and registration
 
 **Department:** All departments
@@ -39,6 +47,14 @@ approval_reference: project-review-2026-09
 **Question/topic:** I entered the wrong dates or supervisor in a Moodle form.
 
 **Answer:** Email the coordinator with the correct information and identify the form. The incorrect submission may need to be reopened or deleted before resubmission.
+
+### Moodle completion status (ECE)
+
+**Department:** Electrical and Computer Engineering (ECE)
+
+**Question/topic:** Why does Moodle show a red X instead of Done after I submitted?
+
+**Answer:** Check the activity-completion requirements and confirm that every required step is satisfied. If the status remains unchanged, send the course coordinator a screenshot showing the submission and the red X.
 
 ## Problems or changes during an internship
 
@@ -76,6 +92,14 @@ approval_reference: project-review-2026-09
 
 **Answer:** The approved duration must still be completed. Inform the coordinator before the deadline. Submit the Proposal when the internship is confirmed and the Notice of Arrival after starting. Final documents may be due within one week after completion, but the coordinator must confirm the current-term and graduation arrangements.
 
+### Submission timing after an internship extension (ECE)
+
+**Department:** Electrical and Computer Engineering (ECE)
+
+**Question/topic:** My internship was extended after I completed eight weeks. Should I submit the final documents now or wait until the internship officially ends?
+
+**Answer:** If an EECE500 internship is extended beyond eight weeks, ask the course coordinator whether the final documents should be submitted after the required eight weeks or after the internship officially ends. This is especially important when the extension includes additional tasks, results, or learning that should be reflected in the final submissions.
+
 ## Employer and research documentation exceptions
 
 **Department:** All departments
@@ -91,6 +115,18 @@ approval_reference: project-review-2026-09
 **Question/topic:** My supervisor is unavailable to complete a required form or letter.
 
 **Answer:** Ask another authorized company representative, such as HR or the supervisor's manager, whether they can issue the official document. Contact the coordinator before substituting a different signatory or document.
+
+### Early or temporarily delayed employer letter (ECE)
+
+**Department:** Electrical and Computer Engineering (ECE)
+
+**Question/topic:** Can a summer-graduating student request the employer letter before the internship finishes?
+
+**Answer:** Confirm the timing with the course team. If an early letter is accepted, it should state the actual start date, expected end date, and work or tasks completed, subject to the current Moodle requirements.
+
+**Question/topic:** Can an official supervisor email be used while the signed employer letter is delayed?
+
+**Answer:** Only with course-team approval. An official email may be accepted temporarily during an exceptional delay, but the final signed employer letter must still be submitted when instructed.
 
 ## Forms for a second internship
 
@@ -176,6 +212,14 @@ approval_reference: project-review-2026-09
 
 **Answer:** Incomplete petitions may be rejected. Check that the request clearly explains the exception and includes the official company or supervisor documents, duration, work description, required approvals, and the required CDC copy.
 
+### Summer-graduate deadlines (ECE)
+
+**Department:** Electrical and Computer Engineering (ECE)
+
+**Question/topic:** Do summer-graduating students have earlier internship-course deadlines?
+
+**Answer:** Summer-graduating students may receive earlier deadlines because their grades must be processed sooner. Follow the current graduating-student Moodle announcement or course-coordinator email.
+
 ## Course completion requirements (ECE)
 
 **Department:** Electrical and Computer Engineering (ECE)
@@ -192,7 +236,7 @@ approval_reference: project-review-2026-09
 
 **Question/topic:** How does a six-week internship plus two-week research arrangement work?
 
-**Answer:** The six company weeks and two faculty-research weeks (two weeks of research with an MSFEA faculty member) must be approved and documented.
+**Answer:** The six company weeks and two faculty-research weeks (2 weeks of research with an MSFEA faculty member) must be approved and documented.
 
 ### Progress reporting for a 6+2 arrangement
 
@@ -232,7 +276,7 @@ approval_reference: project-review-2026-09
 
 **Question/topic:** Can I take another summer course while completing EECE500?
 
-**Answer:** Yes, with the required EECE500 and departmental approval. Only when the student takes another summer course, the student must complete ten weeks of approved internship: either ten weeks at one company or six weeks at one company plus four weeks at another company. This ten-week rule does not apply when the student is not taking another summer course. Both companies require the applicable forms and employer documentation.
+**Answer:** Yes, with the required EECE500, departmental, and employer approval. Only when the student takes another summer course, the student must complete ten weeks of approved internship: either ten weeks at one company or six weeks at one company plus four weeks at another company. The other course must be scheduled before 8:30 AM or after 4:30 PM. This ten-week rule does not apply when the student is not taking another summer course. Both companies require the applicable forms and employer documentation.
 
 ## Final Report requirements (ECE)
 
@@ -250,6 +294,10 @@ approval_reference: project-review-2026-09
 
 **Answer:** Keep the required Moodle report structure. Within it, discuss technical and administrative activities; engineering or computing projects; specific applications of engineering, science, and mathematics; informed judgment about relevant global, economic, environmental, and societal impacts; and how new knowledge was acquired and applied. These are content expectations, not a replacement section structure.
 
+**Question/topic:** What should I do if company information is confidential?
+
+**Answer:** Do not disclose confidential or proprietary information. Confirm with the supervisor what may be included, anonymize sensitive details where possible, and explain the technical work at an appropriate level. Contact the course coordinator if confidentiality prevents completion of a required section.
+
 ## Reports for multiple approved components (ECE)
 
 **Department:** Electrical and Computer Engineering (ECE)
@@ -265,3 +313,65 @@ approval_reference: project-review-2026-09
 **Question/topic:** What is the maximum duration of the EECE500 Final Voice-over Presentation?
 
 **Answer:** The presentation may contain no more than five slides, with up to three minutes of recorded audio per slide. The maximum narrated duration is therefore 15 minutes, and students do not need to use the full time. This ECE-specific Voice-over Presentation limit applies instead of the general presentation-duration guidance.
+
+**Question/topic:** Should I submit a narrated PowerPoint or a screen-recorded video?
+
+**Answer:** Submit a PowerPoint with audio recorded on the slides unless the current Moodle instructions explicitly request another format.
+
+## Approved Experience course billing
+
+**Department:** All departments
+
+**Question/topic:** Is the internship course paid, or how much am I billed for it?
+
+**Answer:** The Approved Experience internship course uses 1-credit billing.
+
+## Internship contact routing
+
+**Department:** All departments
+
+**Question/topic:** Who should I contact about my internship?
+
+**Answer:** For a general internship or CDC-process question, contact the MSFEA Career Development Center at fcareer@aub.edu.lb. For a course, Moodle, approval, report, deadline, or department-specific requirement, contact the internship course instructor for your department.
+
+### Mechanical Engineering internship contact (MECH)
+
+**Question/topic:** Who is my Mechanical Engineering internship contact?
+
+**Answer:** The Mechanical Engineering internship course contact is Elie Kfoury at ek15@aub.edu.lb.
+
+### Electrical and Computer Engineering internship contact (ECE)
+
+**Question/topic:** Who is my Electrical and Computer Engineering internship contact?
+
+**Answer:** The Electrical and Computer Engineering internship course contact is Rafika Dinnawi at rd39@aub.edu.lb.
+
+### Chemical Engineering internship contact (CHEM)
+
+**Question/topic:** Who is my Chemical Engineering internship contact?
+
+**Answer:** The Chemical Engineering internship course contact is Adnan Itani at ai34@aub.edu.lb.
+
+### Industrial Engineering and Management internship contact (IEM)
+
+**Question/topic:** Who is my Industrial Engineering and Management internship contact?
+
+**Answer:** The Industrial Engineering and Management internship course contact is Maysaa Jaafar at mj73@aub.edu.lb.
+
+### Civil and Environmental Engineering internship contact (CEE)
+
+**Question/topic:** Who is my Civil and Environmental Engineering internship contact?
+
+**Answer:** The Civil and Environmental Engineering internship course contact is Hiam Khoury at hk50@aub.edu.lb.
+
+## Current dates and daily internship records
+
+**Department:** All departments
+
+**Question/topic:** Where should I check the exact registration, payment, and course deadlines for the current summer?
+
+**Answer:** Check the University Registrar's summer-term calendar and the course Moodle page for the exact dates announced for the current year.
+
+**Question/topic:** Do I have to submit my daily internship log?
+
+**Answer:** Keep a daily record of your work, methods, skills, meetings, and observations. The daily log does not need to be submitted unless requested, but it should help you prepare the Progress Report, Final Report, and presentation.

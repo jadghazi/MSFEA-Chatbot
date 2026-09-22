@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -36,6 +36,11 @@ class DraftPayload:
     expected_evidence: str
     change_reason: str
     linked_feedback_ids: tuple[int, ...] = ()
+    source_kind: str = "official_reference"
+    document_title: str = ""
+    authority_label: str = ""
+    effective_date: str | None = None
+    supporting_reference: str = ""
 
 
 @dataclass(frozen=True)
@@ -58,6 +63,11 @@ class Revision:
     content_hash: str
     created_by: str
     created_at: datetime
+    source_kind: str
+    document_title: str
+    authority_label: str
+    effective_date: str | None
+    supporting_reference: str
     state: str
     state_reason: str
     active: bool
@@ -83,6 +93,8 @@ def source_registry() -> tuple[str, ...]:
 
 
 def validate_payload(payload: DraftPayload) -> DraftPayload:
+    if payload.source_kind not in {"official_reference", "admin_authored"}:
+        raise ValueError("source kind must be an official reference or admin-authored knowledge")
     allowed_departments = {"all", *(department.code for department in departments.DEPARTMENTS)}
     if payload.department not in allowed_departments:
         raise ValueError("department must be 'all' or a known MSFEA department")
@@ -91,8 +103,10 @@ def validate_payload(payload: DraftPayload) -> DraftPayload:
         raise ValueError("programs must contain reviewed CDC program IDs")
     if len(set(payload.programs)) != len(payload.programs):
         raise ValueError("programs must not contain duplicates")
-    if not payload.evidence_refs:
-        raise ValueError("at least one supporting source reference is required")
+    if payload.source_kind == "official_reference" and not payload.evidence_refs:
+        raise ValueError("an existing-source correction needs at least one source reference")
+    if payload.source_kind == "admin_authored" and payload.evidence_refs:
+        raise ValueError("admin-authored knowledge must not claim an existing document as its source")
     for evidence in payload.evidence_refs:
         if not all((evidence.source_doc.strip(), evidence.locator.strip(), evidence.excerpt.strip())):
             raise ValueError("every evidence reference needs source, locator, and excerpt")
@@ -106,6 +120,25 @@ def validate_payload(payload: DraftPayload) -> DraftPayload:
     )
     if any(not value.strip() for value in required):
         raise ValueError("draft text and review fields must not be blank")
+    if payload.source_kind == "admin_authored":
+        if not payload.document_title.strip():
+            raise ValueError("a focused knowledge document title is required")
+        if not payload.authority_label.strip():
+            raise ValueError("the responsible CDC office or policy owner is required")
+        if payload.effective_date:
+            try:
+                date.fromisoformat(payload.effective_date)
+            except ValueError as exc:
+                raise ValueError("effective date must be a real ISO date (YYYY-MM-DD)") from exc
+    elif any(
+        (
+            payload.document_title.strip(),
+            payload.authority_label.strip(),
+            payload.effective_date,
+            payload.supporting_reference.strip(),
+        )
+    ):
+        raise ValueError("existing-source corrections must use their declared evidence references")
     if any(item <= 0 for item in payload.linked_feedback_ids):
         raise ValueError("linked feedback IDs must be positive")
     if len(set(payload.linked_feedback_ids)) != len(payload.linked_feedback_ids):
@@ -142,9 +175,10 @@ def _insert_revision(
         " entry_id, revision_number, predecessor_revision_id, question, answer,"
         " department, programs, evidence_refs, representative_question,"
         " paraphrase_question, expected_evidence, change_reason, linked_feedback_ids,"
-        " provenance_status, content_hash, created_by)"
+        " provenance_status, content_hash, created_by, source_kind, document_title,"
+        " authority_label, effective_date, supporting_reference)"
         " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,"
-        " 'submitted', %s, %s) RETURNING id",
+        " 'submitted', %s, %s, %s, %s, %s, %s, %s) RETURNING id",
         (
             entry_id,
             revision_number,
@@ -161,6 +195,11 @@ def _insert_revision(
             Json(list(payload.linked_feedback_ids)),
             fingerprint,
             actor,
+            payload.source_kind,
+            payload.document_title.strip(),
+            payload.authority_label.strip(),
+            payload.effective_date or None,
+            payload.supporting_reference.strip(),
         ),
     ).fetchone()
     if row is None:
@@ -223,8 +262,9 @@ def list_revisions() -> list[Revision]:
             " r.question, r.answer, r.department, r.programs, r.evidence_refs,"
             " r.representative_question, r.paraphrase_question, r.expected_evidence,"
             " r.change_reason, r.linked_feedback_ids, r.provenance_status, r.content_hash,"
-            " r.created_by, r.created_at, s.state, s.reason, e.active_revision_id = r.id,"
-            " p.question, p.answer"
+            " r.created_by, r.created_at, r.source_kind, r.document_title,"
+            " r.authority_label, r.effective_date::text, r.supporting_reference,"
+            " s.state, s.reason, e.active_revision_id = r.id, p.question, p.answer"
             " FROM curated_revisions r"
             " JOIN curated_entries e ON e.id = r.entry_id"
             " JOIN curation_revision_state s ON s.revision_id = r.id"
@@ -251,11 +291,16 @@ def list_revisions() -> list[Revision]:
             content_hash=str(row[15]),
             created_by=str(row[16]),
             created_at=row[17],
-            state=str(row[18]),
-            state_reason=str(row[19]),
-            active=bool(row[20]),
-            predecessor_question=str(row[21]) if row[21] is not None else None,
-            predecessor_answer=str(row[22]) if row[22] is not None else None,
+            source_kind=str(row[18]),
+            document_title=str(row[19]),
+            authority_label=str(row[20]),
+            effective_date=str(row[21]) if row[21] is not None else None,
+            supporting_reference=str(row[22]),
+            state=str(row[23]),
+            state_reason=str(row[24]),
+            active=bool(row[25]),
+            predecessor_question=str(row[26]) if row[26] is not None else None,
+            predecessor_answer=str(row[27]) if row[27] is not None else None,
         )
         for row in rows
     ]

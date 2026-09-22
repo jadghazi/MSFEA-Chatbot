@@ -28,18 +28,18 @@
   // starts clean. It is never written to localStorage or a server-side session.
   var conversation = [];
 
-  // Kept in the browser, not on the server: the bot stays stateless, and a coarse
-  // one-of-five attribute never becomes a stored student profile (CLAUDE.md §7).
-  var DEPT_KEY = "msfea_department";
+  // Kept only in this page's memory, not in browser storage or on the server. A
+  // refresh/new tab therefore starts a new session with no silent preselection.
+  var selectedDepartment = null;
 
   // Codes MUST match msfea_bot/departments.py. The server re-validates and ignores
   // anything unknown, so a stale copy here degrades to an unscoped answer.
   var DEPARTMENTS = [
-    { code: "mech", abbr: "MECH", label: "Mechanical" },
-    { code: "ece", abbr: "ECE", label: "Electrical & Computer" },
-    { code: "chem", abbr: "CHEM", label: "Chemical" },
-    { code: "iem", abbr: "IEM", label: "Industrial & Management" },
-    { code: "cee", abbr: "CEE", label: "Civil & Environmental" },
+    { code: "mech", abbr: "MECH", label: "Mechanical Engineering" },
+    { code: "ece", abbr: "ECE", label: "Electrical and Computer Engineering" },
+    { code: "chem", abbr: "CHEM", label: "Chemical Engineering" },
+    { code: "iem", abbr: "IEM", label: "Industrial Engineering and Management" },
+    { code: "cee", abbr: "CEE", label: "Civil and Environmental Engineering" },
   ];
 
   // Shown on the empty state. Real answerable questions from the KB, so a click
@@ -243,11 +243,6 @@
 .msfea-dept:focus-visible{outline:2px solid var(--m);outline-offset:1px}
 .msfea-dept b{display:block;font-size:13px;color:var(--m-dark);font-weight:700;line-height:1.2}
 .msfea-dept span{display:block;font-size:10.5px;color:var(--ink-faint);margin-top:3px;line-height:1.25}
-.msfea-skip{
-  display:block;width:100%;background:none;border:none;cursor:pointer;
-  font-size:12px;color:var(--ink-faint);text-decoration:underline;padding:7px;
-}
-.msfea-skip:hover{color:var(--m-dark)}
 /* current department, in the header — clicking it reopens the picker */
 .msfea-deptpill{
   background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;
@@ -483,10 +478,10 @@
     '<div class="msfea-experience-bar"><span>Anonymous feedback helps improve this pilot.</span><button class="msfea-exp-link msfea-exp-open" type="button">Rate your experience</button></div>' +
     '<div class="msfea-foot">' +
       '<div class="msfea-inputwrap">' +
-        '<textarea rows="1" maxlength="' + MAX_CHARS + '" ' +
+        '<textarea rows="1" maxlength="' + MAX_CHARS + '" disabled ' +
           'placeholder="Ask about internships, CO-OP, IAESTE…" ' +
           'aria-label="Type your question"></textarea>' +
-        '<button class="msfea-send" type="button" aria-label="Send question">' + ICON_SEND + "</button>" +
+        '<button class="msfea-send" type="button" aria-label="Send question" disabled>' + ICON_SEND + "</button>" +
       "</div>" +
       '<div class="msfea-meta">' +
         '<span class="msfea-hint">Enter to send · Shift+Enter for a new line</span>' +
@@ -537,24 +532,7 @@
   /* ---------- department ---------- */
 
   function getDept() {
-    try {
-      return sessionStorageSafe("get");
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // localStorage can throw in private mode / blocked third-party contexts, and the
-  // widget is embedded on a page we don't control — so every access is guarded.
-  function sessionStorageSafe(op, value) {
-    try {
-      if (op === "get") return window.localStorage.getItem(DEPT_KEY);
-      if (op === "set") window.localStorage.setItem(DEPT_KEY, value);
-      if (op === "clear") window.localStorage.removeItem(DEPT_KEY);
-    } catch (e) {
-      /* storage unavailable — the widget still works, just without memory */
-    }
-    return null;
+    return selectedDepartment;
   }
 
   function deptLabel(code) {
@@ -577,9 +555,9 @@
   }
 
   function setDept(code) {
-    if (code) sessionStorageSafe("set", code);
-    else sessionStorageSafe("clear");
+    selectedDepartment = deptLabel(code) ? code : null;
     refreshDeptPill();
+    syncComposerState();
   }
 
   function showDepartmentPicker() {
@@ -587,14 +565,15 @@
     // The visible chat is reset when the student changes department; its hidden
     // retrieval context must reset at the same time.
     conversation = [];
+    completedAnswers = 0;
+    setDept(null);
     var w = el("msfea-welcome");
     w.appendChild(el("msfea-hi", "Welcome"));
     w.appendChild(
       el(
         "msfea-hi-sub",
-        "Some internship rules differ by department, so tell me which one you're " +
-          "in and I'll give you the rules that actually apply to you — and the right " +
-          "person to contact if I can't help."
+        "Choose your department before asking a question. Answers and escalation " +
+          "contacts can differ by department."
       )
     );
     w.appendChild(el("msfea-sg-h", "Your department"));
@@ -608,21 +587,11 @@
         setDept(d.code);
         msgs.innerHTML = "";
         showWelcome();
+        input.focus();
       });
       grid.appendChild(b);
     });
     w.appendChild(grid);
-    var skip = document.createElement("button");
-    skip.className = "msfea-skip";
-    skip.type = "button";
-    skip.textContent = "Skip — I'm not sure / other";
-    skip.addEventListener("click", function () {
-      // Recorded as an explicit choice so we don't ask again every visit.
-      setDept("skipped");
-      msgs.innerHTML = "";
-      showWelcome();
-    });
-    w.appendChild(skip);
     msgs.appendChild(w);
   }
 
@@ -980,9 +949,20 @@
     counter.classList.toggle("over", n >= MAX_CHARS);
   }
 
-  function setBusy(busy) {
-    sendBtn.disabled = busy;
-    input.disabled = busy;
+  var requestBusy = false;
+  function syncComposerState() {
+    var hasDepartment = Boolean(deptLabel(getDept()));
+    sendBtn.disabled = requestBusy || !hasDepartment;
+    input.disabled = requestBusy || !hasDepartment;
+    panel.querySelector(".msfea-deptpill").disabled = requestBusy;
+    input.placeholder = hasDepartment
+      ? "Ask about internships, CO-OP, IAESTE…"
+      : "Select your department to ask a question";
+  }
+
+  function setBusy(isBusy) {
+    requestBusy = isBusy;
+    syncComposerState();
   }
 
   function resetChat() {
@@ -1130,6 +1110,8 @@
   }
 
   function send(preset, isRetry) {
+    var dept = getDept();
+    if (!deptLabel(dept)) return;
     var q = (preset !== undefined ? preset : input.value).trim();
     if (!q || sendBtn.disabled) return;
     clearWelcome();
@@ -1140,9 +1122,6 @@
     setBusy(true);
     showTyping();
 
-    // "skipped" is a local marker meaning "don't ask again", not a department —
-    // send null so the server answers unscoped.
-    var dept = getDept();
     var history = conversation.slice(-MAX_HISTORY_MESSAGES);
     fetch(API + "/chat", {
       method: "POST",
@@ -1150,7 +1129,7 @@
       body: JSON.stringify({
         question: q,
         session_id: sessionId,
-        department: dept && dept !== "skipped" ? dept : null,
+        department: dept,
         history: history,
       }),
     })

@@ -88,17 +88,31 @@ def curated_chunks() -> list[Chunk]:
 
 def revision_chunks(revision: Revision, *, candidate: bool = False) -> list[Chunk]:
     """Window one immutable revision with explicit publish-safe applicability."""
-    header = f"Q: {revision.question[:_MAX_HEADER_CHARS]}"
+    source_label = (
+        f"CDC Knowledge KB-{revision.entry_id}: {revision.document_title}"
+        if revision.source_kind == "admin_authored"
+        else CURATED_SOURCE
+    )
+    header = (
+        f"Knowledge document: {revision.document_title}\nQ: {revision.question[:_MAX_HEADER_CHARS]}"
+        if revision.source_kind == "admin_authored"
+        else f"Q: {revision.question[:_MAX_HEADER_CHARS]}"
+    )
     windows = split_windows(_as_lines(revision.answer), DEFAULT_MAX_CHARS, DEFAULT_OVERLAP)
     prefix = "candidate" if candidate else "curated"
     metadata = {
-        "source": CURATED_SOURCE,
+        "source": source_label,
+        "source_kind": revision.source_kind,
         "author": revision.created_by,
+        "authority": revision.authority_label,
         "program": ", ".join(revision.programs),
         "entry_id": str(revision.entry_id),
         "revision_id": str(revision.id),
+        "source_revision": str(revision.revision_number),
         "provenance_status": revision.provenance_status,
     }
+    if revision.effective_date:
+        metadata["effective_date"] = revision.effective_date
     # Legacy rows had no reviewed applicability. Omitting the key preserves their
     # pre-migration retrieval behaviour while clearly retaining needs_review; only
     # submitted revisions can carry an explicit department claim.
@@ -108,8 +122,8 @@ def revision_chunks(revision: Revision, *, candidate: bool = False) -> list[Chun
         Chunk(
             id=f"{prefix}-{revision.entry_id}-r{revision.revision_number}-{index:02d}",
             text=f"{header}\nA: {window}",
-            source_doc=CURATED_SOURCE,
-            section=revision.question[:80],
+            source_doc=source_label,
+            section=revision.document_title[:80] or revision.question[:80],
             metadata=metadata,
         )
         for index, window in enumerate(windows)

@@ -56,7 +56,7 @@ A: The CDC can provide a signed letter. Request it using the letter request form
 
 MSFEA hosts the IAESTE program (International Association for the Exchange of Students for Technical Experience) through its membership. IAESTE lets students fully immerse in a new country and culture through an internship abroad, supporting both personal and professional development. As an exchange program, MSFEA CDC also hosts incoming international students for internships in Lebanon.
 
-**How to get involved:** MSFEA students can join the IAESTE Club to participate in its activities and internship opportunities.
+**How to get involved / How do I join IAESTE?** MSFEA students can join the IAESTE Club to participate in its activities and internship opportunities.
 **Contact:** iaeste.lebanon@aub.edu.lb
 
 ### Hosting an IAESTE intern (for employers)
@@ -178,6 +178,10 @@ A: Two stages: (1) complete the co-op program qualification form on the CDC webs
 ---
 
 ## Career Readiness Resources
+
+### Career+
+Students asking about Career+ can use the official MSFEA CDC Career+ page:
+https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx
 
 ### CV and Cover Letter Guidelines
 A resume is a concise, written summary of your education, work experience, credentials, and accomplishments — essentially a "self-advertisement" that helps you land an interview. Cover letters and resumes are typically required for professional job applications.

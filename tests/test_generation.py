@@ -163,6 +163,51 @@ def test_ordinary_sufficiency_context_omits_unstated_conditional_section() -> No
     ) == [general, conditional]
 
 
+def test_dominant_reviewed_admin_source_gets_focused_generation_context() -> None:
+    reviewed = RetrievedChunk(
+        id="curated-7-r2-00",
+        text="Q: How many credits? A: The internship counts for 6 academic credits.",
+        source_doc="CDC Knowledge KB-7: Internship credits",
+        section="Internship credits",
+        score=0.90,
+        metadata={"source_kind": "admin_authored", "entry_id": "7"},
+    )
+    distracting = RetrievedChunk(
+        id="official",
+        text="A separate CO-OP course is billed as 3 credits.",
+        source_doc="coop.md",
+        section="Fees",
+        score=0.74,
+    )
+
+    assert _answer_context("How many internship credits?", [reviewed, distracting], []) == [
+        reviewed
+    ]
+
+
+def test_admin_source_does_not_hide_comparably_ranked_evidence() -> None:
+    reviewed = RetrievedChunk(
+        id="curated-7-r2-00",
+        text="Reviewed answer.",
+        source_doc="CDC Knowledge KB-7",
+        section="Rule",
+        score=0.90,
+        metadata={"source_kind": "admin_authored", "entry_id": "7"},
+    )
+    comparable = RetrievedChunk(
+        id="official",
+        text="Comparable official evidence.",
+        source_doc="official.md",
+        section="Rule",
+        score=0.84,
+    )
+
+    assert _answer_context("What is the rule?", [reviewed, comparable], []) == [
+        reviewed,
+        comparable,
+    ]
+
+
 def test_parse_refusal_marker_escalates() -> None:
     ans = parse_answer(f"  {REFUSAL_MARKER}  ", CHUNKS)
     assert ans.refused is True

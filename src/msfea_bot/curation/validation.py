@@ -29,7 +29,7 @@ from msfea_bot.ingestion.chunking import Chunk, chunk_normalized_dir
 from msfea_bot.ingestion.embeddings import model_fingerprint
 from msfea_bot.retrieval.store import index_chunks, indexed_generation, retrieval_depth, search
 
-VALIDATOR_VERSION = "publication-guard-v1"
+VALIDATOR_VERSION = "publication-guard-v2-admin-sources"
 REQUIRED_STEPS = (
     "schema_source",
     "candidate_index",
@@ -45,6 +45,16 @@ _LONG_NUMBER = re.compile(r"\b\d[\d\s().-]{5,}\d\b")
 _WORD = re.compile(r"[a-z0-9]+")
 _NEGATION = re.compile(r"\b(no|not|never|cannot|can't|prohibited|forbidden)\b", re.I)
 _NUMBER = re.compile(r"\b\d+(?:\.\d+)?%?\b")
+_NUMBER_WITH_UNIT = re.compile(
+    r"\b(\d+(?:\.\d+)?)\s*((?:credits?|weeks?|months?|hours?|days?|pages?|words?)\b|%)",
+    re.I,
+)
+_GENERIC_CONFLICT_WORDS = {
+    "a", "all", "an", "and", "are", "as", "at", "be", "because", "by", "can",
+    "course", "do", "does", "experience", "for", "from", "guidance", "in", "internship",
+    "is", "it", "may", "must", "of", "on", "or", "program", "registered", "student",
+    "students", "the", "their", "this", "to", "when", "with", "your",
+}
 
 
 def _connect() -> Any:
@@ -58,6 +68,43 @@ def get_revision(revision_id: int) -> Revision | None:
 def _normalized(value: str) -> str:
     value = re.sub(r"[*_`]", "", value).casefold()
     return re.sub(r"\s+", " ", value).strip()
+
+
+def expected_evidence_present(chunk_texts: list[str], evidence: str) -> bool:
+    """Match ordered evidence words without making punctuation a failure mode."""
+    needle = " ".join(_WORD.findall(evidence.casefold()))
+    return bool(needle) and any(
+        needle in " ".join(_WORD.findall(text.casefold())) for text in chunk_texts
+    )
+
+
+def _number_units(value: str) -> dict[str, set[str]]:
+    found: dict[str, set[str]] = {}
+    for number, raw_unit in _NUMBER_WITH_UNIT.findall(value):
+        unit = raw_unit.casefold()
+        if unit != "%" and unit.endswith("s"):
+            unit = unit[:-1]
+        found.setdefault(unit, set()).add(number)
+    return found
+
+
+def _opposite_polarity_claim(answer: str, chunk: str, answer_words: set[str]) -> bool:
+    """Require shared claim words in the particular sentence carrying the opposite polarity."""
+    answer_negative = bool(_NEGATION.search(answer))
+    for segment in re.split(r"(?:\r?\n)+|(?<=[.!?])\s+", chunk):
+        if bool(_NEGATION.search(segment)) == answer_negative:
+            continue
+        segment_words = set(_WORD.findall(_normalized(segment))) - _GENERIC_CONFLICT_WORDS
+        if len(answer_words & segment_words) >= 2:
+            return True
+    return False
+
+
+def _same_scope_for_flag(candidate: RetrievedLike, department: str | None) -> bool:
+    """General guidance is context for a scoped exception, not an automatic conflict."""
+    candidate_scope = candidate.metadata.get("department", "all") or "all"
+    requested_scope = department or "all"
+    return candidate_scope == requested_scope
 
 
 def _file_hash(path: Path) -> str:
@@ -176,8 +223,27 @@ def _source_check(revision: Revision) -> tuple[bool, dict[str, Any]]:
     root = Path(__file__).resolve().parents[3] / "kb" / "normalized"
     errors: list[str] = []
     resolved: list[dict[str, str]] = []
+    if revision.source_kind == "admin_authored":
+        if not revision.document_title.strip():
+            errors.append("Focused knowledge document title is required")
+        if not revision.authority_label.strip():
+            errors.append("Responsible CDC office or policy owner is required")
+        resolved.append(
+            {
+                "source_doc": f"CDC Knowledge KB-{revision.entry_id}: {revision.document_title}",
+                "locator": revision.document_title,
+                "source_hash": revision.content_hash,
+                "evidence_hash": "sha256:"
+                + hashlib.sha256(_normalized(revision.answer).encode()).hexdigest(),
+                "authority": revision.authority_label,
+            }
+        )
+    elif revision.source_kind != "official_reference":
+        errors.append("Legacy knowledge must be replaced by a reviewed successor before validation")
+
     evidence_text = "\n".join(reference["excerpt"] for reference in revision.evidence_refs)
-    for reference in revision.evidence_refs:
+    references = revision.evidence_refs if revision.source_kind == "official_reference" else []
+    for reference in references:
         source_doc = reference["source_doc"]
         path = root / source_doc
         if path.parent != root or not path.is_file() or path.suffix.lower() != ".md":
@@ -207,12 +273,13 @@ def _source_check(revision: Revision) -> tuple[bool, dict[str, Any]]:
     allowed_identifiers = set(_EMAIL.findall(evidence_text)) | set(
         _LONG_NUMBER.findall(evidence_text)
     )
-    authored = "\n".join((revision.question, revision.answer, revision.change_reason))
-    unexpected = (
-        set(_EMAIL.findall(authored)) | set(_LONG_NUMBER.findall(authored))
-    ) - allowed_identifiers
-    if unexpected:
-        errors.append("Draft contains identifiers not present in its reviewed evidence")
+    if revision.source_kind == "official_reference":
+        authored = "\n".join((revision.question, revision.answer, revision.change_reason))
+        unexpected = (
+            set(_EMAIL.findall(authored)) | set(_LONG_NUMBER.findall(authored))
+        ) - allowed_identifiers
+        if unexpected:
+            errors.append("Draft contains identifiers not present in its reviewed evidence")
     valid_scope = revision.department in {
         "all",
         *(department.code for department in departments.DEPARTMENTS),
@@ -223,13 +290,6 @@ def _source_check(revision: Revision) -> tuple[bool, dict[str, Any]]:
     if not revision.programs or any(program not in allowed_programs for program in revision.programs):
         errors.append("Missing or invalid reviewed program")
     return not errors, {"errors": errors, "resolved_evidence": resolved}
-
-
-def _overlapping_scope(candidate: RetrievedLike, department: str | None) -> bool:
-    candidate_scope = candidate.metadata.get("department", "all")
-    if department == "all":
-        return candidate_scope == "all"
-    return candidate_scope in {"", "all", department}
 
 
 class RetrievedLike(Protocol):
@@ -261,7 +321,9 @@ def review_candidates(
     flags: list[dict[str, Any]] = []
     answer_plain = _normalized(answer)
     answer_words = set(_WORD.findall(answer_plain))
-    for related_chunk in found.values():
+    answer_units = _number_units(answer)
+    answer_distinctive = answer_words - _GENERIC_CONFLICT_WORDS
+    for related_chunk in sorted(found.values(), key=lambda item: item.score, reverse=True):
         scope = related_chunk.metadata.get("department", "all") or "all"
         item = {
             "id": related_chunk.id,
@@ -276,16 +338,27 @@ def review_candidates(
         chunk_words = set(_WORD.findall(chunk_plain))
         overlap = len(answer_words & chunk_words) / max(1, len(answer_words))
         exact = answer_plain in chunk_plain or chunk_plain in answer_plain
-        polarity_differs = bool(_NEGATION.search(answer)) != bool(
-            _NEGATION.search(related_chunk.text)
+        polarity_differs = _opposite_polarity_claim(
+            answer, related_chunk.text, answer_distinctive
+        )
+        chunk_units = _number_units(related_chunk.text)
+        shared_units = set(answer_units) & set(chunk_units)
+        unit_numbers_differ = any(
+            answer_units[unit] != chunk_units[unit] for unit in shared_units
         )
         answer_numbers = set(_NUMBER.findall(answer))
         chunk_numbers = set(_NUMBER.findall(related_chunk.text))
-        numbers_differ = bool(answer_numbers and chunk_numbers and answer_numbers != chunk_numbers)
+        high_overlap_numbers_differ = bool(
+            overlap >= 0.55
+            and answer_numbers
+            and chunk_numbers
+            and answer_numbers != chunk_numbers
+        )
+        numbers_differ = unit_numbers_differ or high_overlap_numbers_differ
         if exact:
             flags.append({"candidate_id": related_chunk.id, "reason": "exact_duplicate"})
-        elif _overlapping_scope(related_chunk, department) and overlap >= 0.25 and (
-            polarity_differs or numbers_differ
+        elif _same_scope_for_flag(related_chunk, department) and (
+            numbers_differ or polarity_differs
         ):
             flags.append(
                 {
@@ -294,6 +367,10 @@ def review_candidates(
                     if polarity_differs
                     else "possible_numeric_conflict",
                 }
+            )
+        elif _same_scope_for_flag(related_chunk, department) and overlap >= 0.90:
+            flags.append(
+                {"candidate_id": related_chunk.id, "reason": "possible_duplicate"}
             )
     return related, flags
 
@@ -345,14 +422,22 @@ def _positive_retrieval(revision: Revision, dsn: str) -> tuple[bool, dict[str, A
             database_url=dsn,
         )
         ids = [chunk.id for chunk in chunks]
-        evidence_hit = evidence_present(
+        evidence_hit = expected_evidence_present(
             [chunk.text for chunk in chunks], revision.expected_evidence or ""
         )
-        passed = bool(expected_ids & set(ids)) and evidence_hit and passes_similarity_gate(
-            chunks, settings.similarity_threshold
-        )
+        candidate_hit = bool(expected_ids & set(ids))
+        similarity_passed = passes_similarity_gate(chunks, settings.similarity_threshold)
+        passed = candidate_hit and evidence_hit and similarity_passed
         cases.append(
-            {"question": question, "passed": passed, "retrieved_ids": ids, "evidence_hit": evidence_hit}
+            {
+                "question": question,
+                "passed": passed,
+                "retrieved_ids": ids,
+                "candidate_hit": candidate_hit,
+                "evidence_hit": evidence_hit,
+                "similarity_passed": similarity_passed,
+                "expected_evidence": revision.expected_evidence or "",
+            }
         )
     return bool(cases) and all(case["passed"] for case in cases), {"cases": cases}
 
@@ -381,7 +466,11 @@ def _unknown_department(revision: Revision, dsn: str) -> tuple[bool, dict[str, A
     candidate_chunks = [chunk for chunk in chunks if chunk.id in expected]
     if not candidate_chunks:
         return False, {"error": "candidate absent from unknown-department retrieval"}
-    prompt = build_prompt(question, chunks)
+    # Validate the candidate's own display context. Other top-k passages may be
+    # department-scoped and legitimately carry an applicability label; checking
+    # the whole mixed prompt would therefore reject a general candidate for an
+    # unrelated scoped passage.
+    prompt = build_prompt(question, candidate_chunks)
     if revision.department == "all":
         passed = "Applicability:" not in prompt
     else:
@@ -695,15 +784,18 @@ def record_human_review(
     allowed = {"confirm_no_conflict", "valid_scoped_exception", "reject", "replace_outdated"}
     if decision not in allowed:
         raise ValueError("invalid review decision")
-    if decision == "replace_outdated" and revision.predecessor_revision_id is None:
+    if decision == "replace_outdated" and (
+        revision.source_kind != "admin_authored" or revision.predecessor_revision_id is None
+    ):
         raise ValueError(
-            "an outdated Markdown rule must be corrected and re-ingested in its canonical source"
+            "supersession is only available for a successor of an admin-authored source; "
+            "official files must be corrected through reviewed file ingestion"
         )
     if validation_fingerprint(revision) != fingerprint:
         raise ValueError("validation is stale; rerun before review")
     with _connect() as conn:
         results = conn.execute(
-            "SELECT step, status FROM curation_validation_results WHERE run_id = %s",
+            "SELECT step, status, details FROM curation_validation_results WHERE run_id = %s",
             (run_id,),
         ).fetchall()
         statuses = {str(row[0]): str(row[1]) for row in results}
@@ -713,6 +805,16 @@ def record_human_review(
             raise ValueError("all validation steps must finish before human review")
         if any(status != "passed" for status in statuses.values()) and decision != "reject":
             raise ValueError("human review cannot waive failed automatic checks")
+        conflict_details: dict[str, Any] = next(
+            (row[2] for row in results if str(row[0]) == "conflict_review"), {}
+        )
+        has_flags = bool(conflict_details.get("flags", []))
+        if has_flags and decision == "confirm_no_conflict":
+            raise ValueError(
+                "potential conflicts or duplicates require an exception, supersession, or rejection"
+            )
+        if not has_flags and decision == "valid_scoped_exception":
+            raise ValueError("a scoped-exception decision requires a flagged related rule")
         row = conn.execute(
             "INSERT INTO curation_human_reviews (revision_id, validation_run_id, fingerprint,"
             " decision, reviewer_label, reason) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",

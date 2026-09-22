@@ -18,6 +18,25 @@ The user has selected n8n for practical workflow coordination and experience wit
 - Preserve the bot's current answer style, model, grounded citations, refusals, and follow-up handling.
 - Perform targeted KB repairs, with isolated evaluation and rollback, rather than a wholesale content rewrite.
 
+### Scope clarification accepted on 2026-09-19
+
+The dashboard supports two deliberately separate kinds of focused entry:
+
+1. A correction/restatement backed by an existing reviewed official source. It must
+   identify the exact normalized document, section, and excerpt.
+2. New CDC knowledge that is not present in an existing file. The immutable submitted
+   revision is itself a first-class, database-backed source document with a stable
+   `KB-<entry>` identity, title, contributor label, responsible authority, scope,
+   effective date, and optional approval/supporting reference.
+
+Each entry covers one question, rule, or guideline. Staff split unrelated claims so
+duplicates, contradictions, revisions, citations, and retirement remain inspectable.
+Both kinds run through candidate comparison, isolated evaluation, named human review,
+and atomic publication. Potential duplicates or conflicts require a recorded decision
+and justification. Dashboard writes never edit the official files. The shared admin
+token authorizes access; entered contributor/reviewer names are self-reported audit
+labels, not authenticated identities. No account system is added.
+
 ### Protect the current bot
 
 Freeze the current model (`gemini-flash-lite-latest`), prompt, sampling configuration, retrieval ranking/depth/threshold, chunking strategy, and normal student LLM-call count for this feature. An alias can change upstream, so record the resolved model/version when available during evaluations. Do not tune generation to compensate for a metadata defect.

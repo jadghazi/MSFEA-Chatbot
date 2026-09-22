@@ -6,6 +6,105 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-22 — September guideline and staff KB clarifications
+
+- Added only the useful new September-guideline details to the approved clarification
+  source: current-year dates come from the Registrar summer calendar and Moodle, and
+  the daily work log is retained but submitted only when requested.
+- Added 1-credit billing, a general CDC-versus-course-contact routing rule, and five
+  department-scoped instructor contacts. Added the official Career+ reference without
+  duplicating its content. Source Word documents were not changed.
+- Added nine focused golden cases. The disposable index contains 229 chunks; vague
+  contact wording retrieves the selected department's instructor plus the general CDC
+  route without another department's contact. Final context recall is 87/88 (99%),
+  with only the existing `internship-vs-coop` miss; threshold passed 129/129 valid
+  queries, synthesis/scope 27/27, publication guard 9/9, and conflict coverage 7/7.
+- Ruff and strict mypy passed; the full suite passed 277 tests with the two existing
+  dependency deprecation warnings. Knowledge Studio, deployment, Oracle, model,
+  prompt, chunking, threshold, and top-k were untouched.
+
+## 2026-09-22 — Workbook-derived KB clarification update
+
+- Added only previously missing facts from the reviewed RAG FAQ workbook to the
+  file-backed approved email clarifications, keeping the source and normalized
+  copies identical and placing each fact beside its existing topic.
+- Added the five department course-code mappings as one genuinely general mapping;
+  scoped Moodle, employer-letter, deadline, concurrent-course, confidentiality,
+  extension, and VOP details to ECE. Existing and conflicting workbook material was
+  not copied.
+- Added 12 focused golden retrieval cases. The disposable index now contains 219
+  chunks; production-depth context recall is 79/80 (99%), with only the existing
+  `internship-vs-coop` miss. Threshold passed 121/121 valid queries, synthesis/scope
+  passed 27/27, and the publication guard passed 9/9.
+- Ruff passed and the full suite passed 276 tests with the two existing dependency
+  deprecation warnings. Knowledge Studio, the student-answer configuration, official
+  documents, deployment, and Oracle were untouched.
+
+## 2026-09-22 — Required student department selection
+
+- Replaced the student widget's persisted/optional department choice with an
+  explicit page-session gate containing exactly the five supported MSFEA
+  departments. The composer stays disabled until selection, and changing scope
+  clears both rendered messages and bounded follow-up context before re-enabling it.
+- Preserved backend compatibility for missing/invalid department input. Known
+  departments still retrieve general `all` guidance plus their matching scope and
+  exclude every other department; no model, prompt, threshold, top-k, chunking, or
+  official source changed.
+- Clarified Knowledge Studio's admin option as **All departments — general
+  guidance**, added the positive-policy-claim warning, and removed the automatic
+  `all` default for a new entry. Immutable revisions, validation, review, n8n, and
+  guarded publication remain unchanged.
+- Verification: JavaScript syntax and 6 widget tests passed; Ruff passed; strict
+  mypy passed across 51 source files; 276 Python tests passed. Retrieval remained
+  67/68 (98.5%, the existing `internship-vs-coop` miss), threshold 109/109 valid
+  accepted and 11/20 off-topic blocked, synthesis/scope 27/27, publication guard
+  9/9, and conflict coverage 7/7 with zero known false-positive fixtures.
+- A loopback browser run verified the five-choice gate, disabled/enabled composer,
+  general and CEE-specific submissions, and department-change reset with no console
+  errors. Gemini returned HTTP 503/504 for both answer calls after bounded retries;
+  the existing safe CEE-routed temporary-failure response displayed correctly.
+  Oracle was untouched.
+
+## 2026-09-19 — Focused admin-authored knowledge sources
+
+- Revised guarded curation so a missing answer can become its own immutable,
+  versioned CDC source instead of falsely citing an official file. Kept a separate
+  exact-evidence path for corrections that really are backed by existing documents.
+- Added source title, self-reported contributor, responsible authority, effective
+  date, supporting reference, stable `KB-<entry>` citation identity, and database
+  constraints that prevent mixing the two provenance models.
+- Added direct **Add knowledge** intake as well as feedback-driven intake. The UI now
+  exposes Draft → Validate/Compare → Named Review → Publish, related passages and
+  flag reasons, recorded reviewer justification, and published source metadata.
+- Added duplicate-like overlap flags in addition to exact/numeric/negation findings;
+  flagged drafts require an explicit scoped justification, admin-source supersession,
+  or rejection. Official files remain unchanged by dashboard actions.
+- Updated ADR-0026, the implementation plan, and KB maintenance documentation for
+  the two accepted source classes and the limits of shared-token name attribution.
+- Verified JavaScript parsing, Ruff, strict mypy, isolated migration/source tests,
+  and the full **273-test** suite. Started a separate loopback-only review stack,
+  ingested 210 file-backed chunks, and verified app/worker/n8n health plus the
+  rendered Knowledge Studio with no browser console warnings. Oracle was untouched.
+- Followed a real “6 internship credits” entry through correction, validation,
+  named review, publication smoke, and student chat. Fixed punctuation-sensitive
+  verification (`6 credits.` versus `6 credits in ...`) and a mixed-context bug that
+  rejected general guidance when another retrieved passage was department-scoped.
+- Replaced the raw validation dump with seven plain-language checks, a visible next
+  action, bounded/collapsed related guidance, friendly finding labels, and an inline
+  immutable correction flow. Technical IDs remain available only in a disclosure.
+- Reduced conflict noise: only same-scope numeric/polarity claims are flagged,
+  numeric comparisons require a shared unit or strong lexical overlap, and valid
+  department exceptions remain visible without being called contradictions. The
+  frozen conflict gate now has 7/7 candidate coverage and zero known false-positive
+  flags.
+- Live chat found one model response that ignored the top-ranked reviewed source
+  (0.90) for a weaker passage. Added a narrow generation-context guard: only a
+  clearly dominant reviewed admin source is focused; comparably ranked evidence is
+  retained. The exact question and paraphrase then returned the 6-credit answer with
+  the stable `CDC Knowledge KB-1` citation. This change does not alter official-file
+  context selection. Final gates: Ruff clean, strict mypy clean, and **276 tests
+  passed** in the disposable database. Oracle remained untouched.
+
 ## 2026-09-16 — KB publication guard Step 6 quality review
 
 - Passed Ruff, strict mypy across source/eval, all widget guards and the full 260-test
