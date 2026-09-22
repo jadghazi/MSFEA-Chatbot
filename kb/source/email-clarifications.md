@@ -322,7 +322,7 @@ approval_reference: project-review-2026-09
 
 **Department:** All departments
 
-**Question/topic:** Is the internship course paid, or how much am I billed for it?
+**Question/topic:** Is the internship course paid, how much should I pay for it, what does it cost, or what tuition or fee is charged?
 
 **Answer:** The Approved Experience internship course uses 1-credit billing.
 
