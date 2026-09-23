@@ -6,6 +6,19 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-23 — Career+ grounding and named-topic follow-up repair
+
+- Expanded the existing general Career+ section from a bare URL into a concise,
+  source-grounded overview of its purpose, four development areas, certification
+  flow, and official MSFEA CDC reference page.
+- Reproduced why `what about career+` failed after an internship turn: the retrieval
+  query mixed in the prior topic and pushed Career+ out of the top seven. Named
+  `what/how about` subjects now search as the current topic, while genuinely
+  referential forms such as `what about that?` still use conversation history.
+- The exact reported follow-up now retrieves the complete Career+ passage at rank 1
+  with cosine similarity 0.8347. Focused conversation, golden-set, and chunking tests
+  passed 34/34; no model, prompt, threshold, top-k, or official source changed.
+
 ## 2026-09-23 — Atomic Q&A chunking repair
 
 - Diagnosed a live billing refusal as a structural retrieval defect: windowing had

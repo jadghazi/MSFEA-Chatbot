@@ -180,8 +180,19 @@ A: Two stages: (1) complete the co-op program qualification form on the CDC webs
 ## Career Readiness Resources
 
 ### Career+
-Students asking about Career+ can use the official MSFEA CDC Career+ page:
-https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx
+
+**Question/topic:** What is Career+? What does Career+ do? Tell me about Career+.
+
+**Answer:** Career+ is an MSFEA career-development and certification initiative. It
+helps students explore career options, align their career goals with their
+aspirations, navigate career uncertainty, gain relevant skills, and begin career
+planning from the start of their studies. Its certification paths recognize
+development across four areas: academic work, applied experience, extracurricular
+activities, and career readiness. To become certified, complete the requirements
+for a specific Career+ path, apply for certification through the form linked on the
+official page, and then receive feedback and certification. For the current paths,
+requirements, documentation, and application form, use the official MSFEA CDC
+Career+ page: https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx
 
 ### CV and Cover Letter Guidelines
 A resume is a concise, written summary of your education, work experience, credentials, and accomplishments — essentially a "self-advertisement" that helps you land an interview. Cover letters and resumes are typically required for professional job applications.

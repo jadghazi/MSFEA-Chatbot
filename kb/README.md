@@ -72,7 +72,7 @@ Record every document as it lands, so freshness (`last-updated`) is trackable.
 
 | File | What it is | Source / received from | Last updated | Notes |
 |------|-----------|------------------------|--------------|-------|
-| `msfea_cdc_kb.md` | Curated CDC knowledge base (internship, IAESTE, CO-OP, career readiness, forms); includes FAQs | Provided by student (batch 1) | 2026-07 | Clean markdown, section-split already. Broader than internship-only. |
+| `msfea_cdc_kb.md` | Curated CDC knowledge base (internship, IAESTE, CO-OP, career readiness, forms); includes FAQs | Provided by student (batch 1); Career+ section verified against the official MSFEA CDC page | 2026-09 | Clean markdown, section-split already. Broader than internship-only. |
 | `Summer training guidelines - June 2026.docx` | Official Approved Experience course guidelines | Provided (batch 1) | Jun 2026 | Authoritative for course rules. Contains department contacts + department-specific rules. Tables need clean extraction (python-docx). |
 | `Internship Templates and Rubrics- Shared with Committee.docx` | Report/presentation templates + rubrics | Provided (batch 1) | 2026 | Strip committee cover note; keep student-facing templates/rubrics. |
 | `MSFEA_AUB_Advanced Experience template font.pptx` | Final-presentation slide template (8 slides) | Provided (batch 1) | 2022 | Template artifact; extract section structure only. |

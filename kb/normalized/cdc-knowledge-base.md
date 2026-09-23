@@ -3,7 +3,7 @@ title: MSFEA CDC Student Knowledge Base
 source: msfea_cdc_kb.md
 type: knowledge-base
 program: internship, co-op, iaeste, career-readiness, full-time, mentorship
-last_updated: 2026-07
+last_updated: 2026-09
 department: all
 ---
 
@@ -93,8 +93,19 @@ which is the authoritative source for CO-OP questions.
 ## Career Readiness Resources
 
 ### Career+
-Students asking about Career+ can use the official MSFEA CDC Career+ page:
-https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx
+
+**Question/topic:** What is Career+? What does Career+ do? Tell me about Career+.
+
+**Answer:** Career+ is an MSFEA career-development and certification initiative. It
+helps students explore career options, align their career goals with their
+aspirations, navigate career uncertainty, gain relevant skills, and begin career
+planning from the start of their studies. Its certification paths recognize
+development across four areas: academic work, applied experience, extracurricular
+activities, and career readiness. To become certified, complete the requirements
+for a specific Career+ path, apply for certification through the form linked on the
+official page, and then receive feedback and certification. For the current paths,
+requirements, documentation, and application form, use the official MSFEA CDC
+Career+ page: https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx
 
 ### CV and Cover Letter Guidelines
 A resume is a concise, written summary of your education, work experience, credentials, and accomplishments — essentially a "self-advertisement" that helps you land an interview. Cover letters and resumes are typically required for professional job applications.

@@ -16,12 +16,12 @@ MAX_HISTORY_MESSAGES = 4
 MAX_HISTORY_MESSAGE_CHARS = 1200
 
 _REFERENCE_RE = re.compile(
-    r"\b(it|its|that|this|they|them|their|those|these|one|ones|there|then)\b",
+    r"\b(it|its|that|this|they|them|their|those|these|one|ones|other|another|"
+    r"option|alternative|former|latter|there|then)\b",
     re.IGNORECASE,
 )
-_CONTINUATION_RE = re.compile(
-    r"^(and|also|but|okay|ok|so|then|what about|how about)\b", re.IGNORECASE
-)
+_CONTINUATION_RE = re.compile(r"^(and|also|but|okay|ok|so|then)\b", re.IGNORECASE)
+_WHAT_ABOUT_RE = re.compile(r"^(?:and\s+)?(?:what|how) about\b", re.IGNORECASE)
 _SHORT_QUESTION_RE = re.compile(r"^(where|when|who|why|how)\b", re.IGNORECASE)
 _CONFIRMATION_RE = re.compile(
     r"^(?:so(?: basically)?|in other words|just to confirm)[,:]?\s+(.+)", re.IGNORECASE
@@ -60,7 +60,7 @@ def frame_confirmation(question: str, history: Sequence[ConversationMessage] | N
 
 def answer_task(question: str, history: Sequence[ConversationMessage] | None) -> str:
     """A small source-independent task cue; contains no CDC topics or policy facts."""
-    if re.match(r"^(?:and\s+)?(?:what|how) about\b", question.strip(), re.I):
+    if _WHAT_ABOUT_RE.match(question.strip()) and is_contextual_followup(question, history):
         return (
             "Alternative or missing component: answer what the newly mentioned option or "
             "component means for the student's original plan. Explain it in at most two "
@@ -180,6 +180,16 @@ def is_contextual_followup(
         return False
 
     text = " ".join(question.strip().split())
+    what_about = _WHAT_ABOUT_RE.match(text)
+    if what_about:
+        subject = text[what_about.end() :]
+        substantive_subject = re.sub(r"\b(?:the|a|an|my|our)\b", "", subject, flags=re.I)
+        # A newly named subject ("what about Career+?") is a topic switch, not an
+        # elliptical reference. Numeric shorthand ("what about 6+2?") and explicit
+        # references ("what about the other option?") still need prior context.
+        return not re.search(r"[A-Za-z]", substantive_subject) or bool(
+            _REFERENCE_RE.search(subject)
+        )
     if _REFERENCE_RE.search(text) or _CONTINUATION_RE.search(text):
         return True
     return bool(_SHORT_QUESTION_RE.search(text) and len(text.split()) <= 5)

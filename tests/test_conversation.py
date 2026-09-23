@@ -31,8 +31,16 @@ def test_independent_topic_switch_omits_history() -> None:
     assert format_prompt_history(question, _history()) == ""
 
 
-def test_explicit_continuation_uses_history() -> None:
-    assert is_contextual_followup("What about CO-OP?", _history())
+def test_named_what_about_topic_switch_omits_history() -> None:
+    for question in ("What about CO-OP?", "what about Career+"):
+        assert not is_contextual_followup(question, _history())
+        assert build_retrieval_query(question, _history()) == question
+        assert format_prompt_history(question, _history()) == ""
+
+
+def test_referential_what_about_still_uses_history_for_retrieval() -> None:
+    query = build_retrieval_query("What about that?", _history())
+    assert "support letter" in query
 
 
 def test_what_about_cue_answers_the_option_without_unasked_paperwork() -> None:
