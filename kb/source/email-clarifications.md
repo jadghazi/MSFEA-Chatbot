@@ -322,9 +322,9 @@ approval_reference: project-review-2026-09
 
 **Department:** All departments
 
-**Question/topic:** Is the internship course paid, how much should I pay for it, what does it cost, or what tuition or fee is charged?
+**Question/topic:** How many credits is the internship course? Is it 1 credit or 90 credits? Is the internship course paid, how much should I pay for it, what does it cost, or what tuition or fee is charged?
 
-**Answer:** The Approved Experience internship course uses 1-credit billing.
+**Answer:** The Approved Experience internship course itself is a 1-credit course and uses 1-credit billing. Separately, a student must have completed a minimum of 90 credits to be eligible to register for the internship course. The 90 completed credits are a registration eligibility requirement; they are not the credit value of the internship course or the number of credits billed for it.
 
 ## Internship contact routing
 

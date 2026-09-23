@@ -6,6 +6,23 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-23 — Internship credit-value clarification
+
+- Expanded the approved email clarification so the RAG keeps two different numbers
+  together: Approved Experience is a 1-credit course with 1-credit billing, while
+  90 completed credits is the separate minimum required to be eligible to register.
+- Added two focused regression questions, including the ambiguous student wording
+  “How many credits is the internship?” The clarified passage is now ranks 1 and 2
+  for that wording, and a local live answer returned the 1-credit value plus the
+  separate 90-credit eligibility threshold with the correct citation.
+- The disposable index contains 230 chunks. Retrieval context recall is 90/91
+  (98.9%), with only the existing `internship-vs-coop` miss; threshold passed
+  132/132 valid questions, synthesis/scope 27/27, publication guard 9/9, and
+  conflict coverage 7/7.
+- Ruff and strict mypy passed; the full suite passed 277 tests with the two existing
+  dependency deprecation warnings. Prompt, model, chunking, ranking, thresholds,
+  top-k, Knowledge Studio, official documents, Git, and Oracle were untouched.
+
 ## 2026-09-22 — September guideline and staff KB clarifications
 
 - Added only the useful new September-guideline details to the approved clarification
