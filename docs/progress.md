@@ -6,6 +6,24 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-09-23 — Atomic Q&A chunking repair
+
+- Diagnosed a live billing refusal as a structural retrieval defect: windowing had
+  separated a high-scoring `Question/topic` line from its `Answer`, so the request
+  passed the similarity gate and spent one provider call without receiving the fact.
+- Changed the general chunker so every structured Question/topic + Answer pair is an
+  atomic retrieval unit, just as tables already are. Added chunking tests covering
+  oversized and adjacent pairs plus four natural billing paraphrases; this is not a
+  query-specific routing or prompt rule.
+- All seven tested billing/credit phrasings retrieve the complete passage at rank 1
+  (scores 0.7361–0.8348). The clean index has 212 complete chunks instead of 230
+  partly duplicated fragments. Context recall is 94/95 (98.9%), with only the
+  existing `internship-vs-coop` miss; threshold passed 136/136 valid questions,
+  synthesis/scope 27/27, publication guard 9/9, and conflict coverage 7/7.
+- Ruff and strict mypy passed; the full suite passed 279 tests with the two existing
+  dependency deprecation warnings. The model, prompt, threshold, ranking, top-k,
+  department isolation, Knowledge Studio, and official documents were unchanged.
+
 ## 2026-09-23 — Internship credit-value clarification
 
 - Expanded the approved email clarification so the RAG keeps two different numbers

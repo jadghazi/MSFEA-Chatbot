@@ -85,14 +85,12 @@ def _slug(text: str) -> str:
 
 
 def _unbreakable_lines(lines: list[str]) -> set[int]:
-    """Line indices where a window boundary must NOT fall: inside a markdown table.
+    """Line indices where a window boundary must NOT fall.
 
-    A table is one unit of meaning. Splitting it produces several near-identical
-    fragments that carry the same heading, compete with each other for the same
-    top-k slots, and make a complete answer impossible: measured on the real KB, the
-    9-row deliverables table became 6 chunks, only 4 could fit, and the fragment
-    holding the "Progress Report" row ranked 18th — so that deliverable silently
-    vanished from the answer.
+    Tables and structured Question/topic + Answer entries are atomic units of
+    meaning. Splitting either one can retrieve a label or question without the facts
+    needed to answer it. Oversized atomic units are deliberately allowed to exceed
+    ``max_chars`` rather than become incomplete retrieval candidates.
 
     Cutting *at* the header row is fine (that starts a fresh table); cutting anywhere
     after it is not.
@@ -108,6 +106,25 @@ def _unbreakable_lines(lines: list[str]) -> set[int]:
             i = end
         else:
             i += 1
+
+    # Email clarifications contain many explicit Question/topic + Answer pairs.
+    # Keep each complete pair in one retrieval chunk. In particular, a long question
+    # line must never become a high-scoring candidate whose answer was moved to the
+    # next chunk: that can pass the similarity gate, spend an LLM request, and still
+    # refuse despite the KB containing the answer.
+    question_starts = [
+        index
+        for index, line in enumerate(lines)
+        if line.strip().casefold().startswith("**question/topic:**")
+    ]
+    for position, start in enumerate(question_starts):
+        end = question_starts[position + 1] if position + 1 < len(question_starts) else len(lines)
+        has_answer = any(
+            line.strip().casefold().startswith("**answer:**")
+            for line in lines[start + 1 : end]
+        )
+        if has_answer:
+            blocked.update(range(start + 1, end))
     return blocked
 
 

@@ -47,6 +47,44 @@ def test_small_section_stays_one_chunk() -> None:
     assert len(chunks) == 1
 
 
+def test_question_and_answer_stay_in_the_same_chunk() -> None:
+    """A retrievable question must never be separated from its answer."""
+    question = "**Question/topic:** " + "How much does this required course cost? " * 8
+    answer = "**Answer:** The required course uses 1-credit billing."
+    md = (
+        "---\ntitle: Doc\n---\n## Course billing\n"
+        "**Department:** All departments\n\n"
+        f"{question}\n\n{answer}"
+    )
+
+    chunks = chunk_markdown(md, "doc.md", max_chars=180, overlap=40)
+    owners = [chunk for chunk in chunks if question in chunk.text]
+
+    assert len(owners) == 1
+    assert answer in owners[0].text
+    assert len(owners[0].text) > 180, "an atomic Q&A may exceed the normal window size"
+
+
+def test_separate_question_answer_pairs_can_split_between_pairs() -> None:
+    first_question = "**Question/topic:** First question " + "one " * 30
+    first_answer = "**Answer:** First answer."
+    second_question = "**Question/topic:** Second question " + "two " * 30
+    second_answer = "**Answer:** Second answer."
+    md = (
+        "---\ntitle: Doc\n---\n## Questions\n"
+        f"{first_question}\n\n{first_answer}\n\n"
+        f"{second_question}\n\n{second_answer}"
+    )
+
+    chunks = chunk_markdown(md, "doc.md", max_chars=180, overlap=40)
+
+    first_owner = next(chunk for chunk in chunks if first_question in chunk.text)
+    second_owner = next(chunk for chunk in chunks if second_question in chunk.text)
+    assert first_answer in first_owner.text
+    assert second_answer in second_owner.text
+    assert first_owner is not second_owner
+
+
 TABLE_MD = """---
 title: Doc
 ---
