@@ -67,11 +67,17 @@ def main() -> None:
                     history=[ConversationMessage(**m) for m in row.get("history", [])],
                 )
             evidence = row.get("evidence_all", [])
+            supplied_context = (
+                prompts[0].split("\nContext:\n", 1)[1].split("\n\nQuestion:", 1)[0]
+                if prompts else ""
+            )
             record = {**row, "chunks": [asdict(c) for c in chunks], "prompts": prompts,
                       "model": settings.llm_model, "retrieval_only": args.retrieval_only,
                       "answer": asdict(result),
                       "evidence_hits": [evidence_present([c.text for c in chunks], e)
-                                        for e in evidence]}
+                                        for e in evidence],
+                      "context_hits": [evidence_present([supplied_context], e)
+                                       for e in evidence]}
             stream.write(json.dumps(record, ensure_ascii=False) + "\n")
             stream.flush()
             print(json.dumps({"id": row["id"], "hits": record["evidence_hits"],

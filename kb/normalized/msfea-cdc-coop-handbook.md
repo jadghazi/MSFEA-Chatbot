@@ -167,6 +167,10 @@ CDC Advisor. A deadline is attached to each step, for both the "Summer + Fall" a
 
 ### Application timeline (deadlines)
 
+Students should apply to the CO-OP program at least one year before their intended
+co-op start date. The application step is in July for the Summer + Fall track or
+February for the Spring + Summer track.
+
 The process follows one of two tracks depending on the intake — **Summer + Fall**
 or **Spring + Summer** — with the same steps offset by roughly five months.
 
@@ -294,6 +298,12 @@ dates of the position and a brief description of the work), and finally a **Co-o
 Employer Experience Feedback Form**.
 
 ## CO-OP FAQs
+
+**Q: Does passing FEAA 500 remove the department's Approved Experience requirement?**
+A: Yes. The CO-OP handbook says students who pass FEAA 500 are no longer required to take their department's Approved Experience / Professional Training course.
+
+**Q: Do I need approval to join CO-OP or use a self-found placement?**
+A: The department's co-op academic advisor reviews and accepts or rejects applications to the CO-OP program in consultation with the department or its Undergraduate Committee. Acceptance into the program does not guarantee a placement. For a self-found CO-OP opportunity, submit the Proposal of Cooperative Education and Experiential Learning Form and contact the co-op CDC Advisor to seek approval.
 
 **Q: Is CO-OP mandatory?**
 A: No, it is an **optional program** students can choose to enroll in.

@@ -16,6 +16,14 @@ approval_reference: project-review-2026-09
 
 **Answer:** The required internship course is EECE 500 for Electrical and Computer Engineering and Computer and Communications Engineering students, MECH 500 for Mechanical Engineering, CHEN 500 for Chemical Engineering, INDE 500 for Industrial Engineering and Management, and CIVE 400 for Civil and Environmental Engineering.
 
+### EECE 500 internship duration (ECE)
+
+**Department:** Electrical and Computer Engineering (ECE)
+
+**Question/topic:** How long is the EECE 500 (EECE500) internship course?
+
+**Answer:** EECE 500 is the Approved Experience internship course for ECE students. The standard Approved Experience minimum is eight full weeks of approved training, typically 320 work hours. When an ECE student takes another summer course, the approved clarification requires ten weeks of internship with the specified approvals and schedule conditions; see "Taking another summer course (ECE)" below. The duration of the internship is separate from the length of the Final Training Report.
+
 ## Moodle access and registration
 
 **Department:** All departments
@@ -232,6 +240,12 @@ approval_reference: project-review-2026-09
 
 **Department:** Electrical and Computer Engineering (ECE)
 
+### Six company weeks alone
+
+**Question/topic:** Are six company internship weeks alone enough for EECE 500?
+
+**Answer:** No. The standard Approved Experience minimum is eight full weeks of approved training. For ECE, one documented way to complete a six-week company placement is two weeks of research with an MSFEA faculty member; the company and research components must be approved and documented. The ten-week requirement described under "Taking another summer course (ECE)" applies when the student is taking another summer course, not to every six-week placement.
+
 ### 6+2 arrangement definition
 
 **Question/topic:** How does a six-week internship plus two-week research arrangement work?
@@ -246,9 +260,9 @@ approval_reference: project-review-2026-09
 
 ### Combining two company internships
 
-**Question/topic:** Can two internships be combined to meet the duration requirement?
+**Question/topic:** Can two company internships be combined for EECE500, such as six weeks at one company and four at another, when I am not taking another summer course?
 
-**Answer:** A combined arrangement requires prior written approval or petition. Each internship must be documented and technically relevant, and the total approved duration must satisfy EECE500 requirements. Use the second-internship forms when instructed.
+**Answer:** A combined arrangement requires prior written approval or petition; a six-plus-four company arrangement is not automatically accepted. Each internship must be documented and technically relevant, and the total approved duration must satisfy EECE500 requirements. Without another summer course, the standard minimum is eight full weeks, not a mandatory ten weeks. Use the second-internship forms when instructed. The separate ten-week rule for a student taking another summer course specifically lists six weeks at one company plus four at another.
 
 ### 4+4 company-internship split
 
@@ -276,7 +290,7 @@ approval_reference: project-review-2026-09
 
 **Question/topic:** Can I take another summer course while completing EECE500?
 
-**Answer:** Yes, with the required EECE500, departmental, and employer approval. Only when the student takes another summer course, the student must complete ten weeks of approved internship: either ten weeks at one company or six weeks at one company plus four weeks at another company. The other course must be scheduled before 8:30 AM or after 4:30 PM. This ten-week rule does not apply when the student is not taking another summer course. Both companies require the applicable forms and employer documentation.
+**Answer:** Yes, with the required EECE500, departmental, and employer approval. If the student is enrolled in another class during the same summer as EECE500, that is another summer course: eight internship weeks are not enough. The student must complete ten weeks of approved internship: either ten weeks at one company or six weeks at one company plus four weeks at another company. The other course must be scheduled before 8:30 AM or after 4:30 PM. This ten-week rule does not apply when the student is not taking another summer course. Both companies require the applicable forms and employer documentation.
 
 ## Final Report requirements (ECE)
 

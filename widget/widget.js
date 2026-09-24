@@ -20,7 +20,7 @@
   // Must match ChatRequest.question's max_length in the API, so the student is
   // told before the request is rejected rather than after.
   var MAX_CHARS = 2000;
-  var MAX_HISTORY_MESSAGES = 4;
+  var MAX_HISTORY_MESSAGES = 8;
   var MAX_HISTORY_MESSAGE_CHARS = 1200;
 
   // Same-page, same-widget memory only. This is intentionally a normal variable:

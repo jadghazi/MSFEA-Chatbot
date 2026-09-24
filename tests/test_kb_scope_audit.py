@@ -73,7 +73,7 @@ def test_contact_routing_keeps_general_and_department_contacts_separate() -> Non
     assert "fcareer@aub.edu.lb" in general[0].text
 
     for department, (section, email) in SCOPED_CONTACT_EVIDENCE.items():
-        matches = [chunk for chunk in chunks if chunk.section == section]
+        matches = [chunk for chunk in chunks if chunk.section.rsplit(" > ", 1)[-1] == section]
         assert len(matches) == 1
         assert matches[0].metadata.get("department") == department
         assert email in matches[0].text

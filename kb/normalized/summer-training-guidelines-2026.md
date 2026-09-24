@@ -241,7 +241,7 @@ Students may be asked to revise reports that do not meet department expectations
 
 - Students completing a 6-week internship must either complete 2 weeks of research with an MSFEA faculty member or a minimum 4-week internship at another company.
 - Students completing a 6+2 arrangement must submit a separate research report for the research component.
-- Final training report and final presentation are due within one week after the completion of the internship, based on each student's internship end date.
+- ECE-specific due date: both the final training report and final presentation are due within one week after the completion of the internship, based on each student's internship end date. The general first-two-weeks-of-Fall presentation schedule above describes typical presentations across departments; it is not the ECE due date.
 
 ### Chemical Engineering (CHEM)
 

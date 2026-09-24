@@ -140,15 +140,15 @@ def test_known_department_prompt_does_not_add_unknown_scope_instructions() -> No
     assert "do not refuse merely because the student's department is unknown" not in prompt
 
 
-def test_option_followup_context_omits_unasked_procedure_sections() -> None:
+def test_option_followup_retains_requested_procedure_evidence() -> None:
     meaning = RetrievedChunk("meaning", "Six plus two meaning", "doc", "Options", 0.9)
     report = RetrievedChunk("report", "Submit a report", "doc", "Report requirements", 0.8)
     history = [ConversationMessage("user", "Are six weeks enough?")]
-    assert _answer_context("what about the other option", [meaning, report], history) == [meaning]
-    assert _answer_context("what report is required?", [meaning, report], history) == [meaning, report]
+    assert _answer_context("what about the other option", [meaning, report], history) == [meaning, report]
+    assert _answer_context("what about its report?", [meaning, report], history) == [meaning, report]
 
 
-def test_ordinary_sufficiency_context_omits_unstated_conditional_section() -> None:
+def test_condition_evidence_survives_paraphrase() -> None:
     general = RetrievedChunk(
         id="general", text="GENERAL", source_doc="rules.md",
         section="Duration options", score=0.9,
@@ -157,7 +157,8 @@ def test_ordinary_sufficiency_context_omits_unstated_conditional_section() -> No
         id="conditional", text="CONDITIONAL", source_doc="rules.md",
         section="Taking another course", score=0.8,
     )
-    assert _answer_context("Is six weeks enough?", [general, conditional], []) == [general]
+    assert _answer_context("Is six weeks enough?", [general, conditional], []) == [general, conditional]
+    assert _answer_context("Can I do eight weeks while enrolled in a class?", [general, conditional], []) == [general, conditional]
     assert _answer_context(
         "Is six weeks enough while taking another course?", [general, conditional], []
     ) == [general, conditional]

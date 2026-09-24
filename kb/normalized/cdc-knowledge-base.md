@@ -44,6 +44,9 @@ Request it through the CDC letter request form: https://forms.office.com/Pages/R
 The CDC will get back to you as soon as possible.
 
 ### Internship FAQs
+**Q: What is the internship?**
+A: The Approved Experience internship is the required engineering training course. It gives students a chance to apply classroom learning to real engineering and design challenges, gain professional experience and workplace skills, and explore career paths. It is normally completed during the summer before the final year; the standard minimum is eight full weeks of approved training.
+
 **Q: When should I start applying for internships?**
 A: Except for consulting internships, the CDC usually sends guidelines around the beginning of the academic year (October) for the following summer's internship. It is never too early to prepare — work on your CV and cover letter and explore options in advance.
 

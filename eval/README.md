@@ -35,6 +35,16 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   preservation sample and prints per-department results.
 - `conflict_review_set.jsonl` + `conflict_gate.py` — independently measure review
   candidate coverage and report heuristic false-positive flags.
+- `answer_quality_focus.jsonl` — small frozen set for ordinary wording, course versus
+  report duration, follow-ups, conditions, topic switches, and refusal. CI's
+  `synthesis_gate.py` checks every required phrase in retrieved chunks and in the
+  exact context built for the model. `answer_quality_holdout.jsonl`,
+  `answer_quality_unseen.jsonl`, and `answer_quality_final_holdout.jsonl` record
+  later validation probes.
+- `six_week_policy_set.jsonl` — distinguishes the ordinary ECE eight-week rule,
+  approved 6+2 research, two-company approval, and the ten-week exception when
+  taking another summer course. The synthesis gate checks that each case's
+  required evidence reaches the model; live answers still need semantic review.
 
 ## What is wired vs. pending
 
@@ -50,6 +60,12 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
 The answer eval is deliberately **not** in CI: it calls the live LLM, so it needs an
 API key and burns free-tier quota. Run it locally before/after a change that could
 affect generation.
+
+For the focused live set, run `python -m eval.followup_eval --cases
+eval/answer_quality_focus.jsonl --output eval/results/focused.jsonl --delay 7` against
+an isolated, ingested database. Review the actual answers against cited passages;
+`evidence_hits`, `context_hits`, citation presence, and refusal flags alone do not
+establish semantic correctness. See `answer_quality_review.md` for the local review.
 
 ## Run it
 

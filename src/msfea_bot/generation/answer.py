@@ -30,7 +30,7 @@ from msfea_bot.generation.conversation import (
     ConversationMessage,
     answer_task,
     build_retrieval_query,
-    frame_confirmation,
+    contextual_question,
     format_prompt_history,
     needs_condition_focus,
 )
@@ -72,6 +72,12 @@ does not mean it belongs in the answer. Before writing, silently make this plan:
 4. Reach the answer by combining those premises. You may apply an explicit rule to
    facts the student states and use basic logic or arithmetic (for example, compare
    their stated credits with a stated minimum). This is grounded reasoning.
+   When a missing detail changes which documented rule applies, state the supported
+   conditional outcomes and ask one short clarifying question. Do not lead with an
+   unconditional Yes or No. If a brief follow-up could refer to several documented
+   approval stages or deadlines, give the relevant rule or relative timing and ask
+   which one they mean. If the student asks for a deadline for unspecified paperwork
+   or a form, do not choose a particular document; ask which form they mean.
    Treat alternatives independently. Fictional logic example: if three classroom
    days require either one lab day OR two field days, the alternatives total four
    and five days; do not attach the five-day total to the lab option.
@@ -211,43 +217,16 @@ def _format_context(
     return "\n\n".join(blocks)
 
 
-_PROCEDURE_SECTION_RE = re.compile(
-    r"\b(report(?:s|ing)?|forms?|deliverables?|deadlines?|timeline|submission|documentation)\b",
-    re.I,
-)
-_CONDITIONAL_SECTION_RE = re.compile(r"\b(?:taking|while|when|during|if)\b", re.I)
-_SECTION_WORD_RE = re.compile(r"[a-z]{4,}", re.I)
-_CONDITION_STOP_WORDS = {
-    "another", "department", "during", "students", "taking", "when", "while",
-}
-
-
-def _matches_stated_condition(section: str, question: str) -> bool:
-    """Keep a condition-specific section only when the question names its subject."""
-    if not _CONDITIONAL_SECTION_RE.search(section):
-        return True
-    section_terms = {
-        term.lower() for term in _SECTION_WORD_RE.findall(section)
-        if term.lower() not in _CONDITION_STOP_WORDS
-    }
-    question_terms = {term.lower() for term in _SECTION_WORD_RE.findall(question)}
-    return not section_terms or bool(section_terms & question_terms)
-
-
 def _answer_context(
     question: str,
     chunks: list[RetrievedChunk],
     history: Sequence[ConversationMessage] | None,
 ) -> list[RetrievedChunk]:
-    """Remove procedural side passages from an option-focused follow-up.
+    """Keep retrieved source evidence available to generation.
 
-    Retrieval remains unchanged and fully logged. This only selects the evidence
-    shown to the model when the current turn asks "what/how about" an option. Such
-    turns ask what the option means for the earlier plan, while report/form chunks
-    repeatedly caused the small model to answer an unasked administrative question.
-    The rule is task/section based and contains no program or department facts.
+    The prompt decides relevance. Heading-word filters hid valid conditional and
+    procedural evidence for ordinary paraphrases and explicit follow-up requests.
     """
-    task = answer_task(question, history)
     focused = chunks
     # A published admin-authored source has already passed isolated retrieval,
     # conflict comparison, and named human review. When it is also the clearly
@@ -265,17 +244,6 @@ def _answer_context(
                 if chunk.metadata.get("source_kind") == "admin_authored"
                 and chunk.metadata.get("entry_id") == entry_id
             ]
-    if task.startswith("Alternative or missing component:"):
-        focused = [
-            chunk for chunk in focused if not _PROCEDURE_SECTION_RE.search(chunk.section)
-        ]
-    if task.startswith(("Plan sufficiency:", "Decision:")) and not needs_condition_focus(
-        question
-    ):
-        focused = [
-            chunk for chunk in focused
-            if _matches_stated_condition(chunk.section, question)
-        ]
     return focused or chunks
 
 
@@ -306,7 +274,7 @@ def build_prompt(
     prompt = _PROMPT.format(
         marker=REFUSAL_MARKER,
         context=_format_context(prompt_chunks, include_applicability=dept is None),
-        question=frame_confirmation(question, history),
+        question=contextual_question(question, history),
         department=dept_block,
         history=history_block,
     )

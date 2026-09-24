@@ -11,6 +11,7 @@ import msfea_bot.api.app as api
 from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, local_reply
 from msfea_bot.api.security import RateLimiter
 from msfea_bot.generation.answer import Answer
+from msfea_bot.generation.conversation import MAX_HISTORY_MESSAGES
 
 SESSION = "test-session-0001"
 
@@ -96,7 +97,8 @@ def test_clarification_answers_preserved(question):
     [
         {"question": ""},
         {"question": "x" * 2001},
-        {"question": "Why?", "history": [{"role": "user", "content": "old"}] * 5},
+        {"question": "Why?", "history": [{"role": "user", "content": "old"}]
+         * (MAX_HISTORY_MESSAGES + 1)},
         {"question": "Why?", "history": [{"role": "user", "content": "x" * 1201}]},
     ],
 )

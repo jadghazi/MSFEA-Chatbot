@@ -1,6 +1,6 @@
 """Bounded, provider-neutral conversational context for follow-up questions.
 
-The browser owns the short-lived history and sends at most four earlier messages.
+The browser owns the short-lived history and sends at most eight earlier messages.
 This module decides when a new question actually needs that history.  It deliberately
 uses deterministic text rules rather than a second LLM call: one student turn must
 remain one paid/quota-limited generation request (ADR-0018).
@@ -12,7 +12,7 @@ import re
 from dataclasses import dataclass
 from typing import Literal, Sequence
 
-MAX_HISTORY_MESSAGES = 4
+MAX_HISTORY_MESSAGES = 8
 MAX_HISTORY_MESSAGE_CHARS = 1200
 
 _REFERENCE_RE = re.compile(
@@ -20,9 +20,8 @@ _REFERENCE_RE = re.compile(
     r"option|alternative|former|latter|there|then)\b",
     re.IGNORECASE,
 )
-_CONTINUATION_RE = re.compile(r"^(and|also|but|okay|ok|so|then)\b", re.IGNORECASE)
+_CONTINUATION_RE = re.compile(r"^(and|also|but|okay|ok|so|then|actually|instead)\b", re.IGNORECASE)
 _WHAT_ABOUT_RE = re.compile(r"^(?:and\s+)?(?:what|how) about\b", re.IGNORECASE)
-_SHORT_QUESTION_RE = re.compile(r"^(where|when|who|why|how)\b", re.IGNORECASE)
 _CONFIRMATION_RE = re.compile(
     r"^(?:so(?: basically)?|in other words|just to confirm)[,:]?\s+(.+)", re.IGNORECASE
 )
@@ -56,6 +55,21 @@ def frame_confirmation(question: str, history: Sequence[ConversationMessage] | N
     if not statement or _QUESTION_START_RE.match(statement):
         return question
     return f"Is my understanding of our conversation correct: {statement}?"
+
+
+def contextual_question(question: str, history: Sequence[ConversationMessage] | None) -> str:
+    """Put the immediate antecedent beside an otherwise ambiguous duration question."""
+    if not re.fullmatch(r"how long should (?:the )?[a-z]{3,}\s?\d{3} be\??",
+                        question.strip(), re.I):
+        return frame_confirmation(question, history)
+    previous = [m.content for m in bounded_history(history) if m.role == "user"]
+    if not previous:
+        return question
+    return (
+        f"{question}\nImmediately preceding student question: {previous[-1]}\n"
+        "If this could mean either the course or the item just discussed, ask which duration "
+        "the student means. Do not silently choose one."
+    )
 
 
 def answer_task(question: str, history: Sequence[ConversationMessage] | None) -> str:
@@ -95,6 +109,8 @@ def answer_task(question: str, history: Sequence[ConversationMessage] | None) ->
         return (
             "Confirmation: check the student's proposed understanding against source evidence. "
             "Correct an earlier assistant mistake if necessary; history is not authority. "
+            "If the proposed arrangement is valid, say Yes even if other arrangements "
+            "also exist; do not reject it just because it is not the only option. "
             "Start with Yes/Correct or No/Not quite, then one clarifying sentence. "
             "Do not add forms, reports, procedures, or alternative arrangements."
         )
@@ -149,7 +165,8 @@ def answer_task(question: str, history: Sequence[ConversationMessage] | None) ->
 def needs_condition_focus(question: str) -> bool:
     """Whether a decision question states an additional conditional circumstance."""
     return bool(
-        re.search(r"\b(enough|eligible|qualify|sufficient)\b", question, re.IGNORECASE)
+        (re.search(r"\b(enough|eligible|qualify|sufficient)\b", question, re.IGNORECASE)
+         or re.match(r"^(?:can|could)\s+i\s+(?:do|complete|combine)\b", question, re.I))
         and _EXPLICIT_CONDITION_RE.search(question)
     )
 
@@ -180,19 +197,26 @@ def is_contextual_followup(
         return False
 
     text = " ".join(question.strip().split())
+    last_user_question = next(m.content for m in reversed(prior) if m.role == "user")
+    if text.casefold() == " ".join(last_user_question.strip().split()).casefold():
+        return False
     what_about = _WHAT_ABOUT_RE.match(text)
     if what_about:
         subject = text[what_about.end() :]
-        substantive_subject = re.sub(r"\b(?:the|a|an|my|our)\b", "", subject, flags=re.I)
-        # A newly named subject ("what about Career+?") is a topic switch, not an
-        # elliptical reference. Numeric shorthand ("what about 6+2?") and explicit
-        # references ("what about the other option?") still need prior context.
-        return not re.search(r"[A-Za-z]", substantive_subject) or bool(
-            _REFERENCE_RE.search(subject)
-        )
+        if _REFERENCE_RE.search(subject):
+            return True
+        # A proper name, acronym, or course code introduces a new subject. Common
+        # nouns such as "deadline" and "report" still refer to the active topic.
+        return not bool(re.search(r"[A-Z]{2,}|[A-Z][a-z]+\+|\b[A-Z]+\d+\b", subject))
     if _REFERENCE_RE.search(text) or _CONTINUATION_RE.search(text):
         return True
-    return bool(_SHORT_QUESTION_RE.search(text) and len(text.split()) <= 5)
+    if re.fullmatch(r"how long should .+ be\??", text, re.I):
+        # A bare duration question can refer to the previously discussed course,
+        # report, presentation, or other item; let recent context disambiguate it.
+        return True
+    if re.search(r"\b[A-Z]{2,}\d*\b", text):
+        return False
+    return len(text.split()) <= 6 and bool(_QUESTION_START_RE.search(text))
 
 
 def build_retrieval_query(
@@ -206,11 +230,26 @@ def build_retrieval_query(
     """
     prior = bounded_history(history)
     if not is_contextual_followup(question, prior):
+        if re.fullmatch(
+            r"how long should (?:the )?[a-z]{3,}\s?\d{3} be\??",
+            question.strip(), re.I,
+        ):
+            return f"Course duration and training length: {question}"
         return question
 
-    user_turns = [m.content for m in prior if m.role == "user"][-2:]
-    earlier = "\n".join(f"- {turn}" for turn in user_turns)
-    return f"Earlier student question(s):\n{earlier}\nCurrent follow-up: {question}"
+    user_turns = [m.content for m in prior if m.role == "user"]
+    anchor = next(
+        (turn for turn in reversed(user_turns)
+         if re.search(r"[A-Z]{2,}|[A-Z][a-z]+\+|[A-Z]+\d+", turn)),
+        next((turn for turn in reversed(user_turns) if len(turn.split()) > 6), user_turns[0]),
+    )
+    parts = [f"Earlier student topic/circumstances: {anchor}"]
+    if re.search(r"\b(?:option|alternative|that|other|former|latter)\b", question, re.I):
+        assistant_turns = [m.content for m in prior if m.role == "assistant"]
+        if assistant_turns:
+            parts.append(f"Earlier assistant wording (search hint only): {assistant_turns[-1][:240]}")
+    parts.append(f"Current follow-up: {question}")
+    return "\n".join(parts)
 
 
 def format_prompt_history(
@@ -220,5 +259,9 @@ def format_prompt_history(
     prior = bounded_history(history)
     if not is_contextual_followup(question, prior):
         return ""
+    if len(question.split()) >= 8 and not _REFERENCE_RE.search(question):
+        # A complete restatement supplies its own facts. Earlier assistant guesses
+        # can bias a confirmation even though they are not source evidence.
+        prior = [message for message in prior if message.role == "user"]
     lines = [f"{m.role.upper()}: {m.content}" for m in prior]
     return "\n".join(lines)

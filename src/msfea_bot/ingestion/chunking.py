@@ -9,6 +9,7 @@ overlap are tuned against the eval set (context-recall).
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -113,14 +114,13 @@ def _unbreakable_lines(lines: list[str]) -> set[int]:
     # next chunk: that can pass the similarity gate, spend an LLM request, and still
     # refuse despite the KB containing the answer.
     question_starts = [
-        index
-        for index, line in enumerate(lines)
-        if line.strip().casefold().startswith("**question/topic:**")
+        index for index, line in enumerate(lines)
+        if re.match(r"^(?:\*\*)?(?:question/topic|q):", line.strip(), re.I)
     ]
     for position, start in enumerate(question_starts):
         end = question_starts[position + 1] if position + 1 < len(question_starts) else len(lines)
         has_answer = any(
-            line.strip().casefold().startswith("**answer:**")
+            bool(re.match(r"^(?:\*\*)?(?:answer|a):", line.strip(), re.I))
             for line in lines[start + 1 : end]
         )
         if has_answer:
@@ -219,6 +219,7 @@ def chunk_markdown(
     """Split one Markdown document into section chunks (oversized sections windowed)."""
     meta, body = parse_frontmatter(md)
     section = meta.get("title", source_doc)
+    headings: dict[int, str] = {1: section}
     section_department = departments.from_heading(section)
     department_by_level = {1: section_department}
     chunks: list[Chunk] = []
@@ -235,6 +236,7 @@ def chunk_markdown(
         if section.strip().lower() in _NON_CONTENT_SECTIONS:
             return
         heading = buffer[0] if buffer and _heading_level(buffer[0]) >= 2 else f"## {section}"
+        section_path = " > ".join(headings[level] for level in sorted(headings))
         lines = text.split("\n")
         spans = (
             [(0, len(lines))]
@@ -254,7 +256,8 @@ def chunk_markdown(
         def with_heading(body_lines: list[str]) -> str:
             joined = "\n".join(body_lines)
             # Ensure every window carries its section heading for context.
-            return joined if joined.lstrip().startswith(heading) else f"{heading}\n{joined}"
+            result = joined if joined.lstrip().startswith(heading) else f"{heading}\n{joined}"
+            return f"Topic: {section_path}\n{result}" if len(headings) > 2 else result
 
         for start, end in spans:
             # A window starting inside a table body has lost its column labels, so a
@@ -266,7 +269,7 @@ def chunk_markdown(
                     id=f"{source_doc}#{len(chunks):02d}-{_slug(section)}",
                     text=with_heading(lines[start:end]),
                     source_doc=source_doc,
-                    section=section,
+                    section=section_path if len(headings) > 2 else section,
                     metadata=chunk_meta,
                     display_prefix="\n".join(carried) if carried is not None else "",
                 )
@@ -277,6 +280,9 @@ def chunk_markdown(
         if level >= 2:
             flush()
             section = line.lstrip("#").strip()
+            headings = {parent_level: name for parent_level, name in headings.items()
+                        if parent_level < level}
+            headings[level] = section
             heading_department = departments.from_heading(section)
             department_by_level = {
                 parent_level: scoped_department

@@ -187,3 +187,17 @@ Applies to all departments.
         "ece",
         "all",
     ]
+    assert "Combined arrangements (ECE) > 6+2 definition" in chunks[1].section
+    assert "Combined arrangements (ECE)" in chunks[1].text
+
+
+def test_legacy_qa_pairs_remain_atomic() -> None:
+    chunks = chunk_markdown(
+        "## FAQs\n**Q: First question?**\nA: " + "answer " * 30
+        + "\n**Q: Second question?**\nA: second answer.",
+        "faq.md", max_chars=80, overlap=0,
+    )
+    first = [chunk for chunk in chunks if "First question" in chunk.text]
+    assert len(first) == 1
+    assert "answer" in first[0].text
+    assert not any("First question" in c.text and "A: second answer" in c.text for c in chunks)
