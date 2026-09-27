@@ -1,0 +1,1040 @@
+{
+  "date": "2026-09-27",
+  "review": "Manual review against the completed owner decisions; provider errors retried at seven-second spacing. Retrieval uses the new-policy evidence probes.",
+  "cases": [
+    {
+      "id": "faq-mech-research",
+      "question": "Can I do six weeks at Dar and two weeks research for MECH 500?",
+      "expected": "MECH permits six company weeks plus two approved faculty-research weeks when the research includes hands-on engineering work. Both components need approval and documentation; the ban on a 4+4 company split remains.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Yes, a six-week company internship at Dar Al-Handasah plus two weeks of approved faculty research may count for MECH when the research includes hands-on engineering work. Both components require approval and documentation.",
+        "citations": [
+          "email-clarifications.md > Company internship plus research (MECH)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Mechanical Engineering (MECH)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Company internship plus research (MECH) (0.80)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.73)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Mechanical Engineering (MECH) (0.72)",
+          "email-clarifications.md > Reports for multiple approved components (0.68)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.70)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Mechanical Engineering (MECH) (0.70)",
+          "email-clarifications.md > Taking another summer course (0.66)"
+        ],
+        "error_code": null,
+        "input_tokens": 3087,
+        "output_tokens": 118,
+        "total_tokens": 3205,
+        "cached_tokens": null,
+        "llm_latency_ms": 2277
+      }
+    },
+    {
+      "id": "faq-ece-second-company",
+      "question": "I did six company weeks and take no summer class. Can my second company internship be only two weeks?",
+      "expected": "No; a second company placement must be at least four weeks, with approval, even without another summer course.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "No, a two-week second company internship is not enough. The second company placement must last at least four weeks, bringing the combined total to at least ten company weeks. Alternatively, you can complete a six-week company placement combined with two weeks of approved and documented research with an MSFEA faculty member.",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Taking another summer course (0.81)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships (0.81)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone (0.76)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 6+2 arrangement definition (0.72)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Progress reporting for a 6+2 arrangement (0.71)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.71)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.69)"
+        ],
+        "error_code": null,
+        "input_tokens": 3132,
+        "output_tokens": 118,
+        "total_tokens": 3250,
+        "cached_tokens": null,
+        "llm_latency_ms": 1811
+      }
+    },
+    {
+      "id": "faq-iem-six-weeks",
+      "question": "Are six company weeks alone enough for INDE 500?",
+      "expected": "No standard six-week-only route: complete two approved faculty research weeks or at least four weeks at a second company.",
+      "before_evidence_hits": [
+        true
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "No, six company weeks alone are not enough. If you complete a six-week internship, you must also either complete two weeks of research with an MSFEA faculty member or do a minimum four-week internship at another company.",
+        "citations": [
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Industrial Engineering and Management (IEM)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Taking another summer course (0.67)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.71)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.70)",
+          "email-clarifications.md > Reports for multiple approved components (0.65)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Industrial Engineering and Management (IEM) (0.68)",
+          "email-clarifications.md > Approved Experience course codes (0.59)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Securing an Internship Independently > If the Company Is NOT Listed with the CDC (0.61)"
+        ],
+        "error_code": null,
+        "input_tokens": 3001,
+        "output_tokens": 86,
+        "total_tokens": 3087,
+        "cached_tokens": null,
+        "llm_latency_ms": 1348
+      }
+    },
+    {
+      "id": "faq-chem-research",
+      "question": "Can I add two weeks of research after six weeks at a company for CHEN 500?",
+      "expected": "Research route needs Chair approval; do not guarantee eligibility.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "A research component, including a proposed two-week addition to a six-week company placement, requires Chair approval. Do not assume this route is accepted before approval.",
+        "citations": [
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.74)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.71)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.68)",
+          "email-clarifications.md > Reports for multiple approved components (0.71)",
+          "email-clarifications.md > Taking another summer course (0.67)",
+          "email-clarifications.md > Employer and research documentation exceptions (0.66)",
+          "email-clarifications.md > Problems or changes during an internship (0.64)"
+        ],
+        "error_code": null,
+        "input_tokens": 2948,
+        "output_tokens": 70,
+        "total_tokens": 3018,
+        "cached_tokens": null,
+        "llm_latency_ms": 1636
+      }
+    },
+    {
+      "id": "faq-cee-exception",
+      "question": "Can six weeks at a company ever be accepted for CIVE 400?",
+      "expected": "Exceptional reduced six-week placement may be approved for selected companies; no automatic approval.",
+      "before_evidence_hits": [
+        true
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Yes, a reduced six-week internship may be approved in exceptional cases for selected companies.",
+        "citations": [
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Civil and Environmental Engineering (CEE)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Taking another summer course (0.67)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Civil and Environmental Engineering (CEE) (0.65)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.64)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.63)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Civil and Environmental Engineering (CEE) (0.62)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Internship Requirements > Internships That Are Not Accepted (0.63)",
+          "summer-training-guidelines-2026.md > Internship Timeline and Deliverables (0.61)"
+        ],
+        "error_code": null,
+        "input_tokens": 3257,
+        "output_tokens": 57,
+        "total_tokens": 3314,
+        "cached_tokens": null,
+        "llm_latency_ms": 1551
+      }
+    },
+    {
+      "id": "faq-aub-main",
+      "question": "Can I do my main internship inside AUB?",
+      "expected": "No. Distinguish prohibited main internship from approved faculty research.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "No, the main company internship cannot be undertaken inside AUB. Approved faculty research at AUB is distinct and may count as an approved research component under department rules, but the main company internship itself cannot be done at AUB.",
+        "citations": [
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Internship Requirements > Internships That Are Not Accepted",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Internship Requirements > Internships That Are Not Accepted (0.81)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.76)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Internship contact routing > Electrical and Computer Engineering internship contact (ECE) (0.69)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships (0.66)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Internship Requirements > Internships That Are Not Accepted (0.73)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 4+4 company-internship split (0.65)",
+          "summer-training-guidelines-2026.md > Internship Timeline and Deliverables (0.67)"
+        ],
+        "error_code": null,
+        "input_tokens": 3338,
+        "output_tokens": 103,
+        "total_tokens": 3441,
+        "cached_tokens": null,
+        "llm_latency_ms": 1609
+      }
+    },
+    {
+      "id": "faq-dar-only",
+      "question": "Is Dar the only company eligible for the six weeks plus research arrangement?",
+      "expected": "No. Other companies follow the same department approval rules.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "No, Dar Al-Handasah is one example, and the approval rules apply to other companies too. A six-week company placement can be combined with two weeks of research with an MSFEA faculty member, provided both components are approved and documented.",
+        "citations": [
+          "email-clarifications.md > Company placements, AUB research, and approved gaps"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.79)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships (0.69)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone (0.72)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 6+2 arrangement definition (0.72)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.73)",
+          "email-clarifications.md > Reports for multiple approved components (0.68)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Progress reporting for a 6+2 arrangement (0.69)"
+        ],
+        "error_code": null,
+        "input_tokens": 3047,
+        "output_tokens": 74,
+        "total_tokens": 3121,
+        "cached_tokens": null,
+        "llm_latency_ms": 1341
+      }
+    },
+    {
+      "id": "faq-summer-chem",
+      "question": "Can I take a summer course while doing CHEN 500?",
+      "expected": "Concurrent study requires department, course-team and employer approval and completion of work hours. Ten internship weeks and classes before 8:30 AM or after 4:30 PM may be required; confirm applicability with the course team/Moodle. Do not state that every concurrent-course student unconditionally needs ten weeks or that eight weeks are automatically sufficient.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Yes, a concurrent summer course is allowed, but it requires department, course-team, and employer approval, and you must still complete your required internship work hours. Additionally, you may need to complete at least ten weeks of approved internship and schedule the other course before 8:30 AM or after 4:30 PM. Confirm whether these duration and class-time limits apply to your arrangement with the course team and current Moodle instructions before committing.",
+        "citations": [
+          "email-clarifications.md > Taking another summer course"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Taking another summer course (0.71)",
+          "email-clarifications.md > Approved Experience course codes (0.65)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > The FEAA 500 course (0.69)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Deadline extensions and petition delays > Summer-graduate deadlines (0.63)",
+          "msfea-cdc-coop-handbook.md > CO-OP FAQs (0.64)",
+          "msfea-cdc-coop-handbook.md > CO-OP FAQs (0.61)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.69)"
+        ],
+        "error_code": null,
+        "input_tokens": 3036,
+        "output_tokens": 109,
+        "total_tokens": 3145,
+        "cached_tokens": null,
+        "llm_latency_ms": 1302
+      }
+    },
+    {
+      "id": "faq-survey-cee",
+      "question": "Do I need the student survey if I already submitted the Summary Sheet and employer letter?",
+      "expected": "Yes, three separate required deliverables in every department.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Yes, you need the student internship survey as a separate final deliverable in addition to both the Summary Sheet and the employer completion or evaluation letter, as all three are required. Submit these current forms using the instructions on your course Moodle page.",
+        "citations": [
+          "email-clarifications.md > Student internship survey and employer-letter format"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Student internship survey and employer-letter format (0.87)",
+          "email-clarifications.md > Student internship survey and employer-letter format (0.80)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.72)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Student evaluation (0.71)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op (0.71)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.68)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Requirements to pass the co-op course (summary) (0.70)"
+        ],
+        "error_code": null,
+        "input_tokens": 2862,
+        "output_tokens": 69,
+        "total_tokens": 2931,
+        "cached_tokens": null,
+        "llm_latency_ms": 1265
+      }
+    },
+    {
+      "id": "faq-length-chem",
+      "question": "How many pages should my CHEN 500 Final Training Report have?",
+      "expected": "General 8â€“15 pages; do not use ECE-specific 5-page/1500-word limit.",
+      "before_evidence_hits": [
+        true
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Your Final Training Report should be 8 to 15 pages long.",
+        "citations": [
+          "internship-report-templates-and-rubrics.md > 2. Final Training Report Template (8â€“15 pages)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > Cover Page (0.75)",
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > Final Approved Experience Report Rubric (0.71)",
+          "email-clarifications.md > Shared Final Report formatting and content (0.70)",
+          "internship-report-templates-and-rubrics.md > 2. Final Training Report Template (8â€“15 pages) (0.74)",
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > Table of Contents (0.78)",
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > Appendices (0.74)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.62)"
+        ],
+        "error_code": null,
+        "input_tokens": 3178,
+        "output_tokens": 47,
+        "total_tokens": 3225,
+        "cached_tokens": null,
+        "llm_latency_ms": 1294
+      }
+    },
+    {
+      "id": "faq-length-ece",
+      "question": "How long must my EECE 500 Final Report be?",
+      "expected": "At least five pages AND1500 words excluding cover/references/appendix; maximum20 pages.",
+      "before_evidence_hits": [
+        true
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Your EECE 500 Final Training Report must be at least five pages and 1,500 words, excluding the cover page, references, and appendix, and must not exceed 20 pages.",
+        "citations": [
+          "email-clarifications.md > Final Report requirements (ECE)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Final Report requirements (ECE) (0.89)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE) (0.81)",
+          "email-clarifications.md > Shared Final Report formatting and content (0.67)",
+          "email-clarifications.md > Progress Report length and component (0.70)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Important Checklists > Final Training Report (0.73)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Progress reporting for a 6+2 arrangement (0.68)",
+          "internship-report-templates-and-rubrics.md > 2. Final Training Report Template (8â€“15 pages) (0.70)"
+        ],
+        "error_code": null,
+        "input_tokens": 2841,
+        "output_tokens": 61,
+        "total_tokens": 2902,
+        "cached_tokens": null,
+        "llm_latency_ms": 1442
+      }
+    },
+    {
+      "id": "faq-format-iem",
+      "question": "What font and spacing should I use for the INDE 500 Final Report?",
+      "expected": "Size12, double spacing, margins, numbering; neutral or INDE500 wording.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Use double spacing, size 12 font, proper margins and indentation, page numbers, and labeled tables, figures, and pictures. Cite external information in the text and include it in the references.",
+        "citations": [
+          "email-clarifications.md > Shared Final Report formatting and content"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Shared Final Report formatting and content (0.74)",
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > Final Approved Experience Report Rubric (0.67)",
+          "email-clarifications.md > Reports for multiple approved components (0.65)",
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > References (0.67)",
+          "email-clarifications.md > Approved Experience course codes (0.62)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.65)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Industrial Engineering and Management (IEM) (0.61)"
+        ],
+        "error_code": null,
+        "input_tokens": 3216,
+        "output_tokens": 58,
+        "total_tokens": 3274,
+        "cached_tokens": null,
+        "llm_latency_ms": 1193
+      }
+    },
+    {
+      "id": "faq-confidential-mech",
+      "question": "What if my company does not let me disclose project details in my Final Report?",
+      "expected": "Supervisor permission, anonymization, appropriate technical detail; coordinator if needed.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Do not disclose confidential or proprietary information. Confirm with your supervisor what may be included, anonymize sensitive details where possible, and explain the technical work at an appropriate level. Contact the course coordinator if confidentiality prevents completion of a required section.",
+        "citations": [
+          "email-clarifications.md > Shared Final Report formatting and content"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Shared Final Report formatting and content (0.75)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.66)",
+          "email-clarifications.md > Shared Final Report formatting and content (0.67)",
+          "email-clarifications.md > AI use, similarity, and report revision (0.65)",
+          "email-clarifications.md > Moodle submissions and corrections (0.69)",
+          "email-clarifications.md > Reports for multiple approved components (0.63)",
+          "email-clarifications.md > Company internship plus research (MECH) (0.59)"
+        ],
+        "error_code": null,
+        "input_tokens": 2858,
+        "output_tokens": 65,
+        "total_tokens": 2923,
+        "cached_tokens": null,
+        "llm_latency_ms": 1736
+      }
+    },
+    {
+      "id": "faq-reports-chem",
+      "question": "For two approved company internships, do I write one Final Report or two?",
+      "expected": "One report with each component separated; check Moodle for arrangement-specific details.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "For two approved company internships, you should submit one Final Report that clearly separates and discusses each approved component. Check Moodle for additional confirmed information based on your arrangement.",
+        "citations": [
+          "email-clarifications.md > Reports for multiple approved components"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Reports for multiple approved components (0.85)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.78)",
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > Final Approved Experience Report Rubric (0.73)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.73)",
+          "email-clarifications.md > Taking another summer course (0.72)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Internship dates and duration changes > Submission timing after an internship extension (0.74)",
+          "email-clarifications.md > Problems or changes during an internship (0.76)"
+        ],
+        "error_code": null,
+        "input_tokens": 3299,
+        "output_tokens": 50,
+        "total_tokens": 3349,
+        "cached_tokens": null,
+        "llm_latency_ms": 1643
+      }
+    },
+    {
+      "id": "faq-research-report-mech",
+      "question": "For an approved MECH six plus two research arrangement, do I need a separate research report?",
+      "expected": "Yes in addition to company report; not only for Dar.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Yes, submit a separate research report in addition to the company internship report. Check Moodle for additional confirmed information based on your arrangement.",
+        "citations": [
+          "email-clarifications.md > Reports for multiple approved components",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Reports for multiple approved components (0.77)",
+          "email-clarifications.md > Company internship plus research (MECH) (0.81)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.74)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Mechanical Engineering (MECH) (0.72)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.69)",
+          "internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8â€“15 pages) > Final Approved Experience Report Rubric (0.69)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.70)"
+        ],
+        "error_code": null,
+        "input_tokens": 3211,
+        "output_tokens": 65,
+        "total_tokens": 3276,
+        "cached_tokens": null,
+        "llm_latency_ms": 1266
+      }
+    },
+    {
+      "id": "faq-early-letter-iem",
+      "question": "Can I request the employer letter before the internship ends?",
+      "expected": "Confirm with course team; if accepted give actual start, expected end, completed work and Moodle requirements.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Confirm the timing with the course team. If an accepted early letter is issued, it must state the actual start date, expected end date, and work or tasks completed, subject to the current Moodle requirements.",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.86)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Important Checklists > Notice of Completion / Employer Letter Checklist (0.81)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.78)",
+          "email-clarifications.md > Student internship survey and employer-letter format (0.73)",
+          "email-clarifications.md > Student internship survey and employer-letter format (0.80)",
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter (0.72)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Internship contact routing > Industrial Engineering and Management internship contact (IEM) (0.65)"
+        ],
+        "error_code": null,
+        "input_tokens": 2821,
+        "output_tokens": 74,
+        "total_tokens": 2895,
+        "cached_tokens": null,
+        "llm_latency_ms": 1174
+      }
+    },
+    {
+      "id": "faq-delayed-letter-chem",
+      "question": "Can I temporarily submit an official supervisor email while my signed letter is delayed?",
+      "expected": "Only course-team approval, signed letter later.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Yes, an official supervisor email may be accepted temporarily during an exceptional delay if you have course-team approval, but you must still submit the final signed employer letter when instructed.",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.87)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.74)",
+          "email-clarifications.md > Employer and research documentation exceptions (0.70)",
+          "email-clarifications.md > Deadline extensions and petition delays (0.73)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Important Checklists > Notice of Completion / Employer Letter Checklist (0.69)",
+          "msfea-cdc-coop-handbook.md > Additional employer completion letter (0.71)",
+          "email-clarifications.md > Employer and research documentation exceptions (0.75)"
+        ],
+        "error_code": null,
+        "input_tokens": 2739,
+        "output_tokens": 65,
+        "total_tokens": 2804,
+        "cached_tokens": null,
+        "llm_latency_ms": 1321
+      }
+    },
+    {
+      "id": "faq-letter-format",
+      "question": "Does the employer completion letter need a specific template?",
+      "expected": "No fixed template normally; Moodle template governs if provided; preserve signature/stamp/content.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "No fixed template is normally required if the employer's official format includes the required information. Use a current Moodle template if one is provided.",
+        "citations": [
+          "email-clarifications.md > Student internship survey and employer-letter format"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Student internship survey and employer-letter format (0.89)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Important Checklists > Notice of Completion / Employer Letter Checklist (0.80)",
+          "msfea-cdc-coop-handbook.md > Additional employer completion letter (0.80)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.76)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.75)",
+          "email-clarifications.md > Employer and research documentation exceptions (0.79)",
+          "email-clarifications.md > Student internship survey and employer-letter format (0.78)"
+        ],
+        "error_code": null,
+        "input_tokens": 2754,
+        "output_tokens": 50,
+        "total_tokens": 2804,
+        "cached_tokens": null,
+        "llm_latency_ms": 1428
+      }
+    },
+    {
+      "id": "faq-week-four",
+      "question": "I start later than others. When do I count Week 4 for the Progress Report?",
+      "expected": "Own approved start unless Moodle common deadline.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Count internship weeks from your own approved internship start date, and submit the Progress Report at the end of Week 4 unless Moodle announces a shared deadline.",
+        "citations": [
+          "email-clarifications.md > Progress Report deadline origin"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Progress Report deadline origin (0.80)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.71)",
+          "email-clarifications.md > Progress Report length and component (0.70)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Important Checklists > Progress Report Checklist (0.73)",
+          "internship-report-templates-and-rubrics.md > 1. Progress Report Template (3â€“5 pages) (0.71)",
+          "email-clarifications.md > AI use, similarity, and report revision (0.67)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.61)"
+        ],
+        "error_code": null,
+        "input_tokens": 2827,
+        "output_tokens": 47,
+        "total_tokens": 2874,
+        "cached_tokens": null,
+        "llm_latency_ms": 1163
+      }
+    },
+    {
+      "id": "faq-red-x",
+      "question": "Why does Moodle show a red X after I submitted?",
+      "expected": "Check activity requirements; screenshot to coordinator if unresolved.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Check the activity-completion requirements and confirm that every required step is satisfied. If the status remains unchanged, send the course coordinator a screenshot showing the submission and the red X.",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Moodle submissions and corrections > Moodle completion status"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Moodle submissions and corrections > Moodle completion status (0.84)",
+          "email-clarifications.md > Moodle submissions and corrections (0.73)",
+          "email-clarifications.md > Moodle access and registration (0.70)",
+          "email-clarifications.md > Moodle submissions and corrections (0.75)",
+          "email-clarifications.md > Moodle submissions and corrections (0.69)",
+          "summer-training-guidelines-2026.md > Internship Timeline and Deliverables (0.60)",
+          "email-clarifications.md > Moodle quiz access and attempts (0.64)"
+        ],
+        "error_code": null,
+        "input_tokens": 3027,
+        "output_tokens": 63,
+        "total_tokens": 3090,
+        "cached_tokens": null,
+        "llm_latency_ms": 1363
+      }
+    },
+    {
+      "id": "faq-summer-graduate",
+      "question": "Do summer graduates have earlier internship deadlines?",
+      "expected": "May have earlier deadlines; current Moodle/coordinator announcement.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Summer-graduating students may receive earlier internship-course deadlines because their grades must be processed sooner. Follow the current graduating-student Moodle announcement or course-coordinator email.",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Deadline extensions and petition delays > Summer-graduate deadlines"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Deadline extensions and petition delays > Summer-graduate deadlines (0.88)",
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs (0.73)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Mechanical Engineering (MECH) (0.73)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Internship dates and duration changes > Submission timing after an internship extension (0.77)",
+          "email-clarifications.md > Internship dates and duration changes (0.79)",
+          "summer-training-guidelines-2026.md > Internship Timeline and Deliverables (0.72)",
+          "email-clarifications.md > Taking another summer course (0.77)"
+        ],
+        "error_code": null,
+        "input_tokens": 3224,
+        "output_tokens": 63,
+        "total_tokens": 3287,
+        "cached_tokens": null,
+        "llm_latency_ms": 1466
+      }
+    },
+    {
+      "id": "faq-gap-chem",
+      "question": "Can I have a gap between my two approved internship components?",
+      "expected": "Written approval of complete schedule; CHEM same summer still applies.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "A gap may be accepted if both components are approved and completed within the permitted period, but since you are in Chemical Engineering, your components must be completed within the same summer term. To proceed, describe the complete arrangement and schedule in the petition and obtain written approval.",
+        "citations": [
+          "email-clarifications.md > Company placements, AUB research, and approved gaps",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Reports for multiple approved components (0.79)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.84)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.75)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Internship Requirements > Internships That Are Not Accepted (0.73)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.74)",
+          "email-clarifications.md > Company placements, AUB research, and approved gaps (0.71)",
+          "email-clarifications.md > Problems or changes during an internship (0.74)"
+        ],
+        "error_code": null,
+        "input_tokens": 2830,
+        "output_tokens": 110,
+        "total_tokens": 2940,
+        "cached_tokens": null,
+        "llm_latency_ms": 1290
+      }
+    },
+    {
+      "id": "faq-ai-similarity",
+      "question": "Is AI detection the same as Turnitin similarity?",
+      "expected": "Different measures; AI25%, similarity20%, disclose and cite AI.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "No. AI detection estimates whether text may be AI-generated, while text similarity measures overlap with other sources. The limits are separate, allowing at most 25% AI-generated text and at most 20% similarity.",
+        "citations": [
+          "email-clarifications.md > AI detection and text similarity"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > AI detection and text similarity (0.85)",
+          "email-clarifications.md > AI use, similarity, and report revision (0.82)",
+          "email-clarifications.md > AI use, similarity, and report revision (0.66)",
+          "email-clarifications.md > AI use, similarity, and report revision (0.63)",
+          "email-clarifications.md > Shared Final Report formatting and content (0.52)",
+          "email-clarifications.md > Moodle quiz access and attempts (0.53)",
+          "internship-report-templates-and-rubrics.md > 2. Final Training Report Template (8â€“15 pages) (0.53)"
+        ],
+        "error_code": null,
+        "input_tokens": 2722,
+        "output_tokens": 65,
+        "total_tokens": 2787,
+        "cached_tokens": null,
+        "llm_latency_ms": 1317
+      }
+    },
+    {
+      "id": "faq-quiz",
+      "question": "Am I guaranteed multiple attempts on the internship Moodle quiz?",
+      "expected": "No, depends on current Moodle attempt settings.",
+      "before_evidence_hits": [
+        true
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "You may have multiple attempts so you can reach the required score. Follow the attempt settings on the current Moodle page, and contact the coordinator if the quiz is closed or no attempts remain.",
+        "citations": [
+          "email-clarifications.md > Moodle quiz access and attempts"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Moodle quiz access and attempts (0.84)",
+          "email-clarifications.md > Forms for a second internship (0.73)",
+          "summer-training-guidelines-2026.md > Internship Timeline and Deliverables (0.71)",
+          "email-clarifications.md > Reports for multiple approved components (0.70)",
+          "email-clarifications.md > Moodle access and registration (0.73)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Moodle submissions and corrections > Moodle completion status (0.73)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.64)"
+        ],
+        "error_code": null,
+        "input_tokens": 3087,
+        "output_tokens": 56,
+        "total_tokens": 3143,
+        "cached_tokens": null,
+        "llm_latency_ms": 2117
+      }
+    },
+    {
+      "id": "faq-coop-letter",
+      "question": "For CO-OP, is the company letter a substitute for the employer evaluation forms?",
+      "expected": "No, required additional letter in all departments; forms remain.",
+      "before_evidence_hits": [
+        false
+      ],
+      "after_evidence_hits": [
+        true
+      ],
+      "after_model_context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "For CO-OP: No, the official signed company letter does not replace either the Final Student Performance Evaluation Form or the Employer Experience Feedback Form. It is an additional requirement.",
+        "citations": [
+          "msfea-cdc-coop-handbook.md > Additional employer completion letter"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer application process (0.77)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op (0.75)",
+          "msfea-cdc-coop-handbook.md > Additional employer completion letter (0.84)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Student evaluation (0.70)",
+          "cdc-knowledge-base.md > CO-OP (Cooperative Education) (0.69)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines) (0.69)",
+          "msfea-cdc-coop-handbook.md > What CO-OP is (0.68)"
+        ],
+        "error_code": null,
+        "input_tokens": 2909,
+        "output_tokens": 57,
+        "total_tokens": 2966,
+        "cached_tokens": null,
+        "llm_latency_ms": 2164
+      }
+    },
+    {
+      "id": "faq-approval-refusal",
+      "question": "Has my specific internship at UnknownCo already been approved?",
+      "expected": "Cannot verify an individual approval; escalate.",
+      "before_evidence_hits": [],
+      "after_evidence_hits": [],
+      "after_model_context_hits": [],
+      "answer": {
+        "text": "I couldn't find a specific answer to that. I can help with the CDC's programs â€” internships (Approved Experience), CO-OP, IAESTE, full-time job support, and mentorship â€” so try asking a more specific question (for example, name the program and what you need, like deadlines, eligibility, or deliverables). If your question was already specific and I still couldn't help, please contact Adnan Itani (ai34@aub.edu.lb), the Chemical Engineering coordinator.",
+        "citations": [],
+        "refused": true,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs (0.74)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Internship contact routing > Chemical Engineering internship contact (CHEM) (0.66)",
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Applying to an internship found independently (0.74)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Internship Requirements > Internships That Are Not Accepted (0.71)",
+          "email-clarifications.md > Problems or changes during an internship (0.74)",
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs (0.71)",
+          "email-clarifications.md > Problems or changes during an internship (0.70)"
+        ],
+        "error_code": null,
+        "input_tokens": 2936,
+        "output_tokens": 6,
+        "total_tokens": 2942,
+        "cached_tokens": null,
+        "llm_latency_ms": 1861
+      }
+    }
+  ],
+  "additional_checks": [
+    {
+      "id": "scope-unknown-split-conditional",
+      "question": "Can I split my internship into two 4-week periods?",
+      "expected": "Give conditional guidance: MECH forbids two four-week periods while CEE permits them if one period is civil or construction engineering; ask which department applies rather than choosing one rule.",
+      "hits": [
+        true,
+        true
+      ],
+      "context_hits": [
+        true,
+        true
+      ],
+      "answer": {
+        "text": "Whether you can split your internship into two four-week periods depends on your department. For Civil and Environmental Engineering (CEE), internships may be split into two four-week periods if at least one period is in civil or construction engineering. For Electrical and Computer Engineering (ECE), a 4+4 split is not automatically accepted and requires a formal petition and written approval. For Mechanical Engineering (MECH), internships cannot be split into two separate four-week periods. Which department are you in?",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 4+4 company-internship split",
+          "email-clarifications.md > Company internship plus research (MECH)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Civil and Environmental Engineering (CEE)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships (0.80)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 4+4 company-internship split (0.82)",
+          "email-clarifications.md > Company internship plus research (MECH) (0.77)",
+          "email-clarifications.md > Taking another summer course (0.77)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Civil and Environmental Engineering (CEE) (0.75)",
+          "email-clarifications.md > Reports for multiple approved components (0.78)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 6+2 arrangement definition (0.75)"
+        ],
+        "error_code": null,
+        "input_tokens": 3036,
+        "output_tokens": 189,
+        "total_tokens": 3225,
+        "cached_tokens": null,
+        "llm_latency_ms": 2466
+      }
+    },
+    {
+      "id": "chem-employer-course-code",
+      "question": "Do I need to submit a letter from my employer for CHEN 500?",
+      "expected": "Yes employer letter required for CHEN 500; never call it EECE 500.",
+      "hits": [
+        true
+      ],
+      "context_hits": [
+        true
+      ],
+      "answer": {
+        "text": "Yes, you need to submit an official employer letter for your internship. The employer letter must be issued officially by the company, include start and end dates, describe completed projects and tasks, include a brief evaluation of your work, and be signed and stamped by your employer or supervisor. Since companies often need time to prepare this, request it at least two to three weeks before your internship ends.",
+        "citations": [
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Important Checklists > Notice of Completion / Employer Letter Checklist"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated â€” please verify with official CDC sources.",
+        "retrieved": [
+          "email-clarifications.md > Student internship survey and employer-letter format (0.68)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.69)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Important Checklists > Notice of Completion / Employer Letter Checklist (0.70)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter (0.70)",
+          "msfea-cdc-coop-handbook.md > Additional employer completion letter (0.72)",
+          "email-clarifications.md > Employer and research documentation exceptions (0.72)",
+          "summer-training-guidelines-2026.md > Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Chemical Engineering (CHEM) (0.62)"
+        ],
+        "error_code": null,
+        "input_tokens": 2783,
+        "output_tokens": 117,
+        "total_tokens": 2900,
+        "cached_tokens": null,
+        "llm_latency_ms": 1654
+      }
+    }
+  ]
+}

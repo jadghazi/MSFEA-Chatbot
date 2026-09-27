@@ -39,7 +39,7 @@ To qualify for the Bachelor of Engineering degree, you must complete:
 ### Internships That Are Not Accepted
 
 - **Remote internships are not accepted.** Some departments allow narrow exceptions — see Department-Specific Rules.
-- **Internships inside AUB are not accepted**, except in special circumstances.
+- **The main company internship cannot be undertaken inside AUB.** Approved faculty research at AUB is distinct from the main internship and may count as an approved research component under the department rules.
 
 Any exception to the internship requirements must be approved through a formal petition. Petitions must:
 
@@ -153,7 +153,7 @@ To successfully complete the Approved Experience course, students must submit al
 | By the end of Week 4 | Progress Report | Submit a short report summarizing your internship experience and progress so far. | Moodle |
 | Within 1 week after completing the internship | Final Training Report | Submit the final internship report following the template and guidelines posted on Moodle. | Moodle |
 | At the end of the internship | Summary Sheet Form | Complete the online summary form. | Online Form |
-| At the end of the internship | Student Evaluation Form (for some departments) | Complete the department evaluation form if required. | Online Form |
+| At the end of the internship | Student Evaluation Form (all departments) | Complete the required student internship survey separately from the Summary Sheet and employer letter. | Online Form |
 | At the end of the internship | Notice of Completion | Submit an official company letter confirming completion of your internship. | Upload / Department Submission |
 | First 2 weeks of Fall semester (depending on department) | Final Presentation | Deliver your internship presentation (in person or recorded, depending on department requirements). | Department Submission |
 
@@ -230,11 +230,11 @@ Students may be asked to revise reports that do not meet department expectations
 
 ### Mechanical Engineering (MECH)
 
-- Students may take a summer course while interning if required work hours are completed.
+- Students may take a summer course while interning with the required approvals and work hours. A ten-week internship and classes before 8:30 AM or after 4:30 PM may be required; confirm the applicable limits with the course team.
 - Internships cannot be split into two separate 4-week periods.
 - Technical consulting internships are allowed if related to engineering.
 - Finance, banking, or business consulting internships are not accepted.
-- Research internships must include hands-on engineering work.
+- A six-week company internship plus two weeks of approved faculty research may count when the research includes hands-on engineering work. Both components require approval and documentation.
 - Programming-focused internships are acceptable if tied to engineering applications.
 
 ### Electrical and Computer Engineering (ECE)
@@ -248,13 +248,12 @@ Students may be asked to revise reports that do not meet department expectations
 - Internship splitting is only allowed within the same summer term.
 - Different reporting requirements apply depending on whether internships are with one or multiple companies.
 - A recorded 3-minute presentation is required.
-- Research internships may be accepted with Chair approval.
+- A research component, including a proposed two-week addition to a six-week company placement, requires Chair approval. Do not assume this route is accepted before approval.
 - Technical consulting internships are allowed if engineering-related.
 - Finance and banking internships are not accepted.
 
 ### Industrial Engineering and Management (IEM)
 
-- A 6-week internship may be approved through petition for selected companies.
 - Students completing a 6-week internship must either complete 2 weeks of research with an MSFEA faculty member or a minimum 4-week internship at another company.
 - Final presentations are generally not required unless specified.
 - Selected students may present in seminars or orientation events.
@@ -264,8 +263,8 @@ Students may be asked to revise reports that do not meet department expectations
 
 - Internships may be split into two 4-week periods if at least one period is in civil or construction engineering.
 - Technical consulting internships are allowed for a maximum of 4 weeks.
-- Research internships may be approved with Chair approval.
-- Students may take summer courses while completing internship hour requirements.
+- A research component, including a proposed two-week addition to a six-week company placement, requires Chair approval. A reduced six-week placement for selected companies remains an exceptional approval, not the standard duration.
+- Students may take summer courses while completing internship hour requirements and obtaining the required approvals. A ten-week internship and classes before 8:30 AM or after 4:30 PM may be required; confirm the applicable limits with the course team.
 - A reduced 6-week internship may be approved in exceptional cases for selected companies.
 
 ---
@@ -293,3 +292,5 @@ Normalized from `kb/source/Summer training guidelines - June 2026.docx`.
   the department rule applies to that department's students, the general rule to
   everyone else. The general rule points at the exceptions rather than stating a
   false absolute.
+
+- **2026-09-27 — project-owner FAQ decisions**, preserved in `kb/source/faq-review-2026-09-27.json`, supersede the earlier AUB exception wording, permit approved MECH six-plus-two hands-on research, require the student survey in every department, clarify CHEM/CEE research approval, and make concurrent-course limits conditional across departments. IEM follows the ECE six-week completion routes. The four-week second-company minimum for ECE/IEM applies with or without another summer course. These are review decisions, not claims about the original June document.

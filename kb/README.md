@@ -81,6 +81,21 @@ Record every document as it lands, so freshness (`last-updated`) is trackable.
 
 ## Adding or updating content later
 
+### Faculty FAQ review — 27 September 2026
+
+`source/faq-review-2026-09-27.json` preserves all 177 anonymized questions and
+approved answers from all 18 sheets, their question-cell scope, and the project
+owner's 18 completed conflict decisions. It omits unrelated workbook columns.
+The reviewed changes are consolidated into the existing normalized email,
+guideline, report-template, and CO-OP documents, with provenance notes separating
+the new decisions from the original official documents. Original source files
+remain unchanged. Decision C12 leaves the existing June citation unchanged.
+
+Shared rules use the Approved Experience course name; department course codes
+remain in the existing course-code mapping. Department-specific headings retain
+their retrieval scope. The approved review supersedes older contradictory
+clarifications without creating duplicate FAQ documents in the index.
+
 For a change to an existing official document:
 
 1. Drop the new/updated file into `kb/source/`.

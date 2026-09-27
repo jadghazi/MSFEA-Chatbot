@@ -97,6 +97,8 @@ Provide a concise overview of the Approved Experience, including the purpose of 
 
 ### Table of Contents
 
+Include page numbers and, where applicable, lists of tables, figures, and pictures.
+
 ### 1. Introduction
 
 Describe the organization; the purpose and objectives of the Approved Experience; your department, unit, or team; and an overview of your role and responsibilities. (Approximately 1 page)
@@ -202,3 +204,8 @@ The assessment criteria align with MSFEA learning objectives and relevant accred
 | Presentation Requirements and Professionalism | Presentation follows all stated requirements and demonstrates preparation, professionalism, and effective communication. | Minor deviations from requirements or professionalism expectations. | Significant deviations from requirements or lack of professional quality. |
 
 The assessment criteria align with MSFEA learning objectives and relevant accreditation outcomes: Communication; Application of disciplinary knowledge; Professional learning and lifelong learning; and Professional presentation and communication skills. Because Approved Experience is assessed on a Pass/Fail basis, percentage breakdowns are not assigned.
+
+
+## About this document
+
+The contents-page detail was clarified in the approved FAQ workbook (FR-06), reviewed on 2026-09-27; see `kb/source/faq-review-2026-09-27.json`. The general 8–15-page Final Report template remains applicable, with the separately scoped ECE length rule in the approved clarifications.

@@ -344,6 +344,10 @@ regardless.
 
 ---
 
+## Additional employer completion letter
+
+All CO-OP departments require an official signed company letter on company letterhead confirming the placement duration and relevant work. This letter is additional to the Final Student Performance Evaluation Form and Employer Experience Feedback Form; it does not replace either form. The handbook's other deliverables remain unchanged.
+
 ## About this document
 
 Normalized from `msfea-cdc-coop-handbook.pdf` (the 10-page official MSFEA CO-OP
@@ -361,3 +365,5 @@ lists to Markdown.
   the CDC if authoritative wording is needed.
 - The FEAA 500 course syllabus (referenced as "Appendix 1" in the handbook) is not
   included in the extracted text.
+
+- **2026-09-27 — approved FAQ decision C7b:** the additional company-letter requirement comes from the project-owner review in `kb/source/faq-review-2026-09-27.json`, not the original handbook. Decisions C7a/C7c retain the handbook proposal and presentation rules without adding a universal internship Proposal or Voice-over Presentation.
