@@ -31,6 +31,7 @@ from msfea_bot import departments
 from msfea_bot.api.security import RateLimiter, sanitize
 from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, local_reply
 from msfea_bot.observability.usage import count, snapshot
+from msfea_bot.observability.analytics import analytics
 from msfea_bot.config import settings
 from msfea_bot.curation.migrations import migrate as migrate_curation
 from msfea_bot.curation.publication import PublicationError, request_publication, retire_entry
@@ -395,6 +396,14 @@ def admin_stats(_: None = Depends(require_admin)) -> dict[str, int]:
 def admin_usage(_: None = Depends(require_admin)) -> dict[str, int]:
     """Content-free operational counters for this worker since startup."""
     return snapshot()
+
+
+@app.get("/admin/api/analytics")
+def admin_analytics(
+    days: Literal["7", "30", "90"] = "30", _: None = Depends(require_admin)
+) -> dict[str, object]:
+    """Calendar-day reporting from persisted logs, separate from worker counters."""
+    return analytics(int(days))
 
 
 @app.get("/admin/api/feedback")

@@ -282,14 +282,15 @@
         * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
       }
     </style>
+    <link rel="stylesheet" href="admin.css?v=2" />
   </head>
   <body>
     <header>
       <div class="header-inner">
         <div class="crest">AUB</div>
         <div class="header-titles">
-          <h1>CDC Chatbot — Admin</h1>
-          <p class="sub">Create, validate, review and publish focused CDC knowledge</p>
+          <h1>MSFEA Student Assistant</h1>
+          <p class="sub">Career Development Center · Admin workspace</p>
         </div>
         <button id="signout" class="link hidden">Sign out</button>
       </div>
@@ -315,21 +316,28 @@
 
       <!-- App (after sign-in) -->
       <section id="app" class="hidden">
-        <div class="toolbar">
-          <div class="tabs">
-            <button class="tab" data-tab="create">＋ Add knowledge</button>
-            <button class="tab active" data-tab="attention">
-              Needs your attention <span id="pending-badge" class="badge zero">0</span>
+        <aside class="sidebar">
+          <div class="nav-label">Monitor</div>
+          <nav class="tabs" aria-label="Admin navigation">
+            <button class="tab active" data-tab="usage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M8 15v-4m5 4V7m5 8V3"/></svg>Usage overview</button>
+            <button class="tab" data-tab="attention">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v13H8l-4 4V4zM12 8v4m0 2v.2"/></svg>Needs attention <span id="pending-badge" class="badge zero">0</span>
             </button>
+            <button class="tab" data-tab="experience"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></svg>Experience feedback</button>
+            <div class="nav-divider"></div>
+            <div class="nav-label">Knowledge</div>
+            <button class="tab" data-tab="create"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8m-4-4h8"/></svg>Add knowledge</button>
             <button class="tab" data-tab="drafts">
-              Drafts <span id="drafts-badge" class="badge zero">0</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5v18h14V8l-5-5v5h5M8 12h8m-8 4h5"/></svg>Drafts <span id="drafts-badge" class="badge zero">0</span>
             </button>
             <button class="tab" data-tab="curated">
-              Published knowledge <span id="curated-badge" class="badge zero">0</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v16H4zm10 0h6v16h-6M7 8h1m9 0h1"/></svg>Published <span id="curated-badge" class="badge zero">0</span>
             </button>
-            <button class="tab" data-tab="usage">Usage</button>
-            <button class="tab" data-tab="experience">Experience feedback</button>
-          </div>
+          </nav>
+          <div class="sidebar-note"><strong>MSFEA · American University of Beirut</strong>Source-grounded answers.<br>Staff-reviewed knowledge.</div>
+        </aside>
+        <div class="toolbar">
+          <div><div class="eyebrow">CDC / Chatbot administration</div><h2 id="page-title" class="page-title">Usage overview</h2></div>
           <div class="refresh-wrap">
             <span id="updated" class="updated"></span>
             <button id="refresh" class="secondary">↻ Refresh</button>
@@ -353,7 +361,7 @@
         </div>
 
         <!-- Tab: attention -->
-        <div id="tab-attention">
+        <div id="tab-attention" class="hidden">
           <p class="intro">
             These are questions the bot <strong>couldn't answer</strong>, or answers a student marked
             <strong>not helpful</strong>. Turn one into a focused knowledge draft, or use Add knowledge directly.
@@ -382,9 +390,13 @@
         </div>
 
         <!-- Tab: usage -->
-        <div id="tab-usage" class="hidden">
-          <p class="intro">A quick read on how the chatbot is being used. These are totals only — no student names or emails are ever stored.</p>
-          <div id="stats" class="stats"></div>
+        <div id="tab-usage">
+          <div class="usage-toolbar">
+            <div><p>Understand demand. Find knowledge gaps. Keep the service reliable.</p><small id="usage-period">Reporting from saved interaction logs · UTC</small></div>
+            <label class="range-control">Period <select id="usage-range"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label>
+          </div>
+          <div id="usage-status" role="status" aria-live="polite"></div>
+          <div id="usage-report"><div class="usage-loading">Loading usage…</div></div>
         </div>
 
         <!-- Tab: anonymous experience feedback -->
@@ -395,6 +407,7 @@
       </section>
     </main>
 
+    <script src="usage.js?v=2"></script>
     <script>
       var API = ""; // same origin (served from /dashboard/)
       var TOKEN_KEY = "msfea_admin_token";
@@ -421,6 +434,7 @@
 
       // ---- Auth / view switching ----
       function showApp(show) {
+        document.body.classList.toggle("signed-in", show);
         $("login").classList.toggle("hidden", show);
         $("app").classList.toggle("hidden", !show);
         $("signout").classList.toggle("hidden", !show);
@@ -452,11 +466,16 @@
       // ---- Tabs ----
       var TABS = ["create", "attention", "drafts", "curated", "usage", "experience"];
       function selectTab(name) {
+        window.scrollTo(0, 0);
+        var titles = {create:"Add knowledge", attention:"Needs attention", drafts:"Knowledge drafts", curated:"Published knowledge", usage:"Usage overview", experience:"Experience feedback"};
+        $("page-title").textContent = titles[name];
         TABS.forEach(function (t) {
           $("tab-" + t).classList.toggle("hidden", t !== name);
         });
         Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
           b.classList.toggle("active", b.getAttribute("data-tab") === name);
+          if (b.getAttribute("data-tab") === name) b.setAttribute("aria-current", "page");
+          else b.removeAttribute("aria-current");
         });
       }
 
@@ -491,6 +510,7 @@
             renderCurated(data[2]);
             renderExperience(data[3]);
             renderDrafts(data[4]);
+            loadUsage();
             $("updated").textContent = "Updated " + new Date().toLocaleTimeString();
             restore();
             if (done) done(true);
@@ -511,31 +531,6 @@
         var badge = $("pending-badge");
         badge.textContent = pending;
         badge.classList.toggle("zero", pending === 0);
-
-        // Operational outages are neither successful answers nor KB refusals, so
-        // excluding them keeps the deflection metric honest (ADR-0018).
-        var completed = (s.answered || 0) + (s.refused || 0);
-        var deflection = completed ? Math.round((s.answered / completed) * 100) : 0;
-        var cards = [
-          { i: "📥", n: pending, l: "Waiting for you", d: "Questions that need an answer or review", highlight: true },
-          { i: "💬", n: s.total || 0, l: "Questions asked", d: "Total student questions received" },
-          { i: "✅", n: s.answered || 0, sub: deflection + "% of all questions", l: "Answered by the bot", d: "Handled without emailing staff" },
-          { i: "📤", n: s.refused || 0, l: "Sent to a human", d: "The bot couldn't answer these" },
-          { i: "⚠️", n: s.temporary_errors || 0, l: "Temporary failures", d: "Provider quota, configuration or service errors" },
-          { i: "⬇️", n: s.llm_input_tokens || 0, l: "LLM input tokens", d: "Measured by the provider across successful calls" },
-          { i: "⬆️", n: s.llm_output_tokens || 0, l: "LLM output tokens", d: "Measured by the provider across successful calls" },
-          { i: "⏱️", n: (s.avg_llm_latency_ms || 0) + " ms", l: "Average LLM latency", d: "Provider generation time, excluding local retrieval" },
-          { i: "👍", n: s.thumbs_up || 0, l: "Rated helpful", d: "Students marked the answer useful" },
-          { i: "👎", n: s.thumbs_down || 0, l: "Rated not helpful", d: "Students flagged a problem" },
-        ];
-        $("stats").innerHTML = cards.map(function (c) {
-          return '<div class="stat' + (c.highlight ? ' highlight' : '') + '">' +
-            '<div class="stat-i">' + c.i + '</div>' +
-            '<div class="n">' + esc(c.n) + '</div>' +
-            (c.sub ? '<div class="sub">' + esc(c.sub) + '</div>' : '') +
-            '<div class="l">' + esc(c.l) + '</div>' +
-            '<div class="d">' + esc(c.d) + '</div></div>';
-        }).join("");
       }
 
       function renderExperience(data) {
@@ -1033,8 +1028,8 @@
         // Friendly technical diagnosis.
         var retrieved = it.retrieved || [];
         var explain = it.refused && retrieved.length === 0
-          ? "The bot found nothing relevant in the documents — the answer probably isn't in them yet. Writing it below adds it."
-          : "These are the document excerpts the bot looked at when answering. If the right information isn't here, it's a content gap; if it's here but the answer was wrong, it's a wording problem.";
+          ? "No retrieved excerpts were recorded. Check the official documents and retrieval coverage before deciding whether new knowledge is needed."
+          : "These are the recorded excerpts. First check whether the correct source was retrieved. A refusal may be appropriate; review the question and evidence before drafting a correction.";
         var snippets = retrieved.length
           ? retrieved.map(function (r) { return '<div class="snippet">' + esc(r) + '</div>'; }).join("")
           : '<div class="snippet">(nothing was retrieved)</div>';
@@ -1044,16 +1039,15 @@
           '<div class="q-label">Student asked</div>' +
           '<div class="q">' + esc(it.question) + '</div>' +
           botSaid +
-          '<div class="answer-box">' +
+          '<details class="correction"><summary>Draft a source-backed answer</summary><div class="answer-box">' +
             '<label class="label">Proposed answer:</label>' +
             '<textarea placeholder="Type a clear, correct answer based on the official CDC guidelines…"></textarea>' +
             draftFields(it.question) +
             '<div class="actions">' +
               '<button class="publish">Save draft</button>' +
-              '<button class="dismiss secondary">Dismiss</button>' +
-              '<span class="status"></span>' +
             '</div>' +
-          '</div>' +
+          '</div></details>' +
+          '<div class="actions"><button class="dismiss secondary">Dismiss</button><span class="status" role="status"></span></div>' +
           '<details class="tech"><summary>Why couldn\'t it answer? (technical details)</summary>' +
             '<p class="explain">' + esc(explain) + '</p>' + snippets +
           '</details>';
@@ -1261,9 +1255,7 @@
         var n = Math.max(0, (parseInt(badge.textContent, 10) || 0) + delta);
         badge.textContent = n;
         badge.classList.toggle("zero", n === 0);
-        // Also update the "Waiting for you" stat card if it's rendered.
-        var statN = document.querySelector("#stats .stat.highlight .n");
-        if (statN) statN.textContent = n;
+        loadUsage();
       }
       function afterListChange() {
         if (!$("list").children.length) renderList([]); // show the empty state
@@ -1283,6 +1275,8 @@
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
         b.addEventListener("click", function () { selectTab(b.getAttribute("data-tab")); });
       });
+
+      selectTab("usage");
 
       // Remember the code for this browser session so a refresh doesn't sign you out.
       (function boot() {

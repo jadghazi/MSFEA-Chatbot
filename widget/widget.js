@@ -472,7 +472,9 @@
         '<button class="msfea-x" type="button" aria-label="Close chat">' + ICON_CLOSE + "</button>" +
       "</div>" +
     "</div>" +
-    '<div class="msfea-notice"><strong>Temporary chat.</strong> Messages reset when you refresh or close this page. Do not enter your name, student ID, phone number, or personal email.</div>' +
+    (STANDALONE
+      ? '<details class="msfea-notice"><summary>Temporary chat · No personal details</summary><p>Messages reset when you refresh or close this page. Do not enter your name, student ID, phone number, or personal email.</p></details>'
+      : '<div class="msfea-notice"><strong>Temporary chat.</strong> Messages reset when you refresh or close this page. Do not enter your name, student ID, phone number, or personal email.</div>') +
     '<div class="msfea-invite" hidden><span>Three answers in — would you rate this experience?</span><button class="msfea-exp-link msfea-invite-open" type="button">Rate now</button><button class="msfea-head-btn msfea-invite-close" type="button" aria-label="Dismiss rating invitation">Dismiss</button></div>' +
     '<div class="msfea-msgs" role="log" aria-live="polite" aria-atomic="false"></div>' +
     '<div class="msfea-experience-bar"><span>Anonymous feedback helps improve this pilot.</span><button class="msfea-exp-link msfea-exp-open" type="button">Rate your experience</button></div>' +
@@ -481,12 +483,15 @@
         '<textarea rows="1" maxlength="' + MAX_CHARS + '" disabled ' +
           'placeholder="Ask about internships, CO-OP, IAESTE…" ' +
           'aria-label="Type your question"></textarea>' +
-        '<button class="msfea-send" type="button" aria-label="Send question" disabled>' + ICON_SEND + "</button>" +
+        '<button class="msfea-send" type="button" aria-label="Send question" disabled>' + (STANDALONE
+          ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+          : ICON_SEND) + "</button>" +
       "</div>" +
       '<div class="msfea-meta">' +
         '<span class="msfea-hint">Enter to send · Shift+Enter for a new line</span>' +
         '<span class="msfea-count"></span>' +
       "</div>" +
+      (STANDALONE ? '<div class="msfea-guidance">AI-generated guidance. Verify with official sources.</div>' : '') +
     "</div>";
 
   root.appendChild(bubble);
@@ -956,8 +961,8 @@
     input.disabled = requestBusy || !hasDepartment;
     panel.querySelector(".msfea-deptpill").disabled = requestBusy;
     input.placeholder = hasDepartment
-      ? "Ask about internships, CO-OP, IAESTE…"
-      : "Select your department to ask a question";
+      ? (STANDALONE ? "Ask a question…" : "Ask about internships, CO-OP, IAESTE…")
+      : (STANDALONE ? "Choose your department above" : "Select your department to ask a question");
   }
 
   function setBusy(isBusy) {
