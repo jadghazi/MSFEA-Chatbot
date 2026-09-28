@@ -14,6 +14,23 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   (placeholders until real student questions arrive).
   It also includes intent-aware conversational cases for confirmations, topic
   switches, and applying documented thresholds to facts stated by a student.
+- `faculty_questions_golden.jsonl` — a separate, frozen set of the 177 anonymized
+  question/approved-answer pairs in the 2026-09-26 faculty workbook, expanded to
+  205 department-scoped cases for seven rules whose answers vary by department.
+  Original wording and workbook cells are retained. `build_faculty_golden.py`
+  regenerates it from the reviewed workbook and intake record; later owner
+  decisions are recorded as resolved expectations alongside original answers.
+  The source workbook SHA-256 is checked before regeneration. This source set is
+  distinct from the synthetic edge-case set above.
+- `faculty_retrieval_gate.py` — CI checks whether a source document identified in
+  the frozen intake review appears among the retrieved chunks for these cases.
+  This is a document-level floor, not proof that the correct policy passage was
+  retrieved; answer and evidence review remains separate.
+- `faculty_live_eval.py`, `faculty_judge.py`, and `faculty_report.py` — resumable
+  Oracle answer traces, decomposed semantic judgments, and denominator-aware
+  reporting. The judge's ratings require manual calibration against source
+  passages before being used as a trusted answer-accuracy claim. Provider errors
+  and uncertain judgments stay visible rather than counting as correct.
 - `loader.py` — parse + validate the golden set (`load_golden_set()`).
 - `metrics.py` — the two metric families:
   - **Retrieval:** `recall_at_k`, `hit_rate_at_k`.
