@@ -37,11 +37,25 @@ SIX_WEEK_ROUTE = {
     "cee": "An exceptional six-week company placement may be approved for selected companies. A proposed research component requires Chair approval; neither is automatic.",
 }
 SPLIT_ROUTE = {
-    "ece": "A 4+4 company split is case-specific and needs a formal petition and written approval; a second company after six weeks requires at least four weeks.",
-    "iem": "A split needs department approval; after six company weeks, a second company placement requires at least four weeks.",
-    "mech": "Two separate four-week company internships are prohibited. The distinct six-company-plus-two-hands-on-research route may be approved.",
+    "ece": "A 4+4 company split is case-specific and needs a formal petition and written approval.",
+    "iem": "A 4+4 company split is not automatically accepted; obtain department approval for the full arrangement.",
+    "mech": "Two separate four-week company internships are prohibited.",
     "chem": "Do not promise a 4+4 split; obtain written approval and complete components within the same summer.",
     "cee": "A 4+4 split may be approved if at least one period is in civil or construction engineering.",
+}
+COMBINE_ROUTE = {
+    "ece": "Two company placements require prior written approval. After six company weeks, a second placement must last at least four weeks; a 4+4 split is case-specific and needs a petition.",
+    "iem": "Two company placements require prior approval. After six company weeks, a second placement must last at least four weeks.",
+    "mech": "A 4+4 company split is prohibited. Do not assume another two-company arrangement counts without prior department approval.",
+    "chem": "Two placements need prior written approval and must be completed within the same summer.",
+    "cee": "Two placements need prior approval; a 4+4 split may be accepted if at least one period is in civil or construction engineering.",
+}
+DAR_ROUTE = {
+    "ece": "Dar is not exclusive. Six company weeks plus two faculty research weeks require approval and documentation for both components, plus a separate research report.",
+    "iem": "Dar is not exclusive. Six company weeks plus two faculty research weeks require approval and documentation for both components, plus a separate research report.",
+    "mech": "Dar is not exclusive. Six company weeks plus two approved faculty research weeks may count when the research includes hands-on engineering work; document both components and submit a separate research report.",
+    "chem": "Dar is not exclusive. The proposed two-week faculty research addition to six company weeks requires Chair approval; if approved, document both components and submit a separate research report.",
+    "cee": "Dar is not exclusive. The proposed two-week faculty research addition to six company weeks requires Chair approval; if approved, document both components and submit a separate research report. A separate exceptional six-week approval exists for selected companies.",
 }
 RESOLVED_EXPECTATIONS = {
     7: "The ordinary internship minimum is eight full approved weeks; department-specific exceptions need approval.",
@@ -78,11 +92,11 @@ def _resolved_expectation(ordinal: int, source_id: str, department: str,
     if source_id == "GEN-06":
         return "Two company weeks after six are not a documented standard route. " + SIX_WEEK_ROUTE[department]
     if source_id == "GEN-07":
-        return "Combining placements requires prior approval. " + SPLIT_ROUTE[department]
+        return COMBINE_ROUTE[department]
     if source_id == "GEN-08":
         return SPLIT_ROUTE[department]
     if source_id == "GEN-11":
-        return "Dar follows the same department rules as other companies. " + SIX_WEEK_ROUTE[department] + " Approved research needs separate reporting."
+        return DAR_ROUTE[department]
     return RESOLVED_EXPECTATIONS.get(ordinal, original)
 
 
