@@ -19,6 +19,7 @@ def main() -> None:
                  "scope_regression_set.jsonl",
                  "answer_quality_focus.jsonl",
                  "six_week_policy_set.jsonl",
+                 "six_week_live_regression.jsonl",
              )
              for line in (Path(__file__).parent / name).read_text(encoding="utf-8").splitlines()]
     passed = 0

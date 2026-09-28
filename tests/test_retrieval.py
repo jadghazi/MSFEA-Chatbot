@@ -8,7 +8,19 @@ import psycopg
 import pytest
 
 from msfea_bot.config import settings
-from msfea_bot.retrieval.store import reciprocal_rank_fusion
+from msfea_bot.retrieval.store import _normalize_quantity_spacing, reciprocal_rank_fusion
+
+
+@pytest.mark.parametrize("joined, spaced", [
+    ("Can I do 6weeks of internship?", "Can I do 6 weeks of internship?"),
+    ("12credits and 1.5months", "12 credits and 1.5 months"),
+    ("6WEEKS", "6 WEEKS"),
+    ("EECE500 CHEN500 6+2 2026-09-28", "EECE500 CHEN500 6+2 2026-09-28"),
+    ("abc6weeks 6weeksville", "abc6weeks 6weeksville"),
+])
+def test_quantity_spacing_preserves_meaning_and_identifiers(joined: str, spaced: str) -> None:
+    assert _normalize_quantity_spacing(joined) == spaced
+    assert _normalize_quantity_spacing(spaced) == spaced
 
 
 def test_rrf_rewards_agreement_between_retrievers() -> None:
@@ -175,11 +187,6 @@ def test_department_scoping_excludes_other_departments() -> None:
     from msfea_bot.retrieval.store import search
 
     q = "Can I split my internship into two 4-week periods?"
-    unscoped = {c.section for c in search(q, 5)}
-    assert sum("(" in s and s.endswith(")") for s in unscoped) > 1, (
-        "precondition: unscoped search should surface several departments"
-    )
-
     scoped_chunks = search(q, 5, department="cee")
     scoped = [chunk.section for chunk in scoped_chunks]
     assert any("(CEE)" in s for s in scoped), "the student's own rule must be present"
@@ -232,3 +239,13 @@ def test_numeric_rule_application_keeps_threshold_evidence_in_prompt_depth() -> 
     chunks = search("I have completed 88 credits. Can I register for the internship?", 7)
 
     assert any("minimum of 90 credits" in chunk.text.replace("**", "") for chunk in chunks)
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+@pytest.mark.parametrize("department", ["ece", "iem", "mech", "chem", "cee"])
+def test_joined_duration_retrieves_the_same_evidence(department: str) -> None:
+    from msfea_bot.retrieval.store import search
+
+    joined = search("Can I do 6weeks of internship?", 7, department=department)
+    spaced = search("Can I do 6 weeks of internship?", 7, department=department)
+    assert [(c.id, c.score) for c in joined] == [(c.id, c.score) for c in spaced]

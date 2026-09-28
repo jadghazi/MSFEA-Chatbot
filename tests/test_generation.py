@@ -314,7 +314,9 @@ def test_proposed_combination_requires_department_specific_authorization() -> No
     )
     assert "documented option for their department" in prompt
     assert "general minimum duration does not authorize" in prompt
-    assert "different breakdown or set of components" in prompt
+    assert "different breakdown is not a reason to reject" in prompt
+    assert "closest documented completion option" in prompt
+    assert "Keep required approvals attached" in prompt
     assert "Do not add forms" in prompt
 
 

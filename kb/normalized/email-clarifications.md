@@ -278,7 +278,31 @@ approval_reference: project-review-2026-09
 
 **Question/topic:** Can a MECH student combine a six-week company internship with two weeks of faculty research?
 
-**Answer:** Yes, a six-week company internship plus two weeks of approved faculty research may count for MECH when the research includes hands-on engineering work. Both components require approval and documentation. Internships cannot be split into two separate 4-week periods for MECH; approval of a company-plus-research arrangement does not remove that restriction.
+**Answer:** Six company weeks alone do not meet the standard eight-week minimum. A six-week company internship plus two weeks of approved faculty research may count for MECH when the research includes hands-on engineering work. Both components require approval and documentation.
+
+## Splitting company internships (MECH)
+
+**Department:** MECH
+
+**Question/topic:** Can I split my internship into two separate four-week company placements?
+
+**Answer:** No. Internships cannot be split into two separate 4-week periods for MECH.
+
+## Six-week internship approval (CEE)
+
+**Department:** CEE
+
+**Question/topic:** Can I do six weeks of internship for CIVE 400?
+
+**Answer:** The standard minimum is eight full weeks of approved training. For CEE, a reduced six-week internship may be approved in exceptional cases for selected companies; six weeks alone is not automatically accepted. A proposed two-week faculty-research addition to a six-week company placement requires Chair approval. Confirm approval for your proposed arrangement before relying on either route.
+
+## Six-week internship completion (CHEM)
+
+**Department:** CHEM
+
+**Question/topic:** Can I do six weeks of internship for CHEN 500?
+
+**Answer:** Six company weeks alone do not meet the standard minimum of eight full weeks of approved training. A proposed two-week faculty-research addition to a six-week company placement requires Chair approval; do not assume this route is accepted before approval. The rule allowing internship parts within the same summer does not reduce the total required training duration.
 
 ## Taking another summer course
 
@@ -441,3 +465,9 @@ approval_reference: project-review-2026-09
 ## About this document
 
 The September 2026 approved email source is supplemented and, where specified, superseded by the project owner's completed FAQ decision review on 2026-09-27. The anonymized source questions, question-cell scope, and all 18 decisions are preserved in `kb/source/faq-review-2026-09-27.json`. Shared rules use neutral course wording and the existing department course-code map. ECE Final Report length remains department-specific. CO-OP changes are recorded only in the CO-OP handbook normalization.
+
+On 2026-09-28, the MECH research answer was clarified to distinguish six company weeks alone from the approved six-plus-two completion route. The separate four-plus-four company-split prohibition is kept in its own FAQ and in the Summer Training Guidelines' MECH rules; it is not the reason six company weeks alone are insufficient. This is an editorial clarification of the existing approved decisions, not a policy change.
+
+The CEE six-week FAQ restates the existing guideline's selected-company exception and Chair-approved research condition together with the standard minimum. It does not expand either exception or establish approval for any individual company or student.
+
+The CHEM six-week FAQ likewise brings the standard minimum and existing Chair-approval condition together. The same-summer splitting rule does not create a reduced-duration exception.

@@ -100,9 +100,16 @@ def answer_task(question: str, history: Sequence[ConversationMessage] | None) ->
             "documented option for their department. A general minimum duration does not "
             "authorize adding unlike components together; require a source that explicitly "
             "allows that arrangement for the student's department. If it is not documented, "
-            "say that directly and use the applicable general minimum; do not substitute a "
-            "nearby rule about a different breakdown or set of components. Start with Yes or "
-            "No, then give the decisive reason. Do not add forms, reports, deadlines, or "
+            "say that directly, then explain the closest documented completion option "
+            "and its approval conditions. Distinguish an activity that counts as part of "
+            "a requirement from one that satisfies the whole requirement on its own. "
+            "Do not assume the student excludes additional components unless they say so. "
+            "A restriction on a different breakdown is not a reason to reject their plan. "
+            "When an exception depends on approval or a missing detail, give the conditional "
+            "outcomes instead of an unconditional Yes or No. Keep required approvals attached "
+            "to each option you mention. Mention only completion options that directly address "
+            "the proposed activity; omit unrelated arrangements and restrictions. "
+            "Do not add forms, reports, deadlines, or "
             "other procedures unless the student asks for them."
         )
     if frame_confirmation(question, history) != question:
@@ -140,9 +147,10 @@ def answer_task(question: str, history: Sequence[ConversationMessage] | None) ->
     if re.search(r"\b(enough|eligible|qualify|sufficient)\b", question, re.I):
         return (
             "Decision: apply the rule for the circumstances the student actually states. "
-            "Start with Yes or No to the exact eligibility or sufficiency question, then give "
-            "the decisive reason. Before deciding, silently list every circumstance the "
-            "student states, including an extra circumstance introduced by words such as "
+            "Give Yes or No only when the stated facts support an unconditional decision. "
+            "If a missing approval or condition changes the result, explain the supported "
+            "conditional outcomes and what must be confirmed. Before deciding, silently list "
+            "every circumstance the student states, including an extra circumstance introduced by words such as "
             "'also', 'while', 'when', or 'if'. Match all of them to the source conditions. "
             "A source block specifically about an extra stated circumstance controls over a "
             "general rule. If the question names an option or arrangement, describe only that "

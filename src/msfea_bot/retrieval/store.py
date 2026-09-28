@@ -379,6 +379,19 @@ def _keyword_tsquery(text: str) -> str:
     return " | ".join(tokens)
 
 
+def _normalize_quantity_spacing(query: str) -> str:
+    """Separate joined quantities and units without splitting identifiers/course codes.
+
+    Apply before both retrievers and numeric-intent detection so ``6weeks`` gets
+    the same evidence as ``6 weeks``. The original student text remains in logs
+    and in the generation prompt.
+    """
+    return re.sub(
+        r"\b(\d+(?:\.\d+)?)(weeks?|days?|months?|years?|hours?|credits?|pages?|words?)\b",
+        r"\1 \2", query, flags=re.IGNORECASE,
+    )
+
+
 def reciprocal_rank_fusion(rankings: list[list[str]], c: int = 60) -> list[str]:
     """Fuse several ranked id-lists into one, via Reciprocal Rank Fusion (RRF).
 
@@ -476,6 +489,7 @@ def search(
     # prompt chunks. Measured on the frozen sets: 40 recovers the previously passing
     # credit-threshold case with zero lost golden/synthesis/follow-up/scope cases.
     # The cue is question structure, not a hard-coded CDC topic or policy value.
+    query = _normalize_quantity_spacing(query)
     if candidates == 20 and _NUMERIC_DECISION.search(query):
         candidates = 40
     qv = embed_query(query)
