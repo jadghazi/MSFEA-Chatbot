@@ -1021,7 +1021,11 @@
     modal.querySelector(".msfea-limit-dismiss").addEventListener("click", closeLimit);
     modal.querySelector(".msfea-limit-new").addEventListener("click", function () { resetChat(true); });
     backdrop.addEventListener("keydown", function (event) {
-      if (event.key === "Escape") { event.preventDefault(); closeLimit(); }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        closeLimit();
+      }
       if (event.key !== "Tab") return;
       var buttons = modal.querySelectorAll("button");
       if (event.shiftKey && document.activeElement === buttons[0]) {
