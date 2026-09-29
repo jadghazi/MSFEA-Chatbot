@@ -116,7 +116,15 @@ def _parse_batch(text: str, ids: list[str]) -> dict[str, dict[str, Any]]:
     items = envelope.get("judgments")
     if not isinstance(items, list) or len(items) != len(ids):
         raise ValueError("Judge returned an incomplete batch")
-    by_id = {item.get("id"): item for item in items if isinstance(item, dict)}
+    if not all(isinstance(item, dict) for item in items):
+        raise ValueError("Judge returned a non-object judgment")
+    # Gemini sometimes preserves array order but omits the repeated case IDs.
+    # Use positional pairing only when *every* ID is absent; mixed or incorrect
+    # IDs are ambiguous and must be rejected.
+    if all(item.get("id") is None for item in items):
+        by_id = dict(zip(ids, items, strict=True))
+    else:
+        by_id = {item.get("id"): item for item in items}
     if set(by_id) != set(ids):
         raise ValueError("Judge batch IDs differ from requested cases")
     return {case_id: _validate_judgment(by_id[case_id]) for case_id in ids}

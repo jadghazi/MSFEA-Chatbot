@@ -47,3 +47,10 @@ def test_batch_requires_every_requested_case() -> None:
     assert parsed["two"]["overall_correct"] is False
     with pytest.raises(ValueError, match="IDs differ"):
         _parse_batch(json.dumps({"judgments": [first, second]}), ["one", "three"])
+    first.pop("id")
+    second.pop("id")
+    positional = _parse_batch(json.dumps({"judgments": [first, second]}), ["one", "two"])
+    assert positional["two"]["overall_correct"] is False
+    second["id"] = "two"
+    with pytest.raises(ValueError, match="IDs differ"):
+        _parse_batch(json.dumps({"judgments": [first, second]}), ["one", "two"])
