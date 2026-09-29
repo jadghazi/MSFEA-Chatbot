@@ -18,7 +18,8 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   question/approved-answer pairs in the 2026-09-26 faculty workbook, expanded to
   205 department-scoped cases for seven rules whose answers vary by department.
   Original wording and workbook cells are retained. `build_faculty_golden.py`
-  regenerates it from the reviewed workbook and intake record; later owner
+  regenerates it from the reviewed workbook, committed
+  `docs/intake/faq-workbook-classification-2026-09-26.md`, and intake record; later owner
   decisions are recorded as resolved expectations alongside original answers.
   The source workbook SHA-256 is checked before regeneration. This source set is
   distinct from the synthetic edge-case set above.
