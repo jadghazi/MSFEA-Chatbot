@@ -32,6 +32,16 @@ graduate degree.
 > minimum of 6 months**. The 6-month figure is the one that applies to MSFEA
 > students.
 
+## Approved Experience internship and CO-OP comparison
+
+The department's Approved Experience internship requires at least **8 weeks** of
+approved training and can be unpaid (see the Summer Training Guidelines). MSFEA
+CO-OP is an optional, full-time paid work term of at least **6 months**. Students
+who pass FEAA 500 are no longer required to take their department's Approved
+Experience / Professional Training course. The CO-OP rules and substitution are
+specified in this handbook; the internship minimum comes from the Summer Training
+Guidelines.
+
 ## Motivation and benefits
 
 - **For students:** a co-op lets students immerse themselves in an industry and
