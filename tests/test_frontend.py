@@ -12,7 +12,7 @@ def test_pilot_page_mounts_the_standalone_chat() -> None:
     assert 'data-mount="#chat-app"' in page
     assert "Pilot version" in page
     assert "Jad Ghazi" in page
-    assert 'src="/widget/widget.js?v=pilot-standalone-6"' in page
+    assert 'src="/widget/widget.js?v=pilot-standalone-7"' in page
     assert 'rel="icon"' in page
     assert 'href="#"' not in page
 
@@ -30,7 +30,7 @@ def test_shared_client_keeps_standalone_and_embedded_modes() -> None:
 def test_chat_controls_preserve_temporary_context_contract() -> None:
     client = (ROOT / "widget" / "widget.js").read_text(encoding="utf-8")
 
-    assert "function resetChat()" in client
+    assert "function resetChat(skipConfirm)" in client
     assert "conversation = [];" in client
     assert "showWelcome();" in client
     assert "var selectedDepartment = null;" in client

@@ -20,6 +20,7 @@
   // Must match ChatRequest.question's max_length in the API, so the student is
   // told before the request is rejected rather than after.
   var MAX_CHARS = 2000;
+  var MAX_CHAT_QUESTIONS = 6;
   var MAX_HISTORY_MESSAGES = 8;
   var MAX_HISTORY_MESSAGE_CHARS = 1200;
 
@@ -413,6 +414,9 @@
 .msfea-modal textarea:focus{outline:2px solid var(--m);outline-offset:1px}
 .msfea-modal-meta{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-faint);margin:4px 0 15px}
 .msfea-modal-actions{display:flex;align-items:center;gap:10px}
+.msfea-limit-actions{display:flex;justify-content:flex-end;gap:10px}
+.msfea-limit-actions button{min-height:40px}
+.msfea-limit-dismiss{border:1px solid var(--line);border-radius:5px;background:#fff;padding:9px 15px;cursor:pointer}
 .msfea-submit{min-height:40px;border:0;border-radius:5px;background:var(--m);color:#fff;padding:9px 15px;font-weight:650;cursor:pointer}
 .msfea-submit:disabled{opacity:.55;cursor:not-allowed}
 .msfea-form-status{font-size:11.5px;color:#a72d25}
@@ -957,10 +961,13 @@
   var requestBusy = false;
   function syncComposerState() {
     var hasDepartment = Boolean(deptLabel(getDept()));
-    sendBtn.disabled = requestBusy || !hasDepartment;
-    input.disabled = requestBusy || !hasDepartment;
+    var chatFull = completedAnswers >= MAX_CHAT_QUESTIONS;
+    sendBtn.disabled = requestBusy || !hasDepartment || chatFull;
+    input.disabled = requestBusy || !hasDepartment || chatFull;
     panel.querySelector(".msfea-deptpill").disabled = requestBusy;
-    input.placeholder = hasDepartment
+    input.placeholder = chatFull
+      ? "Start a new chat to ask another question"
+      : hasDepartment
       ? (STANDALONE ? "Ask a question…" : "Ask about internships, CO-OP, IAESTE…")
       : (STANDALONE ? "Choose your department above" : "Select your department to ask a question");
   }
@@ -970,18 +977,60 @@
     syncComposerState();
   }
 
-  function resetChat() {
-    if (sendBtn.disabled) return;
-    if (msgs.querySelector(".msfea-row") && !window.confirm("Start a new chat? The current messages will be cleared.")) return;
+  function resetChat(skipConfirm) {
+    if (requestBusy) return;
+    if (!skipConfirm && msgs.querySelector(".msfea-row") &&
+        !window.confirm("Start a new chat? The current messages will be cleared.")) return;
+    var limitModal = root.querySelector(".msfea-limit-backdrop");
+    if (limitModal) limitModal.remove();
     conversation = [];
     completedAnswers = 0;
+    startNewSession();
     msgs.textContent = "";
+    panel.querySelector(".msfea-invite").hidden = true;
     if (getDept()) showWelcome();
     else showDepartmentPicker();
     input.value = "";
     autoGrow();
     updateCount();
+    syncComposerState();
     input.focus();
+  }
+
+  function showChatLimitModal() {
+    if (root.querySelector(".msfea-limit-backdrop")) return;
+    var backdrop = el("msfea-modal-backdrop msfea-limit-backdrop");
+    var modal = document.createElement("section");
+    modal.className = "msfea-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "msfea-limit-title");
+    modal.innerHTML =
+      '<div class="msfea-modal-head"><h2 id="msfea-limit-title">Chat limit reached</h2>' +
+      '<button class="msfea-modal-close" type="button" aria-label="Close and review answers">' + ICON_CLOSE + '</button></div>' +
+      '<p>You’ve asked 6 questions in this chat. Start a new chat to ask more. The new chat will not use this conversation.</p>' +
+      '<div class="msfea-limit-actions"><button class="msfea-limit-dismiss" type="button">Review answers</button>' +
+      '<button class="msfea-submit msfea-limit-new" type="button">Start new chat</button></div>';
+    backdrop.appendChild(modal);
+    root.appendChild(backdrop);
+    function closeLimit() {
+      backdrop.remove();
+      newBtn.focus();
+    }
+    modal.querySelector(".msfea-modal-close").addEventListener("click", closeLimit);
+    modal.querySelector(".msfea-limit-dismiss").addEventListener("click", closeLimit);
+    modal.querySelector(".msfea-limit-new").addEventListener("click", function () { resetChat(true); });
+    backdrop.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") { event.preventDefault(); closeLimit(); }
+      if (event.key !== "Tab") return;
+      var buttons = modal.querySelectorAll("button");
+      if (event.shiftKey && document.activeElement === buttons[0]) {
+        event.preventDefault(); buttons[buttons.length - 1].focus();
+      } else if (!event.shiftKey && document.activeElement === buttons[buttons.length - 1]) {
+        event.preventDefault(); buttons[0].focus();
+      }
+    });
+    modal.querySelector(".msfea-limit-new").focus();
   }
 
   function maybeInvite() {
@@ -1104,12 +1153,15 @@
 
   // Ephemeral per-tab identity, survives refresh for short retry protection.
   var sessionId;
+  function startNewSession() {
+    sessionId = typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    try { sessionStorage.setItem("msfea-session", sessionId); } catch (_) { /* ephemeral */ }
+  }
   try {
     sessionId = sessionStorage.getItem("msfea-session");
-    if (!sessionId) {
-      sessionId = crypto.randomUUID();
-      sessionStorage.setItem("msfea-session", sessionId);
-    }
+    if (!sessionId) startNewSession();
   } catch (_) {
     sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2);
   }
@@ -1118,6 +1170,7 @@
     var dept = getDept();
     if (!deptLabel(dept)) return;
     var q = (preset !== undefined ? preset : input.value).trim();
+    if (completedAnswers >= MAX_CHAT_QUESTIONS) { showChatLimitModal(); return; }
     if (!q || sendBtn.disabled) return;
     clearWelcome();
     addUser(q);
@@ -1141,10 +1194,16 @@
       .then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (data) {
           if (!r.ok) {
-            var failure = new Error(typeof data.detail === "string" ? data.detail :
-              "The assistant could not process that request.");
+            var message = r.status >= 500
+              ? "The assistant is temporarily unavailable. Please try again shortly."
+              : typeof data.detail === "string" ? data.detail :
+                "The assistant could not process that request. Please try again.";
+            var failure = new Error(message);
             failure.userMessage = true;
             throw failure;
+          }
+          if (!data || typeof data.answer !== "string" || !data.answer.trim()) {
+            throw new Error("The assistant returned an incomplete response. Please try again.");
           }
           return data;
         });
@@ -1168,13 +1227,14 @@
           conversation = conversation.slice(-MAX_HISTORY_MESSAGES);
           completedAnswers += 1;
           maybeInvite();
+          if (completedAnswers >= MAX_CHAT_QUESTIONS) showChatLimitModal();
         }
       })
       .catch(function (error) {
         hideTyping();
         addBot({
           answer: error.userMessage ? error.message :
-            "I couldn't reach the assistant. Check your connection, then choose Try again.",
+            "I couldn't reach the assistant right now. Check your connection or try again shortly.",
           refused: true,
           disclaimer: "",
           error_code: "request_failed",
@@ -1182,7 +1242,7 @@
       })
       .finally(function () {
         setBusy(false);
-        input.focus();
+        if (completedAnswers < MAX_CHAT_QUESTIONS) input.focus();
       });
   }
 
@@ -1215,7 +1275,7 @@
     else openPanel();
   });
   closeBtn.addEventListener("click", closePanel);
-  newBtn.addEventListener("click", resetChat);
+  newBtn.addEventListener("click", function () { resetChat(false); });
   sendBtn.addEventListener("click", function () { send(); });
   panel.querySelector(".msfea-deptpill").addEventListener("click", showDepartmentPicker);
   panel.querySelector(".msfea-exp-open").addEventListener("click", openExperienceModal);

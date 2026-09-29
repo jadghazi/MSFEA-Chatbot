@@ -184,8 +184,13 @@ def _temporary_failure(code: str, department: str | None) -> Answer:
             "The assistant is temporarily busy. Please try again in "
             f"a few minutes. If it is still unavailable later today, contact {contact}."
         )
+    elif code == "service_unavailable":
+        text = (
+            "The answer service had a temporary problem, so I couldn't answer this question. "
+            f"Please try again shortly. If the problem continues, contact {contact}."
+        )
     else:
-        text = f"The assistant is temporarily unavailable. Please try again or contact {contact}."
+        text = f"The assistant cannot answer right now. Please contact {contact}."
     return Answer(text=text, citations=[], refused=True, disclaimer="", error_code=code)
 
 
@@ -215,7 +220,7 @@ async def validation_error(request: Request, exc: RequestValidationError) -> JSO
     return JSONResponse(
         status_code=422,
         content={
-            "detail": "Please send a question of 1–2,000 characters with at most four recent "
+            "detail": "Please send a question of 1–2,000 characters with at most eight recent "
             "messages of up to 1,200 characters each."
             if request.url.path == "/chat"
             else "Please check the submitted fields."

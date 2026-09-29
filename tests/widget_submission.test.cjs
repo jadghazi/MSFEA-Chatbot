@@ -12,6 +12,7 @@ const departmentCodes = ['mech', 'ece', 'chem', 'iem', 'cee'];
 function harness(department = 'cee') {
   let resolve;
   const calls = [], answers = [];
+  let limitNotices = 0;
   const noop = () => {};
   const scope = {
     input: { value: 'Requirements?', focus: noop }, sendBtn: { disabled: false },
@@ -19,15 +20,17 @@ function harness(department = 'cee') {
     showTyping: noop, hideTyping: noop, getDept: () => department,
     deptLabel: code => departmentCodes.includes(code) ? code.toUpperCase() : null,
     setBusy: busy => { scope.sendBtn.disabled = busy; },
-    conversation: [], MAX_HISTORY_MESSAGES: 4, MAX_HISTORY_MESSAGE_CHARS: 1200,
+    conversation: [], MAX_CHAT_QUESTIONS: 6, MAX_HISTORY_MESSAGES: 8,
+    MAX_HISTORY_MESSAGE_CHARS: 1200,
     sessionId: 'widget-session-0001', API: '', completedAnswers: 0, maybeInvite: noop,
+    showChatLimitModal: () => { limitNotices += 1; },
     addBot: answer => answers.push(answer),
     fetch: (...args) => { calls.push(args); return new Promise(r => { resolve = r; }); },
   };
   vm.createContext(scope);
   vm.runInContext(sendCode, scope);
-  return { scope, calls, answers, finish: async (status, data) => {
-    resolve({ ok: status < 400, json: () => Promise.resolve(data) });
+  return { scope, calls, answers, get limitNotices() { return limitNotices; }, finish: async (status, data) => {
+    resolve({ ok: status < 400, status, json: () => Promise.resolve(data) });
     await new Promise(setImmediate);
   }};
 }
@@ -106,4 +109,65 @@ test('friendly 429 is displayed and never retried automatically', async () => {
   assert.equal(h.answers[0].answer, 'Please slow down and try again shortly.');
   assert.equal(h.scope.conversation.length, 0);
   assert.equal(h.scope.sendBtn.disabled, false);
+});
+
+test('six completed questions end the chat, while failures do not use a slot', async () => {
+  const h = harness();
+  h.scope.send('Question 1?');
+  await h.finish(200, { answer: 'Temporary failure', error_code: 'service_unavailable' });
+  assert.equal(h.scope.completedAnswers, 0);
+  for (let i = 1; i <= 6; i++) {
+    h.scope.send(`Question ${i}?`);
+    await h.finish(200, { answer: `Answer ${i}`, refused: false });
+  }
+  assert.equal(h.scope.completedAnswers, 6);
+  assert.equal(h.limitNotices, 1);
+  h.scope.send('Question 7?');
+  assert.equal(h.calls.length, 7);
+  assert.equal(h.limitNotices, 2);
+});
+
+test('upstream 503 has a clear retry message and does not use a slot', async () => {
+  const h = harness();
+  h.scope.send('Requirements?');
+  await h.finish(503, { detail: 'Service Unavailable' });
+  assert.match(h.answers[0].answer, /temporarily unavailable.*try again shortly/i);
+  assert.equal(h.scope.completedAnswers, 0);
+  assert.equal(h.scope.conversation.length, 0);
+});
+
+test('an incomplete success response does not create an empty answer or use a slot', async () => {
+  const h = harness();
+  h.scope.send('Requirements?');
+  await h.finish(200, {});
+  assert.match(h.answers[0].answer, /try again/i);
+  assert.equal(h.scope.completedAnswers, 0);
+  assert.equal(h.scope.conversation.length, 0);
+});
+
+test('starting a new chat clears history and creates a new session', () => {
+  const resetCode = source.slice(source.indexOf('  function resetChat(skipConfirm)'),
+                                 source.indexOf('  function showChatLimitModal()'));
+  let removed = false;
+  let focused = false;
+  const scope = {
+    requestBusy: false, completedAnswers: 6, conversation: [{ role: 'user', content: 'old' }],
+    sessionId: 'old-session',
+    msgs: { querySelector: () => ({}), textContent: 'old answer' },
+    root: { querySelector: () => ({ remove() { removed = true; } }) },
+    panel: { querySelector: () => ({ hidden: false }) },
+    getDept: () => 'ece', showWelcome() {}, showDepartmentPicker() {},
+    input: { value: 'new text', focus() { focused = true; } },
+    autoGrow() {}, updateCount() {}, syncComposerState() {},
+    startNewSession() { scope.sessionId = 'new-session'; },
+  };
+  vm.createContext(scope);
+  vm.runInContext(resetCode, scope);
+  scope.resetChat(true);
+  assert.equal(scope.conversation.length, 0);
+  assert.equal(scope.completedAnswers, 0);
+  assert.equal(scope.msgs.textContent, '');
+  assert.equal(scope.sessionId, 'new-session');
+  assert.equal(removed, true);
+  assert.equal(focused, true);
 });

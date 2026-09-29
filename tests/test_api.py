@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 import msfea_bot.api.app as app_module
 from msfea_bot.api.app import app
 from msfea_bot.generation.answer import Answer
-from msfea_bot.llm import LLMRateLimitError
+from msfea_bot.llm import LLMRateLimitError, LLMServiceError
 
 client = TestClient(app)
 
@@ -70,6 +70,19 @@ def test_chat_degrades_gracefully_on_backend_error(monkeypatch: pytest.MonkeyPat
     assert resp.status_code == 200
     assert resp.json()["refused"] is True
     assert resp.json()["error_code"] == "service_unavailable"
+
+
+def test_gemini_service_failure_has_an_actionable_message(monkeypatch: pytest.MonkeyPatch) -> None:
+    def unavailable(question: str, **kwargs: object) -> Answer:
+        raise LLMServiceError("upstream 503 with private details")
+
+    monkeypatch.setattr(app_module, "generate_answer", unavailable)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    resp = client.post("/chat", json={"question": "Can I do six weeks?"})
+    assert resp.status_code == 200
+    assert resp.json()["error_code"] == "service_unavailable"
+    assert "try again shortly" in resp.json()["answer"].lower()
+    assert "private details" not in resp.json()["answer"]
 
 
 def test_chat_returns_actionable_rate_limit_response(monkeypatch: pytest.MonkeyPatch) -> None:
