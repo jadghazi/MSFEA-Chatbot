@@ -23,8 +23,8 @@ from msfea_bot import departments
 from msfea_bot.config import settings
 from msfea_bot.curation.revisions import Revision, list_revisions, program_registry
 from msfea_bot.curation.service import curated_chunks, revision_chunks
-from msfea_bot.generation.answer import build_prompt, passes_similarity_gate
-from msfea_bot.generation.conversation import ConversationMessage, build_retrieval_query
+from msfea_bot.generation.answer import build_prompt, passes_similarity_gate, retrieve_context
+from msfea_bot.generation.conversation import ConversationMessage
 from msfea_bot.ingestion.chunking import Chunk, chunk_normalized_dir
 from msfea_bot.ingestion.embeddings import model_fingerprint
 from msfea_bot.retrieval.store import index_chunks, indexed_generation, retrieval_depth, search
@@ -491,10 +491,10 @@ def _regression(dsn: str) -> tuple[bool, dict[str, Any]]:
     for item in load_golden_set():
         if item.should_refuse or not item.evidence:
             continue
-        query = build_retrieval_query(item.question, item.history)
         depth = retrieval_depth(item.question, settings.top_k)
-        before = search(query, depth, department=item.department)
-        after = search(query, depth, department=item.department, database_url=dsn)
+        before = retrieve_context(item.question, depth, item.department, item.history)
+        after = retrieve_context(item.question, depth, item.department, item.history,
+                                 database_url=dsn)
         was_hit = evidence_present([chunk.text for chunk in before], item.evidence)
         now_hit = evidence_present([chunk.text for chunk in after], item.evidence)
         checked += 1
@@ -509,18 +509,10 @@ def _regression(dsn: str) -> tuple[bool, dict[str, Any]]:
             if case["should_refuse"]:
                 continue
             history = [ConversationMessage(**message) for message in case.get("history", [])]
-            query = build_retrieval_query(case["question"], history)
-            before = search(
-                query,
-                retrieval_depth(case["question"], settings.top_k),
-                department=case.get("department"),
-            )
-            after = search(
-                query,
-                retrieval_depth(case["question"], settings.top_k),
-                department=case.get("department"),
-                database_url=dsn,
-            )
+            depth = retrieval_depth(case["question"], settings.top_k)
+            before = retrieve_context(case["question"], depth, case.get("department"), history)
+            after = retrieve_context(case["question"], depth, case.get("department"), history,
+                                     database_url=dsn)
             was_complete = all(
                 evidence_present([chunk.text for chunk in before], evidence)
                 for evidence in case["evidence_all"]

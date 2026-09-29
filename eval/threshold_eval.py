@@ -19,8 +19,9 @@ from pydantic import BaseModel
 
 from eval.loader import load_golden_set
 from msfea_bot.config import settings
-from msfea_bot.generation.conversation import build_retrieval_query
-from msfea_bot.retrieval.store import retrieval_depth, search
+from msfea_bot.generation.answer import retrieve_context
+from msfea_bot.generation.conversation import ConversationMessage
+from msfea_bot.retrieval.store import retrieval_depth
 
 THRESHOLD_SET_PATH = Path(__file__).parent / "threshold_set.jsonl"
 MIN_OFFTOPIC_BLOCK_RATE = 0.50
@@ -57,8 +58,12 @@ def load_threshold_set(path: Path = THRESHOLD_SET_PATH) -> list[ThresholdCase]:
     return cases
 
 
-def _best_score(query: str, question: str, department: str | None) -> float:
-    chunks = search(query, retrieval_depth(question, settings.top_k), department=department)
+def _best_score(
+    question: str, department: str | None, history: list[ConversationMessage]
+) -> float:
+    chunks = retrieve_context(
+        question, retrieval_depth(question, settings.top_k), department, history,
+    )
     return max((chunk.score for chunk in chunks), default=-1.0)
 
 
@@ -70,11 +75,10 @@ def evaluate_threshold() -> tuple[int, int, int]:
     for golden_item in load_golden_set() + synthesis:
         if golden_item.should_refuse:
             continue
-        query = build_retrieval_query(golden_item.question, golden_item.history)
         scored.append(
             ScoredCase(
                 golden_item.id,
-                _best_score(query, golden_item.question, golden_item.department),
+                _best_score(golden_item.question, golden_item.department, golden_item.history),
                 True,
             )
         )
@@ -83,8 +87,7 @@ def evaluate_threshold() -> tuple[int, int, int]:
         scored.append(
             ScoredCase(
                 supplemental_item.id,
-                _best_score(supplemental_item.question, supplemental_item.question,
-                            supplemental_item.department),
+                _best_score(supplemental_item.question, supplemental_item.department, []),
                 supplemental_item.should_pass_threshold,
             )
         )

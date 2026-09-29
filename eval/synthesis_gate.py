@@ -7,9 +7,11 @@ from pathlib import Path
 
 from eval.synthesis_report import premise_hits
 from msfea_bot.config import settings
-from msfea_bot.generation.answer import _answer_context, build_prompt, passes_similarity_gate
-from msfea_bot.generation.conversation import ConversationMessage, build_retrieval_query
-from msfea_bot.retrieval.store import retrieval_depth, search
+from msfea_bot.generation.answer import (
+    _answer_context, build_prompt, passes_similarity_gate, retrieve_context,
+)
+from msfea_bot.generation.conversation import ConversationMessage
+from msfea_bot.retrieval.store import retrieval_depth
 
 
 def main() -> None:
@@ -26,9 +28,10 @@ def main() -> None:
     answerable = [c for c in cases if not c["should_refuse"]]
     for case in answerable:
         history = [ConversationMessage(**m) for m in case.get("history", [])]
-        query = build_retrieval_query(case["question"], history)
-        chunks = search(query, retrieval_depth(case["question"], settings.top_k),
-                        department=case.get("department"))
+        chunks = retrieve_context(
+            case["question"], retrieval_depth(case["question"], settings.top_k),
+            case.get("department"), history,
+        )
         hits = premise_hits({"id": case["id"], "evidence_required": case["evidence_all"],
                              "chunks": [{"text": c.text} for c in chunks]})
         prompt = build_prompt(case["question"], _answer_context(case["question"], chunks, history),

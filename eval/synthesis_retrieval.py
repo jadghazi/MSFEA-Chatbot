@@ -9,8 +9,8 @@ from typing import Any
 from eval.loader import load_golden_set
 from eval.metrics import evidence_present
 from eval.threshold_eval import load_threshold_set
-from msfea_bot.generation.conversation import ConversationMessage, build_retrieval_query
-from msfea_bot.retrieval.store import search
+from msfea_bot.generation.answer import retrieve_context
+from msfea_bot.generation.conversation import ConversationMessage
 
 
 def main() -> None:
@@ -36,9 +36,8 @@ def main() -> None:
     ]
     rows: list[dict[str, Any]] = []
     for case in cases:
-        query = build_retrieval_query(case["question"], case["history"])
         for k in (3, 7, 12):
-            chunks = search(query, k, department=case["department"])
+            chunks = retrieve_context(case["question"], k, case["department"], case["history"])
             rows.append({
                 "id": case["id"], "suite": case["suite"], "valid": case["valid"], "k": k,
                 "first_score": chunks[0].score if chunks else -1,

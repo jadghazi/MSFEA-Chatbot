@@ -8,9 +8,9 @@ from pathlib import Path
 
 from eval.metrics import evidence_present
 from msfea_bot.config import settings
-from msfea_bot.generation.answer import passes_similarity_gate
-from msfea_bot.generation.conversation import ConversationMessage, build_retrieval_query
-from msfea_bot.retrieval.store import retrieval_depth, search
+from msfea_bot.generation.answer import passes_similarity_gate, retrieve_context
+from msfea_bot.generation.conversation import ConversationMessage
+from msfea_bot.retrieval.store import retrieval_depth
 
 
 def main() -> None:
@@ -22,11 +22,10 @@ def main() -> None:
         if case["should_refuse"]:
             continue
         history = [ConversationMessage(**message) for message in case.get("history", [])]
-        query = build_retrieval_query(case["question"], history)
-        chunks = search(
-            query,
+        chunks = retrieve_context(
+            case["question"],
             retrieval_depth(case["question"], settings.top_k),
-            department=case.get("department"),
+            case.get("department"), history,
         )
         passed = all(
             evidence_present([chunk.text for chunk in chunks], evidence)

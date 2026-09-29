@@ -10,6 +10,7 @@ from msfea_bot.generation.conversation import (
     frame_confirmation,
     answer_task,
     needs_condition_focus,
+    retrieval_plan,
 )
 
 
@@ -23,7 +24,8 @@ def _history() -> list[ConversationMessage]:
 def test_pronoun_question_uses_history_for_retrieval() -> None:
     query = build_retrieval_query("Where do I get it?", _history())
     assert "support letter" in query
-    assert "Where do I get it?" in query
+    assert "Where do I get support letter?" == query
+    assert "Earlier student" not in query
 
 
 def test_independent_topic_switch_omits_history() -> None:
@@ -101,9 +103,9 @@ def test_assistant_text_can_resolve_reference_but_is_not_policy_evidence() -> No
     history = _history()
     query = build_retrieval_query("What does that mean?", history)
     prompt_history = format_prompt_history("What does that mean?", history)
-    assert "Earlier assistant wording (search hint only):" in query
+    assert query == "What does support letter mean?"
     assert "ASSISTANT: Yes. Request it from the CDC." in prompt_history
-    assert "Earlier assistant wording" not in build_retrieval_query("Where do I get it?", history)
+    assert "Earlier assistant wording" not in query
 
 
 def test_complete_confirmation_does_not_reuse_previous_assistant_guess() -> None:
@@ -121,7 +123,77 @@ def test_confirmation_framing_preserves_the_students_claim() -> None:
     framed = frame_confirmation(question, _history())
     assert framed == "Is my understanding of our conversation correct: two more weeks at the company instead?"
     assert "support letter" not in framed
-    assert build_retrieval_query(question, _history()).endswith(question)
+    assert build_retrieval_query(question, _history()).startswith(
+        "so two more weeks at the company instead"
+    )
+
+
+def test_explicit_subjects_and_relative_that_start_a_new_topic() -> None:
+    history = [ConversationMessage("user", "What GPA do I need for CO-OP?")]
+    for question in (
+        "What is mentorship?",
+        "What about internship?",
+        "Can I apply for an internship that starts in June?",
+        "Where can I get the internship support letter again?",
+    ):
+        assert not is_contextual_followup(question, history)
+        assert build_retrieval_query(question, history) == question
+        assert format_prompt_history(question, history) == ""
+
+
+def test_detailed_question_does_not_inherit_unrelated_salary_topic() -> None:
+    history = [ConversationMessage("user", "Do I need a salary for the internship?")]
+    question = (
+        "can you give me the link for that letter i forgot the name that the "
+        "company needs to make sure i need the internship"
+    )
+    assert retrieval_plan(question, history).query == question
+    assert format_prompt_history(question, history) == ""
+
+
+def test_followup_uses_latest_substantive_subject_after_switches() -> None:
+    history = [
+        ConversationMessage("user", "What GPA do I need for CO-OP?"),
+        ConversationMessage("assistant", "CO-OP needs a GPA of 3.3."),
+        ConversationMessage("user", "What services does the mentorship program offer?"),
+        ConversationMessage("assistant", "MentorPlus+ connects students with alumni."),
+    ]
+    assert build_retrieval_query("Is it mandatory?", history) == (
+        "Is mentorship program mandatory?"
+    )
+    assert contextual_question("Is it mandatory?", history) == (
+        "Is mentorship program mandatory?"
+    )
+    assert "CO-OP" not in format_prompt_history("Is it mandatory?", history)
+    switched_back = history + [
+        ConversationMessage("user", "What GPA do I need for CO-OP?"),
+        ConversationMessage("assistant", "The minimum is 3.3."),
+    ]
+    assert build_retrieval_query("Is it mandatory?", switched_back) == (
+        "Is CO-OP mandatory?"
+    )
+
+
+def test_repeated_ellipsis_keeps_last_substantive_subject() -> None:
+    history = [
+        ConversationMessage("user", "Is a support letter available from the CDC?"),
+        ConversationMessage("assistant", "Yes."),
+        ConversationMessage("user", "Where do I get it?"),
+        ConversationMessage("assistant", "Use the CDC form."),
+    ]
+    assert build_retrieval_query("How long is it?", history) == (
+        "How long is support letter?"
+    )
+
+
+def test_substantive_ambiguous_followup_keeps_both_retrieval_paths() -> None:
+    history = [ConversationMessage("user", "Can I do 6 weeks of internship only?")]
+    question = "so I need two weeks of research after six at a company?"
+    plan = retrieval_plan(question, history)
+    assert plan.standalone_query == question
+    assert "research" in plan.query
+    assert "internship" in plan.query
+    assert "Earlier student" not in plan.query
 
 
 def test_complete_questions_are_never_rewritten_as_confirmations() -> None:

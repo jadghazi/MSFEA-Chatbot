@@ -463,6 +463,7 @@ def search(
     candidates: int = 20,
     department: str | None = None,
     database_url: str | None = None,
+    score_query: str | None = None,
 ) -> list[RetrievedChunk]:
     """Hybrid retrieval: fuse semantic (vector) and keyword (full-text) rankings.
 
@@ -492,12 +493,18 @@ def search(
     query = _normalize_quantity_spacing(query)
     if candidates == 20 and _NUMERIC_DECISION.search(query):
         candidates = 40
-    qv = embed_query(query)
+    # For a paired literal/contextual search, rank contextual candidates using
+    # their resolved query but score every candidate against the CURRENT question.
+    # Otherwise a high cosine to an unrelated earlier topic wins by construction.
+    qv = embed_query(_normalize_quantity_spacing(score_query) if score_query else query)
     dept = departments.from_code(department)
     # The selected department is useful retrieval context, not just a filter.
     # Keep the original query vector for the calibrated similarity gate: adding
     # a department must not make an unrelated question appear in scope.
-    ranking_vector = embed_query(f"{query}\nDepartment: {dept.abbr}") if dept else qv
+    ranking_vector = (
+        embed_query(f"{query}\nDepartment: {dept.abbr}") if dept
+        else embed_query(query) if score_query else qv
+    )
     # Untrusted input: an unknown code degrades to no scoping rather than an error.
     #
     # Note: with NO department we deliberately leave department chunks in. Excluding

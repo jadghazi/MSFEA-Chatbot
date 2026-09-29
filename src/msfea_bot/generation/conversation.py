@@ -30,6 +30,21 @@ _QUESTION_START_RE = re.compile(
     r"can|could|should|would|will|must|may|have|has|had)\b", re.IGNORECASE
 )
 _EXPLICIT_CONDITION_RE = re.compile(r"\b(also|while|when|if|during)\b", re.IGNORECASE)
+_GENERIC_REFERENTS = frozenset({
+    "answer", "application", "approval", "deadline", "document", "form", "letter",
+    "link", "option", "process", "report", "requirement", "step", "submission",
+})
+_QUERY_FILLER = frozenset({
+    "a", "about", "an", "and", "are", "at", "be", "can", "could", "do", "does",
+    "for", "from", "get", "how", "i", "in", "is", "it", "me", "my", "of", "or",
+    "should", "that", "the", "this", "to", "what", "when", "where", "which",
+    "who", "why", "would", "you",
+})
+_RELATIVE_THAT_RE = re.compile(
+    r"\b(?:a|an|the|my)\s+\w+(?:\s+\w+)?\s+that\s+"
+    r"(?:starts?|ends?|begins?|is|was|has|had|offers?|requires?|allows?|provides?)\b",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -38,6 +53,14 @@ class ConversationMessage:
 
     role: Literal["user", "assistant"]
     content: str
+
+
+@dataclass(frozen=True)
+class RetrievalPlan:
+    """One compact resolved query, optionally paired with the literal question."""
+
+    query: str
+    standalone_query: str | None = None
 
 
 def frame_confirmation(question: str, history: Sequence[ConversationMessage] | None) -> str:
@@ -58,10 +81,16 @@ def frame_confirmation(question: str, history: Sequence[ConversationMessage] | N
 
 
 def contextual_question(question: str, history: Sequence[ConversationMessage] | None) -> str:
-    """Put the immediate antecedent beside an otherwise ambiguous duration question."""
+    """Name the resolved subject in the answer task as well as in retrieval."""
     if not re.fullmatch(r"how long should (?:the )?[a-z]{3,}\s?\d{3} be\??",
                         question.strip(), re.I):
-        return frame_confirmation(question, history)
+        framed = frame_confirmation(question, history)
+        if framed != question:
+            return framed
+        plan = retrieval_plan(question, history)
+        if is_contextual_followup(question, history) and plan.standalone_query is None:
+            return plan.query
+        return question
     previous = [m.content for m in bounded_history(history) if m.role == "user"]
     if not previous:
         return question
@@ -190,6 +219,111 @@ def bounded_history(history: Sequence[ConversationMessage] | None) -> list[Conve
     ]
 
 
+def _explicit_subject(text: str) -> bool:
+    """Recognize a named subject without maintaining a list of CDC programs."""
+    if re.search(r"\b[A-Z]{2,}\d*\b|[A-Z][a-z]+\+", text):
+        return True
+    what_about = _WHAT_ABOUT_RE.match(text)
+    if what_about:
+        subject = text[what_about.end():].strip(" ?.!")
+        if _REFERENCE_RE.search(subject):
+            return False
+        words = subject.lower().split()
+        if not words:
+            return False
+        if words[0] in {"a", "an", "the"}:
+            words = words[1:]
+            return len(words) > 1 and words[0] not in _GENERIC_REFERENTS
+        return len(words) <= 3 and words[0] not in _GENERIC_REFERENTS
+    named_definition = re.fullmatch(
+        r"what (?:is|are) (?:a |an |the )?([\w+-]+(?:\s+[\w+-]+){0,2})\??",
+        text, re.IGNORECASE,
+    )
+    if named_definition:
+        words = named_definition.group(1).lower().split()
+        return words[0] not in _GENERIC_REFERENTS
+    if _RELATIVE_THAT_RE.search(text) and len(text.split()) >= 8:
+        return True
+    if (
+        len(text.split()) >= 12 and len(_current_terms(text)) >= 6
+        and not _CONTINUATION_RE.match(text)
+        and not re.search(r"\b(it|its|they|them|their|those|these|one|ones)\b", text, re.I)
+    ):
+        # A detailed question can contain a demonstrative or conjunction without
+        # depending on the previous turn ("that letter ... company ... internship").
+        return True
+    return False
+
+
+def _anchor_index(prior: list[ConversationMessage]) -> int:
+    """Find the latest substantive student subject, skipping elliptical turns."""
+    user_indices = [index for index, message in enumerate(prior) if message.role == "user"]
+    for index in reversed(user_indices):
+        text = prior[index].content.strip()
+        if _explicit_subject(text):
+            return index
+        if _REFERENCE_RE.search(text) or _CONTINUATION_RE.match(text):
+            continue
+        if len(text.split()) > 6 or not _QUESTION_START_RE.match(text):
+            return index
+    return user_indices[-1]
+
+
+def _subject_hint(anchor: str) -> str:
+    """Extract a short subject phrase from the latest substantive user turn."""
+    text = " ".join(anchor.split()).strip(" ?.!")
+    noun_phrase = re.search(
+        r"\b(?:a|an|the|my)\s+((?:[A-Z]{2,}\s+)?[\w+-]+\s+"
+        r"(?:letter|form|report|program|course))\b", text, re.IGNORECASE,
+    )
+    if noun_phrase:
+        return noun_phrase.group(1)
+    named = re.search(r"\b(?:about|for)\s+(?:the\s+)?([A-Z][\w+-]+)\b", text)
+    if named:
+        return named.group(1)
+    offered = re.search(
+        r"\bdoes\s+(?:the|a|an)\s+([\w+-]+(?:\s+[\w+-]+){0,2}?)\s+"
+        r"(?:offer|provide|require|include|mean|work)\b", text, re.IGNORECASE,
+    )
+    if offered:
+        return offered.group(1)
+    definition = re.fullmatch(
+        r"what (?:is|are) (?:a |an |the )?([\w+-]+(?:\s+[\w+-]+){0,2})",
+        text, re.IGNORECASE,
+    )
+    if definition:
+        return definition.group(1)
+    acronym: list[str] = re.findall(r"\b[A-Z]{2,}\d*\b|[A-Z][a-z]+\+", text)
+    if acronym:
+        return acronym[-1]
+    after_about = re.search(r"\babout\s+(?:the\s+)?([\w+-]+(?:\s+[\w+-]+)?)", text, re.I)
+    if after_about:
+        return after_about.group(1)
+    named_activity = re.search(r"\b(?:of|during|in)\s+(?:the\s+)?([\w+-]+)\b", text, re.I)
+    if named_activity and named_activity.group(1).lower() not in _QUERY_FILLER:
+        return named_activity.group(1)
+    words = [word for word in re.findall(r"[\w+-]+", text) if word.lower() not in _QUERY_FILLER]
+    return " ".join(words[-3:]) if words else text[:60]
+
+
+def _resolved_query(question: str, subject: str) -> str:
+    """Replace a reference with its subject; never paste whole chat turns."""
+    text = " ".join(question.strip().split())
+    if re.search(r"\b(it|its|that|this|one|they|them|those|these)\b", text, re.I):
+        return re.sub(
+            r"\b(it|its|that|this|one|they|them|those|these)\b",
+            subject, text, count=1, flags=re.IGNORECASE,
+        )
+    return f"{text.rstrip('?')} for {subject}?"
+
+
+def _current_terms(question: str) -> set[str]:
+    return {
+        token.lower() for token in re.findall(r"[A-Za-z0-9+-]+", question)
+        if token.lower() not in _QUERY_FILLER and len(token) > 1
+    }
+
+
 def is_contextual_followup(
     question: str, history: Sequence[ConversationMessage] | None
 ) -> bool:
@@ -208,56 +342,51 @@ def is_contextual_followup(
     last_user_question = next(m.content for m in reversed(prior) if m.role == "user")
     if text.casefold() == " ".join(last_user_question.strip().split()).casefold():
         return False
+    if re.fullmatch(r"how long should .+ be\??", text, re.I):
+        return True
+    if _explicit_subject(text):
+        return False
     what_about = _WHAT_ABOUT_RE.match(text)
     if what_about:
         subject = text[what_about.end() :]
         if _REFERENCE_RE.search(subject):
             return True
-        # A proper name, acronym, or course code introduces a new subject. Common
-        # nouns such as "deadline" and "report" still refer to the active topic.
-        return not bool(re.search(r"[A-Z]{2,}|[A-Z][a-z]+\+|\b[A-Z]+\d+\b", subject))
-    if _REFERENCE_RE.search(text) or _CONTINUATION_RE.search(text):
         return True
-    if re.fullmatch(r"how long should .+ be\??", text, re.I):
-        # A bare duration question can refer to the previously discussed course,
-        # report, presentation, or other item; let recent context disambiguate it.
+    if _REFERENCE_RE.search(text) or _CONTINUATION_RE.search(text):
         return True
     if re.search(r"\b[A-Z]{2,}\d*\b", text):
         return False
     return len(text.split()) <= 6 and bool(_QUESTION_START_RE.search(text))
 
 
-def build_retrieval_query(
+def retrieval_plan(
     question: str, history: Sequence[ConversationMessage] | None
-) -> str:
-    """Resolve an elliptical follow-up into a useful single retrieval query.
-
-    Only prior *user* text is used for retrieval.  Assistant answers may contain
-    URLs and verbose phrasing that dilute vector and keyword search; they remain
-    available to the answer prompt for references such as "what does that mean?".
-    """
+) -> RetrievalPlan:
+    """Resolve the current turn and identify when both retrieval paths are useful."""
     prior = bounded_history(history)
     if not is_contextual_followup(question, prior):
         if re.fullmatch(
             r"how long should (?:the )?[a-z]{3,}\s?\d{3} be\??",
             question.strip(), re.I,
         ):
-            return f"Course duration and training length: {question}"
-        return question
-
-    user_turns = [m.content for m in prior if m.role == "user"]
-    anchor = next(
-        (turn for turn in reversed(user_turns)
-         if re.search(r"[A-Z]{2,}|[A-Z][a-z]+\+|[A-Z]+\d+", turn)),
-        next((turn for turn in reversed(user_turns) if len(turn.split()) > 6), user_turns[0]),
+            return RetrievalPlan(f"Course duration and training length: {question}")
+        return RetrievalPlan(question)
+    subject = _subject_hint(prior[_anchor_index(prior)].content)
+    resolved = _resolved_query(question, subject)
+    # A question with its own substantive terms can be interpreted two ways.
+    # Compare literal and resolved retrieval instead of trusting a weak pronoun cue.
+    uncertain = len(_current_terms(question)) >= 2 and bool(
+        _REFERENCE_RE.search(question) or _CONTINUATION_RE.match(question)
+        or _WHAT_ABOUT_RE.match(question)
     )
-    parts = [f"Earlier student topic/circumstances: {anchor}"]
-    if re.search(r"\b(?:option|alternative|that|other|former|latter)\b", question, re.I):
-        assistant_turns = [m.content for m in prior if m.role == "assistant"]
-        if assistant_turns:
-            parts.append(f"Earlier assistant wording (search hint only): {assistant_turns[-1][:240]}")
-    parts.append(f"Current follow-up: {question}")
-    return "\n".join(parts)
+    return RetrievalPlan(resolved, question if uncertain and resolved != question else None)
+
+
+def build_retrieval_query(
+    question: str, history: Sequence[ConversationMessage] | None
+) -> str:
+    """Return a short standalone retrieval query for the current turn."""
+    return retrieval_plan(question, history).query
 
 
 def format_prompt_history(
@@ -266,6 +395,11 @@ def format_prompt_history(
     """Format bounded history only when the current question depends on it."""
     prior = bounded_history(history)
     if not is_contextual_followup(question, prior):
+        return ""
+    prior = prior[_anchor_index(prior):]
+    if len(question.split()) >= 10 and not _CONTINUATION_RE.match(question):
+        # A detailed current question is usually self-contained. Search both paths,
+        # but do not let a previous answer redefine what the student now describes.
         return ""
     if len(question.split()) >= 8 and not _REFERENCE_RE.search(question):
         # A complete restatement supplies its own facts. Earlier assistant guesses

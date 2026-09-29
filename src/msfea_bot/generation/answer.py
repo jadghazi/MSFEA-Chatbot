@@ -29,10 +29,10 @@ from msfea_bot.observability.usage import count
 from msfea_bot.generation.conversation import (
     ConversationMessage,
     answer_task,
-    build_retrieval_query,
     contextual_question,
     format_prompt_history,
     needs_condition_focus,
+    retrieval_plan,
 )
 from msfea_bot.llm import LLMProvider, get_llm_provider
 from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth, search
@@ -78,6 +78,10 @@ does not mean it belongs in the answer. Before writing, silently make this plan:
    Section headings and the source's Question/topic are applicability conditions:
    a rule about an additional circumstance applies only when the student states it.
    Do not silently transfer its numbers or requirements to an ordinary case.
+   For a yes/no policy question, silence about the named subject is not evidence
+   for "No". A sign-up form or a rule for another program does not establish
+   whether this program is required or optional. If no block directly settles
+   the status for the named subject, use the refusal marker below.
 4. Reach the answer by combining those premises. You may apply an explicit rule to
    facts the student states and use basic logic or arithmetic (for example, compare
    their stated credits with a stated minimum). This is grounded reasoning.
@@ -479,6 +483,53 @@ def passes_similarity_gate(chunks: list[RetrievedChunk], threshold: float) -> bo
     return any(chunk.score >= threshold for chunk in chunks)
 
 
+def retrieve_context(
+    question: str,
+    k: int,
+    department: str | None,
+    history: Sequence[ConversationMessage] | None,
+    database_url: str | None = None,
+) -> list[RetrievedChunk]:
+    """Search one or two paths, always ranking paired evidence for this question."""
+    plan = retrieval_plan(question, history)
+
+    def run(query: str, *, score_query: str | None = None) -> list[RetrievedChunk]:
+        if database_url is None:
+            if score_query is None:
+                return search(query, k, department=department)
+            return search(query, k, department=department, score_query=score_query)
+        if score_query is None:
+            return search(query, k, department=department, database_url=database_url)
+        return search(
+            query, k, department=department, database_url=database_url,
+            score_query=score_query,
+        )
+
+    if plan.standalone_query is None:
+        return run(plan.query)
+
+    literal = run(plan.standalone_query)
+    contextual = run(plan.query, score_query=question)
+    by_id = {chunk.id: chunk for chunk in contextual}
+    by_id.update({chunk.id: chunk for chunk in literal})
+    literal_rank = {chunk.id: rank for rank, chunk in enumerate(literal, 1)}
+    contextual_rank = {chunk.id: rank for rank, chunk in enumerate(contextual, 1)}
+
+    def current_relevance(chunk: RetrievedChunk) -> float:
+        # Both searches' cosine scores use the literal current question. The
+        # small rank terms preserve hybrid keyword evidence and prefer the
+        # literal path on close calls; contextual similarity is never compared.
+        bare = literal_rank.get(chunk.id)
+        resolved = contextual_rank.get(chunk.id)
+        return (
+            chunk.score
+            + (0.04 + 0.015 / bare if bare is not None else 0.0)
+            + (0.01 / resolved if resolved is not None else 0.0)
+        )
+
+    return sorted(by_id.values(), key=current_relevance, reverse=True)[:k]
+
+
 def generate_answer(
     question: str,
     k: int | None = None,
@@ -493,8 +544,7 @@ def generate_answer(
     unrecognised, everything behaves exactly as before.
     """
     top_k = k if k is not None else retrieval_depth(question, settings.top_k)
-    retrieval_query = build_retrieval_query(question, history)
-    chunks = search(retrieval_query, top_k, department=department)
+    chunks = retrieve_context(question, top_k, department, history)
     retrieved = [f"{c.source_doc} > {c.section} ({c.score:.2f})" for c in chunks]
 
     if len(

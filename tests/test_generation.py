@@ -16,6 +16,7 @@ from msfea_bot.generation.answer import (
     generate_answer,
     parse_answer,
     _answer_context,
+    retrieve_context,
 )
 from msfea_bot.generation.conversation import ConversationMessage
 from msfea_bot.llm import GenerationResult
@@ -30,6 +31,36 @@ CHUNKS = [
         score=0.9,
     )
 ]
+
+
+def test_dual_retrieval_ranks_by_current_question_not_context_similarity(monkeypatch):
+    import msfea_bot.generation.answer as generation
+
+    question = "so I need two weeks of research after six at a company?"
+    history = [ConversationMessage("user", "Tell me about CO-OP")]
+    correct = RetrievedChunk(
+        id="research", text="Two weeks of faculty research after six company weeks.",
+        source_doc="internship.md", section="Faculty research", score=0.78,
+    )
+    wrong = RetrievedChunk(
+        id="coop", text="CO-OP application rules.", source_doc="coop.md",
+        section="CO-OP", score=0.44,
+    )
+    calls = []
+
+    def fake_search(query, k, department=None, score_query=None):
+        calls.append((query, score_query))
+        if score_query is None:
+            return [correct]
+        # The older-topic candidate was a 0.96 match to the contextual query.
+        # Its score against the current student question is only 0.44.
+        assert score_query == question
+        return [wrong]
+
+    monkeypatch.setattr(generation, "search", fake_search)
+    result = retrieve_context(question, 7, "ece", history)
+    assert [chunk.id for chunk in result] == ["research", "coop"]
+    assert len(calls) == 2
 
 
 def test_excessive_rag_context_never_calls_provider(monkeypatch):
@@ -409,6 +440,25 @@ def test_similarity_threshold_boundary_calls_llm(monkeypatch: pytest.MonkeyPatch
     result = generate_answer("How long is the internship?", provider=provider)
 
     assert result.refused is False
+    assert provider.calls == 1
+
+
+def test_dual_retrieval_still_uses_one_generation_call(monkeypatch: pytest.MonkeyPatch) -> None:
+    retrieval_calls = []
+
+    def fake_search(*args, **kwargs):
+        retrieval_calls.append((args, kwargs))
+        return CHUNKS
+
+    monkeypatch.setattr("msfea_bot.generation.answer.search", fake_search)
+    provider = _RecordingProvider()
+    result = generate_answer(
+        "so I need two weeks of research after six at a company?",
+        provider=provider,
+        history=[ConversationMessage("user", "Can I do six weeks of internship only?")],
+    )
+    assert not result.refused
+    assert len(retrieval_calls) == 2
     assert provider.calls == 1
 
 
