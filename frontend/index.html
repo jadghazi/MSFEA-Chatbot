@@ -19,7 +19,20 @@
       .brand-copy strong,.brand-copy span { display:block; }
       .brand-copy strong { font-size:14px; font-weight:600; letter-spacing:.01em; }
       .brand-copy span { margin-top:2px; color:#ead6da; font-size:11px; }
-      .pilot { padding:4px 10px; border:1px solid #b76e78; border-radius:20px; font-size:10px; color:#fff; white-space:nowrap; }
+      .pilot { padding:4px 10px; border:1px solid #b76e78; border-radius:20px; background:transparent; font:inherit; font-size:10px; line-height:1.5; color:#fff; white-space:nowrap; cursor:pointer; }
+      .pilot:hover { background:#ffffff1a; }
+      .pilot:focus-visible { outline:2px solid #fff; outline-offset:3px; }
+      .pilot-intro { width:min(440px,calc(100vw - 32px)); max-height:calc(100dvh - 32px); margin:auto; padding:28px; border:1px solid #e4e0dd; border-radius:18px; background:#fff; color:var(--ink); box-shadow:0 20px 60px #25131635; overflow:auto; }
+      .pilot-intro::backdrop { background:#20191bc0; }
+      .pilot-intro h2 { margin:0 36px 14px 0; font-size:22px; line-height:1.25; letter-spacing:-.025em; }
+      .pilot-intro p { margin:0 0 13px; font-size:13px; line-height:1.65; color:var(--muted); }
+      .pilot-intro strong { color:var(--ink); font-weight:600; }
+      .pilot-intro-close { position:absolute; top:12px; right:12px; display:grid; place-items:center; width:36px; height:36px; padding:0; border:0; border-radius:9px; background:transparent; color:var(--muted); font:24px/1 var(--font); cursor:pointer; }
+      .pilot-intro-close:hover { background:#f5f0f1; }
+      .pilot-intro-start { min-height:40px; margin-top:5px; padding:9px 17px; border:0; border-radius:9px; background:var(--maroon); color:#fff; font:600 13px var(--font); cursor:pointer; }
+      .pilot-intro-start:hover { background:#70202b; }
+      .pilot-intro :focus-visible { outline:2px solid var(--maroon); outline-offset:3px; }
+      @media(pointer:coarse) { .pilot-intro-close,.pilot-intro-start { min-width:44px; min-height:44px; } }
       main { flex:1; min-height:0; width:100%; max-width:1320px; margin:auto; padding:16px 40px 12px; display:grid; grid-template-columns:280px minmax(0,1fr); gap:40px; }
       .service-note { display:flex; flex-direction:column; padding:46px 0 0; }
       .eyebrow { margin:0 0 20px; color:var(--maroon); font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
@@ -196,7 +209,7 @@
     <header class="site-header">
       <div class="header-inner">
         <div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path d="M13 8h22a7 7 0 0 1 7 7v16a7 7 0 0 1-7 7H22l-10 6v-7a7 7 0 0 1-6-7V15a7 7 0 0 1 7-7Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 28c3 0 6 1 8 3 2-2 5-3 8-3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="15" y="17" width="4" height="5" rx="2" fill="currentColor"/><rect x="29" y="17" width="4" height="5" rx="2" fill="currentColor"/></svg></div><div class="brand-copy"><strong>MSFEA · Career Development Center</strong><span>American University of Beirut</span></div></div>
-        <span class="pilot">Pilot version</span>
+        <button class="pilot" id="pilot-intro-open" type="button" aria-label="About this assistant (pilot version)" title="About this assistant" aria-haspopup="dialog" aria-controls="pilot-intro">Pilot version</button>
       </div>
     </header>
     <main>
@@ -209,6 +222,15 @@
       </aside>
       <section class="assistant-area" aria-label="Chat with the student assistant"><div id="chat-app" tabindex="-1"></div><noscript><p class="noscript">JavaScript is required to use the assistant.</p></noscript></section>
     </main>
+    <dialog class="pilot-intro" id="pilot-intro" aria-labelledby="pilot-intro-title">
+      <button class="pilot-intro-close" type="button" aria-label="Close welcome message">&times;</button>
+      <h2 id="pilot-intro-title">Welcome to the MSFEA Student Assistant</h2>
+      <p>This pilot helps answer questions about internships and CDC programs using available MSFEA documents. <strong>Choose your department first</strong>, since requirements may differ.</p>
+      <p>Answers include sources, but please verify important decisions with the CDC or your department.</p>
+      <p>Chats are temporary, so please don’t share personal details. AI responses use Google Gemini and may occasionally be delayed or unavailable.</p>
+      <button class="pilot-intro-start" type="button">Start chatting</button>
+    </dialog>
     <script src="/widget/widget.js?v=pilot-standalone-8" data-layout="standalone" data-mount="#chat-app"></script>
+    <script src="/welcome.js?v=pilot-intro-1"></script>
   </body>
 </html>
