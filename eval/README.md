@@ -34,6 +34,9 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   resumed after reset. The judge's ratings require independent human calibration
   against source passages before being used as a trusted answer-accuracy claim.
   Provider errors and uncertain judgments stay visible rather than counting as correct.
+- `faculty_calibration_sample.jsonl` — 40 source-review cases, eight per department
+  with high-risk policy questions deliberately overrepresented. It checks judge
+  agreement and is not a random estimate of full-set accuracy.
 - `loader.py` — parse + validate the golden set (`load_golden_set()`).
 - `metrics.py` — the two metric families:
   - **Retrieval:** `recall_at_k`, `hit_rate_at_k`.
@@ -95,5 +98,6 @@ python -m eval.threshold_eval  # verify the pre-LLM 0.60 gate; no Gemini usage
 pytest                 # run metric + golden-set tests
 ```
 
-Real student questions (batch 2) will be swapped in / added to `golden_set.jsonl`
-as they arrive; the harness itself does not change.
+The faculty workbook questions are now versioned in `faculty_questions_golden.jsonl`.
+Future independently sourced student questions can be added with source review;
+the original `golden_set.jsonl` remains useful for synthetic edge-case coverage.

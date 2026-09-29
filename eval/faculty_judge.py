@@ -12,6 +12,7 @@ import json
 import re
 import time
 from datetime import datetime, timezone
+from itertools import zip_longest
 from pathlib import Path
 from typing import Any, cast
 
@@ -161,6 +162,11 @@ def main() -> None:
         if previous.get("answer_sha256") == answer_hash and previous.get("judgment"):
             continue
         pending.append((number, case, trace, answer_hash))
+    # Adjacent cases often ask the same policy question for different departments.
+    # Pair distant topics to avoid the model merging their department rules.
+    midpoint = (len(pending) + 1) // 2
+    pending = [item for pair in zip_longest(pending[:midpoint], pending[midpoint:])
+               for item in pair if item is not None]
     with args.output.open("a", encoding="utf-8") as stream:
         for offset in range(0, len(pending), args.batch_size):
             batch = pending[offset:offset + args.batch_size]
