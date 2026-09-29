@@ -235,7 +235,10 @@ Students maintain an individual co-op experience file. Deliverables in FEAA 500:
 3. **Co-op Final Report** — a three-page memo describing the work completed, plus
    appendices with work samples.
 4. **Student Self-Evaluation, Reflection, and Feedback Form.**
-5. Additional requirements may be set by individual departments.
+5. **Official signed company completion letter** on company letterhead confirming
+   placement duration and relevant work. This is additional to the employer's
+   Final Student Performance Evaluation Form and Employer Experience Feedback Form.
+6. Additional requirements may be set by individual departments.
 
 ### Student evaluation
 
@@ -298,6 +301,15 @@ dates of the position and a brief description of the work), and finally a **Co-o
 Employer Experience Feedback Form**.
 
 ## CO-OP FAQs
+
+**Q: When should a CO-OP student submit the Proposal for Approved Experience?**
+A: The CO-OP handbook does not establish a universal department-internship Moodle
+Proposal for every CO-OP student. Apply to the CO-OP program through its student
+application process. If you find your own CO-OP opportunity, after program
+acceptance and the required modules, submit the **Proposal of Cooperative
+Education and Experiential Learning Form** and contact the CO-OP CDC Advisor to
+seek approval. Follow the CO-OP application timeline and advisor instructions
+for the applicable dates.
 
 **Q: Does passing FEAA 500 remove the department's Approved Experience requirement?**
 A: Yes. The CO-OP handbook says students who pass FEAA 500 are no longer required to take their department's Approved Experience / Professional Training course.

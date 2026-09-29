@@ -100,6 +100,18 @@ approval_reference: project-review-2026-09
 
 **Answer:** Yes. Approved training may take place in Lebanon or abroad at a recognized organization or approved setting. The location alone does not establish eligibility: the experience must meet the course requirements and be approved.
 
+## Finding an internship and acceptable work
+
+**Department:** All departments
+
+**Question/topic:** Who is responsible for finding my internship?
+
+**Answer:** Students are responsible for securing their own internship opportunities. The MSFEA Career Development Center and the department internship coordinator can help with the search and approval process; students should also check CDC postings and may propose a self-found placement.
+
+**Question/topic:** What type of work is acceptable for the internship course?
+
+**Answer:** The experience should be meaningful professional work related to the student's discipline and allow them to apply engineering, computing, design, analysis, or technical problem-solving skills. Work that is mainly unrelated business, finance, or administrative activity may not meet the course objectives. Department-specific limits and approval rules still apply.
+
 ## Approval before beginning an internship
 
 **Department:** All departments
@@ -322,7 +334,7 @@ approval_reference: project-review-2026-09
 
 **Question/topic:** How does a six-week internship plus two-week research arrangement work?
 
-**Answer:** The six company weeks and two faculty-research weeks (2 weeks of research with an MSFEA faculty member) must be approved and documented.
+**Answer:** The six company weeks and two faculty-research weeks (2 weeks of research with an MSFEA faculty member) must be approved and documented. Submit a separate research report in addition to the company internship report for the approved research component. Dar Al-Handasah is an example of a company offering six-week placements, not the only company eligible for a department-approved arrangement.
 
 ### Progress reporting for a 6+2 arrangement
 
@@ -366,7 +378,7 @@ documentation conditions.
 
 **Question/topic:** Is a six-week company internship enough for IEM, or can I combine two company placements?
 
-**Answer:** No. Six company weeks alone do not meet the standard eight-week minimum. Complete 2 weeks of research with an MSFEA faculty member, or a minimum 4-week internship at another company, with prior approval and documentation. A four-plus-four company plan is not automatically accepted; confirm a different split with the department before relying on it.
+**Answer:** No. Six company weeks alone do not meet the standard eight-week minimum. Complete 2 weeks of research with an MSFEA faculty member, or a minimum 4-week internship at another company, with prior approval and documentation. For the approved research route, submit a separate research report in addition to the company report. A four-plus-four company plan is not automatically accepted; confirm a different split with the department before relying on it.
 
 ## Combining two company internships (CEE)
 
@@ -401,6 +413,10 @@ approved placement must still satisfy the course's total training requirement.
 **Question/topic:** Can I do six weeks of internship for CIVE 400?
 
 **Answer:** The standard minimum is eight full weeks of approved training. For CEE, a reduced six-week internship may be approved in exceptional cases for selected companies; six weeks alone is not automatically accepted. A proposed two-week faculty-research addition to a six-week company placement requires Chair approval. Confirm approval for your proposed arrangement before relying on either route.
+
+**Question/topic:** What is required for a six-week company placement, such as Dar Al-Handasah, plus two weeks of faculty research?
+
+**Answer:** The proposed research addition requires Chair approval; do not assume the six company weeks plus two research weeks count without it. Document both approved components and submit a separate research report in addition to the company internship report. Dar Al-Handasah is one example, not the only company to which the department's approval rules may apply.
 
 ## Six-week internship completion (CHEM)
 
@@ -446,6 +462,10 @@ approved placement must still satisfy the course's total training requirement.
 
 **Answer:** Keep the required Moodle report structure. Within it, discuss technical and administrative activities; engineering or computing projects; specific applications of engineering, science, and mathematics; informed judgment about relevant global, economic, environmental, and societal impacts; and how new knowledge was acquired and applied. These are content expectations, not a replacement section structure.
 
+**Question/topic:** What should I write about acquiring and applying new knowledge?
+
+**Answer:** Give a concrete example of knowledge or skills you needed for the internship, explain how you learned them and which resources or strategies helped, then describe how you applied them to your work and what resulted.
+
 **Question/topic:** Do I need examples of engineering problem-solving in the Final Report?
 
 **Answer:** Yes. Provide real examples or case studies showing how you applied engineering, science, and mathematics to complex engineering problems. Describe the challenges faced and solutions developed, and discuss relevant global, economic, environmental, and societal impacts using informed engineering judgment.
@@ -481,6 +501,10 @@ approved placement must still satisfy the course's total training requirement.
 ## Final Voice-over Presentation duration (ECE)
 
 **Department:** Electrical and Computer Engineering (ECE)
+
+**Question/topic:** Do I need to submit the EECE 500 Final Voice-over Presentation?
+
+**Answer:** Yes. The Final Voice-over Presentation is an EECE 500 deliverable. Follow the current course Moodle instructions for submission and the required recorded narration.
 
 **Question/topic:** What is the maximum duration of the EECE500 Final Voice-over Presentation?
 
@@ -579,6 +603,10 @@ approved placement must still satisfy the course's total training requirement.
 **Question/topic:** Is there a fixed template for the employer completion letter?
 
 **Answer:** No fixed template is normally required if the employer's official format includes the required information. Use a current Moodle template if one is provided. The letter must include the start and end dates, work and tasks completed, a brief evaluation, and the employer/supervisor's signature and stamp. Request it two to three weeks before completion.
+
+**Question/topic:** Can the employer simply state that I worked there?
+
+**Answer:** No. A bare confirmation of attendance is not enough for the required employer completion/evaluation letter. It should state the actual internship start and end dates, the work and tasks completed, a brief evaluation, and the employer or supervisor's signature and stamp.
 
 **Question/topic:** Does the document I received qualify as the required employer completion/evaluation letter?
 
