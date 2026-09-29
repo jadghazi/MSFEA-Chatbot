@@ -364,10 +364,9 @@ documentation conditions.
 
 **Department:** Industrial Engineering and Management (IEM)
 
-Two company placements require prior approval. After six company weeks, a second
-approved company placement must last at least four weeks. Do not treat a four-plus-four
-plan as an automatically approved alternative; confirm a different arrangement
-with the department before relying on it.
+**Question/topic:** Is a six-week company internship enough for IEM, or can I combine two company placements?
+
+**Answer:** No. Six company weeks alone do not meet the standard eight-week minimum. Complete 2 weeks of research with an MSFEA faculty member, or a minimum 4-week internship at another company, with prior approval and documentation. A four-plus-four company plan is not automatically accepted; confirm a different split with the department before relying on it.
 
 ## Combining two company internships (CEE)
 
