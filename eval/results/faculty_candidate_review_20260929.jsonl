@@ -1,0 +1,39 @@
+{"id":"faculty-007-chem","review":"acceptable","note":"The question asks for the ordinary minimum; eight weeks is the approved rule. The judge demanded an unasked exception caveat. The annotated document missed, but the cited CDC FAQ supports the answer."}
+{"id":"faculty-010-mech","review":"partial","note":"The answer gives the valid eight-week company and approved 6+2 research routes, but does not directly resolve the proposed 6+2 two-company plan. The judge's claim that eight company weeks is wrong is itself incorrect."}
+{"id":"faculty-011-ece","review":"acceptable","note":"Prior written approval and the six-plus-four company duration are stated correctly. The judge incorrectly calls six plus four not ten weeks and demands an unasked 4+4 detail."}
+{"id":"faculty-012-mech","review":"acceptable","note":"The answer directly and correctly rejects a MECH 4+4 split; the judge's reason agrees but its refusal flag is false."}
+{"id":"faculty-012-chem","review":"acceptable","note":"Prior written approval, same-summer timing, and total duration are all present; the judge's reason agrees but its refusal flag is false."}
+{"id":"faculty-014-ece","review":"confirmed_gap","note":"The broad 6+2 requirements question received approval conditions but omitted the separate research report."}
+{"id":"faculty-014-iem","review":"confirmed_gap","note":"The answer listed reporting steps but omitted prior approval for the 6+2 arrangement."}
+{"id":"faculty-014-cee","review":"confirmed_gap","note":"The answer listed reports but omitted Chair approval for the proposed research addition."}
+{"id":"faculty-017-chem","review":"confirmed_gap","note":"The self-secured placement answer gave the CDC form and check but omitted required departmental approval before starting."}
+{"id":"faculty-020-ece","review":"confirmed_gap","note":"The answer omitted the petition and the supporting official company-letter details for an unlisted company."}
+{"id":"faculty-025-ece","review":"acceptable","note":"The answer correctly rejects automatic precedent and cites the reviewed current-policy FAQ. The annotated document list missed an equivalent newer approved source."}
+{"id":"faculty-026-mech","review":"acceptable","note":"The answer lists every document the student requested. The judge's reason says it is correct but its refusal flag is false; an extra procedural reminder is not needed to identify the documents."}
+{"id":"faculty-028-iem","review":"confirmed_gap","note":"The petition location and approval authority are given, but the answer omits the justification and supporting documents needed to request an exception."}
+{"id":"faculty-030-ece","review":"acceptable","note":"The answer starts No and applies the current remote-internship approval rule; it does not rely on prior summer precedent."}
+{"id":"faculty-037-ece","review":"partial","note":"The answer explains the likely Moodle prerequisite and immediate step, but omits the coordinator/screenshot fallback if access remains blocked."}
+{"id":"faculty-045-ece","review":"partial","note":"The answer is substantively correct that the Progress and Final Reports are separate, but cites a 6+2-specific passage rather than the general deliverables rule; annotated document retrieval missed."}
+{"id":"faculty-046-mech","review":"confirmed_gap","note":"The answer gives target length but never answers whether an overlong Progress Report can be accepted or returned for revision."}
+{"id":"faculty-050-ece","review":"partial","note":"Revision may be allowed is correct, but the answer omits following course-team feedback and resubmission instructions."}
+{"id":"faculty-052-chem","review":"acceptable","note":"The Final Report requirement is answered directly with a supporting citation; the judge's reason agrees but its refusal flag is false."}
+{"id":"faculty-053-iem","review":"partial","note":"The one-week normal deadline is correct, but the answer does not mention that an official current Moodle deadline can supersede it."}
+{"id":"faculty-055-ece","review":"acceptable","note":"The student asked for font and spacing, both of which were answered correctly. The judge required unrelated page numbering."}
+{"id":"faculty-056-mech","review":"acceptable","note":"The answer mirrors the official Final Report cover-page template; the frozen expectation and judge demand major/term fields not present in that cited template."}
+{"id":"faculty-057-chem","review":"confirmed_gap","note":"The answer gives page-number details but never explicitly says a Table of Contents is required."}
+{"id":"faculty-062-chem","review":"confirmed_gap","note":"The answer repeats generic report topics instead of explaining how to describe acquiring, learning, and applying new knowledge."}
+{"id":"faculty-070-ece","review":"confirmed_gap","note":"ECE specifically requires the Final Voice-over Presentation; the answer gives an unnecessary department-dependent hedge."}
+{"id":"faculty-075-ece","review":"acceptable","note":"Relevant visuals are clearly recommended with sensible confidentiality and citation conditions; the judge's reason agrees but its refusal flag is false."}
+{"id":"faculty-080-ece","review":"partial","note":"The usual one-week Final VOP timing is correct, but an earlier official Moodle deadline is possible and omitted."}
+{"id":"faculty-081-ece","review":"acceptable","note":"Recorded narration is required and the answer states that clearly; the judge's reason agrees but its refusal flag is false."}
+{"id":"faculty-087-chem","review":"confirmed_gap","note":"The bot refused despite an approved FAQ listing the required employer-letter content."}
+{"id":"faculty-106-mech","review":"confirmed_gap","note":"Although it starts Yes, the answer shifts to summer-graduate deadlines and does not ground the ordinary Pass/Fail-course requirement in its citation."}
+{"id":"faculty-115-ece","review":"manual_pass_unjudged","note":"The final case received no model judgment after the first 429. Source review finds the ten-week condition, approvals, schedule constraints, and current-policy caveat correctly stated."}
+{"id":"faculty-117-chem","review":"partial","note":"The answer supplies many typical milestones and one shared-deadline caveat, but fails to lead with the current Moodle/approved-start-date rule and may overstate fixed dates."}
+{"id":"faculty-125-ece","review":"acceptable","note":"The answer asks which arrangement is meant and rejects automatic precedent, with a supporting newer approved FAQ; the annotated document list missed it."}
+{"id":"faculty-132-chem","review":"confirmed_gap","note":"The bot refused an answerable question about who secures the internship."}
+{"id":"faculty-134-cee","review":"confirmed_gap","note":"The bot listed course deliverables instead of acceptable technical work types."}
+{"id":"faculty-145-ece","review":"confirmed_gap","note":"The bot refused rather than explaining the CO-OP handbook proposal/admission process and its distinction from the internship-course Moodle Proposal."}
+{"id":"faculty-164-cee","review":"partial","note":"Submit after confirmation is correct, but the sole citation is scoped to a second internship while the question is general."}
+{"id":"faculty-165-ece","review":"acceptable","note":"During the first week necessarily means after starting and matches the approved timing FAQ; the judge demanded an unasked generic Moodle caveat."}
+{"id":"faculty-177-chem","review":"confirmed_gap","note":"The CO-OP final-deliverables answer omitted the additional signed company letter."}
