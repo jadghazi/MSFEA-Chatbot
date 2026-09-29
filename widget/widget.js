@@ -498,6 +498,10 @@
       (STANDALONE ? '<div class="msfea-guidance">AI-generated guidance. Verify with official sources.</div>' : '') +
     "</div>";
 
+  if (STANDALONE) {
+    panel.querySelector(".msfea-meta").appendChild(panel.querySelector(".msfea-experience-bar"));
+  }
+
   root.appendChild(bubble);
   root.appendChild(panel);
   var mount = null;
@@ -531,10 +535,22 @@
   }
 
   function row(kind, node) {
+    var wasAtBottom = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight <= 24;
     var r = el("msfea-row" + (kind === "u" ? " u" : ""));
     r.appendChild(node);
     msgs.appendChild(r);
-    scrollDown();
+    if (!STANDALONE || kind === "u") {
+      scrollDown();
+    } else if (wasAtBottom) {
+      var topPadding = parseFloat(getComputedStyle(msgs).paddingTop) || 0;
+      var bottomPadding = parseFloat(getComputedStyle(msgs).paddingBottom) || 0;
+      if (!node.classList.contains("msfea-thinking") &&
+          r.getBoundingClientRect().height > msgs.clientHeight - topPadding - bottomPadding) {
+        msgs.scrollTop += r.getBoundingClientRect().top - msgs.getBoundingClientRect().top - topPadding;
+      } else {
+        scrollDown();
+      }
+    }
     return r;
   }
 
@@ -947,7 +963,7 @@
 
   function autoGrow() {
     input.style.height = "auto";
-    input.style.height = Math.min(input.scrollHeight, 108) + "px";
+    input.style.height = Math.min(input.scrollHeight, STANDALONE ? 160 : 108) + "px";
   }
 
   function updateCount() {
