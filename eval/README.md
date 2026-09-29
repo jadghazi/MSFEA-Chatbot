@@ -31,10 +31,12 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   retrieved; answer and evidence review remains separate.
 - `faculty_live_eval.py`, `faculty_judge.py`, and `faculty_report.py` — resumable
   Oracle answer traces, decomposed policy-evidence and answer judgments, and denominator-aware
-  reporting. The judge groups two cases per Gemini request to conserve the shared
-  daily quota; answer and judge runs stop when that quota is exhausted and can be
-  resumed after reset. The judge's ratings require independent human calibration
-  against source passages before being used as a trusted answer-accuracy claim.
+  reporting. The judge may group two cases per Gemini request to conserve the shared
+  daily quota, but a multi-case response must carry matching case IDs; otherwise it
+  is rejected rather than paired by position. Use `--batch-size 1` for consequential
+  comparisons. Answer and judge runs stop when quota is exhausted and can resume
+  after reset. Judge ratings require independent human calibration against source
+  passages before being used as a trusted answer-accuracy claim.
   Provider errors and uncertain judgments stay visible rather than counting as correct.
 - `faculty_calibration_sample.jsonl` — 48 source-review cases: eight per department
   with high-risk policy questions deliberately overrepresented, plus eight
@@ -72,6 +74,11 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   approved 6+2 research, two-company approval, and the ten-week exception when
   taking another summer course. The synthesis gate checks that each case's
   required evidence reaches the model; live answers still need semantic review.
+- `faculty_quality_holdout.jsonl` and `faculty_quality_validation.jsonl` — small
+  synthetic paraphrase sets for staged live-answer checks across departments,
+  conditions, source selection, and refusals. The first set exposed missing
+  grading and professional-skills evidence and became diagnostic; the second was
+  run after those changes. Neither replaces the 205 actual faculty questions.
 
 ## What is wired vs. pending
 

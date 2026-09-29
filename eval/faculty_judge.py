@@ -127,11 +127,10 @@ def _parse_batch(text: str, ids: list[str]) -> dict[str, dict[str, Any]]:
         raise ValueError("Judge returned an incomplete batch")
     if not all(isinstance(item, dict) for item in items):
         raise ValueError("Judge returned a non-object judgment")
-    # Gemini sometimes preserves array order but omits the repeated case IDs.
-    # Use positional pairing only when *every* ID is absent; mixed or incorrect
-    # IDs are ambiguous and must be rejected.
-    if all(item.get("id") is None for item in items):
-        by_id = dict(zip(ids, items, strict=True))
+    # A batched judge can reorder cases. Without IDs, positional pairing silently
+    # assigns a plausible judgment to the wrong answer. A single case is unambiguous.
+    if len(ids) == 1 and items[0].get("id") is None:
+        by_id = {ids[0]: items[0]}
     else:
         by_id = {item.get("id"): item for item in items}
     if set(by_id) != set(ids):
