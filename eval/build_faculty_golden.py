@@ -76,6 +76,7 @@ RESOLVED_EXPECTATIONS = {
     115: "Ten internship weeks may be required when taking another summer course, but applicability depends on current course-team/Moodle requirements and approvals; do not state that all students unconditionally need ten weeks.",
     116: "Do not assume eight weeks suffice with another summer course. Confirm the applicable ten-week/time-window conditions and approvals with the course team/Moodle.",
     120: "The Progress Report is due under current Moodle instructions, generally Week 4 of training in the June 2026 guideline; do not attribute it to May.",
+    125: "Ask what 'this' refers to. A friend's past individual approval does not establish a current policy or automatic exception; explain the applicable rule once the arrangement is identified.",
     145: "Use the CO-OP handbook's proposal and admission process; no universal internship-course Moodle Proposal requirement was approved for CO-OP.",
     148: "Use the CO-OP handbook's required post-placement deliverables. The signed company letter is additional to the employer forms; do not invent a universal Final VOP requirement.",
     149: "A signed official company completion letter is additionally required for CO-OP in every department and does not replace the handbook's employer forms.",
@@ -156,6 +157,8 @@ def build(workbook_path: Path, output_path: Path = OUTPUT) -> list[dict[str, obj
                 "id": f"faculty-{ordinal:03d}-{department}",
                 "workbook_id": row["id"],
                 "question": question.strip(),
+                "is_synthetic": False,
+                "source_type": "faculty_anonymized_question",
                 "original_approved_answer": str(answer).strip(),
                 "expected_answer_or_behavior": _resolved_expectation(
                     ordinal, row["id"], department, str(answer).strip()
@@ -170,7 +173,7 @@ def build(workbook_path: Path, output_path: Path = OUTPUT) -> list[dict[str, obj
                 "question_cell": row["question_cell"],
                 "answer_cell": row["answer_cell"],
                 "source_sha256": digest,
-                "should_refuse": False,
+                "should_refuse": ordinal == 125,
                 "reference_note": (
                     "The original answer predates the owner's 2026-09-27 conflict decisions; "
                     "grade against the current approved KB and decision record."

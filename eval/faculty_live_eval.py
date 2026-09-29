@@ -100,7 +100,11 @@ def main() -> None:
                 try:
                     result = _case_result(case, args.retrieval_only)
                     break
-                except (LLMRateLimitError, LLMServiceError) as exc:
+                except LLMRateLimitError:
+                    print(f"Daily Gemini quota reached at {case['id']}; resume after reset",
+                          flush=True)
+                    return
+                except LLMServiceError as exc:
                     if attempt == 3:
                         result = {"id": case["id"], "error": type(exc).__name__,
                                   "retrieval_only": args.retrieval_only,

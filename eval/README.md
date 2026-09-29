@@ -27,10 +27,12 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   This is a document-level floor, not proof that the correct policy passage was
   retrieved; answer and evidence review remains separate.
 - `faculty_live_eval.py`, `faculty_judge.py`, and `faculty_report.py` — resumable
-  Oracle answer traces, decomposed semantic judgments, and denominator-aware
-  reporting. The judge's ratings require manual calibration against source
-  passages before being used as a trusted answer-accuracy claim. Provider errors
-  and uncertain judgments stay visible rather than counting as correct.
+  Oracle answer traces, decomposed policy-evidence and answer judgments, and denominator-aware
+  reporting. The judge groups two cases per Gemini request to conserve the shared
+  daily quota; answer and judge runs stop when that quota is exhausted and can be
+  resumed after reset. The judge's ratings require independent human calibration
+  against source passages before being used as a trusted answer-accuracy claim.
+  Provider errors and uncertain judgments stay visible rather than counting as correct.
 - `loader.py` — parse + validate the golden set (`load_golden_set()`).
 - `metrics.py` — the two metric families:
   - **Retrieval:** `recall_at_k`, `hit_rate_at_k`.
@@ -71,8 +73,8 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
 | Answer Layer 1 (deterministic checks) | Ready, unit-tested (`python -m eval.answer_eval`) |
 | Retrieval recall@k + context-recall | Ready (`python -m eval.retrieval_eval`); **gated in CI** on a context-recall floor |
 | Similarity-threshold calibration | Ready (`python -m eval.threshold_eval`); **gated in CI**, no LLM calls |
-| Answer Layer 2 (LLM-judge: faithfulness/groundedness) | **Not built.** No blocker — the provider has existed since Phase 3. This is the one real gap: nothing currently checks that an answer's claims are supported by the retrieved context |
-| Answer Layer 3 (human calibration) | Pending real answers |
+| Answer Layer 2 (LLM-judge: faithfulness/groundedness) | The faculty-question pass uses `faculty_judge.py` to rate policy correctness, conditions, cited grounding, relevance, and refusals separately. Its results remain provisional pending independent human calibration. |
+| Answer Layer 3 (human calibration) | Source review by Codex is recorded for a 40-case sample; independent human calibration remains pending. |
 
 The answer eval is deliberately **not** in CI: it calls the live LLM, so it needs an
 API key and burns free-tier quota. Run it locally before/after a change that could

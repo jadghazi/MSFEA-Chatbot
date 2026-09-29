@@ -24,19 +24,27 @@ def main() -> None:
     parser.add_argument("--retrieval", type=Path, required=True)
     parser.add_argument("--answers", type=Path)
     parser.add_argument("--judgments", type=Path)
+    parser.add_argument("--review-labels", type=Path)
     args = parser.parse_args()
     cases = latest(args.cases)
     retrieval = latest(args.retrieval)
     answers = latest(args.answers) if args.answers and args.answers.exists() else {}
     judgments = latest(args.judgments) if args.judgments and args.judgments.exists() else {}
+    reviews = latest(args.review_labels) if args.review_labels and args.review_labels.exists() else {}
 
     print(f"Frozen faculty cases: {len(cases)} from "
           f"{len({(c['source_sheet'], c['question_cell']) for c in cases.values()})} workbook rows")
     retrieved = [retrieval[cid] for cid in cases if cid in retrieval and not retrieval[cid].get("error")]
     hits = sum(bool(r["source_document_hit"]) for r in retrieved)
-    print(f"Source-document hit: {hits}/{len(retrieved)} "
+    print(f"Source-document hit, all cases: {hits}/{len(retrieved)} "
           f"({hits / len(retrieved):.1%})" if retrieved else "Source-document hit: unavailable")
-    primary_retrieved = [r for r in retrieved if cases[r["id"]]["primary_workbook_case"]]
+    answerable_retrieved = [r for r in retrieved if not cases[r["id"]]["should_refuse"]]
+    if answerable_retrieved:
+        answerable_hits = sum(bool(r["source_document_hit"]) for r in answerable_retrieved)
+        print(f"Answerable source-document hit: {answerable_hits}/{len(answerable_retrieved)} "
+              f"({answerable_hits / len(answerable_retrieved):.1%})")
+    primary_retrieved = [r for r in answerable_retrieved
+                         if cases[r["id"]]["primary_workbook_case"]]
     if primary_retrieved:
         primary_hits = sum(bool(r["source_document_hit"]) for r in primary_retrieved)
         print(f"Original-question source-document hit: {primary_hits}/{len(primary_retrieved)} "
@@ -59,6 +67,9 @@ def main() -> None:
         if judgment and not judgment["uncertain"]:
             by_department[dept]["judged"] += 1
             by_department[dept]["correct"] += bool(judgment["overall_correct"])
+            by_department[dept]["evidence_sufficient"] += bool(
+                judgment.get("retrieval_sufficient", False)
+            )
 
     completed_answers = sum(c["answer_completed"] for c in by_department.values())
     print(f"Completed answers: {completed_answers}/{len(cases)}; "
@@ -71,6 +82,9 @@ def main() -> None:
     judged = sum(c["judged"] for c in by_department.values())
     correct = sum(c["correct"] for c in by_department.values())
     if judged:
+        evidence_sufficient = sum(c["evidence_sufficient"] for c in by_department.values())
+        print(f"Judge-rated policy-evidence sufficiency: "
+              f"{evidence_sufficient}/{judged} ({evidence_sufficient / judged:.1%})")
         print(f"Judge-rated answer accuracy: {correct}/{judged} ({correct / judged:.1%}); "
               f"unjudged/uncertain: {len(cases) - judged}")
         primary_judged = [cid for cid, case in cases.items() if case["primary_workbook_case"]
@@ -84,11 +98,12 @@ def main() -> None:
                   f"({primary_correct / len(primary_judged):.1%})")
     else:
         print("Judge-rated answer accuracy: unavailable")
-    print("Department | source document | answers completed | accurate / judged")
+    print("Department | source document | answers completed | evidence / judged | accurate / judged")
     for dept in ("ece", "mech", "chem", "iem", "cee"):
         row = by_department[dept]
         print(f"{dept:4} | {row['retrieval_hit']}/{row['retrieval_total']} | "
-              f"{row['answer_completed']} | {row['correct']}/{row['judged']}")
+              f"{row['answer_completed']} | {row['evidence_sufficient']}/{row['judged']} | "
+              f"{row['correct']}/{row['judged']}")
     if retrieval:
         misses = [cid for cid in cases if cid in retrieval and not retrieval[cid].get(
             "source_document_hit", False)]
@@ -97,6 +112,17 @@ def main() -> None:
         failed = [cid for cid in cases if judgments.get(cid, {}).get("judgment") and not
                   judgments[cid]["judgment"]["overall_correct"]]
         print("Judge-rated failures: " + (", ".join(failed) or "none"))
+    if reviews:
+        reviewed = [cid for cid in cases if cid in reviews]
+        review_correct = sum(bool(reviews[cid]["overall_correct"]) for cid in reviewed)
+        print(f"Codex source-reviewed sample: {review_correct}/{len(reviewed)} correct")
+        compared = [cid for cid in reviewed if judgments.get(cid, {}).get("judgment")]
+        disagreements = [cid for cid in compared if bool(reviews[cid]["overall_correct"])
+                         != bool(judgments[cid]["judgment"]["overall_correct"])]
+        if compared:
+            print(f"Judge agreement with Codex source review: "
+                  f"{len(compared) - len(disagreements)}/{len(compared)}; "
+                  f"disagreements: {', '.join(disagreements) or 'none'}")
 
 
 if __name__ == "__main__":

@@ -49,3 +49,7 @@ def test_resolved_decisions_replace_obsolete_workbook_expectations() -> None:
     assert "do not invent a universal Final VOP" in str(
         cases["faculty-148-iem"]["expected_answer_or_behavior"]
     )
+    assert cases["faculty-125-ece"]["should_refuse"] is True
+    assert "what 'this' refers to" in str(
+        cases["faculty-125-ece"]["expected_answer_or_behavior"]
+    )
