@@ -25,7 +25,8 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   distinct from the synthetic edge-case set above.
 - `faculty_retrieval_gate.py` — CI checks whether a source document identified in
   the frozen intake review appears among the top-seven retrieved chunks for
-  answerable cases (the ambiguous refusal case is excluded).
+  answerable cases. The current faculty set has no pure-refusal case; refusal
+  edge cases remain in the original golden set.
   This is a document-level floor, not proof that the correct policy passage was
   retrieved; answer and evidence review remains separate.
 - `faculty_live_eval.py`, `faculty_judge.py`, and `faculty_report.py` — resumable
@@ -96,6 +97,7 @@ establish semantic correctness. See `answer_quality_review.md` for the local rev
 ```bash
 python -m eval.run     # summarize the golden set
 python -m eval.threshold_eval  # verify the pre-LLM 0.60 gate; no Gemini usage
+python -m eval.build_faculty_golden path/to/RAG_FAQ_Questions_Answers_Updated.xlsx
 pytest                 # run metric + golden-set tests
 ```
 

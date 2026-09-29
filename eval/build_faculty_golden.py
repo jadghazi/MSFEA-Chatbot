@@ -178,7 +178,7 @@ def build(workbook_path: Path, output_path: Path = OUTPUT) -> list[dict[str, obj
                 "question_cell": row["question_cell"],
                 "answer_cell": row["answer_cell"],
                 "source_sha256": digest,
-                "should_refuse": ordinal == 125,
+                "should_refuse": False,
                 "reference_note": (
                     "The original answer predates the owner's 2026-09-27 conflict decisions; "
                     "grade against the current approved KB and decision record."
