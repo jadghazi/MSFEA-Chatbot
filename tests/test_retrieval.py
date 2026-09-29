@@ -242,6 +242,13 @@ def test_numeric_rule_application_keeps_threshold_evidence_in_prompt_depth() -> 
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_scoped_semantic_rescue_respects_requested_depth() -> None:
+    from msfea_bot.retrieval.store import search
+
+    assert len(search("What is the Moodle quiz passing score?", 1, department="ece")) == 1
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
 @pytest.mark.parametrize("department", ["ece", "iem", "mech", "chem", "cee"])
 def test_joined_duration_retrieves_the_same_evidence(department: str) -> None:
     from msfea_bot.retrieval.store import search

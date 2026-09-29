@@ -84,6 +84,38 @@ approval_reference: project-review-2026-09
 
 **Answer:** Notify the coordinator and CDC immediately. An alternative approved arrangement and updated documentation are required. Keep the cancellation email or letter as supporting evidence.
 
+## Current policy and individual exceptions
+
+**Department:** All departments
+
+**Question/topic:** My friend was allowed to do this last year. Can I use the same exception?
+
+**Answer:** Ask which arrangement the student means before applying a rule. A friend's individual exception or approval in an earlier term does not establish current policy or automatically approve another student. The current department and course requirements govern the identified arrangement; obtain any required approval before relying on an exception.
+
+## Internship locations: Lebanon and abroad
+
+**Department:** All departments
+
+**Question/topic:** Can I do my Approved Experience internship outside Lebanon?
+
+**Answer:** Yes. Approved training may take place in Lebanon or abroad at a recognized organization or approved setting. The location alone does not establish eligibility: the experience must meet the course requirements and be approved.
+
+## Approval before beginning an internship
+
+**Department:** All departments
+
+**Question/topic:** Does receiving an internship offer mean I can start and count the placement?
+
+**Answer:** No. Do not assume an offer alone counts as approved training. Offers outside the CDC that lack department pre-approval will not count toward graduation. Complete the Proposal before beginning, and confirm the applicable approval process with the course team before relying on the placement.
+
+## Internship approval authority
+
+**Department:** All departments
+
+**Question/topic:** Can the chatbot or student assistant approve or authorize my specific internship plan, company, petition, extension, or exception?
+
+**Answer:** No. The student assistant provides policy information only; it cannot grant or verify an individual's formal approval. Internship plans, petitions, and exceptions require decisions by authorized department and course personnel, with the CDC involved as specified by the course process.
+
 ## Internship dates and duration changes
 
 **Department:** All departments
@@ -144,6 +176,14 @@ approval_reference: project-review-2026-09
 
 **Answer:** Use the Moodle forms specifically labelled for a second internship when available, such as Proposal - Second Internship ONLY and Notice of Arrival - Second Internship ONLY. Submit the Proposal when the internship is confirmed and the Notice of Arrival after starting.
 
+## Proposal and Notice of Arrival timing
+
+**Department:** All departments
+
+**Question/topic:** When are the internship Proposal and Notice of Arrival due, including if I have already started?
+
+**Answer:** Complete the Proposal before beginning the approved internship and submit the Notice of Arrival during the first week of training. If you have already started and missed either step, contact the course coordinator promptly for instructions; do not assume the forms are waived or that a late submission is automatically accepted.
+
 ## Research two-week form (ECE)
 
 **Department:** Electrical and Computer Engineering (ECE)
@@ -151,6 +191,30 @@ approval_reference: project-review-2026-09
 **Question/topic:** What form is used for a two-week research component?
 
 **Answer:** Use the research two-week form provided on Moodle. Include the faculty supervisor, research dates, and technical nature of the work. Written confirmation from the faculty supervisor may also be required.
+
+## Internship course grading
+
+**Department:** All departments
+
+**Question/topic:** Does the Approved Experience internship course receive an A-to-F letter grade?
+
+**Answer:** No. The department internship course is graded Pass (P) or Fail (F), rather than with letter grades such as A or B. Students must complete the approved experience and all required deliverables satisfactorily.
+
+## Moodle quiz passing score
+
+**Department:** All departments
+
+**Question/topic:** What is the passing score for the Approved Experience Moodle quiz?
+
+**Answer:** The minimum quiz score is 75%.
+
+## Professional skills lectures and internship videos
+
+**Department:** All departments
+
+**Question/topic:** What is included in the Professional Skills Requirement, and why do I complete it?
+
+**Answer:** Complete three recorded lectures on professional skills and engineering practice, three recorded internship-experience videos, and the Moodle quiz. These activities prepare students to reflect on professional skills, engineering problem solving, learning strategies, and broader impacts in their reports and presentations.
 
 ## Moodle quiz access and attempts
 
@@ -190,7 +254,7 @@ approval_reference: project-review-2026-09
 
 **Question/topic:** What is the maximum AI percentage?
 
-**Answer:** The maximum is 25%. Exceeding it can result in a Fail and a required rewrite. Students should write independently and keep drafts and evidence of their work.
+**Answer:** The maximum is 25%. A submission above the permitted limit may be considered unsatisfactory and returned for revision. The final submission must meet the course policy. Students should write independently and keep drafts and evidence of their work.
 
 **Question/topic:** What is the maximum Turnitin similarity percentage?
 
@@ -207,6 +271,14 @@ approval_reference: project-review-2026-09
 **Question/topic:** Can students at the same company submit the same report?
 
 **Answer:** No. Each student must write an independent report, even when students work at the same company, team, or project.
+
+## Revision of unsatisfactory internship reports
+
+**Department:** All departments
+
+**Question/topic:** What happens when my Progress Report or Final Report is unsatisfactory?
+
+**Answer:** Follow the course team's revision instructions. A report may be returned for revision, but the required work must ultimately be evaluated satisfactorily to pass the Approved Experience course. A first unsatisfactory Progress Report does not by itself mean an automatic course fail if an allowed revision passes.
 
 ## Deadline extensions and petition delays
 
@@ -270,6 +342,41 @@ approval_reference: project-review-2026-09
 
 **Answer:** Do not assume a 4+4 split is accepted. It is case-specific and requires a formal petition and written approval before either component is counted.
 
+## Combining two company internships (MECH)
+
+**Department:** Mechanical Engineering (MECH)
+
+A two-company arrangement needs prior department approval. Two separate four-week
+company periods are not accepted for MECH; do not assume another split arrangement
+will count without approval. The approved six-company-week plus two-week faculty
+research route is a different arrangement, with its own engineering-work and
+documentation conditions.
+
+## Combining or splitting two company internships (CHEM)
+
+**Department:** Chemical Engineering (CHEM)
+
+**Question/topic:** Can I combine two company internships or split training into two four-week placements?
+
+**Answer:** Two company placements need prior written approval, must occur within the same summer term, and must satisfy the total approved training duration. A four-plus-four plan is not automatically accepted merely because CHEM permits internship parts within one summer.
+
+## Combining two company internships (IEM)
+
+**Department:** Industrial Engineering and Management (IEM)
+
+Two company placements require prior approval. After six company weeks, a second
+approved company placement must last at least four weeks. Do not treat a four-plus-four
+plan as an automatically approved alternative; confirm a different arrangement
+with the department before relying on it.
+
+## Combining two company internships (CEE)
+
+**Department:** Civil and Environmental Engineering (CEE)
+
+Two company placements require prior approval. A four-plus-four split may be
+accepted if at least one period is in civil or construction engineering. The
+approved placement must still satisfy the course's total training requirement.
+
 
 
 ## Company internship plus research (MECH)
@@ -320,6 +427,14 @@ approval_reference: project-review-2026-09
 
 **Answer:** The report must be at least five pages and 1,500 words, excluding the cover page, references, and appendix, and must not exceed 20 pages.
 
+## Required Final Report sections
+
+**Department:** All departments
+
+**Question/topic:** What happens if my Final Report omits a required core section?
+
+**Answer:** Follow the report structure and rubric. Missing required core content can make the report unsatisfactory and may require revision; a report lacking required sections can fail the organization and professional-writing rubric. Complete the required sections before final submission.
+
 ## Shared Final Report formatting and content
 
 **Department:** All departments
@@ -340,13 +455,29 @@ approval_reference: project-review-2026-09
 
 **Answer:** Do not disclose confidential or proprietary information. Confirm with the supervisor what may be included, anonymize sensitive details where possible, and explain the technical work at an appropriate level. Contact the course coordinator if confidentiality prevents completion of a required section.
 
-## Reports for multiple approved components
+**Question/topic:** Can I copy company descriptions or materials into my report?
+
+**Answer:** Write your report independently in your own words. Cite external information and quote it where needed rather than copying company descriptions or other material. Do not disclose confidential or proprietary company content without permission.
+
+## Reporting after approval of multiple internship components
 
 **Department:** All departments
 
 **Question/topic:** How should the Final Report cover two internships or an internship plus research?
 
 **Answer:** For two internships, submit one Final Report that clearly separates and discusses each approved component. For a six-week internship plus two-week research arrangement, submit a separate research report in addition to the company internship report. This applies to every approved company-plus-research arrangement, including Dar Al-Handasah and other companies. Check Moodle for additional confirmed information based on your arrangement.
+
+## Final presentation content and visual communication
+
+**Department:** All departments
+
+**Question/topic:** What should my Final Presentation or Voice-over Presentation (VOP) cover?
+
+**Answer:** When a presentation is required, introduce the internship role and objectives, explain the main work and technical contributions, describe challenges and lessons learned, and conclude with the key outcomes. A VOP is one recorded presentation format.
+
+**Question/topic:** Should I use pictures, graphs, or charts in the presentation? Can I copy text from my report?
+
+**Answer:** Use relevant pictures, diagrams, graphs, or charts when they help explain the work. Make slides concise and professional instead of copying report text onto them. Respect employer confidentiality and cite external visuals or information.
 
 ## Final Voice-over Presentation duration (ECE)
 
@@ -359,6 +490,10 @@ approval_reference: project-review-2026-09
 **Question/topic:** Should I submit a narrated PowerPoint or a screen-recorded video?
 
 **Answer:** Submit a PowerPoint with audio recorded on the slides unless the current Moodle instructions explicitly request another format.
+
+**Question/topic:** Can I submit the ECE Voice-over Presentation without recorded audio?
+
+**Answer:** No. The Voice-over Presentation requires narration recorded on the PowerPoint slides unless current Moodle instructions explicitly specify a different format.
 
 ## Approved Experience course billing
 
@@ -446,6 +581,18 @@ approval_reference: project-review-2026-09
 
 **Answer:** No fixed template is normally required if the employer's official format includes the required information. Use a current Moodle template if one is provided. The letter must include the start and end dates, work and tasks completed, a brief evaluation, and the employer/supervisor's signature and stamp. Request it two to three weeks before completion.
 
+**Question/topic:** Does the document I received qualify as the required employer completion/evaluation letter?
+
+**Answer:** An unseen document cannot be verified by the chatbot. To qualify, it must be an official employer or supervisor letter recording the actual start and end dates, work and tasks completed, a brief evaluation, and the required signature and stamp. Material prepared only for a presentation does not substitute for the letter. Ask the course team if an exceptional document needs approval.
+
+## Employer completion letter timing
+
+**Department:** All departments
+
+**Question/topic:** When is the employer completion or evaluation letter due, and when should I ask for it?
+
+**Answer:** The letter is required when the internship is completed and must be ready by the current course submission deadline. Request it from the employer about two to three weeks before your internship ends because preparation can take time. Check the current Moodle instructions or course coordinator for the exact submission date.
+
 ## Progress Report deadline origin
 
 **Department:** All departments
@@ -471,3 +618,10 @@ On 2026-09-28, the MECH research answer was clarified to distinguish six company
 The CEE six-week FAQ restates the existing guideline's selected-company exception and Chair-approved research condition together with the standard minimum. It does not expand either exception or establish approval for any individual company or student.
 
 The CHEM six-week FAQ likewise brings the standard minimum and existing Chair-approval condition together. The same-summer splitting rule does not create a reduced-duration exception.
+
+On 2026-09-29, the approved FAQ review and existing guideline/rubric rules were
+reorganized into short department-scoped combining-placement sections and focused
+professional-skills and presentation sections. The AI-threshold consequence was
+aligned with the faculty-approved answer: an over-limit report may require revision,
+while the 25% limit itself remains unchanged. These are source-backed clarifications,
+not new course-policy exceptions.

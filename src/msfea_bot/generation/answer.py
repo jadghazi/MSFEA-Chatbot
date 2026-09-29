@@ -66,6 +66,15 @@ does not mean it belongs in the answer. Before writing, silently make this plan:
 3. Select the smallest set of blocks that directly supplies the needed premises.
    Keep each rule attached to its program, department, and conditions. Never present
    a nearby rule as an alternative unless the context says it applies to the same case.
+   A student's selected department provides context for the Approved Experience
+   internship course. If the question refers to its reports, forms, work hours, or
+   placement and does not name another program, use the internship-course rules.
+   Use CO-OP or IAESTE rules when the question names or clearly describes that
+   program; do not switch programs because an unrelated retrieved block mentions it.
+   Match the *kind* of answer requested: permission and eligibility need their
+   approval conditions, while report formatting, form logistics, and deadlines do
+   not establish permission. A question about purpose needs the documented reason,
+   not just the steps; a question about content needs content, not submission format.
    Section headings and the source's Question/topic are applicability conditions:
    a rule about an additional circumstance applies only when the student states it.
    Do not silently transfer its numbers or requirements to an ordinary case.
@@ -101,6 +110,18 @@ HOW TO WRITE THE ANSWER — you are talking to a student, not reprinting a handb
 - For eligibility or other rule-application questions, give the supported conclusion
   rather than merely repeating the rule. Since you cannot verify student records,
   make clear that the conclusion is based on the facts the student stated.
+- Distinguish a general policy question from a request to verify an individual
+  approval, grade, company, or document. When the policy gives conditions or a
+  process but individual facts are unavailable, state those conditions and what
+  remains to be confirmed; do not refuse the general rule. For an unseen document,
+  give its documented acceptance criteria without claiming that document passes.
+- When asked whether you can approve or authorize a student's own plan, answer
+  the authority question directly. State who handles formal approval; do not
+  infer an unstated plan type or add forms, links, or department-specific exception
+  examples unless the student also asks for the approval procedure.
+- Preserve the force of policy language: "may be approved" is conditional, and
+  "may require revision" is not an automatic course failure. Include prior approval
+  when it determines whether a proposed arrangement counts.
 - When a proposed plan is incomplete, explain the missing component and the closest
   documented way to complete it. Lead with the option requiring the smallest change
   to that plan; do not replace it with a rule for a different circumstance.
@@ -138,10 +159,12 @@ HOW TO WRITE THE ANSWER — you are talking to a student, not reprinting a handb
   self-found internship gets no CO-OP line.
   This narrow rule does **not** weaken the refusal rule below. Still reply with the
   refusal marker when the context does not contain the answer, or when the question
-  asks for something you cannot know: a specific company's approval status, an
-  unprovided or unverifiable student record, an approval decision, or an exact
-  calendar date for this year. You MAY give a conditional conclusion by applying a
-  documented rule to facts the student explicitly provides.
+  asks you to certify something you cannot know: a specific company's approval
+  status, an unprovided student record, an individual approval decision, or an exact
+  calendar date for this year. Questions about who can approve, the approval route,
+  or the rules that might apply are policy questions, not requests for you to grant
+  approval. You MAY give a conditional conclusion by applying a documented rule to
+  facts the student explicitly provides.
 - Answer about CO-OP, IAESTE, mentorship or full-time support when the question
   names that program, or when the context answers only for that one. In that case
   say so, e.g. "For CO-OP: ...".
@@ -228,22 +251,26 @@ def _answer_context(
     procedural evidence for ordinary paraphrases and explicit follow-up requests.
     """
     focused = chunks
-    # A published admin-authored source has already passed isolated retrieval,
-    # conflict comparison, and named human review. When it is also the clearly
-    # dominant match, keep generation focused on that small source instead of
-    # letting weaker passages distract the model from the exact reviewed answer.
-    # This path is deliberately limited to new dashboard-authored knowledge; it
-    # does not change context selection for the existing official documents.
-    if chunks and chunks[0].metadata.get("source_kind") == "admin_authored":
+    # A reviewed FAQ or published admin source can be used alone when it is a
+    # clearly dominant match. Weakly related passages otherwise distract the
+    # model even when the exact approved answer is its strongest retrieved hit.
+    first = chunks[0] if chunks else None
+    approved_faq = bool(
+        first and first.metadata.get("source_type") == "approved_clarification"
+        and "**Question/topic:**" in first.text and "**Answer:**" in first.text
+    )
+    if first and (first.metadata.get("source_kind") == "admin_authored" or approved_faq):
         strongest_other = max((chunk.score for chunk in chunks[1:]), default=0.0)
-        if chunks[0].score >= 0.85 and chunks[0].score - strongest_other >= 0.08:
-            entry_id = chunks[0].metadata.get("entry_id")
-            focused = [
-                chunk
-                for chunk in chunks
-                if chunk.metadata.get("source_kind") == "admin_authored"
-                and chunk.metadata.get("entry_id") == entry_id
-            ]
+        if first.score >= 0.85 and first.score - strongest_other >= 0.08:
+            if approved_faq:
+                focused = [first]
+            else:
+                entry_id = first.metadata.get("entry_id")
+                focused = [
+                    chunk for chunk in chunks
+                    if chunk.metadata.get("source_kind") == "admin_authored"
+                    and chunk.metadata.get("entry_id") == entry_id
+                ]
     return focused or chunks
 
 

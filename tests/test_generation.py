@@ -209,6 +209,26 @@ def test_admin_source_does_not_hide_comparably_ranked_evidence() -> None:
     ]
 
 
+def test_dominant_approved_faq_does_not_mix_in_unrelated_procedures() -> None:
+    approved = RetrievedChunk(
+        id="approved-faq", text=(
+            "**Question/topic:** Can the chatbot approve my internship?\n"
+            "**Answer:** No; only authorized personnel may approve it."
+        ), source_doc="clarifications.md", section="Approval authority", score=0.88,
+        metadata={"source_type": "approved_clarification"},
+    )
+    related = RetrievedChunk(
+        id="related-process", text="Complete the online company approval form.",
+        source_doc="guidelines.md", section="Approval process", score=0.72,
+    )
+
+    assert _answer_context("Can this bot approve my plan?", [approved, related], []) == [approved]
+    approved.score = 0.79
+    assert _answer_context("Can this bot approve my plan?", [approved, related], []) == [
+        approved, related,
+    ]
+
+
 def test_parse_refusal_marker_escalates() -> None:
     ans = parse_answer(f"  {REFUSAL_MARKER}  ", CHUNKS)
     assert ans.refused is True

@@ -537,21 +537,43 @@ def search(
                 ]
             except psycopg.errors.Error:
                 kw_ids = []  # degrade to vector-only on any tsquery hiccup (autocommit)
-        fused = reciprocal_rank_fusion([vec_ids, kw_ids])[:k]
-        if dept is not None:
-            fused = _reserve_department_slot(conn, fused, vec_ids, kw_ids, dept.code, k)
+        fused = reciprocal_rank_fusion([vec_ids, kw_ids])
         if not fused:
             return []
-        # Fetch content + cosine score for the fused ids in one query.
+        # Keep the hybrid ranking as the backbone, but inspect its candidate pool
+        # before truncating to k. A strong semantic match can otherwise land just
+        # outside the prompt because broad OR keyword matches crowd the top slots.
+        # Inspect at most 20 fused candidates; the prompt still receives k.
+        pool = fused[:max(k, 20)] if dept is not None else fused[:k]
         rows = conn.execute(
             "SELECT id, text, source_doc, section,"
             " 1 - (embedding <=> %s::vector) AS score, display_prefix, metadata"
             " FROM chunks WHERE id = ANY(%s)",
-            (qv, fused),
+            (qv, pool),
         ).fetchall()
-    by_id = {r[0]: r for r in rows}
+        by_id = {r[0]: r for r in rows}
+        if dept is not None:
+            strongest = sorted(pool, key=lambda cid: float(by_id[cid][4]), reverse=True)[:min(2, k)]
+            selected = fused[:k]
+            additions = [cid for cid in strongest if cid not in selected]
+            selected = selected[:k - len(additions)] + additions
+            selected = _reserve_department_slot(
+                conn, selected, vec_ids, kw_ids, dept.code, k
+            )
+            # The reserved department chunk can sit outside the fused pool.
+            missing = [cid for cid in selected if cid not in by_id]
+            if missing:
+                extra = conn.execute(
+                    "SELECT id, text, source_doc, section,"
+                    " 1 - (embedding <=> %s::vector) AS score, display_prefix, metadata"
+                    " FROM chunks WHERE id = ANY(%s)",
+                    (qv, missing),
+                ).fetchall()
+                by_id.update({r[0]: r for r in extra})
+        else:
+            selected = pool
     out: list[RetrievedChunk] = []
-    for cid in fused:  # preserve fused (RRF) order
+    for cid in selected:
         r = by_id.get(cid)
         if r is not None:
             text = _with_display_prefix(r[1], r[5])

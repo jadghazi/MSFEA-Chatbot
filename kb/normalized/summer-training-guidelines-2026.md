@@ -28,7 +28,7 @@ Registration and payment deadlines follow the schedule announced by the Universi
 - Register for XXXX 500 – Approved Experience (the course code prefix depends on your department).
 - Pay the required tuition and fees.
 
-## Internship Requirements
+## Internship Requirements: Duration, Hours, and Locations
 
 To qualify for the Bachelor of Engineering degree, you must complete:
 
@@ -51,7 +51,7 @@ Submit petitions through the AUB online petition system: https://petitions.aub.e
 
 Your internship should provide meaningful professional experience related to your field of study and allow you to apply engineering or design knowledge in practice. Requirements may vary slightly by department.
 
-## Securing an Internship through the CDC
+## Career Development Center (CDC) Internship Search and Postings
 
 The MSFEA CDC office maintains strong relationships with employers and regularly updates job and internship postings. The CDC also supports students applying for competitive international opportunities. Students are strongly encouraged to:
 
@@ -76,6 +76,9 @@ If you secure an internship on your own (outside the CDC), you must complete the
 Training offers not processed through the CDC and not pre-approved by the department will not be counted toward your graduation requirement.
 
 ### If the Company Is Already Listed with the CDC
+
+Being listed with the CDC does not itself approve your placement. Follow the
+current CDC and Moodle process and obtain the required approval before starting.
 
 - Submit an online petition requesting approval.
 - Upload an official company letter that includes:
@@ -209,7 +212,7 @@ The Notice of Completion / Employer Letter must:
 
 Important: Many companies need time to prepare this document. Request it at least 2–3 weeks before your internship ends.
 
-## Evaluation and Grading
+## Approved Experience Evaluation and Pass/Fail Grading
 
 The Approved Experience course is graded as Pass (P) or Fail (F).
 
