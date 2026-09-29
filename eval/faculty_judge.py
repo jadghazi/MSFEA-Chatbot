@@ -28,17 +28,26 @@ refusal_appropriate, uncertain, reason. The first seven values are booleans;
 reason is one concise sentence.
 
 Scoring rules:
+- Judge what the student actually asked, not whether the chatbot restated every
+  detail in the reference. The reference may include useful background or caveats
+  beyond the requested answer. A concise direct answer can be fully correct.
 - policy_correct: answer gives the right applicable rule for the selected department;
   a conditional answer is correct when individual approval or missing facts prevent a yes/no.
 - retrieval_sufficient: the retrieved source excerpts collectively contain the
   facts needed for the expected resolved policy. Do not count a merely related
   document or section as sufficient.
-- conditions_complete: no essential approval, duration, exception, deliverable, or timing
-  condition needed to act on the answer is missing. Extra harmless details do not fail.
+- conditions_complete: no condition that changes the answer or is needed to act on
+  the requested policy is missing. Prior approval is essential for eligibility,
+  split-placement, and exception questions. For a general yes/no, standard
+  deadline, standard length, or responsibility question, do not demand unrelated
+  pass requirements, support contacts, or a generic 'unless Moodle changes it'
+  caveat that the student did not ask about.
 - grounded: every material factual claim is supported by excerpts marked cited=true.
   An uncited retrieved excerpt cannot rescue an unsupported claim. A valid-looking
   citation alone is not sufficient.
 - relevant: directly addresses the actual question.
+- Accept semantic equivalents: 'approved experience dates' covers start and end
+  dates; 'during the first week' necessarily means after the placement begins.
 - refusal_appropriate: false if it refuses an answerable policy question or claims to
   know an individual's unverified approval. A conditional response can pass.
 - uncertain: true when the reference, evidence or answer is too ambiguous to judge.

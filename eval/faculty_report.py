@@ -61,7 +61,9 @@ def main() -> None:
     by_department: dict[str, Counter[str]] = defaultdict(Counter)
     for case_id, case in cases.items():
         dept = str(case["department"])
-        if case_id in retrieval and not retrieval[case_id].get("error"):
+        if not case["should_refuse"] and case_id in retrieval and not retrieval[case_id].get(
+            "error"
+        ):
             by_department[dept]["retrieval_total"] += 1
             by_department[dept]["retrieval_hit"] += bool(retrieval[case_id]["source_document_hit"])
         answer = answers.get(case_id)
@@ -78,19 +80,28 @@ def main() -> None:
         if judgment and not judgment["uncertain"]:
             by_department[dept]["judged"] += 1
             by_department[dept]["correct"] += bool(judgment["overall_correct"])
-            by_department[dept]["evidence_sufficient"] += bool(
-                judgment.get("retrieval_sufficient", False)
-            )
+            if not case["should_refuse"]:
+                by_department[dept]["evidence_judged"] += 1
+                by_department[dept]["evidence_sufficient"] += bool(
+                    judgment.get("retrieval_sufficient", False)
+                )
 
     completed_answers = sum(c["answer_completed"] for c in by_department.values())
     refusal_checked = [cid for cid in cases if cid in answers and not answers[cid].get("error")
                        and answers[cid].get("answer")]
     refusal_matches = sum(bool(answers[cid]["answer"]["refused"]) ==
                           bool(cases[cid]["should_refuse"]) for cid in refusal_checked)
+    false_refusals = sum(bool(answers[cid]["answer"]["refused"]) and
+                         not cases[cid]["should_refuse"] for cid in refusal_checked)
+    required_refusals = sum(bool(cases[cid]["should_refuse"]) for cid in refusal_checked)
+    missed_refusals = sum(not answers[cid]["answer"]["refused"] and
+                          bool(cases[cid]["should_refuse"]) for cid in refusal_checked)
     print(f"Completed answers: {completed_answers}/{len(cases)}; "
           f"provider/unattempted: {len(cases) - completed_answers}")
     print(f"Refusal-behavior match: {refusal_matches}/{len(refusal_checked)}"
           if refusal_checked else "Refusal-behavior match: unavailable")
+    print(f"False refusals: {false_refusals}; required-refusal cases: "
+          f"{required_refusals}; missed required refusals: {missed_refusals}")
     print(f"Refusals: {sum(c['answer_refused'] for c in by_department.values())}; "
           f"citations on substantive answers: "
           f"{sum(c['citation_present'] for c in by_department.values())}/"
@@ -100,9 +111,6 @@ def main() -> None:
     judged = sum(c["judged"] for c in by_department.values())
     correct = sum(c["correct"] for c in by_department.values())
     if judged:
-        evidence_sufficient = sum(c["evidence_sufficient"] for c in by_department.values())
-        print(f"Judge-rated policy-evidence sufficiency, all judged: "
-              f"{evidence_sufficient}/{judged} ({evidence_sufficient / judged:.1%})")
         answerable_judged = [cid for cid, case in cases.items() if not case["should_refuse"]
                              and judgments.get(cid, {}).get("judgment")
                              and not judgments[cid]["judgment"]["uncertain"]]
@@ -127,11 +135,13 @@ def main() -> None:
         print("Judge-rated answer accuracy: unavailable")
     if stale_judgments:
         print(f"Stale judgments excluded: {len(stale_judgments)}")
-    print("Department | source document | answers completed | evidence / judged | accurate / judged")
+    print("Department | source document | answers completed | evidence / answerable judged | "
+          "accurate / judged")
     for dept in ("ece", "mech", "chem", "iem", "cee"):
         row = by_department[dept]
         print(f"{dept:4} | {row['retrieval_hit']}/{row['retrieval_total']} | "
-              f"{row['answer_completed']} | {row['evidence_sufficient']}/{row['judged']} | "
+              f"{row['answer_completed']} | "
+              f"{row['evidence_sufficient']}/{row['evidence_judged']} | "
               f"{row['correct']}/{row['judged']}")
     if retrieval:
         misses = [cid for cid, case in cases.items() if not case["should_refuse"]

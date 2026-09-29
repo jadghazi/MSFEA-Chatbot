@@ -36,9 +36,11 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   resumed after reset. The judge's ratings require independent human calibration
   against source passages before being used as a trusted answer-accuracy claim.
   Provider errors and uncertain judgments stay visible rather than counting as correct.
-- `faculty_calibration_sample.jsonl` — 40 source-review cases, eight per department
-  with high-risk policy questions deliberately overrepresented. It checks judge
-  agreement and is not a random estimate of full-set accuracy.
+- `faculty_calibration_sample.jsonl` — 48 source-review cases: eight per department
+  with high-risk policy questions deliberately overrepresented, plus eight
+  rubric-challenge cases. It checks judge agreement and is not a random estimate
+  of full-set accuracy. Labels in `results/faculty_calibration_labels_20260928.jsonl`
+  are Codex source reviews, not independent human calibration.
 - `loader.py` — parse + validate the golden set (`load_golden_set()`).
 - `metrics.py` — the two metric families:
   - **Retrieval:** `recall_at_k`, `hit_rate_at_k`.
@@ -80,7 +82,7 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
 | Retrieval recall@k + context-recall | Ready (`python -m eval.retrieval_eval`); **gated in CI** on a context-recall floor |
 | Similarity-threshold calibration | Ready (`python -m eval.threshold_eval`); **gated in CI**, no LLM calls |
 | Answer Layer 2 (LLM-judge: faithfulness/groundedness) | The faculty-question pass uses `faculty_judge.py` to rate policy correctness, conditions, cited grounding, relevance, and refusals separately. Its results remain provisional pending independent human calibration. |
-| Answer Layer 3 (human calibration) | Source review by Codex is recorded for a 40-case sample; independent human calibration remains pending. |
+| Answer Layer 3 (human calibration) | Source review by Codex is recorded for a 48-case sample; independent human calibration remains pending. |
 
 The answer eval is deliberately **not** in CI: it calls the live LLM, so it needs an
 API key and burns free-tier quota. Run it locally before/after a change that could
