@@ -15,16 +15,18 @@ CASES = Path(__file__).parent / "faculty_questions_golden.jsonl"
 
 def main() -> None:
     cases = [json.loads(line) for line in CASES.read_text(encoding="utf-8").splitlines()]
+    answerable = [case for case in cases if not case["should_refuse"]]
     misses: list[str] = []
-    for case in cases:
+    for case in answerable:
         chunks = search(
             case["question"], retrieval_depth(case["question"], settings.top_k),
             department=case["department"],
         )
         if not any(chunk.source_doc in case["source_doc_candidates"] for chunk in chunks):
             misses.append(case["id"])
-    score = (len(cases) - len(misses)) / len(cases)
-    print(f"Faculty source-document recall: {len(cases) - len(misses)}/{len(cases)} "
+    score = (len(answerable) - len(misses)) / len(answerable)
+    print(f"Faculty answerable source-document recall@7: "
+          f"{len(answerable) - len(misses)}/{len(answerable)} "
           f"({score:.1%})")
     print("Misses: " + (", ".join(misses) or "none"))
     floor = float(os.getenv("FACULTY_MIN_SOURCE_RECALL", "0.95"))

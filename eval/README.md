@@ -23,7 +23,8 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
   The source workbook SHA-256 is checked before regeneration. This source set is
   distinct from the synthetic edge-case set above.
 - `faculty_retrieval_gate.py` — CI checks whether a source document identified in
-  the frozen intake review appears among the retrieved chunks for these cases.
+  the frozen intake review appears among the top-seven retrieved chunks for
+  answerable cases (the ambiguous refusal case is excluded).
   This is a document-level floor, not proof that the correct policy passage was
   retrieved; answer and evidence review remains separate.
 - `faculty_live_eval.py`, `faculty_judge.py`, and `faculty_report.py` — resumable

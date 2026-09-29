@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -53,3 +54,15 @@ def test_resolved_decisions_replace_obsolete_workbook_expectations() -> None:
     assert "what 'this' refers to" in str(
         cases["faculty-125-ece"]["expected_answer_or_behavior"]
     )
+
+
+def test_resolved_expectations_do_not_use_another_departments_course_code() -> None:
+    code_departments = {
+        "EECE": "ece", "MECH": "mech", "CHEN": "chem",
+        "INDE": "iem", "CIVE": "cee",
+    }
+    for case in _cases():
+        expected = str(case["expected_answer_or_behavior"])
+        for code, department in code_departments.items():
+            if department != case["department"]:
+                assert not re.search(rf"\b{code}\s*\d{{3}}\b", expected, re.I), case["id"]

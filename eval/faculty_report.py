@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -31,17 +32,25 @@ def main() -> None:
     answers = latest(args.answers) if args.answers and args.answers.exists() else {}
     judgments = latest(args.judgments) if args.judgments and args.judgments.exists() else {}
     reviews = latest(args.review_labels) if args.review_labels and args.review_labels.exists() else {}
+    stale_judgments: list[str] = []
+    for case_id, record in list(judgments.items()):
+        answer = answers.get(case_id, {}).get("answer")
+        answer_hash = (hashlib.sha256(json.dumps(answer, sort_keys=True).encode()).hexdigest()
+                       if answer else None)
+        if record.get("answer_sha256") != answer_hash:
+            stale_judgments.append(case_id)
+            del judgments[case_id]
 
     print(f"Frozen faculty cases: {len(cases)} from "
           f"{len({(c['source_sheet'], c['question_cell']) for c in cases.values()})} workbook rows")
     retrieved = [retrieval[cid] for cid in cases if cid in retrieval and not retrieval[cid].get("error")]
     hits = sum(bool(r["source_document_hit"]) for r in retrieved)
-    print(f"Source-document hit, all cases: {hits}/{len(retrieved)} "
+    print(f"Source-document hit@7, all cases: {hits}/{len(retrieved)} "
           f"({hits / len(retrieved):.1%})" if retrieved else "Source-document hit: unavailable")
     answerable_retrieved = [r for r in retrieved if not cases[r["id"]]["should_refuse"]]
     if answerable_retrieved:
         answerable_hits = sum(bool(r["source_document_hit"]) for r in answerable_retrieved)
-        print(f"Answerable source-document hit: {answerable_hits}/{len(answerable_retrieved)} "
+        print(f"Answerable source-document hit@7: {answerable_hits}/{len(answerable_retrieved)} "
               f"({answerable_hits / len(answerable_retrieved):.1%})")
     primary_retrieved = [r for r in answerable_retrieved
                          if cases[r["id"]]["primary_workbook_case"]]
@@ -59,7 +68,9 @@ def main() -> None:
         if answer and not answer.get("error") and answer.get("answer"):
             by_department[dept]["answer_completed"] += 1
             by_department[dept]["answer_refused"] += bool(answer["answer"]["refused"])
-            by_department[dept]["citation_present"] += bool(answer["answer"]["citations"])
+            if not answer["answer"]["refused"]:
+                by_department[dept]["substantive"] += 1
+                by_department[dept]["citation_present"] += bool(answer["answer"]["citations"])
             by_department[dept]["disclaimer_present"] += "AI-generated" in str(
                 answer["answer"].get("disclaimer", "")
             )
@@ -72,19 +83,35 @@ def main() -> None:
             )
 
     completed_answers = sum(c["answer_completed"] for c in by_department.values())
+    refusal_checked = [cid for cid in cases if cid in answers and not answers[cid].get("error")
+                       and answers[cid].get("answer")]
+    refusal_matches = sum(bool(answers[cid]["answer"]["refused"]) ==
+                          bool(cases[cid]["should_refuse"]) for cid in refusal_checked)
     print(f"Completed answers: {completed_answers}/{len(cases)}; "
           f"provider/unattempted: {len(cases) - completed_answers}")
+    print(f"Refusal-behavior match: {refusal_matches}/{len(refusal_checked)}"
+          if refusal_checked else "Refusal-behavior match: unavailable")
     print(f"Refusals: {sum(c['answer_refused'] for c in by_department.values())}; "
-          f"citations: {sum(c['citation_present'] for c in by_department.values())}/"
-          f"{completed_answers}; disclaimers: "
+          f"citations on substantive answers: "
+          f"{sum(c['citation_present'] for c in by_department.values())}/"
+          f"{sum(c['substantive'] for c in by_department.values())}; disclaimers: "
           f"{sum(c['disclaimer_present'] for c in by_department.values())}/"
           f"{completed_answers}")
     judged = sum(c["judged"] for c in by_department.values())
     correct = sum(c["correct"] for c in by_department.values())
     if judged:
         evidence_sufficient = sum(c["evidence_sufficient"] for c in by_department.values())
-        print(f"Judge-rated policy-evidence sufficiency: "
+        print(f"Judge-rated policy-evidence sufficiency, all judged: "
               f"{evidence_sufficient}/{judged} ({evidence_sufficient / judged:.1%})")
+        answerable_judged = [cid for cid, case in cases.items() if not case["should_refuse"]
+                             and judgments.get(cid, {}).get("judgment")
+                             and not judgments[cid]["judgment"]["uncertain"]]
+        if answerable_judged:
+            answerable_evidence = sum(bool(judgments[cid]["judgment"][
+                "retrieval_sufficient"]) for cid in answerable_judged)
+            print(f"Answerable policy-evidence sufficiency: {answerable_evidence}/"
+                  f"{len(answerable_judged)} "
+                  f"({answerable_evidence / len(answerable_judged):.1%})")
         print(f"Judge-rated answer accuracy: {correct}/{judged} ({correct / judged:.1%}); "
               f"unjudged/uncertain: {len(cases) - judged}")
         primary_judged = [cid for cid, case in cases.items() if case["primary_workbook_case"]
@@ -98,6 +125,8 @@ def main() -> None:
                   f"({primary_correct / len(primary_judged):.1%})")
     else:
         print("Judge-rated answer accuracy: unavailable")
+    if stale_judgments:
+        print(f"Stale judgments excluded: {len(stale_judgments)}")
     print("Department | source document | answers completed | evidence / judged | accurate / judged")
     for dept in ("ece", "mech", "chem", "iem", "cee"):
         row = by_department[dept]
@@ -105,9 +134,9 @@ def main() -> None:
               f"{row['answer_completed']} | {row['evidence_sufficient']}/{row['judged']} | "
               f"{row['correct']}/{row['judged']}")
     if retrieval:
-        misses = [cid for cid in cases if cid in retrieval and not retrieval[cid].get(
-            "source_document_hit", False)]
-        print("Source-document misses: " + (", ".join(misses) or "none"))
+        misses = [cid for cid, case in cases.items() if not case["should_refuse"]
+                  and cid in retrieval and not retrieval[cid].get("source_document_hit", False)]
+        print("Answerable source-document misses: " + (", ".join(misses) or "none"))
     if judgments:
         failed = [cid for cid in cases if judgments.get(cid, {}).get("judgment") and not
                   judgments[cid]["judgment"]["overall_correct"]]
