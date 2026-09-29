@@ -47,6 +47,9 @@ The CDC will get back to you as soon as possible.
 **Q: What is the internship?**
 A: The Approved Experience internship is the required engineering training course. It gives students a chance to apply classroom learning to real engineering and design challenges, gain professional experience and workplace skills, and explore career paths. It is normally completed during the summer before the final year; the standard minimum is eight full weeks of approved training.
 
+**Q: Does my Approved Experience internship have to be paid?**
+A: No. The internship placement can be unpaid; a salary is not required for the Approved Experience internship. It must still satisfy the course's training and approval requirements. This is different from MSFEA CO-OP, whose work terms are paid.
+
 **Q: When should I start applying for internships?**
 A: Except for consulting internships, the CDC usually sends guidelines around the beginning of the academic year (October) for the following summer's internship. It is never too early to prepare — work on your CV and cover letter and explore options in advance.
 
