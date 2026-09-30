@@ -1,0 +1,788 @@
+{
+  "summary": {
+    "cases": 21,
+    "evidence_hit_at_7": 21,
+    "evidence_top_1": 11,
+    "independent_exact_parity": 9,
+    "independent_cases": 9
+  },
+  "records": [
+    {
+      "id": "letter-after-salary",
+      "independent": true,
+      "expected_section": "Requesting a support letter",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 3,
+      "history_rank": 3,
+      "bare_ids": [
+        "email-clarifications.md#77-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#08-problems-or-changes-during-an-internship",
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "summer-training-guidelines-2026.md#15-if-the-company-is-not-listed-with-the-cdc",
+        "email-clarifications.md#48-company-internship-plus-research-mech",
+        "email-clarifications.md#75-student-internship-survey-and-employer-letter-form",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them"
+      ],
+      "history_ids": [
+        "email-clarifications.md#77-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#08-problems-or-changes-during-an-internship",
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "summer-training-guidelines-2026.md#15-if-the-company-is-not-listed-with-the-cdc",
+        "email-clarifications.md#48-company-internship-plus-research-mech",
+        "email-clarifications.md#75-student-internship-survey-and-employer-letter-form",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them"
+      ],
+      "history_sections": [
+        "Student internship survey and employer-letter format",
+        "Problems or changes during an internship",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Summer Training (Approved Experience) Guidelines > Securing an Internship Independently > If the Company Is NOT Listed with the CDC",
+        "Company internship plus research (MECH)",
+        "Student internship survey and employer-letter format",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "letter-after-employer",
+      "independent": true,
+      "expected_section": "Requesting a support letter",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 3,
+      "history_rank": 3,
+      "bare_ids": [
+        "email-clarifications.md#77-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#08-problems-or-changes-during-an-internship",
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "summer-training-guidelines-2026.md#15-if-the-company-is-not-listed-with-the-cdc",
+        "email-clarifications.md#48-company-internship-plus-research-mech",
+        "email-clarifications.md#75-student-internship-survey-and-employer-letter-form",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them"
+      ],
+      "history_ids": [
+        "email-clarifications.md#77-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#08-problems-or-changes-during-an-internship",
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "summer-training-guidelines-2026.md#15-if-the-company-is-not-listed-with-the-cdc",
+        "email-clarifications.md#48-company-internship-plus-research-mech",
+        "email-clarifications.md#75-student-internship-survey-and-employer-letter-form",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them"
+      ],
+      "history_sections": [
+        "Student internship survey and employer-letter format",
+        "Problems or changes during an internship",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Summer Training (Approved Experience) Guidelines > Securing an Internship Independently > If the Company Is NOT Listed with the CDC",
+        "Company internship plus research (MECH)",
+        "Student internship survey and employer-letter format",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "mentor-after-coop",
+      "independent": true,
+      "expected_section": "MentorPlus+ (Mentorship Program)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 1,
+      "history_rank": 1,
+      "bare_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece",
+        "cdc-knowledge-base.md#01-internship-approved-experience-course"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece",
+        "cdc-knowledge-base.md#01-internship-approved-experience-course"
+      ],
+      "history_sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Combined internship arrangements (ECE)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Taking another summer course",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)",
+        "Internship (Approved Experience Course)"
+      ]
+    },
+    {
+      "id": "mentor-after-internship",
+      "independent": true,
+      "expected_section": "MentorPlus+ (Mentorship Program)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 1,
+      "history_rank": 1,
+      "bare_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece",
+        "cdc-knowledge-base.md#01-internship-approved-experience-course"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece",
+        "cdc-knowledge-base.md#01-internship-approved-experience-course"
+      ],
+      "history_sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Combined internship arrangements (ECE)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Taking another summer course",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)",
+        "Internship (Approved Experience Course)"
+      ]
+    },
+    {
+      "id": "mentor-long-after-coop",
+      "independent": true,
+      "expected_section": "MentorPlus+ (Mentorship Program)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 1,
+      "history_rank": 1,
+      "bare_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "cdc-knowledge-base.md#12-internship-faqs",
+        "cdc-knowledge-base.md#04-how-to-apply-through-the-cdc"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "cdc-knowledge-base.md#12-internship-faqs",
+        "cdc-knowledge-base.md#04-how-to-apply-through-the-cdc"
+      ],
+      "history_sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Forms & Requests \u2014 Where to Find Them",
+        "CO-OP FAQs",
+        "Combined internship arrangements (ECE)",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > How to apply through the CDC"
+      ]
+    },
+    {
+      "id": "mandatory-after-switch",
+      "independent": false,
+      "expected_section": "MentorPlus+ (Mentorship Program)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": null,
+      "history_rank": 1,
+      "bare_ids": [
+        "email-clarifications.md#37-course-completion-requirements-ece",
+        "msfea-cdc-coop-handbook.md#50-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "email-clarifications.md#54-final-report-requirements-ece",
+        "email-clarifications.md#24-research-two-week-form-ece",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece",
+        "email-clarifications.md#19-employer-and-research-documentation-exceptions"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "msfea-cdc-coop-handbook.md#49-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#50-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "email-clarifications.md#39-six-company-weeks-alone",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "summer-training-guidelines-2026.md#07-internships-that-are-not-accepted"
+      ],
+      "history_sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Combined internship arrangements (ECE)",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Summer Training (Approved Experience) Guidelines > Internship Requirements: Duration, Hours, and Locations > Internships That Are Not Accepted"
+      ]
+    },
+    {
+      "id": "mandatory-after-switch-back",
+      "independent": false,
+      "expected_section": "CO-OP FAQs",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 2,
+      "history_rank": 1,
+      "bare_ids": [
+        "email-clarifications.md#37-course-completion-requirements-ece",
+        "msfea-cdc-coop-handbook.md#50-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "email-clarifications.md#54-final-report-requirements-ece",
+        "email-clarifications.md#24-research-two-week-form-ece",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece",
+        "email-clarifications.md#19-employer-and-research-documentation-exceptions"
+      ],
+      "history_ids": [
+        "msfea-cdc-coop-handbook.md#49-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "cdc-knowledge-base.md#18-co-op-cooperative-education",
+        "msfea-cdc-coop-handbook.md#18-policies",
+        "msfea-cdc-coop-handbook.md#50-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#47-employer-responsibilities-during-the-co-op",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_sections": [
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "CO-OP (Cooperative Education)",
+        "Policies",
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "internship-after-coop",
+      "independent": true,
+      "expected_section": "Internship (Approved Experience Course)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 6,
+      "history_rank": 6,
+      "bare_ids": [
+        "email-clarifications.md#67-electrical-and-computer-engineering-internship-con",
+        "email-clarifications.md#01-eece-500-internship-duration-ece",
+        "summer-training-guidelines-2026.md#21-internship-timeline-and-deliverables",
+        "email-clarifications.md#59-reporting-after-approval-of-multiple-internship-co",
+        "email-clarifications.md#07-problems-or-changes-during-an-internship",
+        "cdc-knowledge-base.md#01-internship-approved-experience-course",
+        "email-clarifications.md#12-finding-an-internship-and-acceptable-work"
+      ],
+      "history_ids": [
+        "email-clarifications.md#67-electrical-and-computer-engineering-internship-con",
+        "email-clarifications.md#01-eece-500-internship-duration-ece",
+        "summer-training-guidelines-2026.md#21-internship-timeline-and-deliverables",
+        "email-clarifications.md#59-reporting-after-approval-of-multiple-internship-co",
+        "email-clarifications.md#07-problems-or-changes-during-an-internship",
+        "cdc-knowledge-base.md#01-internship-approved-experience-course",
+        "email-clarifications.md#12-finding-an-internship-and-acceptable-work"
+      ],
+      "history_sections": [
+        "Approved Internship Email Clarifications > Internship contact routing > Electrical and Computer Engineering internship contact (ECE)",
+        "Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+        "Internship Timeline and Deliverables",
+        "Reporting after approval of multiple internship components",
+        "Problems or changes during an internship",
+        "Internship (Approved Experience Course)",
+        "Finding an internship and acceptable work"
+      ]
+    },
+    {
+      "id": "relative-that-june",
+      "independent": true,
+      "expected_section": "Internship dates and duration changes",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 2,
+      "history_rank": 2,
+      "bare_ids": [
+        "email-clarifications.md#42-combining-two-company-internships",
+        "email-clarifications.md#16-internship-dates-and-duration-changes",
+        "email-clarifications.md#01-eece-500-internship-duration-ece",
+        "email-clarifications.md#07-problems-or-changes-during-an-internship",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "summer-training-guidelines-2026.md#21-internship-timeline-and-deliverables",
+        "cdc-knowledge-base.md#03-timing"
+      ],
+      "history_ids": [
+        "email-clarifications.md#42-combining-two-company-internships",
+        "email-clarifications.md#16-internship-dates-and-duration-changes",
+        "email-clarifications.md#01-eece-500-internship-duration-ece",
+        "email-clarifications.md#07-problems-or-changes-during-an-internship",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "summer-training-guidelines-2026.md#21-internship-timeline-and-deliverables",
+        "cdc-knowledge-base.md#03-timing"
+      ],
+      "history_sections": [
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Internship dates and duration changes",
+        "Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+        "Problems or changes during an internship",
+        "Taking another summer course",
+        "Internship Timeline and Deliverables",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Timing"
+      ]
+    },
+    {
+      "id": "letter-pronoun-followup",
+      "independent": false,
+      "expected_section": "Requesting a support letter",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 4,
+      "history_rank": 2,
+      "bare_ids": [
+        "email-clarifications.md#66-mechanical-engineering-internship-contact-mech",
+        "cdc-knowledge-base.md#06-applying-to-an-internship-found-independently",
+        "email-clarifications.md#48-company-internship-plus-research-mech",
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "email-clarifications.md#44-combining-two-company-internships-mech",
+        "msfea-cdc-coop-handbook.md#42-information-for-employers",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them"
+      ],
+      "history_ids": [
+        "summer-training-guidelines-2026.md#11-requesting-a-letter-or-convention-de-stage",
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "summer-training-guidelines-2026.md#10-career-development-center-cdc-internship-search-an",
+        "cdc-knowledge-base.md#12-internship-faqs",
+        "summer-training-guidelines-2026.md#14-if-the-company-is-already-listed-with-the-cdc",
+        "summer-training-guidelines-2026.md#09-career-development-center-cdc-internship-search-an",
+        "cdc-knowledge-base.md#06-applying-to-an-internship-found-independently"
+      ],
+      "history_sections": [
+        "Summer Training (Approved Experience) Guidelines > Career Development Center (CDC) Internship Search and Postings > Requesting a Letter or Convention de Stage",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Career Development Center (CDC) Internship Search and Postings",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Summer Training (Approved Experience) Guidelines > Securing an Internship Independently > If the Company Is Already Listed with the CDC",
+        "Career Development Center (CDC) Internship Search and Postings",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Applying to an internship found independently"
+      ]
+    },
+    {
+      "id": "coop-paid-followup",
+      "independent": false,
+      "expected_section": "Policies",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 1,
+      "history_rank": 6,
+      "bare_ids": [
+        "msfea-cdc-coop-handbook.md#14-policies",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "msfea-cdc-coop-handbook.md#01-what-co-op-is",
+        "email-clarifications.md#24-research-two-week-form-ece",
+        "msfea-cdc-coop-handbook.md#02-what-co-op-is",
+        "email-clarifications.md#62-final-voice-over-presentation-duration-ece",
+        "cdc-knowledge-base.md#11-internship-faqs"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#18-co-op-cooperative-education",
+        "msfea-cdc-coop-handbook.md#01-what-co-op-is",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#02-what-co-op-is",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#14-policies",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_sections": [
+        "CO-OP (Cooperative Education)",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "Policies",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "mentor-signup-after-switch",
+      "independent": false,
+      "expected_section": "MentorPlus+ (Mentorship Program)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": 1,
+      "bare_rank": 5,
+      "history_rank": 1,
+      "bare_ids": [
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "email-clarifications.md#02-moodle-access-and-registration",
+        "email-clarifications.md#21-early-or-temporarily-delayed-employer-letter",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them",
+        "email-clarifications.md#21-early-or-temporarily-delayed-employer-letter",
+        "email-clarifications.md#02-moodle-access-and-registration",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter",
+        "Moodle access and registration",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "coop-duration-pronoun",
+      "independent": false,
+      "expected_section": "What CO-OP is",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": null,
+      "history_rank": 2,
+      "bare_ids": [
+        "email-clarifications.md#01-eece-500-internship-duration-ece",
+        "email-clarifications.md#54-final-report-requirements-ece",
+        "email-clarifications.md#30-progress-report-length-and-component",
+        "cdc-knowledge-base.md#13-internship-faqs",
+        "email-clarifications.md#62-final-voice-over-presentation-duration-ece",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece",
+        "email-clarifications.md#24-research-two-week-form-ece"
+      ],
+      "history_ids": [
+        "msfea-cdc-coop-handbook.md#29-application-timeline-deadlines",
+        "msfea-cdc-coop-handbook.md#02-what-co-op-is",
+        "msfea-cdc-coop-handbook.md#18-policies",
+        "msfea-cdc-coop-handbook.md#01-what-co-op-is",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#52-co-op-faqs",
+        "summer-training-guidelines-2026.md#34-electrical-and-computer-engineering-ece"
+      ],
+      "history_sections": [
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "What CO-OP is",
+        "Policies",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)"
+      ]
+    },
+    {
+      "id": "iaeste-after-two-switches",
+      "independent": false,
+      "expected_section": "IAESTE \u2014 International Internship Exchange",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 1,
+      "history_rank": 1,
+      "bare_ids": [
+        "cdc-knowledge-base.md#16-iaeste--international-internship-exchange",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "summer-training-guidelines-2026.md#34-electrical-and-computer-engineering-ece",
+        "cdc-knowledge-base.md#27-mentorplus-mentorship-program",
+        "email-clarifications.md#24-research-two-week-form-ece",
+        "msfea-cdc-coop-handbook.md#49-co-op-faqs",
+        "email-clarifications.md#02-moodle-access-and-registration"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#16-iaeste--international-internship-exchange",
+        "cdc-knowledge-base.md#17-hosting-an-iaeste-intern-for-employers",
+        "cdc-knowledge-base.md#15-iaeste--international-internship-exchange",
+        "cdc-knowledge-base.md#31-forms--requests--where-to-find-them",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "email-clarifications.md#02-moodle-access-and-registration",
+        "cdc-knowledge-base.md#32-forms--requests--where-to-find-them"
+      ],
+      "history_sections": [
+        "IAESTE \u2014 International Internship Exchange",
+        "MSFEA CDC Student Knowledge Base > IAESTE \u2014 International Internship Exchange > Hosting an IAESTE intern (for employers)",
+        "IAESTE \u2014 International Internship Exchange",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Combined internship arrangements (ECE)",
+        "Moodle access and registration",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "letter-switch-back",
+      "independent": true,
+      "expected_section": "Requesting a support letter",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 1,
+      "history_rank": 1,
+      "bare_ids": [
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "email-clarifications.md#77-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#66-mechanical-engineering-internship-contact-mech",
+        "email-clarifications.md#75-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#08-problems-or-changes-during-an-internship",
+        "email-clarifications.md#20-early-or-temporarily-delayed-employer-letter",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them"
+      ],
+      "history_ids": [
+        "cdc-knowledge-base.md#09-requesting-a-support-letter",
+        "email-clarifications.md#77-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#66-mechanical-engineering-internship-contact-mech",
+        "email-clarifications.md#75-student-internship-survey-and-employer-letter-form",
+        "email-clarifications.md#08-problems-or-changes-during-an-internship",
+        "email-clarifications.md#20-early-or-temporarily-delayed-employer-letter",
+        "cdc-knowledge-base.md#30-forms--requests--where-to-find-them"
+      ],
+      "history_sections": [
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Student internship survey and employer-letter format",
+        "Approved Internship Email Clarifications > Internship contact routing > Mechanical Engineering internship contact (MECH)",
+        "Student internship survey and employer-letter format",
+        "Problems or changes during an internship",
+        "Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "ambiguous-research-after-coop",
+      "independent": false,
+      "expected_section": "Combined internship arrangements (ECE)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 1,
+      "history_rank": 1,
+      "bare_ids": [
+        "email-clarifications.md#40-62-arrangement-definition",
+        "email-clarifications.md#42-combining-two-company-internships",
+        "email-clarifications.md#39-six-company-weeks-alone",
+        "email-clarifications.md#24-research-two-week-form-ece",
+        "email-clarifications.md#72-company-placements-aub-research-and-approved-gaps",
+        "email-clarifications.md#74-company-placements-aub-research-and-approved-gaps",
+        "email-clarifications.md#41-progress-reporting-for-a-62-arrangement"
+      ],
+      "history_ids": [
+        "email-clarifications.md#40-62-arrangement-definition",
+        "email-clarifications.md#74-company-placements-aub-research-and-approved-gaps",
+        "email-clarifications.md#42-combining-two-company-internships",
+        "email-clarifications.md#41-progress-reporting-for-a-62-arrangement",
+        "email-clarifications.md#39-six-company-weeks-alone",
+        "email-clarifications.md#72-company-placements-aub-research-and-approved-gaps",
+        "email-clarifications.md#24-research-two-week-form-ece"
+      ],
+      "history_sections": [
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 6+2 arrangement definition",
+        "Company placements, AUB research, and approved gaps",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Progress reporting for a 6+2 arrangement",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone",
+        "Company placements, AUB research, and approved gaps",
+        "Research two-week form (ECE)"
+      ]
+    },
+    {
+      "id": "other-two-weeks-followup",
+      "independent": false,
+      "expected_section": "Combined internship arrangements (ECE)",
+      "expected_evidence": null,
+      "expected_source_doc": null,
+      "max_expected_rank": null,
+      "bare_rank": 2,
+      "history_rank": 2,
+      "bare_ids": [
+        "email-clarifications.md#24-research-two-week-form-ece",
+        "email-clarifications.md#42-combining-two-company-internships",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "email-clarifications.md#40-62-arrangement-definition",
+        "email-clarifications.md#39-six-company-weeks-alone",
+        "email-clarifications.md#41-progress-reporting-for-a-62-arrangement",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece"
+      ],
+      "history_ids": [
+        "email-clarifications.md#24-research-two-week-form-ece",
+        "email-clarifications.md#41-progress-reporting-for-a-62-arrangement",
+        "email-clarifications.md#42-combining-two-company-internships",
+        "email-clarifications.md#40-62-arrangement-definition",
+        "email-clarifications.md#53-taking-another-summer-course",
+        "email-clarifications.md#39-six-company-weeks-alone",
+        "summer-training-guidelines-2026.md#35-electrical-and-computer-engineering-ece"
+      ],
+      "history_sections": [
+        "Research two-week form (ECE)",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Progress reporting for a 6+2 arrangement",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 6+2 arrangement definition",
+        "Taking another summer course",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)"
+      ]
+    },
+    {
+      "id": "credits-after-application",
+      "independent": false,
+      "expected_section": null,
+      "expected_evidence": "Whether it counts toward academic credit",
+      "expected_source_doc": "msfea-cdc-coop-handbook.md",
+      "max_expected_rank": 1,
+      "bare_rank": 1,
+      "history_rank": 5,
+      "bare_ids": [
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#52-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#49-co-op-faqs",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_ids": [
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers",
+        "msfea-cdc-coop-handbook.md#01-what-co-op-is",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "msfea-cdc-coop-handbook.md#52-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_sections": [
+        "CO-OP FAQs",
+        "Quick Reference: Key Numbers",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "Policies",
+        "CO-OP FAQs",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "credits-after-application-no-punctuation",
+      "independent": false,
+      "expected_section": null,
+      "expected_evidence": "Whether it counts toward academic credit",
+      "expected_source_doc": "msfea-cdc-coop-handbook.md",
+      "max_expected_rank": 1,
+      "bare_rank": 1,
+      "history_rank": 5,
+      "bare_ids": [
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#52-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#49-co-op-faqs",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_ids": [
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers",
+        "msfea-cdc-coop-handbook.md#01-what-co-op-is",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "msfea-cdc-coop-handbook.md#52-co-op-faqs",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_sections": [
+        "CO-OP FAQs",
+        "Quick Reference: Key Numbers",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "Policies",
+        "CO-OP FAQs",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "credits-pronoun-after-coop",
+      "independent": false,
+      "expected_section": null,
+      "expected_evidence": "Whether it counts toward academic credit",
+      "expected_source_doc": "msfea-cdc-coop-handbook.md",
+      "max_expected_rank": 1,
+      "bare_rank": 3,
+      "history_rank": 1,
+      "bare_ids": [
+        "email-clarifications.md#13-approval-before-beginning-an-internship",
+        "email-clarifications.md#64-approved-experience-course-billing",
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "email-clarifications.md#43-44-company-internship-split",
+        "email-clarifications.md#38-combined-internship-arrangements-ece",
+        "email-clarifications.md#37-course-completion-requirements-ece",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers"
+      ],
+      "history_ids": [
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "email-clarifications.md#13-approval-before-beginning-an-internship",
+        "email-clarifications.md#64-approved-experience-course-billing",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "email-clarifications.md#43-44-company-internship-split",
+        "email-clarifications.md#37-course-completion-requirements-ece"
+      ],
+      "history_sections": [
+        "Policies",
+        "Approval before beginning an internship",
+        "Approved Experience course billing",
+        "Quick Reference: Key Numbers",
+        "CO-OP FAQs",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 4+4 company-internship split",
+        "Course completion requirements (ECE)"
+      ]
+    },
+    {
+      "id": "credits-after-mentor-switchback",
+      "independent": true,
+      "expected_section": null,
+      "expected_evidence": "Whether it counts toward academic credit",
+      "expected_source_doc": "msfea-cdc-coop-handbook.md",
+      "max_expected_rank": 1,
+      "bare_rank": 1,
+      "history_rank": 1,
+      "bare_ids": [
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#52-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#49-co-op-faqs",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_ids": [
+        "msfea-cdc-coop-handbook.md#16-policies",
+        "msfea-cdc-coop-handbook.md#51-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#52-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#48-co-op-faqs",
+        "msfea-cdc-coop-handbook.md#49-co-op-faqs",
+        "cdc-knowledge-base.md#33-quick-reference-key-numbers",
+        "email-clarifications.md#38-combined-internship-arrangements-ece"
+      ],
+      "history_sections": [
+        "Policies",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Quick Reference: Key Numbers",
+        "Combined internship arrangements (ECE)"
+      ]
+    }
+  ]
+}

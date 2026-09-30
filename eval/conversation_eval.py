@@ -17,10 +17,18 @@ from msfea_bot.generation.conversation import ConversationMessage
 from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth, search
 
 
-def _rank(chunks: list[RetrievedChunk], section: str) -> int | None:
-    return next(
-        (rank for rank, chunk in enumerate(chunks, 1) if section in chunk.section), None
-    )
+def _rank(
+    chunks: list[RetrievedChunk], section: str | None,
+    evidence: str | None, source_doc: str | None,
+) -> int | None:
+    for rank, chunk in enumerate(chunks, 1):
+        if evidence is not None and evidence.casefold() in chunk.text.casefold() and (
+            source_doc is None or chunk.source_doc == source_doc
+        ):
+            return rank
+        if evidence is None and section and section in chunk.section:
+            return rank
+    return None
 
 
 def main() -> None:
@@ -44,13 +52,18 @@ def main() -> None:
         k = retrieval_depth(question, settings.top_k)
         bare = search(question, k, department=case["department"])
         chunks = retrieve_context(question, k, case["department"], history)
-        expected = case["expected_section"]
+        expected = case.get("expected_section")
+        expected_evidence = case.get("expected_evidence")
+        expected_source_doc = case.get("expected_source_doc")
         record = {
             "id": case["id"],
             "independent": case["independent"],
             "expected_section": expected,
-            "bare_rank": _rank(bare, expected),
-            "history_rank": _rank(chunks, expected),
+            "expected_evidence": expected_evidence,
+            "expected_source_doc": expected_source_doc,
+            "max_expected_rank": case.get("max_expected_rank"),
+            "bare_rank": _rank(bare, expected, expected_evidence, expected_source_doc),
+            "history_rank": _rank(chunks, expected, expected_evidence, expected_source_doc),
             "bare_ids": [chunk.id for chunk in bare],
             "history_ids": [chunk.id for chunk in chunks],
             "history_sections": [chunk.section for chunk in chunks],
@@ -93,6 +106,12 @@ def main() -> None:
     if args.gate and (
         summary["evidence_hit_at_7"] != summary["cases"]
         or summary["independent_exact_parity"] != summary["independent_cases"]
+        or any(
+            record["max_expected_rank"] is not None
+            and (record["history_rank"] is None
+                 or record["history_rank"] > record["max_expected_rank"])
+            for record in records
+        )
     ):
         raise SystemExit("Conversational retrieval regression")
 

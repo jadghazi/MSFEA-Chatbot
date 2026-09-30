@@ -88,7 +88,12 @@ def contextual_question(question: str, history: Sequence[ConversationMessage] | 
         if framed != question:
             return framed
         plan = retrieval_plan(question, history)
-        if is_contextual_followup(question, history) and plan.standalone_query is None:
+        has_reference = re.search(
+            r"\b(it|its|that|this|they|them|those|these)\b", question, re.I
+        )
+        if is_contextual_followup(question, history) and (
+            plan.standalone_query is None or has_reference
+        ):
             return plan.query
         return question
     previous = [m.content for m in bounded_history(history) if m.role == "user"]
@@ -373,12 +378,15 @@ def retrieval_plan(
         return RetrievalPlan(question)
     subject = _subject_hint(prior[_anchor_index(prior)].content)
     resolved = _resolved_query(question, subject)
-    # A question with its own substantive terms can be interpreted two ways.
-    # Compare literal and resolved retrieval instead of trusting a weak pronoun cue.
-    uncertain = len(_current_terms(question)) >= 2 and bool(
+    # Keep the literal search for substantive restatements even when the short-
+    # question cue misclassifies them. Brief, low-information follow-ups still
+    # rely on their resolved subject.
+    terms = _current_terms(question)
+    continuation = bool(
         _REFERENCE_RE.search(question) or _CONTINUATION_RE.match(question)
         or _WHAT_ABOUT_RE.match(question)
     )
+    uncertain = len(terms) >= 3 or (len(terms) >= 2 and continuation)
     return RetrievalPlan(resolved, question if uncertain and resolved != question else None)
 
 

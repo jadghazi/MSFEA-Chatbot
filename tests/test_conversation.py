@@ -196,6 +196,31 @@ def test_substantive_ambiguous_followup_keeps_both_retrieval_paths() -> None:
     assert "Earlier student" not in plan.query
 
 
+def test_short_complete_question_keeps_literal_search_after_related_history() -> None:
+    history = [
+        ConversationMessage("user", "How can I get a co-op internship?"),
+        ConversationMessage("assistant", "Please use the CO-OP application process."),
+    ]
+    question = "Does co-op count for credits?"
+    plan = retrieval_plan(question, history)
+    assert plan.standalone_query == question
+    assert "co-op internship" in plan.query
+    assert contextual_question(question, history) == question
+
+
+def test_elliptical_question_still_uses_resolved_subject() -> None:
+    plan = retrieval_plan("How long is it?", [ConversationMessage("user", "What is CO-OP?")])
+    assert plan.query == "How long is CO-OP?"
+    assert plan.standalone_query is None
+
+
+def test_referential_dual_search_uses_resolved_subject_in_answer_question() -> None:
+    history = [ConversationMessage("user", "What is CO-OP?")]
+    question = "Does it count for credits?"
+    assert retrieval_plan(question, history).standalone_query == question
+    assert contextual_question(question, history) == "Does CO-OP count for credits?"
+
+
 def test_complete_questions_are_never_rewritten_as_confirmations() -> None:
     for question in ("so why is that required?", "so how do I submit?", "so can I apply?",
                      "Why did the department choose this?", "What is the deadline?"):
