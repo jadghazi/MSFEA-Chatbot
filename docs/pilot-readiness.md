@@ -1,9 +1,9 @@
 # Small pilot readiness
 
-This is the current launch target: a limited group of students using the chatbot so
-we can observe real questions, refusal quality, latency, and Gemini quota behavior.
-It supersedes the older department-wide outcome targets as the immediate release gate;
-those remain useful after the pilot produces real data.
+Historical prelaunch checklist and measurements, retained for provenance. The
+standalone pilot has since been deployed; this page is not the current evaluation
+scorecard. See the repository README and `eval/README.md` for current project
+state and evaluation sets.
 
 ## Automated evidence
 

@@ -34,6 +34,8 @@ node_modules/
 eval_answer_result.txt
 *.log
 backups/
+tmp/
+output/
 
 # --- Editors / OS ---
 .idea/
