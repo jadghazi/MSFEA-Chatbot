@@ -41,6 +41,38 @@ def test_named_what_about_topic_switch_omits_history() -> None:
         assert format_prompt_history(question, _history()) == ""
 
 
+def test_named_subject_after_and_overrides_prior_topic() -> None:
+    prior = [ConversationMessage("user", "Is CO-OP paid?"),
+             ConversationMessage("assistant", "Yes, CO-OP work terms are paid.")]
+    question = "And does the internship count for credit?"
+    assert not is_contextual_followup(question, prior)
+    assert retrieval_plan(question, prior).query == question
+    assert format_prompt_history(question, prior) == ""
+
+
+def test_switch_back_becomes_anchor_for_next_short_followup() -> None:
+    prior = [
+        ConversationMessage("user", "What is the internship?"),
+        ConversationMessage("assistant", "It is the required training course."),
+        ConversationMessage("user", "What is CO-OP?"),
+        ConversationMessage("assistant", "It is a paid work program."),
+        ConversationMessage("user", "Back to the internship: what is it for?"),
+        ConversationMessage("assistant", "It applies classroom skills."),
+    ]
+    assert retrieval_plan("Back to the internship: how long must it last?", prior).query == (
+        "Back to the internship: how long must it last?"
+    )
+    query = retrieval_plan("And how long is it?", prior).query
+    assert "internship" in query.lower()
+    assert "CO-OP" not in query
+
+
+def test_hyphenated_acronym_is_not_truncated_in_followup() -> None:
+    prior = [ConversationMessage("user", "How do I apply to CO-OP?"),
+             ConversationMessage("assistant", "Apply through the CDC.")]
+    assert "CO-OP" in retrieval_plan("What about the deadline?", prior).query
+
+
 def test_referential_what_about_still_uses_history_for_retrieval() -> None:
     query = build_retrieval_query("What about that?", _history())
     assert "support letter" in query

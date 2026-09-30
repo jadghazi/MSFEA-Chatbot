@@ -1,0 +1,914 @@
+{
+  "summary": {
+    "cases": 43,
+    "hit_at_7": 43,
+    "all_evidence_top_3": 39,
+    "independent_parity": 19,
+    "independent_cases": 19
+  },
+  "records": [
+    {
+      "id": "letter-after-salary",
+      "query": "can you give me the link for that letter i forgot the name that the company needs to make sure i need the internship",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        3
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "Student internship survey and employer-letter format",
+        "Problems or changes during an internship",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Summer Training (Approved Experience) Guidelines > Securing an Internship Independently > If the Company Is NOT Listed with the CDC",
+        "Company internship plus research (MECH)",
+        "Student internship survey and employer-letter format",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "letter-after-employer",
+      "query": "can you give me the link for that letter i forgot the name that the company needs to make sure i need the internship",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        3
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "Student internship survey and employer-letter format",
+        "Problems or changes during an internship",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Summer Training (Approved Experience) Guidelines > Securing an Internship Independently > If the Company Is NOT Listed with the CDC",
+        "Company internship plus research (MECH)",
+        "Student internship survey and employer-letter format",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "mentor-after-coop",
+      "query": "What is mentorship?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Combined internship arrangements (ECE)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Taking another summer course",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)",
+        "Internship (Approved Experience Course)"
+      ]
+    },
+    {
+      "id": "mentor-after-internship",
+      "query": "What is mentorship?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Combined internship arrangements (ECE)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Taking another summer course",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)",
+        "Internship (Approved Experience Course)"
+      ]
+    },
+    {
+      "id": "mentor-long-after-coop",
+      "query": "What services does the mentorship program offer?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Forms & Requests \u2014 Where to Find Them",
+        "CO-OP FAQs",
+        "Combined internship arrangements (ECE)",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > How to apply through the CDC"
+      ]
+    },
+    {
+      "id": "mandatory-after-switch",
+      "query": "Is mentorship program mandatory?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Combined internship arrangements (ECE)",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Summer Training (Approved Experience) Guidelines > Internship Requirements: Duration, Hours, and Locations > Internships That Are Not Accepted"
+      ]
+    },
+    {
+      "id": "mandatory-after-switch-back",
+      "query": "Is CO-OP mandatory?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "CO-OP (Cooperative Education)",
+        "Policies",
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "internship-after-coop",
+      "query": "What about internship?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        6
+      ],
+      "hit": true,
+      "top3": false,
+      "bare_parity": true,
+      "sections": [
+        "Approved Internship Email Clarifications > Internship contact routing > Electrical and Computer Engineering internship contact (ECE)",
+        "Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+        "Internship Timeline and Deliverables",
+        "Reporting after approval of multiple internship components",
+        "Problems or changes during an internship",
+        "Internship (Approved Experience Course)",
+        "Finding an internship and acceptable work"
+      ]
+    },
+    {
+      "id": "relative-that-june",
+      "query": "Can I apply for an internship that starts in June?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        2
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Internship dates and duration changes",
+        "Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+        "Problems or changes during an internship",
+        "Taking another summer course",
+        "Internship Timeline and Deliverables",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Timing"
+      ]
+    },
+    {
+      "id": "letter-pronoun-followup",
+      "query": "Where do I get CDC letter?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        2
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Summer Training (Approved Experience) Guidelines > Career Development Center (CDC) Internship Search and Postings > Requesting a Letter or Convention de Stage",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Career Development Center (CDC) Internship Search and Postings",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Summer Training (Approved Experience) Guidelines > Securing an Internship Independently > If the Company Is Already Listed with the CDC",
+        "Career Development Center (CDC) Internship Search and Postings",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Applying to an internship found independently"
+      ]
+    },
+    {
+      "id": "coop-paid-followup",
+      "query": "Can I get paid for CO-OP?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        6
+      ],
+      "hit": true,
+      "top3": false,
+      "bare_parity": false,
+      "sections": [
+        "CO-OP (Cooperative Education)",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "Policies",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "mentor-signup-after-switch",
+      "query": "Where do I sign up for mentorship?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter",
+        "Moodle access and registration",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "coop-duration-pronoun",
+      "query": "How long is CO-OP?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        2
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "What CO-OP is",
+        "Policies",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)"
+      ]
+    },
+    {
+      "id": "iaeste-after-two-switches",
+      "query": "How do I join for IAESTE?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "IAESTE \u2014 International Internship Exchange",
+        "MSFEA CDC Student Knowledge Base > IAESTE \u2014 International Internship Exchange > Hosting an IAESTE intern (for employers)",
+        "IAESTE \u2014 International Internship Exchange",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Combined internship arrangements (ECE)",
+        "Moodle access and registration",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "letter-switch-back",
+      "query": "Where can I get the internship support letter again?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Student internship survey and employer-letter format",
+        "Approved Internship Email Clarifications > Internship contact routing > Mechanical Engineering internship contact (MECH)",
+        "Student internship survey and employer-letter format",
+        "Problems or changes during an internship",
+        "Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter",
+        "Forms & Requests \u2014 Where to Find Them"
+      ]
+    },
+    {
+      "id": "ambiguous-research-after-coop",
+      "query": "so I need two weeks of research after six at a company for CO-OP?",
+      "literal_query": "so I need two weeks of research after six at a company?",
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 6+2 arrangement definition",
+        "Company placements, AUB research, and approved gaps",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Progress reporting for a 6+2 arrangement",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone",
+        "Company placements, AUB research, and approved gaps",
+        "Research two-week form (ECE)"
+      ]
+    },
+    {
+      "id": "other-two-weeks-followup",
+      "query": "What about the other two weeks for internship?",
+      "literal_query": "What about the other two weeks?",
+      "independent": false,
+      "ranks": [
+        2
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Research two-week form (ECE)",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Progress reporting for a 6+2 arrangement",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 6+2 arrangement definition",
+        "Taking another summer course",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Six company weeks alone",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)"
+      ]
+    },
+    {
+      "id": "credits-after-application",
+      "query": "does co-op count for credits for co-op internship?",
+      "literal_query": "does co-op count for credits?",
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Policies",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Quick Reference: Key Numbers",
+        "CO-OP FAQs",
+        "What CO-OP is",
+        "CO-OP FAQs"
+      ]
+    },
+    {
+      "id": "credits-after-application-no-punctuation",
+      "query": "does co-op count for credits for co-op internship?",
+      "literal_query": "does co-op count for credits",
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Policies",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Quick Reference: Key Numbers",
+        "CO-OP FAQs",
+        "What CO-OP is",
+        "CO-OP FAQs"
+      ]
+    },
+    {
+      "id": "credits-pronoun-after-coop",
+      "query": "Does CO-OP count for credits?",
+      "literal_query": "Does it count for credits?",
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Policies",
+        "Approval before beginning an internship",
+        "Approved Experience course billing",
+        "Quick Reference: Key Numbers",
+        "CO-OP FAQs",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > 4+4 company-internship split",
+        "Course completion requirements (ECE)"
+      ]
+    },
+    {
+      "id": "credits-after-mentor-switchback",
+      "query": "Does CO-OP count for credits?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "Policies",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Quick Reference: Key Numbers",
+        "Combined internship arrangements (ECE)"
+      ]
+    },
+    {
+      "id": "letter-location",
+      "query": "Where do I get employer support letter?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        4
+      ],
+      "hit": true,
+      "top3": false,
+      "bare_parity": false,
+      "sections": [
+        "Student internship survey and employer-letter format",
+        "Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter",
+        "Employer completion letter timing",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Requesting a support letter",
+        "Approved Internship Email Clarifications > Employer and research documentation exceptions > Early or temporarily delayed employer letter",
+        "Student internship survey and employer-letter format",
+        "Approved Internship Email Clarifications > Internship contact routing > Electrical and Computer Engineering internship contact (ECE)"
+      ]
+    },
+    {
+      "id": "coop-optional",
+      "query": "Is CO-OP mandatory?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        3
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "CO-OP (Cooperative Education)",
+        "Policies",
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op",
+        "CO-OP FAQs"
+      ]
+    },
+    {
+      "id": "coop-pay-after-approval",
+      "query": "And is CO-OP paid?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "What CO-OP is",
+        "What CO-OP is",
+        "CO-OP (Cooperative Education)",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op",
+        "CO-OP FAQs",
+        "Policies",
+        "CO-OP FAQs"
+      ]
+    },
+    {
+      "id": "internship-completed-credits",
+      "query": "And how many should I have completed for many credits internship?",
+      "literal_query": "And how many should I have completed?",
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Eligibility",
+        "Moodle quiz access and attempts",
+        "Taking another summer course",
+        "Summer Training (Approved Experience) Guidelines > Important Checklists > Notice of Completion / Employer Letter Checklist",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Eligibility requirements",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Deliverables and deadlines",
+        "Internship Timeline and Deliverables"
+      ]
+    },
+    {
+      "id": "internship-course-credits",
+      "query": "How many credits is internship registration requirements course?",
+      "literal_query": "How many credits is that course?",
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "Approved Experience course billing",
+        "CO-OP FAQs",
+        "Taking another summer course",
+        "Policies",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > The FEAA 500 course",
+        "Policies",
+        "Quick Reference: Key Numbers"
+      ]
+    },
+    {
+      "id": "coop-credits-after-application",
+      "query": "Does CO-OP count for credits?",
+      "literal_query": "Does it count for credits?",
+      "independent": false,
+      "ranks": [
+        2
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Approved Experience course billing",
+        "Policies",
+        "Approval before beginning an internship",
+        "Eligibility",
+        "Policies",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > The FEAA 500 course",
+        "Quick Reference: Key Numbers"
+      ]
+    },
+    {
+      "id": "report-pronoun-after-duration",
+      "query": "How long should final training report be?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        2
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "Summer Training (Approved Experience) Guidelines > Important Checklists > Final Training Report",
+        "Final Report requirements (ECE)",
+        "Summer Training (Approved Experience) Guidelines > Department-Specific Rules > Electrical and Computer Engineering (ECE)",
+        "Progress Report length and component",
+        "2. Final Training Report Template (8\u201315 pages)",
+        "Shared Final Report formatting and content",
+        "2. Final Training Report Template (8\u201315 pages)"
+      ]
+    },
+    {
+      "id": "coop-duration-ellipsis",
+      "query": "And how long for CO-OP?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        2
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "Policies",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Deliverables and deadlines"
+      ]
+    },
+    {
+      "id": "iaeste-join-followup",
+      "query": "How do I join for IAESTE?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "IAESTE \u2014 International Internship Exchange",
+        "MSFEA CDC Student Knowledge Base > IAESTE \u2014 International Internship Exchange > Hosting an IAESTE intern (for employers)",
+        "IAESTE \u2014 International Internship Exchange",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Moodle access and registration",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Quick Reference: Key Numbers"
+      ]
+    },
+    {
+      "id": "mentor-signup-followup",
+      "query": "Where can I sign up for mentorship program?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Forms & Requests \u2014 Where to Find Them",
+        "Forms & Requests \u2014 Where to Find Them",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Eligibility",
+        "Career Readiness Resources"
+      ]
+    },
+    {
+      "id": "switch-to-coop",
+      "query": "What GPA do I need for CO-OP?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "CO-OP FAQs",
+        "Policies",
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application and admission process",
+        "Quick Reference: Key Numbers"
+      ]
+    },
+    {
+      "id": "switch-to-careerplus",
+      "query": "What about Career+?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > Career+",
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > Online Career Development Modules",
+        "MSFEA CO-OP (Cooperative Education) Handbook > The CO-OP program at MSFEA > Career Development Preparation (modules)",
+        "MSFEA CDC Student Knowledge Base > Career Readiness Resources > MentorPlus+ (Mentorship Program)",
+        "Finding an internship and acceptable work",
+        "Internship (Approved Experience) Report Templates and Rubrics > 2. Final Training Report Template (8\u201315 pages) > 7. Reflection and Career Development",
+        "Motivation and benefits"
+      ]
+    },
+    {
+      "id": "short-standalone-iaeste",
+      "query": "What is IAESTE?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "IAESTE \u2014 International Internship Exchange",
+        "MSFEA CDC Student Knowledge Base > IAESTE \u2014 International Internship Exchange > Hosting an IAESTE intern (for employers)",
+        "IAESTE \u2014 International Internship Exchange",
+        "MSFEA CDC Student Knowledge Base",
+        "Forms & Requests \u2014 Where to Find Them",
+        "AI use, similarity, and report revision",
+        "Quick Reference: Key Numbers"
+      ]
+    },
+    {
+      "id": "and-new-subject",
+      "query": "And what is CO-OP?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "CO-OP (Cooperative Education)",
+        "What CO-OP is",
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > The CO-OP program at MSFEA > People",
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "What CO-OP is"
+      ]
+    },
+    {
+      "id": "switch-back-internship",
+      "query": "Back to the internship: how long must it last?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        3
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Approved Internship Email Clarifications > Internship dates and duration changes > Submission timing after an internship extension",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Internship Timeline and Deliverables",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Reporting after approval of multiple internship components",
+        "Internship dates and duration changes"
+      ]
+    },
+    {
+      "id": "switch-back-coop",
+      "query": "For CO-OP, when should I apply?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application and admission process",
+        "CO-OP FAQs",
+        "CO-OP FAQs",
+        "Policies",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "CO-OP FAQs"
+      ]
+    },
+    {
+      "id": "internship-pay-standalone",
+      "query": "Does my internship have to be paid?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Approved Experience course billing",
+        "Approved Internship Email Clarifications > Combined internship arrangements (ECE) > Combining two company internships",
+        "Problems or changes during an internship",
+        "Internship Timeline and Deliverables",
+        "Student internship survey and employer-letter format",
+        "Course Description"
+      ]
+    },
+    {
+      "id": "full-time-support-standalone",
+      "query": "Do you help graduates find full-time jobs?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "Full-Time Jobs",
+        "Policies",
+        "Finding an internship and acceptable work",
+        "Policies",
+        "Career Readiness Resources",
+        "Approved Internship Email Clarifications > Deadline extensions and petition delays > Summer-graduate deadlines",
+        "Student internship survey and employer-letter format"
+      ]
+    },
+    {
+      "id": "lowercase-new-subject",
+      "query": "And does the internship count for credit?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "Approved Experience course billing",
+        "Internship Timeline and Deliverables",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Quick Reference: Key Numbers",
+        "Reporting after approval of multiple internship components",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Applying to an internship found independently",
+        "Eligibility"
+      ]
+    },
+    {
+      "id": "switch-followup-switch-back",
+      "query": "And how long is internship?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        4
+      ],
+      "hit": true,
+      "top3": false,
+      "bare_parity": false,
+      "sections": [
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Approved Internship Email Clarifications > Internship dates and duration changes > Submission timing after an internship extension",
+        "Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship FAQs",
+        "Internship dates and duration changes",
+        "Internship Timeline and Deliverables"
+      ]
+    },
+    {
+      "id": "relational-followup",
+      "query": "What about the deadline for CO-OP?",
+      "literal_query": null,
+      "independent": false,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": false,
+      "sections": [
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Deliverables and deadlines",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)",
+        "CO-OP FAQs",
+        "Policies",
+        "CO-OP FAQs",
+        "MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Deliverables and deadlines"
+      ]
+    },
+    {
+      "id": "explicit-switch-after-switch",
+      "query": "What is IAESTE?",
+      "literal_query": null,
+      "independent": true,
+      "ranks": [
+        1
+      ],
+      "hit": true,
+      "top3": true,
+      "bare_parity": true,
+      "sections": [
+        "IAESTE \u2014 International Internship Exchange",
+        "MSFEA CDC Student Knowledge Base > IAESTE \u2014 International Internship Exchange > Hosting an IAESTE intern (for employers)",
+        "IAESTE \u2014 International Internship Exchange",
+        "MSFEA CDC Student Knowledge Base",
+        "Forms & Requests \u2014 Where to Find Them",
+        "AI use, similarity, and report revision",
+        "Quick Reference: Key Numbers"
+      ]
+    }
+  ]
+}

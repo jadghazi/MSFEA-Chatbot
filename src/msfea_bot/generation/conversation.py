@@ -226,6 +226,8 @@ def bounded_history(history: Sequence[ConversationMessage] | None) -> list[Conve
 
 def _explicit_subject(text: str) -> bool:
     """Recognize a named subject without maintaining a list of CDC programs."""
+    if re.match(r"^back to (?:the|my)\s+[\w+-]+\b", text, re.I):
+        return True
     if re.search(r"\b[A-Z]{2,}\d*\b|[A-Z][a-z]+\+", text):
         return True
     what_about = _WHAT_ABOUT_RE.match(text)
@@ -277,6 +279,9 @@ def _anchor_index(prior: list[ConversationMessage]) -> int:
 def _subject_hint(anchor: str) -> str:
     """Extract a short subject phrase from the latest substantive user turn."""
     text = " ".join(anchor.split()).strip(" ?.!")
+    switch_back = re.match(r"back to (?:the|my)\s+([\w+-]+)\b", text, re.I)
+    if switch_back:
+        return switch_back.group(1)
     noun_phrase = re.search(
         r"\b(?:a|an|the|my)\s+((?:[A-Z]{2,}\s+)?[\w+-]+\s+"
         r"(?:letter|form|report|program|course))\b", text, re.IGNORECASE,
@@ -298,7 +303,7 @@ def _subject_hint(anchor: str) -> str:
     )
     if definition:
         return definition.group(1)
-    acronym: list[str] = re.findall(r"\b[A-Z]{2,}\d*\b|[A-Z][a-z]+\+", text)
+    acronym: list[str] = re.findall(r"\b[A-Z]{2,}(?:-[A-Z]{2,})?\d*\b|[A-Z][a-z]+\+", text)
     if acronym:
         return acronym[-1]
     after_about = re.search(r"\babout\s+(?:the\s+)?([\w+-]+(?:\s+[\w+-]+)?)", text, re.I)
@@ -346,6 +351,15 @@ def is_contextual_followup(
     text = " ".join(question.strip().split())
     last_user_question = next(m.content for m in reversed(prior) if m.role == "user")
     if text.casefold() == " ".join(last_user_question.strip().split()).casefold():
+        return False
+    if re.match(r"^back to (?:the|my)\s+[\w+-]+\b", text, re.I):
+        return False
+    named_current = re.match(
+        r"^(?:and\s+)?(?:do|does|is|are|can|could|should|will|has|have)\s+"
+        r"(?:the|my)\s+([\w+-]+)\b", text, re.I,
+    )
+    if (named_current and named_current.group(1).lower() not in _GENERIC_REFERENTS
+            and not re.search(r"\b(it|its|they|them|those|these)\b", text, re.I)):
         return False
     if re.fullmatch(r"how long should .+ be\??", text, re.I):
         return True
