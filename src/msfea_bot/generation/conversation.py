@@ -288,6 +288,10 @@ def _subject_hint(anchor: str) -> str:
     )
     if noun_phrase:
         return noun_phrase.group(1)
+    document = re.search(r"\b(?:a|an|the|my)\s+(letter|form|report)\b", text, re.I)
+    if document:
+        # A named artifact is the referent, rather than its provider's acronym.
+        return document.group(1)
     named = re.search(r"\b(?:about|for)\s+(?:the\s+)?([A-Z][\w+-]+)\b", text)
     if named:
         return named.group(1)

@@ -34,6 +34,15 @@ def test_independent_topic_switch_omits_history() -> None:
     assert format_prompt_history(question, _history()) == ""
 
 
+def test_bare_document_referent_precedes_provider_acronym() -> None:
+    history = [ConversationMessage(
+        "user", "The employer asked for a letter proving my internship is required. "
+        "Can the CDC provide one?",
+    )]
+    assert build_retrieval_query("Where do I get it?", history) == "Where do I get letter?"
+    assert contextual_question("Where do I get it?", history) == "Where do I get letter?"
+
+
 def test_named_what_about_topic_switch_omits_history() -> None:
     for question in ("What about CO-OP?", "what about Career+"):
         assert not is_contextual_followup(question, _history())
