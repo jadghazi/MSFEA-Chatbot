@@ -6,6 +6,36 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-10-01 — Self-service Studio and admin walkthrough
+
+- Replaced the draft handoff with one resumable Describe / Resolve / Preview /
+  Publish workspace for intake, unanswered questions and published-entry updates.
+  Four visible Gemini stages compare literal claims, prepare questions and
+  independently verify relevance/coverage. Missing facts pause with specific advice.
+- Defaults now use separately configured Gemini 3.1 Flash-Lite at 12 attempts/minute
+  and 400/day, with audited retries and 60/day actual student previews. Existing
+  PostgreSQL jobs, Python worker, n8n and guarded atomic publication remain in use.
+- Kept facts verbatim and canonical embeddings first: six independent questions
+  ranked first with both canonical and enriched text (6/6, MRR 1.0). A measured
+  retrieval failure may trigger one immutable search-only repair, preserving tests.
+- Fixed unstable SQL score ties behind the earlier advising/letter regression.
+  Real UI testing also caught an incorrect document-reference resolution; the
+  repeated ECE letter conversation now returns the form link on both turns.
+  Neither the student model/prompt nor unrelated policies were rewritten.
+- Admin walkthrough published synthetic advising from Needs attention and an
+  explicit Thursday-to-Tuesday clinic successor from Published. Private checks,
+  actual previews, source confirmation, named approval and resolution were verified.
+  Mobile conflict review quotes the mandatory ECE presentation/narration sources
+  and blocks the contradictory entry. Refresh and workspace-switch recovery tested.
+- Validation: full Python run 385 passed / two skipped, followed by 32 conversation
+  tests; 24 Node tests; lint/strict typing and all retrieval/publication gates passed.
+  Golden recall 122/124, faculty source recall 198/205, synthesis 75/75, conversation
+  21/21 and stress 43/43. Final live AI batch: 9/10 initial completion; 10/10 after
+  explicitly retrying one recorded provider failure. No faculty usability study claimed.
+- See [the review](studio-self-service-quality-report.md),
+  [staff guide](guided-studio-guide.md) and [ADR-0029](decisions/0029-self-service-studio.md).
+  Oracle remains unchanged; original working-copy edits were left untouched.
+
 ## 2026-10-01 — Guided Knowledge Studio
 
 - Follow-up: replaced the opaque draft checklist with explicit AI feedback,

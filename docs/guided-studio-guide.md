@@ -1,81 +1,81 @@
-# Staff guide: guided Knowledge Studio
+# Staff guide: Knowledge Studio
 
-## Add knowledge
+## Describe → Resolve → Preview → Publish
 
-1. Open **Add knowledge**, or select **Review in Knowledge Studio** from a question
-   under **Needs attention**. The student question remains attached to the draft.
-2. Paste one approved guideline. Include the relevant approval conditions,
-   exceptions, deadlines and department applicability. Remove student-identifying
-   details. Choose the department and all applicable programs explicitly.
-3. Select **Prepare & review draft**. The assistant retrieves existing guidance
-   and compares the actual claims. Loading stages reflect real persisted work.
-4. Read the short comparison. Proposed and existing claims are quoted side by side.
-   Expand the sources only when more context is needed. A “new” result is a search
-   assessment, not proof that the policy is correct or that no conflict exists.
-5. If details are missing or topics are mixed, amend the guidance and review again.
-   The assistant preserves the approved answer verbatim.
+1. Open **Add knowledge**, or **Review in Knowledge Studio** from **Needs attention**.
+   **Continue linked draft** and **Continue in Studio** resume saved work. **Edit**
+   on a published entry prepares its replacement without taking it offline.
+2. Paste one approved guideline and choose its department and programs. Include
+   the conditions needed to interpret it; omit student names, IDs and contact details.
+   You do not need to write search keywords or test questions.
+3. Select **Prepare & review draft**. The assistant records separate stages:
+   understand the entry, find related sources, compare literal claims, prepare
+   focused search questions, and independently verify the findings and coverage.
+4. Resolve the specific questions shown. Genuine conflicts quote your claim and
+   the existing claim, identify the source and explain the difference. Similar
+   wording about different services is checked independently. Full passages and
+   initial comparison feedback stay in expandable details.
+5. If the assistant needs facts, update the approved guidance and review again.
+   It cannot invent an exception or silently replace an official document. A
+   duplicate points to the existing source. A change to an official source needs
+   reviewed source-file ingestion; approving a second contrary rule is blocked.
 6. Confirm the contributor, responsible office, optional date/reference and reason.
-   Check the factual approval box, then **Save draft & run checks**.
-7. In **Drafts**, inspect the private checks, including retrieval for the original
-   student question. Record the required named human review. Publish only after
-   those checks and that decision permit it.
+   Check the source confirmation and select **Continue to checks & previews**.
+   Stay in Studio: seven private checks run automatically.
+7. Read **What students will see**. These are actual answers from the configured
+   student model, using the private candidate and normal RAG prompt, retrieval,
+   citations and disclaimer. Check the facts and links.
+8. Enter a reviewer name or role, decision and approval note. Confirm and select
+   **Approve & publish**. The existing worker/n8n flow publishes atomically.
+   The linked unanswered question resolves only after activation succeeds.
 
-An exact duplicate points to the existing source instead of producing a second
-copy. If a student failed to find existing information, inspect the recorded
-retrieval evidence; adding a duplicate is not a retrieval repair.
+The approved content is preserved verbatim. Generated search questions are
+independently checked and retained as tests. Canonical embeddings are tried first.
+For a real search failure, the assistant may make **one** bounded correction to
+search wording in a new private revision. Facts, scope and original tests stay
+unchanged, and the complete checks run again. Search wording never becomes answer
+evidence. Longer entries keep ordinary section embeddings.
 
-## Understand a paused draft
+## When publication pauses
 
-Drafts show three separate responsibilities: **AI writing/policy review**, **search
-tests**, and **staff approval**. The actual AI summary, model and quoted findings
-remain visible after saving. Manual revisions explicitly say that no AI review
-was used. Broad rule-based comparison flags remain expandable and are labelled
-separately from AI findings.
+- **Missing facts or mixed topics:** answer the displayed factual questions or
+  split independent topics. Review the revised complete guidance.
+- **Conflict:** compare literal claims. Correct the guidance, describe an
+  approved exception and its precise scope, or update the existing Studio entry.
+  Staff judgment remains mandatory; AI advice cannot change policy.
+- **Search failure:** the affected question, earlier conversation and expected
+  answer are shown. A bounded automatic correction may run. If it still fails,
+  revise genuinely incomplete guidance or leave it private for technical diagnosis.
+  Never weaken the original tests to obtain a passing result.
+- **Quota or provider failure:** your work remains saved. Retry previews or review
+  later. A failed service call is not a policy judgment or permission to publish.
+  **Retry interrupted search correction** resumes the same bounded repair job
+  after a service failure; it cannot create a second completed correction.
+- **Knowledge changed:** review outdated AI comparisons or run fresh checks as
+  directed. Earlier results remain in the audit; they do not authorize a new version.
 
-For an existing-answer regression, the page shows the affected conversation,
-the answer/source the student should receive, and whether evidence was found
-before and after adding the draft privately. No original policy was deleted.
-Use **Copy issue for maintainer** to prepare a handoff; this copies a report and
-does not send a message. Staff are not expected to diagnose ranking changes.
-**Review guidance with AI** reopens the same entry, scope and original linked
-question. A genuine correction becomes a new revision and must pass all checks.
-Neither an AI review nor human approval can waive a failed retrieval check.
-
-Earlier runs that recorded only failed test IDs receive readable descriptions
-from the evaluation set when displayed. Their outcomes and stored audit records
-are unchanged. Missing historical passage rankings are explicitly disclosed;
-the page does not invent a cause. New failures retain the actual source passages.
-
-## Correct existing knowledge
-
-Use **Edit** on a published admin-authored entry to prepare a successor in the same
-composer. Its current revision stays active until successful replacement.
-Use the existing-document/manual editor for official-source corrections. A new
-admin entry must not silently overwrite an original source policy.
-
-## Interruptions
-
-The current intake and review ID survive a reload in browser session storage.
-Review jobs and results live in PostgreSQL. Changing facts, scope or test questions,
-or changing the KB generation/review rules, requires a fresh comparison.
-Sign-out clears the local working intake.
-
-Gemini may return quota or availability errors. One transient retry is bounded and
-audited; an invalid or failed report never becomes knowledge. Keep the approved
-guidance and retry later, or use the manual editor with the same publication checks.
+Reload and return to **Add knowledge**, or resume from **Drafts** / **Needs attention**.
+Sign-out clears the browser's working copy; saved jobs remain in PostgreSQL.
+Approval notes survive refresh for the same checked revision; confirm publication again.
+Approval cannot waive failed checks.
 
 ## Operator notes
 
-- Start the existing guarded stack, including the private curation worker and n8n.
-- Set `CURATION_LLM_MODEL` in `.env`; `LLM_MODEL` continues serving students.
-- The default full Flash model prioritizes policy judgment. Check the actual
-  project quota and set `CURATION_LLM_DAILY_CALL_LIMIT` below its RPD allowance.
-  The default is 18 attempts, including retries; free-tier availability is variable.
-- Migration 0006 adds review records; it does not modify existing vectors or sources.
-- Back up review records with the existing PostgreSQL backup. Accepted revisions
-  and active curated sources remain rebuildable through normal ingestion.
-- Run the live synthetic matrix only against a disposable stack:
+- Run the existing guarded Compose stack: API, PostgreSQL, curation worker, n8n,
+  n8n database and private validation database. No extra service or dependency.
+- `CURATION_LLM_MODEL` defaults to `gemini-3.1-flash-lite`; `LLM_MODEL` stays
+  independent. Confirm actual project quotas in AI Studio before changing models.
+- Defaults admit 12 attempts/minute and 400/day/model. Routine review uses four
+  calls; clarification usually stops after two. Comparison/independent verification
+  may each retry invalid output once, and the provider may retry a transient error
+  once. Every actual provider attempt consumes the admission budget.
+- Actual student previews have a separate 60-call daily admission cap and share
+  the student model's provider quota. They never silently use another model.
+- Migration 0007 adds stage records, immutable search questions and private jobs.
+  Normal source ingestion rebuilds active knowledge, including approved search text.
+  The worker uses one inference thread under its CPU cap.
+- Back up PostgreSQL normally. Never publish synthetic demo policies on Oracle.
+- Live evaluation is opt-in on a disposable stack:
   `python -m eval.studio_review_eval --url URL --token-env STUDIO_TEST_TOKEN`.
-  Supply the test token through the named environment variable, never a CLI literal.
-- Live review evaluation never publishes. Use separate disposable data for an
-  end-to-end publication test; never add demonstration policies to Oracle.
+  Supply the token through the environment. Failed attempts remain in the report
+  when explicitly resumed; do not report retries as first-attempt success.

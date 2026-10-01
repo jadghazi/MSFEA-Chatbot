@@ -97,21 +97,27 @@ decide policy or bypass application checks. See
 
 Knowledge Studio provides the same guided composer from **Add knowledge** and
 **Needs attention**. Staff paste one approved guideline and select its scope.
-The private worker proposes a title and student questions, compares exact claims,
-and asks for missing details. The factual guidance stays verbatim. Saving starts
-the existing private validation workflow; a recorded human decision is still
-required before publication. The original unanswered question is also retrieval-tested.
+The private worker interprets the entry, compares literal claims, prepares focused
+search questions, and independently verifies coverage. The factual guidance stays
+verbatim. Canonical embeddings are tested first; verified search wording is embedded
+only through a bounded repair of a measured failure. Checks, a bounded search
+repair if needed, actual student answer previews, and named approval stay in one
+resumable workspace. The original unanswered question is also retrieval-tested.
 
 Set `CURATION_LLM_MODEL` separately from `LLM_MODEL` (default:
-`gemini-3.6-flash`). Run the full guarded Compose stack for AI assistance; the
+`gemini-3.1-flash-lite`). Run the full guarded Compose stack for AI assistance; the
 manual editor remains available. Staff requests use JSON-schema output, verified
-quote/source references, durable review records, and a conservative allowance of
-four attempts/minute and eighteen/day/model, including one transient retry.
+quote/source references, durable stage records, and defaults of 12 attempts/minute
+and 400/day/model, including one transient retry per call. Routine preparation uses
+four calls, fewer when clarification stops it. Comparison and verification each
+allow one invalid-output retry. Previews use the
+unchanged student model with a separate 60-call daily admission cap; they share its
+provider quota and never fall back silently.
 `CURATION_LLM_DAILY_CALL_LIMIT` must fit the selected model's actual AI Studio quota.
 These limits are conservative pilot admission controls, not a promise of provider
 availability. See [the staff guide](docs/guided-studio-guide.md) and
-[ADR-0028](docs/decisions/0028-guided-knowledge-studio.md).
-See [the measured implementation review](docs/guided-studio-quality-report.md)
+[ADR-0029](docs/decisions/0029-self-service-studio.md).
+See [the measured implementation review](docs/studio-self-service-quality-report.md)
 for the live model limitations and publication tests.
 
 ## Evaluation and limits

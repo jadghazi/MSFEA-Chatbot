@@ -2,6 +2,10 @@
 
 Status: implemented locally; deployment pending.
 
+The later [ADR-0029](0029-self-service-studio.md) supersedes the workflow,
+routine-model and search-preparation choices below; this record describes the
+original slice.
+
 ## Decision
 
 Keep the current source → local BGE → pgvector hybrid retrieval → grounded answer

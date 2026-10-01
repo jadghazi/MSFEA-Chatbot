@@ -3,6 +3,10 @@
 Date: 2026-10-01. Base: `93c877b`. Implemented and tested locally; Oracle was not
 connected to, migrated, restarted or deployed during this work.
 
+This is the original slice's historical report. The subsequent
+[self-service implementation review](studio-self-service-quality-report.md)
+records the current model, continuous workflow and measured search preparation.
+
 ## Delivered behavior
 
 The subsequent interface rework and historical-diagnostic handling are described

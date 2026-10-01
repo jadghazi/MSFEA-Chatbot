@@ -1,0 +1,412 @@
+{
+  "date": "2026-10-01",
+  "environment": "isolated local Compose demo; no Oracle changes",
+  "model": "gemini-3.1-flash-lite",
+  "prompt_version": "self-service-studio-v9",
+  "validator_version": "publication-guard-v5-canonical-first",
+  "checks": {
+    "python_full_passed": 385,
+    "python_skipped": 2,
+    "python_followup_conversation_passed": 32,
+    "python_note": "Full run collected before the final document-reference regression case; followed by its complete conversation suite.",
+    "node_passed": 24,
+    "ruff": "passed",
+    "mypy_strict": "passed"
+  },
+  "gates": [
+    {
+      "module": "msfea_bot.skeleton",
+      "passed": true,
+      "code": 0,
+      "seconds": 189.0,
+      "summary": [
+        "Indexed 253 chunks into the vector store."
+      ]
+    },
+    {
+      "module": "eval.retrieval_eval",
+      "passed": true,
+      "code": 0,
+      "seconds": 39.77,
+      "summary": [
+        "  context-recall@7: 122/124 =   98%  ####################",
+        "",
+        "Context-recall misses at k=7 (evidence not retrieved - the real gaps):",
+        "  [internship-vs-coop] evidence 'graduation requirement' not in top-7",
+        "  [faq-cee-exception] evidence 'reduced 6-week internship may be approved' not in top-7",
+        "",
+        "Production adaptive-depth context recall: 122/124"
+      ]
+    },
+    {
+      "module": "eval.faculty_retrieval_gate",
+      "passed": true,
+      "code": 0,
+      "seconds": 76.87,
+      "summary": [
+        "Faculty answerable source-document recall@7: 198/205 (96.6%)",
+        "Misses: faculty-007-chem, faculty-025-ece, faculty-045-ece, faculty-075-ece, faculty-125-ece, faculty-131-mech, faculty-158-ece"
+      ]
+    },
+    {
+      "module": "eval.threshold_eval",
+      "passed": true,
+      "code": 0,
+      "seconds": 48.42,
+      "summary": [
+        "Similarity threshold: 0.60",
+        "Valid queries passing: 165/165 (lowest score 0.6237)",
+        "Off-topic queries blocked before the LLM: 12/20 (60%)",
+        "PASS: no valid calibration query is rejected and off-topic savings remain useful"
+      ]
+    },
+    {
+      "module": "eval.synthesis_gate",
+      "passed": true,
+      "code": 0,
+      "seconds": 40.64,
+      "summary": [
+        "Synthesis all-premise retrieval + model context + threshold: 75/75"
+      ]
+    },
+    {
+      "module": "eval.conversation_eval",
+      "passed": true,
+      "code": 0,
+      "seconds": 19.1,
+      "summary": [
+        "ambiguous-research-after-coop: bare=1 history=1 same=False",
+        "other-two-weeks-followup: bare=2 history=2 same=False",
+        "credits-after-application: bare=1 history=1 same=False",
+        "credits-after-application-no-punctuation: bare=1 history=1 same=False",
+        "credits-pronoun-after-coop: bare=3 history=1 same=False",
+        "credits-after-mentor-switchback: bare=1 history=1 same=True",
+        "{\"cases\": 21, \"evidence_hit_at_7\": 21, \"evidence_top_1\": 13, \"independent_exact_parity\": 9, \"independent_cases\": 9}"
+      ]
+    },
+    {
+      "module": "eval.conversation_stress_eval",
+      "passed": true,
+      "code": 0,
+      "seconds": 30.43,
+      "summary": [
+        "internship-pay-standalone: [1]",
+        "full-time-support-standalone: [1]",
+        "lowercase-new-subject: [1]",
+        "switch-followup-switch-back: [4]",
+        "relational-followup: [1]",
+        "explicit-switch-after-switch: [1]",
+        "{\"cases\": 43, \"hit_at_7\": 43, \"all_evidence_top_3\": 39, \"independent_parity\": 19, \"independent_cases\": 19}"
+      ]
+    },
+    {
+      "module": "eval.publication_guard_gate",
+      "passed": true,
+      "code": 0,
+      "seconds": 2.95,
+      "summary": [
+        "PASS pg-topic-switch-iaeste department=unknown",
+        "Department cee: 1/1",
+        "Department chem: 1/1",
+        "Department ece: 2/2",
+        "Department iem: 1/1",
+        "Department mech: 1/1",
+        "Department unknown: 3/3"
+      ]
+    },
+    {
+      "module": "eval.conflict_gate",
+      "passed": true,
+      "code": 0,
+      "seconds": 3.27,
+      "summary": [
+        "PASS conflict-paraphrased-negation: candidates=55 flags=1",
+        "PASS conflict-exact-duplicate: candidates=37 flags=5",
+        "PASS conflict-valid-department-exception: candidates=44 flags=0",
+        "PASS conflict-differing-condition: candidates=40 flags=3",
+        "PASS conflict-outdated-replacement: candidates=53 flags=4",
+        "PASS conflict-none: candidates=50 flags=0",
+        "Conflict candidate coverage: 7/7; flagged=5; known false-positive fixtures=0"
+      ]
+    }
+  ],
+  "review": {
+    "first_batch_completed": 9,
+    "first_batch_cases": 10,
+    "after_explicit_retry_passed": 10,
+    "cases": [
+      {
+        "id": "new-advising",
+        "passed": true,
+        "classification": "new_information",
+        "blocked": false,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "numeric-report-conflict",
+        "passed": true,
+        "classification": "direct_conflict",
+        "blocked": false,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "negated-vop-conflict",
+        "passed": true,
+        "classification": "direct_conflict",
+        "blocked": false,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "duplicate-pass-fail",
+        "passed": true,
+        "classification": "duplicate",
+        "blocked": false,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "scope-conflict",
+        "passed": true,
+        "classification": "direct_conflict",
+        "blocked": false,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "mixed-topics",
+        "passed": true,
+        "classification": "needs_clarification",
+        "blocked": true,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "prompt-injection",
+        "passed": true,
+        "classification": "needs_clarification",
+        "blocked": true,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "complementary-confidentiality",
+        "passed": true,
+        "classification": "complementary",
+        "blocked": false,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "different-number-different-claim",
+        "passed": true,
+        "classification": "new_information",
+        "blocked": false,
+        "first_attempt_status": "completed",
+        "first_attempt_error": null,
+        "explicit_retries": 0
+      },
+      {
+        "id": "missing-shortening-condition",
+        "passed": true,
+        "classification": "needs_clarification",
+        "blocked": true,
+        "first_attempt_status": "failed",
+        "first_attempt_error": "provider_unavailable",
+        "explicit_retries": 1
+      }
+    ]
+  },
+  "retrieval_experiment": {
+    "summary": {
+      "canonical": {
+        "hit_at_production_depth": 6,
+        "cases": 6,
+        "mean_reciprocal_rank": 1.0
+      },
+      "enriched": {
+        "hit_at_production_depth": 6,
+        "cases": 6,
+        "mean_reciprocal_rank": 1.0
+      },
+      "before_addition": {
+        "hit_at_production_depth": 3,
+        "cases": 6,
+        "mean_reciprocal_rank": 0.5
+      }
+    },
+    "cases": [
+      {
+        "id": "advising-walk-in",
+        "entry_id": 1,
+        "question": "Could I just walk into CDC advising on Thursday afternoon?",
+        "evidence": "Thursday from 2 to 4 p.m.",
+        "canonical": {
+          "rank": 1,
+          "hit": true
+        },
+        "enriched": {
+          "rank": 1,
+          "hit": true
+        },
+        "before_addition": {
+          "rank": null,
+          "hit": false
+        }
+      },
+      {
+        "id": "advising-booking",
+        "entry_id": 1,
+        "question": "Should I reserve a slot before going to the weekly CDC advising window?",
+        "evidence": "without booking an appointment",
+        "canonical": {
+          "rank": 1,
+          "hit": true
+        },
+        "enriched": {
+          "rank": 1,
+          "hit": true
+        },
+        "before_addition": {
+          "rank": null,
+          "hit": false
+        }
+      },
+      {
+        "id": "advising-hours",
+        "entry_id": 1,
+        "question": "What time does the Thursday CDC advising window start and finish?",
+        "evidence": "Thursday from 2 to 4 p.m.",
+        "canonical": {
+          "rank": 1,
+          "hit": true
+        },
+        "enriched": {
+          "rank": 1,
+          "hit": true
+        },
+        "before_addition": {
+          "rank": null,
+          "hit": false
+        }
+      },
+      {
+        "id": "portfolio-walk-in",
+        "entry_id": 2,
+        "question": "Can I drop by the Portfolio Review Clinic with my portfolio without arranging an appointment?",
+        "evidence": "No appointment is required",
+        "canonical": {
+          "rank": 1,
+          "hit": true
+        },
+        "enriched": {
+          "rank": 1,
+          "hit": true
+        },
+        "before_addition": {
+          "rank": 1,
+          "hit": true
+        }
+      },
+      {
+        "id": "portfolio-times",
+        "entry_id": 2,
+        "question": "What are the drop-in hours for the Portfolio Review Clinic?",
+        "evidence": "Thursdays from 2 to 4 p.m.",
+        "canonical": {
+          "rank": 1,
+          "hit": true
+        },
+        "enriched": {
+          "rank": 1,
+          "hit": true
+        },
+        "before_addition": {
+          "rank": 1,
+          "hit": true
+        }
+      },
+      {
+        "id": "portfolio-booking",
+        "entry_id": 2,
+        "question": "Is booking mandatory for a drop-in portfolio review at the Portfolio Review Clinic?",
+        "evidence": "No appointment is required",
+        "canonical": {
+          "rank": 1,
+          "hit": true
+        },
+        "enriched": {
+          "rank": 1,
+          "hit": true
+        },
+        "before_addition": {
+          "rank": 1,
+          "hit": true
+        }
+      }
+    ],
+    "serving_unchanged": true
+  },
+  "document_reference_comparison": {
+    "before": {
+      "hits": 124,
+      "cases": 126,
+      "misses": [
+        "internship-vs-coop",
+        "faq-cee-exception"
+      ]
+    },
+    "after": {
+      "hits": 124,
+      "cases": 126,
+      "misses": [
+        "internship-vs-coop",
+        "faq-cee-exception"
+      ]
+    },
+    "new_losses": [],
+    "recovered": []
+  },
+  "browser": {
+    "advising_published_from_attention": true,
+    "linked_feedback_resolved_after_publication": true,
+    "clinic_published_successor_with_explicit_replacement": true,
+    "clinic_answer_is_tuesday": true,
+    "advising_answer_remains_thursday": true,
+    "letter_conversation_before_successful_turns": 1,
+    "letter_conversation_after_successful_turns": 2,
+    "letter_conversation_turns": 2,
+    "official_conflict_quotes_and_blocks_continuation": true,
+    "refresh_preserves_approval_note": true,
+    "workspace_switch_confirmation_visible": true,
+    "narrow_dashboard_client_width": 375,
+    "narrow_dashboard_scroll_width": 375,
+    "faculty_usability_study": false
+  },
+  "source_rebuild": {
+    "generation_identical_after_rebuild": true,
+    "single_active_clinic_revision": true,
+    "retrieval": [
+      {
+        "id": "clinic-update",
+        "expected_entry_rank": 1,
+        "passed": true
+      },
+      {
+        "id": "advising-unchanged",
+        "expected_entry_rank": 1,
+        "passed": true
+      }
+    ]
+  }
+}
