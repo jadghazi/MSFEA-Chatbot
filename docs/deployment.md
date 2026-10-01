@@ -200,3 +200,17 @@ Re-run the dependency scan periodically: `pip-audit`.
 - [ ] Current off-VM application and n8n backup copies plus the encryption key
       are recoverable; validation database has capacity and is not student-serving.
 - [ ] Real student questions in the golden set; `eval` passing.
+
+## Oracle Studio release, 2026-10-01
+
+The self-service Studio is deployed; see [the verified release record](oracle-studio-deployment-20261001.md)
+for images, migration state, production measurements and recovery material.
+Use `CURATION_LLM_MODEL=gemini-3.1-flash-lite`,
+`CURATION_LLM_DAILY_CALL_LIMIT=400`, `CURATION_LLM_REQUESTS_PER_MINUTE=12`
+and `CURATION_PREVIEW_DAILY_CALL_LIMIT=60` for the verified configuration.
+Keep the student's `LLM_MODEL` separate.
+
+Source checkout/build files must be readable by the image's non-root runtime user.
+Use the normal `umask 022` for Git checkout/build; restrict backup files and `.env`
+separately. A global `umask 077` around a Git update creates unreadable new source
+files that Docker preserves. Verify imports before restarting serving containers.

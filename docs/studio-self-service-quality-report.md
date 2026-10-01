@@ -1,7 +1,8 @@
 # Self-service Knowledge Studio — implementation review
 
-2026-10-01. Implemented and exercised in a disposable local Compose stack;
-the Oracle pilot and its knowledge have not been changed.
+2026-10-01. Implemented and exercised in a disposable local Compose stack,
+then deployed to Oracle after explicit authorization. Oracle's 253-chunk knowledge
+and generation hash remained unchanged. See [the deployment verification](oracle-studio-deployment-20261001.md).
 
 ## Product result
 

@@ -1,6 +1,6 @@
 # ADR-0028: Guided Knowledge Studio
 
-Status: implemented locally; deployment pending.
+Status: superseded by ADR-0029; the resulting workflow was deployed on Oracle on 2026-10-01.
 
 The later [ADR-0029](0029-self-service-studio.md) supersedes the workflow,
 routine-model and search-preparation choices below; this record describes the

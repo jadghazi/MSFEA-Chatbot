@@ -6,6 +6,28 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-10-01 — Oracle self-service Studio rollout verified
+
+- Pushed release `fb1d837`; CI run 36882309552 passed. Updated Oracle from
+  `5f60625`, built ARM64 app/worker images, applied migrations 0006/0007 and
+  rebuilt from production sources. The 253 chunks and generation hash are unchanged;
+  no synthetic local policy or curated entry was transferred.
+- Set curation to Gemini 3.1 Flash-Lite, 12 attempts/minute, 400/day and 60/day
+  student previews. The student model remains `gemini-flash-lite-latest`.
+  Six production services are healthy; only Caddy publishes ports, and the daily
+  backup timer remains active.
+- Both fresh database dumps passed separate temporary-database restores, and
+  copies were saved off the VM. Corrected restrictive Git checkout permissions
+  after a preflight import failure, before restarting the serving application.
+- All eight retrieval/publication gates passed on Oracle: golden 122/124,
+  faculty 198/205, valid threshold 165/165, synthesis 75/75, conversation 21/21,
+  stress 43/43, publication preservation 9/9 and conflict coverage 7/7.
+  Existing misses remain visible. Four live staff-model calls recognized the
+  official 90-credit rule as duplicate; the backend rejected draft creation.
+- Browser-tested the live ECE letter question and its document follow-up: both
+  return the official form URL, citation and disclaimer. Dashboard assets match
+  the tested source hashes. See [the deployment record](oracle-studio-deployment-20261001.md).
+
 ## 2026-10-01 — Self-service Studio and admin walkthrough
 
 - Replaced the draft handoff with one resumable Describe / Resolve / Preview /
@@ -34,7 +56,7 @@ short: what changed, why, what's next, what's blocked.
   explicitly retrying one recorded provider failure. No faculty usability study claimed.
 - See [the review](studio-self-service-quality-report.md),
   [staff guide](guided-studio-guide.md) and [ADR-0029](decisions/0029-self-service-studio.md).
-  Oracle remains unchanged; original working-copy edits were left untouched.
+  Oracle rollout was completed later this day (entry above); original working-copy edits were left untouched.
 
 ## 2026-10-01 — Guided Knowledge Studio
 

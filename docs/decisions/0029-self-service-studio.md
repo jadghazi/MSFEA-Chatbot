@@ -1,6 +1,6 @@
 # ADR-0029: Self-service Studio with measured search preparation
 
-Status: implemented locally; Oracle deployment pending. Supersedes ADR-0028's
+Status: implemented and deployed on Oracle, 2026-10-01. Supersedes ADR-0028's
 single-review handoff, routine model and deferred search-preparation decisions.
 
 ## Decision
