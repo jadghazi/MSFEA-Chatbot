@@ -31,8 +31,8 @@ class Sentence(BaseModel):
 
 class ClaimChange(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    original_claim_id: str = Field(min_length=1, max_length=80)
-    sentence_index: int
+    original_claim_id: str = Field(min_length=1, max_length=80, description="Original fact ID, e.g. original:c1.")
+    sentence_index: int = Field(description="Zero-based index of the revised sentence: the first sentence is 0.")
     reason: str = Field(min_length=10, max_length=900)
     support_ids: list[str] = Field(min_length=1, max_length=8)
 
@@ -180,6 +180,8 @@ def checked_proposal(text: str, available: dict[str, dict[str, str]], intake: In
         raise ValueError("The suggested answer is too long or contains identifying data.")
     numbers = r"\d+(?:[.:/-]\d+)*"
     for change in proposal.claim_changes:
+        if re.fullmatch(r'c\d+',change.original_claim_id):
+            change.original_claim_id='original:'+change.original_claim_id
         if change.original_claim_id not in available or not change.original_claim_id.startswith('original:'):
             raise ValueError("The claim change references unknown original guidance.")
         if change.sentence_index < 0 or change.sentence_index >= len(proposal.sentences):

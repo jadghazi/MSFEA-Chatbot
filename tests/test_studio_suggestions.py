@@ -143,6 +143,14 @@ def test_claim_change_cannot_cite_disputed_input_or_reference_another_answer() -
         suggestions.checked_proposal(json.dumps(offered),available,intake)
 
 
+def test_numbered_original_claim_reference_is_unambiguous_without_its_prefix() -> None:
+    intake=INTAKE.model_copy(update={'guidance':'The internship course is a 5-credit course.'})
+    offered=credit_correction(intake)
+    offered['claim_changes'][0]['original_claim_id']='c1'
+    checked=suggestions.checked_proposal(json.dumps(offered),suggestions.facts(intake,SOURCES),intake)
+    assert checked.claim_changes[0].original_claim_id=='original:c1'
+
+
 def test_original_link_replacement_requires_explanation_and_existing_kb_link() -> None:
     intake=INTAKE.model_copy(update={'guidance':'Use https://old.example/form for the internship form.'})
     source={'text':'Use https://official.example/form for the internship form.',
