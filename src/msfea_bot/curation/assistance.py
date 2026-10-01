@@ -26,7 +26,7 @@ from msfea_bot.observability.privacy import _ner, anonymize
 from msfea_bot.retrieval.store import indexed_generation
 
 PROMPT_VERSION = "self-service-studio-v9"
-SUGGESTION_PROMPT_VERSION = "source-backed-answer-suggestion-v1"
+SUGGESTION_PROMPT_VERSION = "source-backed-answer-suggestion-v3"
 _LOG = logging.getLogger(__name__)
 _DECISIONS = {"duplicate", "potential_conflict", "direct_conflict", "supersedes"}
 

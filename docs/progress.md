@@ -6,6 +6,24 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-10-01 — Visible KB-backed corrections during conflicts
+
+- Removed the API/dashboard conflict and replacement rewrite blocks, including
+  the duplicate-review UI exclusion. Writing assistance can propose current-source
+  corrections without claiming to approve a policy update.
+- Added **Changes to your claims** with original/proposed text, reason and quoted
+  KB evidence above the editable word diff. Use still starts fresh review;
+  existing validation, source confirmation and publication authority are unchanged.
+- Replaced mandatory original-number/link preservation with mandatory disclosure
+  of changes plus existing-evidence checks. Original/sentence references construct
+  accurate quotes in code; unsupported and unexplained changes still fail closed.
+- Fixed live trials exposed unrelated service substitution and a fragile literal
+  quote format. Added same-subject/absence checks and reduced the structured change
+  format to one original claim and one revised sentence per correction after a
+  live Gemini schema probe. Failures and explicit retries remain in the QA record.
+- No student-model, retrieval, ingestion, embedding, schema migration, dependency
+  or service changes. See [the correction review](studio-answer-correction-quality-report.md).
+
 ## 2026-10-01 — Optional source-backed answer improvements
 
 - Pushed implementation `d9da055`; CI 36914075684 passed. Deployed the ARM64

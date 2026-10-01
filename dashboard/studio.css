@@ -262,6 +262,15 @@
 .studio-suggestion-source{border-top:1px solid #e6dfec;padding-top:12px;margin-top:12px;font-size:12px;overflow-wrap:anywhere}
 .studio-suggestion-source blockquote{border-left:3px solid #b8a4c9;background:white;padding:12px;margin:10px 0;font-size:13px;line-height:1.7}
 .studio-suggestion-verification{font-size:12px;line-height:1.7;color:#5e5667}
+.studio-claim-changes{margin:18px 0;padding:18px;border:1px solid #e6d3b1;border-radius:12px;background:#fffaf0}
+.studio-claim-changes>p{font-size:13px;line-height:1.6;color:#675739}
+.studio-claim-change{padding-top:14px;margin-top:14px;border-top:1px solid #eadcc4}
+.studio-claim-change>p{font-size:13px;line-height:1.6}
+.studio-claim-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.studio-claim-pair>div{padding:12px;border-radius:8px;background:#fff;border:1px solid #eadcc4;overflow-wrap:anywhere}
+.studio-claim-pair strong{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#675739}
+.studio-claim-pair blockquote{margin:8px 0 0;font-size:14px;line-height:1.6}
+@media(max-width:600px){.studio-claim-pair{grid-template-columns:1fr}.studio-claim-changes{padding:12px}}
 .studio-suggestion-actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 12px}
 .studio-suggestion-actions .studio-suggestion-use{background:#862639;color:white;font-weight:600}
 .studio-suggestion-actions .studio-suggestion-use:hover{background:#702032}

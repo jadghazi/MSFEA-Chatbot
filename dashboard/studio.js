@@ -274,7 +274,7 @@
       note.textContent = 'You selected an AI-assisted answer revision. This is its fresh review; earlier checks do not authorize this version.';
       el('.studio-verdict').insertAdjacentElement('afterend', note);
     }
-    if (!duplicate) attachSuggestion({key:'review:'+data.id,review_id:data.id,intake:data.intake,report:data.report});
+    attachSuggestion({key:'review:'+data.id,review_id:data.id,intake:data.intake,report:data.report});
   }
   function attachSuggestion(context) {
     var node=document.createElement('section'); node.className='studio-suggestion';
@@ -282,11 +282,8 @@
     var before=el('.studio-approval') || el('.studio-workspace-actions') || el('.studio-audit');
     if (before) before.parentNode.insertBefore(node,before);
     else el('.studio-report').appendChild(node);
-    if (context.report && ['direct_conflict','supersedes'].indexOf(context.report.classification)>=0) {
-      node.innerHTML='<span class="eyebrow">Your policy decision comes first</span><h4>The AI cannot choose which rule is approved</h4><p>Compare the claims shown above. For a policy change, enter the complete approved replacement yourself, then review again. The normal checks and publication decision still apply; AI rewriting stays paused while the proposed rule conflicts with existing policy.</p>'; return;
-    }
     function introduction(status) {
-      node.innerHTML='<div class="studio-suggestion-head"><div><span class="eyebrow">Optional writing assistance</span><h4>Want help improving this answer?</h4></div></div><p class="studio-suggestion-why">The AI can clarify your wording and add relevant details supported by existing sources. It uses this review’s feedback and failed checks. Your original answer stays unchanged until you choose.</p><button class="studio-suggestion-generate secondary">Suggest an improved answer</button><p class="studio-source-note">You can edit or discard it. Every accepted revision goes through fresh review and private tests.</p><div class="studio-suggestion-status" role="status">'+e(status || '')+'</div>';
+      node.innerHTML='<div class="studio-suggestion-head"><div><span class="eyebrow">Optional writing assistance</span><h4>Want help improving this answer?</h4></div></div><p class="studio-suggestion-why">The AI uses KB facts and this review’s feedback to suggest a clearer answer, including corrections to conflicting claims. Changes to rules, numbers and links are explained with their sources. Your answer stays unchanged until you choose.</p><button class="studio-suggestion-generate secondary">Suggest an improved answer</button><p class="studio-source-note">Review the changes, edit or discard the suggestion, then submit it for fresh review. A suggestion does not approve a policy change.</p><div class="studio-suggestion-status" role="status">'+e(status || '')+'</div>';
       node.querySelector('.studio-suggestion-generate').addEventListener('click', function () {
         if (!context.revision_id && !sameIntake(intake(),context.intake)) {
           node.querySelector('.studio-suggestion-status').textContent='Your guidance or scope changed. Run a fresh review before asking for a matching suggestion.'; return;
@@ -314,9 +311,12 @@
       if (!proposal || proposal.key!==context.key || !hooks.signedIn()) return;
       request('/admin/api/studio/suggestions/'+proposal.id).then(function (job) {
         if (!proposal || proposal.key!==context.key || !node.isConnected) return;
+        if (job.outdated) {
+          proposal=null; remember(); introduction('The writing assistant was updated. Request a new suggestion to use its current checks. Your original answer is unchanged.'); return;
+        }
         if (job.status==='failed') {
-          var text={unsupported_suggestion:'The proposed wording did not pass its source checks, so it has not been offered for use.',suggestion_unavailable:'The suggestion service could not finish.',stale_index:'The knowledge base changed. Run a fresh review before requesting another suggestion.'};
-          proposal=null; remember(); introduction((text[job.error_code] || errors[job.error_code] || 'The suggestion could not finish.')+' Your original answer is unchanged.'); return;
+          var text={unsupported_suggestion:'The AI could not produce a fully supported answer with every changed claim explained. You can try another suggestion or edit your guidance and review it again.',suggestion_unavailable:'The suggestion service could not finish.',outdated_review:'The writing assistant was updated. Request a new suggestion to use its current checks.',stale_index:'The knowledge base changed. Run a fresh review before requesting another suggestion.'};
+          proposal=null; remember(); introduction((text[job.error_code] || errors[job.error_code] || 'The suggestion could not finish.')+(job.report && job.report.rejection_reason ? ' Check feedback: '+job.report.rejection_reason : '')+' Your original answer is unchanged.'); return;
         }
         if (job.status!=='completed') { working(job); suggestionTimer=setTimeout(pollSuggestion,2500); return; }
         node.innerHTML=StudioSuggestion.card(job,proposal.edited);

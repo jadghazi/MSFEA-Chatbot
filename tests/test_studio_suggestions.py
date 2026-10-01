@@ -45,11 +45,11 @@ def parent(database: str, intake: Intake = INTAKE) -> str:
 def proposal() -> dict:
     return {"sentences":[{"text":ORIGINAL,"support_ids":["original:c1"]},
                          {"text":"A student must have completed at least 90 credits before registration.","support_ids":["source:0:c2"]}],
-            "explanation":"Added the separate registration eligibility requirement from the supplied source.","missing_details":[]}
+            "explanation":"Added the separate registration eligibility requirement from the supplied source.","missing_details":[],"claim_changes":[]}
 
 
 def verification() -> dict:
-    return {"unsupported_sentences":[],"preserves_original_claims":True,"scope_preserved":True,
+    return {"unsupported_sentences":[],"all_changes_explained":True,"scope_preserved":True,
             "necessary_missing_detail_indexes":[],
             "one_focused_topic":True,"explanation":"Both credit facts are supported and the original course value is preserved."}
 
@@ -89,21 +89,109 @@ def test_pre_addition_review_request_remains_idempotent(_publication_database: s
 
 def test_existing_source_cannot_silently_replace_an_original_numeric_rule() -> None:
     conflicting=INTAKE.model_copy(update={'guidance':'The internship course is a 3-credit course.'})
-    with pytest.raises(ValueError,match='original numeric'):
+    with pytest.raises(ValueError,match='numeric fact without explaining'):
         suggestions.checked_proposal(json.dumps(proposal()),suggestions.facts(conflicting,SOURCES),conflicting)
 
 
+def credit_correction(intake: Intake) -> dict:
+    return {"sentences":[{"text":ORIGINAL,"support_ids":["source:0:c1"]}],
+            "explanation":"Proposes the current KB credit value for staff review, not a new policy approval.",
+            "missing_details":[],"claim_changes":[{"original_claim_id":"original:c1","sentence_index":0,
+            "reason":"The proposed credit value differs from the existing official 1-credit rule.",
+            "support_ids":["source:0:c1"]}]}
+
+
+@pytest.mark.parametrize('credits',[3,5])
+def test_declared_source_backed_credit_correction_requires_fresh_review(
+    _publication_database: str,monkeypatch: pytest.MonkeyPatch,credits: int,
+) -> None:
+    intake=INTAKE.model_copy(update={'guidance':f'The internship course is a {credits}-credit course.'})
+    offered=credit_correction(intake)
+    model(monkeypatch,offered=offered)
+    parent_id=parent(_publication_database,intake)
+    with psycopg.connect(_publication_database) as conn:
+        conn.execute("UPDATE curation_assistance SET report=%s WHERE id=%s",(Json({'classification':'direct_conflict'}),parent_id))
+    job_id=suggestions.enqueue(parent_id,None,uuid4().hex)
+    assert assistance.process_next()
+    job=suggestions.get(job_id)
+    assert job and job['status']=='completed' and job['intake']['guidance']==intake.guidance
+    assert job['report']['claim_changes'][0]['before']==intake.guidance
+    assert job['report']['claim_changes'][0]['sources'][0]['text']==ORIGINAL
+    assert job['report']['suggested_answer']==ORIGINAL
+    fresh_id=assistance.enqueue(intake.model_copy(update={'guidance':ORIGINAL,'suggestion_id':job_id}),uuid4().hex)
+    fresh=assistance.get_review(fresh_id)
+    assert fresh and fresh['status']=='queued' and fresh_id!=parent_id
+    with psycopg.connect(_publication_database) as conn:
+        assert conn.execute('SELECT count(*) FROM curated_entries').fetchone()[0]==0
+        assert conn.execute('SELECT count(*) FROM curation_validation_runs').fetchone()[0]==0
+
+
+def test_claim_change_cannot_cite_disputed_input_or_reference_another_answer() -> None:
+    intake=INTAKE.model_copy(update={'guidance':'The internship course is a 5-credit course.'})
+    offered=credit_correction(intake)
+    available=suggestions.facts(intake,SOURCES)
+    offered['claim_changes'][0]['support_ids']=['original:c1']
+    with pytest.raises(ValueError,match='existing KB evidence'):
+        suggestions.checked_proposal(json.dumps(offered),available,intake)
+    offered['claim_changes'][0]['support_ids']=['source:0:c1']
+    offered['claim_changes'][0]['original_claim_id']='original:nonexistent'
+    with pytest.raises(ValueError,match='unknown original guidance'):
+        suggestions.checked_proposal(json.dumps(offered),available,intake)
+    offered['claim_changes'][0]['original_claim_id']='original:c1'
+    offered['claim_changes'][0]['sentence_index']=4
+    with pytest.raises(ValueError,match='unknown suggested sentence'):
+        suggestions.checked_proposal(json.dumps(offered),available,intake)
+
+
+def test_original_link_replacement_requires_explanation_and_existing_kb_link() -> None:
+    intake=INTAKE.model_copy(update={'guidance':'Use https://old.example/form for the internship form.'})
+    source={'text':'Use https://official.example/form for the internship form.',
+            'source_doc':'forms.md','section':'Forms','department':'all'}
+    available=suggestions.facts(intake,[source])
+    offered={'sentences':[{'text':source['text'],'support_ids':['source:0:c1']}],
+             'explanation':'Proposes the current official form link for staff review.',
+             'missing_details':[],'claim_changes':[]}
+    with pytest.raises(ValueError,match='URL without explaining'):
+        suggestions.checked_proposal(json.dumps(offered),available,intake)
+    offered['claim_changes']=[{'original_claim_id':'original:c1','sentence_index':0,
+                              'reason':'The existing KB lists a different official form URL.',
+                              'support_ids':['source:0:c1']}]
+    assert suggestions.checked_proposal(json.dumps(offered),available,intake).claim_changes
+    offered['sentences'][0]['text']='Use https://invented.example/form for the internship form.'
+    with pytest.raises(ValueError,match='invented a URL'):
+        suggestions.checked_proposal(json.dumps(offered),available,intake)
+
+
+def test_hidden_qualifier_change_is_rejected_by_verifier(
+    _publication_database: str,monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    intake=INTAKE.model_copy(update={'guidance':'The internship must be completed in summer.'})
+    source={**SOURCES[0],'text':'The internship is normally completed in summer.'}
+    offered={'sentences':[{'text':source['text'],'support_ids':['source:0:c1']}],
+             'explanation':'Clarified the wording.','missing_details':[],'claim_changes':[]}
+    checked=verification()
+    checked['all_changes_explained']=False
+    model(monkeypatch,offered=offered,verified=checked)
+    monkeypatch.setattr(assistance,'_evidence',lambda intake:[source])
+    job_id=suggestions.enqueue(parent(_publication_database,intake),None,uuid4().hex)
+    assistance.process_next()
+    job=suggestions.get(job_id)
+    assert job and job['status']=='failed' and 'suggested_answer' not in job['report']
+
+
 @pytest.mark.parametrize('classification',['direct_conflict','supersedes'])
-def test_unresolved_policy_conflict_never_enqueues_an_answer_rewrite(
+def test_policy_conflict_can_request_a_private_answer_suggestion(
     _publication_database: str,classification: str,
 ) -> None:
     review_id=parent(_publication_database)
     with psycopg.connect(_publication_database) as conn:
         conn.execute("UPDATE curation_assistance SET report=%s WHERE id=%s",(Json({'classification':classification}),review_id))
-    with pytest.raises(ValueError,match='policy decision'):
-        suggestions.enqueue(review_id,None,uuid4().hex)
+    job_id=suggestions.enqueue(review_id,None,uuid4().hex)
+    job=suggestions.get(job_id)
+    assert job and job['status']=='queued' and job['report']['context']['review_feedback']['classification']==classification
     with psycopg.connect(_publication_database) as conn:
-        assert conn.execute('SELECT count(*) FROM curation_assistance').fetchone()[0]==1
+        assert conn.execute('SELECT count(*) FROM curation_assistance').fetchone()[0]==2
+        assert conn.execute('SELECT count(*) FROM curated_entries').fetchone()[0]==0
 
 
 def test_new_links_and_cross_department_sources_are_rejected() -> None:
@@ -135,7 +223,7 @@ def test_same_worker_completes_two_call_suggestion_without_creating_knowledge(
         assert conn.execute('SELECT count(*) FROM curated_entries').fetchone()[0]==0
 
 
-@pytest.mark.parametrize('failed_check',["unsupported_sentences","preserves_original_claims","scope_preserved","one_focused_topic"])
+@pytest.mark.parametrize('failed_check',["unsupported_sentences","all_changes_explained","scope_preserved","one_focused_topic"])
 def test_independent_rejection_never_offers_an_unverified_answer(
     _publication_database: str,monkeypatch: pytest.MonkeyPatch,failed_check: str,
 ) -> None:
@@ -147,13 +235,14 @@ def test_independent_rejection_never_offers_an_unverified_answer(
     job=suggestions.get(job_id)
     assert job and job["status"]=="failed" and job["error_code"]=="unsupported_suggestion"
     assert 'suggested_answer' not in job["report"]
+    assert job['report']['rejection_reason']==invalid['explanation']
 
 
 def test_missing_facts_remain_questions_without_becoming_canonical_text(
     _publication_database: str,monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     offered={"sentences":[proposal()["sentences"][0]],"explanation":"The supplied facts do not provide office opening hours.",
-             "missing_details":["What are the approved office opening hours?"]}
+             "missing_details":["What are the approved office opening hours?"],"claim_changes":[]}
     checked=verification()
     checked["necessary_missing_detail_indexes"]=[0]
     model(monkeypatch,offered=offered,verified=checked)
@@ -269,6 +358,19 @@ def test_stale_queued_suggestion_never_calls_the_model(
     job=suggestions.get(job_id)
     assert job and job['status']=='failed' and job['error_code']=='stale_index'
     assert calls==[]
+
+
+def test_old_pending_suggestion_never_runs_as_a_policy_review(
+    _publication_database: str,monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls=model(monkeypatch)
+    job_id=suggestions.enqueue(parent(_publication_database),None,uuid4().hex)
+    with psycopg.connect(_publication_database) as conn:
+        conn.execute("UPDATE curation_assistance SET prompt_version='source-backed-answer-suggestion-v1' WHERE id=%s",(job_id,))
+    assert not assistance.process_next()
+    job=suggestions.get(job_id)
+    assert job and job['status']=='failed' and job['error_code']=='stale_review'
+    assert job['outdated'] and calls==[]
 
 
 def test_provider_failure_preserves_original_input_and_is_not_a_policy_verdict(

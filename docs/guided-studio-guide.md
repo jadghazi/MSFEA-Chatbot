@@ -24,8 +24,9 @@
    changes; expand the literal source facts if needed. Choose **Edit suggestion**,
    **Discard suggestion**, or **Use & review again**. Your original answer stays
    unchanged until use, and accepting either version starts a fresh review.
-   A direct conflict or possible policy replacement must be resolved by staff
-   before AI can rewrite the answer; the assistant cannot choose the approved rule.
+   Writing assistance stays available during conflicts and possible replacements.
+   **Changes to your claims** shows proposed factual corrections, reasons and KB
+   evidence. These are suggestions for your decision, not approved policy updates.
 6. Confirm the contributor, responsible office, optional date/reference and reason.
    Check the source confirmation and select **Continue to checks & previews**.
    Stay in Studio: seven private checks run automatically.
@@ -82,9 +83,11 @@ Approval cannot waive failed checks.
   once. Every actual provider attempt consumes the admission budget.
 - Actual student previews have a separate 60-call daily admission cap and share
   the student model's provider quota. They never silently use another model.
-- Optional answer suggestions use two staff-model calls: draft from numbered
-  facts, then independently verify support and original meaning. Original numbers
-  and URLs are also protected deterministically. Missing facts stay questions.
+- Optional answer suggestions remain available during policy conflicts. Two
+  staff-model calls draft from numbered facts and verify support and disclosure
+  of every substantive correction. Changed claims show exact original/proposed
+  wording, a reason and KB evidence. Number/link removals require this disclosure
+  in code; invented numbers and URLs are rejected. Missing facts stay questions.
   These checks reduce risk; human review and fresh publication checks still apply.
 - Run the fixed suggestion examples only on a disposable stack:
   `python -m eval.studio_suggestion_eval --url URL --output tmp/suggestions.jsonl`.

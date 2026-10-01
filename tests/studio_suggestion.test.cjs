@@ -42,5 +42,19 @@ test('restored human edits do not display the original AI verification as their 
  const html=suggestion.card(job,'A manually edited answer.');
  assert.match(html,/You edited this suggestion/);
  assert.match(html,/your version will receive a fresh review/);
- assert.doesNotMatch(html,/Independent AI check:/);
+ assert.doesNotMatch(html,/AI source and change check:/);
+});
+test('policy corrections display original claim, replacement, reason and exact KB evidence',()=>{
+ const corrected={...job,intake:{guidance:'The course is 5 credits.'},report:{...job.report,suggested_answer:'The course is 1 credit.',claim_changes:[{before:'5 credits',after:'1 credit',reason:'The official source lists 1 credit.',sources:[{source:'official.md',section:'Credits',text:'The course is 1 credit.'}]}]}};
+ const html=suggestion.card(corrected);
+ for(const text of ['Changes to your claims','Meaning changed','You wrote','AI proposes','5 credits','1 credit','Why this changes','KB evidence','official.md','not approved policy updates']) assert.ok(html.includes(text),text);
+ assert.match(html,/<del>5 credits\./);
+ assert.match(html,/<ins>1 credit\./);
+ assert.match(suggestion.card(corrected,'My edited version.'),/These explanations describe the AI’s offered version/);
+});
+test('claim corrections cannot inject HTML into explanations or source quotes',()=>{
+ const corrected={...job,report:{...job.report,claim_changes:[{before:'<script>x</script>',after:'<img src=x>',reason:'<iframe>',sources:[{source:'<svg>',section:'x',text:'<script>y</script>'}]}]}};
+ const html=suggestion.card(corrected);
+ assert.doesNotMatch(html,/<script>|<iframe>|<img|<svg/);
+ assert.match(html,/&lt;script/);
 });

@@ -12,6 +12,7 @@ from urllib.error import HTTPError
 from uuid import uuid4
 
 from eval.studio_review_eval import request
+from msfea_bot.curation.assistance import SUGGESTION_PROMPT_VERSION
 
 
 def wait(url: str, token: str, path: str) -> dict[str, Any]:
@@ -31,7 +32,7 @@ def evaluate(url: str, token: str, output: Path, resume: bool = False) -> list[d
     output.parent.mkdir(parents=True, exist_ok=True)
     for case in cases:
         previous = next((item for item in results if item['id'] == case['id']), None)
-        if previous and previous['passed']:
+        if previous and previous['passed'] and previous.get('suggestion',{}).get('prompt_version') == SUGGESTION_PROMPT_VERSION:
             continue
         record: dict[str, Any] = {'id': case['id'], 'passed': False, 'previous_attempts': [previous] if previous else []}
         review = previous.get('review') if previous else None
@@ -46,22 +47,31 @@ def evaluate(url: str, token: str, output: Path, resume: bool = False) -> list[d
             except HTTPError as exc:
                 detail = json.load(exc).get('detail', '')
                 record.update(error_code=exc.code, detail=detail,
-                              passed=bool(case.get('must_block_suggestion') and exc.code == 409 and 'policy decision' in detail.lower()))
+                              passed=False)
             else:
                 suggestion = wait(url, token, '/admin/api/studio/suggestions/' + queued['id'])
                 report = suggestion.get('report') or {}
                 proposed = report.get('suggested_answer', '').lower()
                 before = sum(term.lower() in case['guidance'].lower() for term in case['required_terms'])
                 after = sum(term.lower() in proposed for term in case['required_terms'])
+                changes = report.get('claim_changes') or []
+                declared = bool(changes) and all(
+                    change['before'] in case['guidance'] and change['after'] in report.get('suggested_answer','')
+                    and bool(change.get('sources')) and all(source['id'].startswith('source:') for source in change['sources'])
+                    for change in changes
+                )
                 record.update(suggestion=suggestion, before_supported_terms=before, after_supported_terms=after,
+                              corrections_explained=declared,
                               required_terms=len(case['required_terms']),
-                              passed=not case.get('must_block_suggestion') and suggestion['status'] == 'completed'
-                              and after == len(case['required_terms']) and bool(report.get('missing_details')) == case['must_ask'])
+                              passed=suggestion['status'] == 'completed' and after == len(case['required_terms'])
+                              and bool(report.get('missing_details')) == case['must_ask']
+                              and (not case.get('must_explain_correction') or declared)
+                              and not any(term.lower() in proposed for term in case.get('forbidden_terms',[])))
         if previous:
             results.remove(previous)
         results.append(record)
         output.write_text(''.join(json.dumps(item, ensure_ascii=False) + '\n' for item in results))
-        print(json.dumps({key: record.get(key) for key in ('id', 'passed', 'before_supported_terms', 'after_supported_terms', 'error_code')}), flush=True)
+        print(json.dumps({key: record.get(key) for key in ('id', 'passed', 'before_supported_terms', 'after_supported_terms', 'corrections_explained', 'error_code')}), flush=True)
     return results
 
 

@@ -8,8 +8,11 @@ the current bounded worker and provider abstraction. No new service or dependenc
   and KB generation. Persist requests/results in the existing assistance jobs.
 - Compare original/proposed text visibly. Highlight additions/removals, show why
   changes help, literal supporting sources and remaining questions for staff.
-- Independently check every proposed sentence against supplied facts, preserve
-  the original meaning/conditions/scope, and reject unsupported output. Missing
+- Make writing assistance available for all completed review outcomes, including
+  conflicts, possible replacements and duplicates. Corrections to original claims
+  require existing KB evidence, exact before/after quotes and an explanation.
+- Independently check every proposed sentence against supplied facts, disclose
+  changes to meaning/conditions/numbers/links, preserve scope, and reject unsupported output. Missing
   opening hours/deadlines/authority must remain questions rather than guesses.
 - Use, edit and discard are explicit choices. Original input stays intact until
   acceptance. Accepting an edited or unedited suggestion records its provenance,

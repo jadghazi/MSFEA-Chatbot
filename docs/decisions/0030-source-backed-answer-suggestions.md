@@ -4,11 +4,16 @@ Status: implemented and deployed on Oracle, 2026-10-01. Extends the existing Stu
 
 Use the existing bounded assistance worker and provider abstraction for two
 optional calls: draft a focused revision from numbered original/source claims,
-then separately verify factual support, preservation of meaning and scope, and
-whether missing-detail questions are essential. Protect original numbers and URLs
-in code. Direct conflicts and possible replacements require a staff policy
-decision before a rewrite can be requested. A live trial showed that an LLM
-verifier alone can incorrectly accept changing a disputed 3-credit rule to 1 credit.
+then separately verify factual support, disclosure of changed meaning, scope, and
+whether missing-detail questions are essential. Writing assistance is available
+even during conflicts and possible replacements. Any proposed correction to an
+original claim requires exact before/after quotes, a reason and existing KB facts.
+Code rejects undisclosed removal of original numbers/URLs and invented values.
+The first implementation blocked conflict rewrites after an LLM verifier missed
+a 3-to-1-credit change. That was too restrictive for an answer-writing assistant.
+The revised boundary allows visible, source-backed corrections for staff review;
+it does not authorize a policy update. 'Normally summer' cannot become either
+'winter permitted' or 'winter prohibited' without supporting evidence.
 
 Keep the proposal separate from the input. Show tracked changes, explanation,
 literal supporting facts, remaining questions and explicit use/edit/discard

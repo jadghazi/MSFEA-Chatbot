@@ -1,5 +1,10 @@
 # Source-backed answer suggestions — verification
 
+This records the **initial rollout**. Its blanket conflict block and mandatory
+preservation of original numbers/URLs were subsequently replaced by disclosed,
+source-backed corrections at the user's request. See
+[the correction follow-up](studio-answer-correction-quality-report.md) for current behavior.
+
 2026-10-01. Optional additions to the shared direct-intake / unanswered-question /
 saved-draft Studio. No student-model, prompt, retrieval, embedding or chunking change.
 
