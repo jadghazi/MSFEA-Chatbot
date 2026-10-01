@@ -8,6 +8,10 @@ short: what changed, why, what's next, what's blocked.
 
 ## 2026-10-01 — Optional source-backed answer improvements
 
+- Pushed implementation `d9da055`; CI 36914075684 passed. Deployed the ARM64
+  app/worker to Oracle after backup restores and preflight imports. Six services
+  are healthy, configuration is unchanged and the 253-chunk production generation
+  hash is identical. No synthetic policy was transferred or published.
 - Added visible, editable suggestions to the shared Studio using two bounded
   staff-model calls, numbered evidence, tracked changes and explicit use/discard.
   Acceptance records provenance and requires a fresh review and new private checks.
@@ -22,8 +26,14 @@ short: what changed, why, what's next, what's blocked.
   typing pass. All eight existing retrieval/publication gates match the baseline.
 - Browser-tested real source additions, edit/refresh/discard and acceptance into
   a new review. The duplicate safeguard prevented an unnecessary KB entry.
-  Desktop/mobile inspected; a private saved-draft successor is also being checked.
-  See [the measured review](studio-answer-suggestion-quality-report.md).
+  Desktop/mobile inspected. A saved-draft suggestion passed a fresh review, all
+  seven checks and two real student previews, then published through normal n8n
+  approval in the disposable local stack; older versions remain in history.
+- Oracle's live suggestion and fresh-review enforcement passed using official
+  content, including a visual missing-eligibility suggestion. All eight Oracle
+  gates match baseline; both existing letter answers still include the form link.
+  See [the measured review](studio-answer-suggestion-quality-report.md) and
+  [deployment verification](oracle-answer-suggestion-deployment-20261001.md).
 
 ## 2026-10-01 — Oracle self-service Studio rollout verified
 

@@ -1,6 +1,6 @@
 # ADR-0030: Optional source-backed answer suggestions
 
-Status: implemented, 2026-10-01. Extends the existing Studio.
+Status: implemented and deployed on Oracle, 2026-10-01. Extends the existing Studio.
 
 Use the existing bounded assistance worker and provider abstraction for two
 optional calls: draft a focused revision from numbered original/source claims,

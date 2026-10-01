@@ -58,6 +58,17 @@ and workflow checks, not a general answer-accuracy or retrieval-improvement clai
   discarded a proposal without changing the original, and accepted an edited
   answer. Its fresh review identified a duplicate and prevented a second KB copy.
   Desktop and mobile layouts were inspected; mobile client/scroll width matched.
+- Saved-draft walkthrough used a real incomplete private clinic successor.
+  The suggestion supplied its documented Tuesday 2–4 p.m. hours and appointment
+  rule. Acceptance started fresh AI review; source confirmation created version 4,
+  all seven checks and both real student previews passed, and normal named approval
+  published it through n8n in the disposable local stack. Version 3 remains in
+  history. No checks or earlier approvals were copied to the new revision.
+- Implementation CI [36914075684](https://github.com/jadghazi/MSFEA-Chatbot/actions/runs/36914075684)
+  passed the final full suite, frontend checks, strict typing and all retrieval gates.
 
-No synthetic content is transferred to Oracle. Deployment verification is recorded
-separately after rollout.
+No synthetic content was transferred to Oracle. Both deployed suggestion jobs
+completed using official facts; fresh-review enforcement and the existing letter
+conversation passed. The deployed dashboard was also exercised visually, showing
+source-backed eligibility additions while preserving the original input.
+See [deployment verification](oracle-answer-suggestion-deployment-20261001.md).
