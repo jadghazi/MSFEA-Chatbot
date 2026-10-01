@@ -51,3 +51,42 @@ no unverified answer offered for use.
 The suggestion schema has a new version. Old queued proposals are failed by the
 existing version guard; old reports remain readable and the UI requests a new
 suggestion. No migrations, dependencies, services or quota changes are required.
+
+## Final verification — 2026-10-02
+
+- Final v4 live fixed set: **8/8 pass**. The complete short-answer case needed an
+  explicit retry after a Gemini 503; the earlier failure is retained. These are
+  bounded fixture checks, not an estimate of accuracy on arbitrary admin input.
+- Backend suggestion checks: **28 pass**. Frontend review/preview/suggestion checks:
+  **34 pass**. Ruff and strict typing pass. [CI for implementation b8f5a1f](https://github.com/jadghazi/MSFEA-Chatbot/actions/runs/36928110021)
+  passed the full backend suite and all eight existing gates.
+- Retrieval gates match the existing baseline: golden 122/124, faculty 198/205,
+  synthesis 75/75, conversation 21/21 (independent 9/9), stress 43/43
+  (independent 19/19). Threshold checks retain valid 165/165 and off-topic 12/20;
+  this change does not fix those existing misses. Publication 9/9 and conflict
+  7/7 pass, with zero false positives in the conflict fixtures.
+- Browser-tested the actual winter example: the proposal changes mandatory summer
+  wording to the quoted **normally** wording, displays the correction and source,
+  and asks explicitly whether winter completion is permitted. A human edit updates
+  the readable proposal and marks the earlier AI check as applying to the offered
+  version. **Use & review again** starts a fresh review, which asks for the missing
+  winter policy rather than approving publication. Desktop and mobile inspected;
+  no synthetic entry was published in these trials.
+
+## Oracle rollout
+
+Implementation **b8f5a1f** is deployed to the ARM64 app and curation worker.
+Application and n8n database backups and rollback image tags were retained before
+activation; there were no in-flight staff/publication jobs when containers were
+replaced. All six serving services are running, app/worker health checks pass,
+public health/readiness return 200, the internal health endpoint remains 404 from
+the public proxy, and an unauthenticated suggestion request returns 401.
+Public dashboard asset hashes match the image files.
+
+A live v4 production suggestion for the existing 90-credit registration rule
+completed, could not create a draft directly, and was submitted to a fresh review
+that correctly identified it as duplicate. No entry or publication was created.
+Student letter and follow-up answers still contain the official request URL,
+citations and disclaimer. Production remains **253 chunks / zero curated entries**
+at generation `sha256:d7b163e7be4bad3da2951a80c3a53e0a9ed11e704a4cb2759277f1b37354a2e4`.
+The environment file is byte-for-byte unchanged, including models and budgets.

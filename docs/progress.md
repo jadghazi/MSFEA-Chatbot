@@ -23,6 +23,13 @@ short: what changed, why, what's next, what's blocked.
   live Gemini schema probe. Failures and explicit retries remain in the QA record.
 - No student-model, retrieval, ingestion, embedding, schema migration, dependency
   or service changes. See [the correction review](studio-answer-correction-quality-report.md).
+- Final verification/rollout on 2026-10-02: eight live fixtures pass after retained
+  failures and explicit retries; 28 suggestion backend and 34 frontend checks pass.
+  Implementation `b8f5a1f` CI passed the full suite and all eight unchanged gates.
+  Browser-tested editing and fresh review of the winter example: missing permission
+  stays actionable rather than being inferred. Deployed app/worker to Oracle;
+  public assets and live fresh-review smoke pass, existing letter URLs remain,
+  and production generation/configuration and 253 chunks/zero entries are unchanged.
 
 ## 2026-10-01 — Optional source-backed answer improvements
 
