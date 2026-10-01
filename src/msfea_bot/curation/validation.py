@@ -29,7 +29,7 @@ from msfea_bot.ingestion.chunking import Chunk, chunk_normalized_dir
 from msfea_bot.ingestion.embeddings import model_fingerprint
 from msfea_bot.retrieval.store import index_chunks, indexed_generation, retrieval_depth, search
 
-VALIDATOR_VERSION = "publication-guard-v2-admin-sources"
+VALIDATOR_VERSION = "publication-guard-v3-guided-review"
 REQUIRED_STEPS = (
     "schema_source",
     "candidate_index",
@@ -412,7 +412,12 @@ def _declared_evidence_candidates(revision: Revision) -> list[dict[str, Any]]:
 def _positive_retrieval(revision: Revision, dsn: str) -> tuple[bool, dict[str, Any]]:
     expected_ids = _candidate_ids(revision)
     cases: list[dict[str, Any]] = []
-    for question in (revision.representative_question, revision.paraphrase_question):
+    from msfea_bot.curation.assistance import original_question
+
+    questions = dict.fromkeys((
+        revision.representative_question, revision.paraphrase_question, original_question(revision.id),
+    ))
+    for question in questions:
         if question is None:
             continue
         chunks = search(
@@ -486,6 +491,7 @@ def _jsonl_cases(name: str) -> list[dict[str, Any]]:
 
 def _regression(dsn: str) -> tuple[bool, dict[str, Any]]:
     lost: list[str] = []
+    lost_cases: list[dict[str, Any]] = []
     baseline_failures: list[str] = []
     checked = 0
     for item in load_golden_set():
@@ -502,6 +508,11 @@ def _regression(dsn: str) -> tuple[bool, dict[str, Any]]:
             baseline_failures.append(item.id)
         if was_hit and not now_hit:
             lost.append(item.id)
+            lost_cases.append({
+                "id": item.id, "question": item.question, "evidence": item.evidence,
+                "source_doc": item.source_doc,
+                "history": [message.__dict__ for message in item.history],
+            })
     premise_baseline_failures: list[str] = []
     premise_regressions: list[str] = []
     for name in ("synthesis_set.jsonl", "followup_set.jsonl", "scope_regression_set.jsonl"):
@@ -525,12 +536,17 @@ def _regression(dsn: str) -> tuple[bool, dict[str, Any]]:
                 premise_baseline_failures.append(case["id"])
             if was_complete and not now_complete:
                 premise_regressions.append(case["id"])
+                lost_cases.append({
+                    "id": case["id"], "question": case["question"],
+                    "evidence": case["evidence_all"], "history": case.get("history", []),
+                })
     return not lost and not premise_regressions, {
         "golden_cases_compared": checked,
         "golden_baseline_failures": baseline_failures,
         "newly_lost_previously_passing": lost,
         "premise_baseline_failures": premise_baseline_failures,
         "new_premise_regressions": premise_regressions,
+        "lost_cases": lost_cases,
     }
 
 
@@ -669,6 +685,8 @@ def execute_step(run_id: str, step: str, validation_database_url: str | None = N
         if indexed_generation(dsn) != candidate_generation:
             raise ValueError("isolated candidate index changed; restart validation")
         if step == "conflict_review":
+            from msfea_bot.curation.assistance import revision_findings
+
             related, flags = review_candidates(
                 revision.question,
                 revision.answer,
@@ -680,10 +698,19 @@ def execute_step(run_id: str, step: str, validation_database_url: str | None = N
                 item for item in _declared_evidence_candidates(revision)
                 if item["id"] not in present
             )
+            try:
+                assisted_related, assisted_flags = revision_findings(revision.id)
+            except ValueError as exc:
+                _save_result(run_id, step, False, {"errors": [str(exc)]})
+                return
+            present = {item["id"] for item in related}
+            related.extend(item for item in assisted_related if item["id"] not in present)
+            flags = assisted_flags + flags
             passed, details = True, {
                 "label": "No potential conflicts flagged" if not flags else "Potential conflicts flagged",
                 "related": related,
                 "flags": flags,
+                "assisted": bool(assisted_related),
             }
         elif step == "positive_retrieval":
             passed, details = _positive_retrieval(revision, dsn)

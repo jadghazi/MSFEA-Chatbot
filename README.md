@@ -95,6 +95,25 @@ the reviewed revision atomically. n8n coordinates these steps but does not
 decide policy or bypass application checks. See
 [ADR-0026](docs/decisions/0026-guarded-kb-publication.md).
 
+Knowledge Studio provides the same guided composer from **Add knowledge** and
+**Needs attention**. Staff paste one approved guideline and select its scope.
+The private worker proposes a title and student questions, compares exact claims,
+and asks for missing details. The factual guidance stays verbatim. Saving starts
+the existing private validation workflow; a recorded human decision is still
+required before publication. The original unanswered question is also retrieval-tested.
+
+Set `CURATION_LLM_MODEL` separately from `LLM_MODEL` (default:
+`gemini-3.6-flash`). Run the full guarded Compose stack for AI assistance; the
+manual editor remains available. Staff requests use JSON-schema output, verified
+quote/source references, durable review records, and a conservative allowance of
+four attempts/minute and eighteen/day/model, including one transient retry.
+`CURATION_LLM_DAILY_CALL_LIMIT` must fit the selected model's actual AI Studio quota.
+These limits are conservative pilot admission controls, not a promise of provider
+availability. See [the staff guide](docs/guided-studio-guide.md) and
+[ADR-0028](docs/decisions/0028-guided-knowledge-studio.md).
+See [the measured implementation review](docs/guided-studio-quality-report.md)
+for the live model limitations and publication tests.
+
 ## Evaluation and limits
 
 The versioned evaluation material has two complementary parts:

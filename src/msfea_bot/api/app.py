@@ -33,6 +33,7 @@ from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, 
 from msfea_bot.observability.usage import count, snapshot
 from msfea_bot.observability.analytics import analytics
 from msfea_bot.config import settings
+from msfea_bot.curation.assistance import Intake, accept_draft, enqueue, get_review
 from msfea_bot.curation.migrations import migrate as migrate_curation
 from msfea_bot.curation.publication import PublicationError, request_publication, retire_entry
 from msfea_bot.curation.revisions import (
@@ -488,6 +489,54 @@ class EvidenceRequest(BaseModel):
 CurateRequest.model_rebuild()
 
 
+class AssistedIntakeRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    intake: Intake
+    request_key: str = Field(min_length=16, max_length=80)
+
+
+class AssistedDraftRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    review_id: str = Field(min_length=1, max_length=64)
+    draft: CurateRequest
+
+
+@app.post("/admin/api/studio/reviews")
+def admin_studio_review(
+    req: AssistedIntakeRequest, _: None = Depends(require_admin)
+) -> dict[str, str]:
+    if not settings.curation_worker_token:
+        raise HTTPException(status_code=503, detail="The private curation worker is not configured.")
+    try:
+        review_id = enqueue(req.intake, req.request_key)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {"id": review_id, "status": "queued"}
+
+
+@app.get("/admin/api/studio/reviews/{review_id}")
+def admin_studio_review_status(
+    review_id: str, _: None = Depends(require_admin)
+) -> dict[str, object]:
+    review = get_review(review_id)
+    if review is None:
+        raise HTTPException(status_code=404, detail="This staff review was not found.")
+    return review
+
+
+@app.post("/admin/api/studio/drafts")
+def admin_studio_save(
+    req: AssistedDraftRequest, _: None = Depends(require_admin)
+) -> dict[str, int | str]:
+    try:
+        entry_id, revision_id = accept_draft(
+            req.review_id, _draft_payload(req.draft), req.draft.author_name.strip(),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"entry_id": entry_id, "revision_id": revision_id, "state": "draft"}
+
+
 def _draft_payload(req: CurateRequest) -> DraftPayload:
     return DraftPayload(
         question=req.question,
@@ -630,6 +679,7 @@ class RevisionOut(BaseModel):
     active: bool
     predecessor_question: str | None
     predecessor_answer: str | None
+    linked_feedback_ids: list[int]
 
 
 @app.get("/admin/api/revisions", response_model=list[RevisionOut])
@@ -639,7 +689,7 @@ def admin_revisions(_: None = Depends(require_admin)) -> list[RevisionOut]:
             **{
                 key: value
                 for key, value in revision.__dict__.items()
-                if key not in {"content_hash", "linked_feedback_ids", "created_at"}
+                if key not in {"content_hash", "created_at"}
             },
             created_at=revision.created_at.isoformat(),
         )

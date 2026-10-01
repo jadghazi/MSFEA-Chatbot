@@ -1,0 +1,57 @@
+{
+  "python_tests": {
+    "passed": 361,
+    "skipped": 2
+  },
+  "focused_final_tests": 44,
+  "widget_tests": 10,
+  "canonical_chunks": 253,
+  "published_demo_rebuilt_chunks": 254,
+  "published_demo_context_recall": {"hit": 123, "cases": 125},
+  "golden_context_recall_before": {
+    "hit": 122,
+    "cases": 124
+  },
+  "golden_context_recall_after": {
+    "hit": 122,
+    "cases": 124
+  },
+  "gates": [
+    {
+      "module": "eval.retrieval_eval",
+      "exit": 0
+    },
+    {
+      "module": "eval.faculty_retrieval_gate",
+      "exit": 0
+    },
+    {
+      "module": "eval.threshold_eval",
+      "exit": 0
+    },
+    {
+      "module": "eval.synthesis_gate",
+      "exit": 0
+    },
+    {
+      "module": "eval.conversation_eval",
+      "exit": 0
+    },
+    {
+      "module": "eval.conversation_stress_eval",
+      "exit": 0
+    },
+    {
+      "module": "eval.publication_guard_gate",
+      "exit": 0
+    },
+    {
+      "module": "eval.conflict_gate",
+      "exit": 0
+    }
+  ],
+  "notes": [
+    "The stress runner initially refused to overwrite an existing output artifact; rerunning with a fresh output path passed 43/43 cases.",
+    "No retrieval ranking, embedding model, source document or student generation prompt changed."
+  ]
+}

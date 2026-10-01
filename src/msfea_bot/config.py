@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     llm_provider: str = "placeholder"
     llm_api_key: str = ""
     llm_model: str = ""
+    # Occasional staff review uses a separate model and quota from student answers.
+    curation_llm_model: str = "gemini-3.6-flash"
+    curation_llm_daily_call_limit: int = Field(default=18, ge=1, le=500)
 
     # Generation sampling (ADR-0012). This bot does grounded extraction from
     # retrieved context, not creative writing, so decoding is deterministic by

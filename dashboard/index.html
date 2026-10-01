@@ -283,6 +283,7 @@
       }
     </style>
     <link rel="stylesheet" href="admin.css?v=2" />
+    <link rel="stylesheet" href="studio.css?v=1" />
   </head>
   <body>
     <header>
@@ -348,16 +349,13 @@
 
         <div id="tab-create" class="hidden">
           <div class="studio-hero">
+            <div class="eyebrow">From approved guidance to reliable answers</div>
             <h2>Knowledge Studio</h2>
-            <p>Add one focused rule, guideline, or question-and-answer at a time. It remains invisible to students until automated comparison and a named human review are complete.</p>
-          </div>
-          <div class="workflow-rail">
-            <div class="workflow-step current" data-step="1">Author focused knowledge</div>
-            <div class="workflow-step" data-step="2">Validate & compare</div>
-            <div class="workflow-step" data-step="3">Review findings</div>
-            <div class="workflow-step" data-step="4">Publish to chatbot</div>
+            <p>Bring the facts. We’ll help you shape the entry, compare it with existing guidance, and test how students find it.</p>
+            <div class="studio-hero-meta"><span>Evidence-backed comparison</span><span>Private retrieval checks</span><span>Staff-approved publication</span></div>
           </div>
           <div id="new-knowledge-card" class="card"></div>
+          <details class="studio-manual"><summary>Existing-document correction or manual source editor</summary><div id="manual-knowledge-card" class="card"></div></details>
         </div>
 
         <!-- Tab: attention -->
@@ -408,6 +406,7 @@
     </main>
 
     <script src="usage.js?v=2"></script>
+    <script src="studio.js?v=1"></script>
     <script>
       var API = ""; // same origin (served from /dashboard/)
       var TOKEN_KEY = "msfea_admin_token";
@@ -440,6 +439,7 @@
         $("signout").classList.toggle("hidden", !show);
       }
       function signOut() {
+        KnowledgeStudio.signOut();
         try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) {}
         $("token").value = "";
         showApp(false);
@@ -467,7 +467,7 @@
       var TABS = ["create", "attention", "drafts", "curated", "usage", "experience"];
       function selectTab(name) {
         window.scrollTo(0, 0);
-        var titles = {create:"Add knowledge", attention:"Needs attention", drafts:"Knowledge drafts", curated:"Published knowledge", usage:"Usage overview", experience:"Experience feedback"};
+        var titles = {create:"Knowledge Studio", attention:"Needs attention", drafts:"Knowledge drafts", curated:"Published knowledge", usage:"Usage overview", experience:"Experience feedback"};
         $("page-title").textContent = titles[name];
         TABS.forEach(function (t) {
           $("tab-" + t).classList.toggle("hidden", t !== name);
@@ -504,6 +504,7 @@
           .then(function (data) {
             _options = data[5];
             _validationRuns = data[6] || [];
+            _revisionItems = data[4] || [];
             renderKnowledgeStudio();
             renderStats(data[0]);
             renderList(data[1]);
@@ -565,6 +566,7 @@
 
       var _options = { departments: [], programs: [], sources: [] };
       var _validationRuns = [];
+      var _revisionItems = [];
       var _pendingWorkflow = false;
       function choices(items, valueKey, labelKey, selected) {
         return (items || []).map(function (item) {
@@ -639,7 +641,23 @@
       }
 
       function renderKnowledgeStudio() {
-        var card = $("new-knowledge-card");
+        KnowledgeStudio.mount($("new-knowledge-card"), {
+          api: API, headers: headers, escape: esc, options: _options,
+          entries: function () { return _curated || []; },
+          signedIn: function () { return !!token(); },
+          showStudio: function () { selectTab('create'); },
+          onSaved: function (error) {
+            loadAll(function () {
+              selectTab('drafts');
+              if (error) $("banner").innerHTML = '<div class="banner err">Draft saved. Start its automatic checks below: ' + esc(error) + '</div>';
+            });
+          }
+        });
+        renderManualKnowledgeStudio();
+      }
+
+      function renderManualKnowledgeStudio() {
+        var card = $("manual-knowledge-card");
         // Polling workflow status must never erase a partially written source.
         if (card.dataset.rendered === 'true') return;
         card.dataset.rendered = 'true';
@@ -724,7 +742,11 @@
             exact_duplicate: 'Very similar guidance may already exist',
             possible_duplicate: 'Similar guidance may already exist',
             possible_numeric_conflict: 'A related passage uses a different number',
-            possible_negation_conflict: 'A related passage may say the opposite'
+            possible_negation_conflict: 'A related passage may say the opposite',
+            ai_duplicate: 'AI review: this claim is already covered',
+            ai_potential_conflict: 'AI review: these claims need your judgment',
+            ai_direct_conflict: 'AI review: these claims conflict',
+            ai_supersedes: 'AI review: a previous policy may need replacement'
           }[reason] || 'This related passage needs a closer look';
         }
         function resultExplanation(result, item) {
@@ -742,15 +764,17 @@
               'No potential conflict was flagged. A person must still review the source and scope.';
           }
           if (result.step === 'positive_retrieval') {
-            if (result.status === 'passed') return 'Both sample student questions found this draft and its verification phrase.';
+            if (result.status === 'passed') return (details.cases || []).length > 2 ?
+              'The sample questions and original student question found this draft and its verification phrase.' :
+              'Both sample student questions found this draft and its verification phrase.';
             var cases = details.cases || [];
             if (cases.some(function (item) { return item.candidate_hit === false; }))
-              return 'At least one sample question did not find this draft. Rewrite that sample question to match how students would naturally ask.';
+              return 'At least one realistic sample question did not find this draft. Improve the entry’s focused title or question coverage, then test again. Keep the student question realistic.';
             if (cases.some(function (item) { return item.evidence_hit === false; })) {
               var phrase = (cases.find(function (testCase) { return testCase.evidence_hit === false; }) || {}).expected_evidence || item.expected_evidence || '';
               return 'The draft was found, but the verification phrase “' + phrase + '” was not found in its answer. Copy a short phrase directly from the answer.';
             }
-            return 'The draft appeared, but one sample question was not similar enough to rely on safely. Make the sample wording more representative.';
+            return 'The draft appeared, but a realistic sample question did not clear the similarity gate. Review the entry’s topic and wording before trying again.';
           }
           if (result.step === 'department_isolation') return result.status === 'passed' ?
             'The draft appears only for the departments it applies to.' : 'The department scope did not behave safely.';
@@ -783,12 +807,24 @@
             var candidate = related.find(function (item) { return item.id === flag.candidate_id; });
             return { flag: flag, candidate: candidate };
           }).filter(function (item) { return item.candidate; });
-          var findings = flagged.slice(0, 4).map(function (item) {
+          var primaryFindings = conflictDetails.assisted ? flagged.filter(function (item) { return item.flag.existing_claim; }) : flagged;
+          var findings = primaryFindings.slice(0, 8).map(function (item) {
+            if (item.flag.existing_claim) return '<div class="studio-finding decision"><strong>' +
+              esc(flagLabel(item.flag.reason)) + '</strong><p class="studio-finding-reason">' + esc(item.flag.explanation) +
+              '</p><div class="studio-claims"><div><span>Proposed claim</span><blockquote>' + esc(item.flag.proposed_claim).replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>') +
+              '</blockquote></div><div><span>Existing claim</span><blockquote>' + esc(item.flag.existing_claim).replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>') +
+              '</blockquote><small>' + esc(item.candidate.source_doc + ' › ' + item.candidate.section) +
+              '</small></div></div></div>';
             return '<div class="finding"><strong>' + esc(flagLabel(item.flag.reason)) + '</strong>' +
               esc(item.candidate.source_doc + ' › ' + item.candidate.section) + '<br />' +
               esc(shorten(item.candidate.text, 430)) + '</div>';
           }).join('');
-          if (flagged.length > 4) findings += '<p class="intro">' + esc(flagged.length - 4) + ' additional similar findings were grouped to avoid repetition.</p>';
+          var otherFlags = conflictDetails.assisted ? flagged.filter(function (item) { return !item.flag.existing_claim; }) : primaryFindings.slice(8);
+          if (otherFlags.length) findings += '<details class="studio-evidence"><summary>' + esc(otherFlags.length) +
+            ' additional rule-based flags to inspect before approving</summary>' + otherFlags.map(function (item) {
+              return '<details><summary>' + esc(flagLabel(item.flag.reason) + ' · ' + item.candidate.source_doc + ' › ' + item.candidate.section) +
+                '</summary><p>' + esc(item.candidate.text) + '</p></details>';
+            }).join('') + '</details>';
           var allUnflagged = related.filter(function (candidate) {
             return !flagged.some(function (item) { return item.candidate.id === candidate.id; });
           });
@@ -798,6 +834,14 @@
             unflagged.map(function (candidate) {
               return '<div class="snippet">' + esc(candidate.source_doc + ' › ' + candidate.section + '\n' + shorten(candidate.text, 430)) + '</div>';
             }).join('') + '</details>' : '';
+          var regression = resultMap.regression;
+          var lostCases = regression && (regression.details || {}).lost_cases || [];
+          var regressionDetails = lostCases.length ? '<section class="studio-clarifications"><h4>Existing questions affected</h4><p>Make this entry more specific. Keep these student questions unchanged when checking the correction.</p>' +
+            lostCases.map(function (lost) {
+              return '<details><summary>' + esc(lost.question) + '</summary><p>' +
+                esc((lost.history || []).map(function (message) { return message.role + ': ' + message.content; }).join('\n')) +
+                '</p><p>Expected source evidence: ' + esc(Array.isArray(lost.evidence) ? lost.evidence.join('; ') : lost.evidence) + '</p></details>';
+            }).join('') + '</section>' : '';
           var heading = run.status === 'passed' ? 'Automatic checks completed' :
             run.status === 'failed' ? 'This draft needs a correction' : 'Checks are running';
           var summary = run.status === 'passed' ? 'Next: review the related guidance and record your decision below.' :
@@ -805,7 +849,7 @@
             'You can leave this page. Progress refreshes automatically.';
           return '<div class="validation-summary ' + (run.status === 'passed' ? 'ready' : run.status === 'failed' ? 'failed' : '') +
             '"><h4>' + heading + '</h4><p>' + summary + '</p></div><div class="check-list">' + rows + '</div>' +
-            findings + relatedDetails + '<details class="tech"><summary>Technical audit record</summary><div class="snippet">Run ' +
+            findings + relatedDetails + regressionDetails + '<details class="tech"><summary>Technical audit record</summary><div class="snippet">Run ' +
             esc(run.id) + '\nStatus: ' + esc(run.status) + '\nFingerprint: ' + esc(run.fingerprint) + '</div></details>';
         }
         function workflowMarkup(item, run) {
@@ -978,21 +1022,34 @@
         });
         Array.prototype.forEach.call(document.querySelectorAll('.publish-revision'), function (button) {
           button.addEventListener('click', function () {
-            if (!confirm('Publish this exact reviewed revision to student retrieval?')) return;
+            var existing = button.parentNode.querySelector('.publish-confirmation');
+            if (existing) return;
+            var confirmation = document.createElement('section');
+            confirmation.className = 'publish-confirmation';
+            confirmation.innerHTML = '<h4>Activate this reviewed revision?</h4><p>The approved text will enter student retrieval. Its linked question is resolved only after publication succeeds.</p><div class="actions"><button class="confirm-publication">Confirm publication</button><button class="cancel-publication secondary">Keep as draft</button></div>';
+            button.parentNode.appendChild(confirmation);
             button.disabled = true;
-            var status = button.parentNode.querySelector('.status');
-            status.textContent = 'Queueing reviewed publication; the worker will activate it after final checks…';
-            fetch(API + '/admin/api/revisions/publish', {
-              method: 'POST', headers: headers(),
-              body: JSON.stringify({
-                revision_id: Number(button.getAttribute('data-revision')),
-                run_id: button.getAttribute('data-run')
-              })
-            }).then(function (response) {
-              if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || 'Publication failed.'); });
-              return response.json();
-            }).then(function () { loadAll(); })
-              .catch(function (error) { button.disabled = false; status.className = 'status err'; status.textContent = error.message; });
+            confirmation.querySelector('.cancel-publication').addEventListener('click', function () {
+              confirmation.remove(); button.disabled = false; button.focus();
+            });
+            confirmation.querySelector('.confirm-publication').focus();
+            confirmation.querySelector('.confirm-publication').addEventListener('click', function () {
+              confirmation.querySelector('.confirm-publication').disabled = true;
+              confirmation.querySelector('.cancel-publication').disabled = true;
+              var status = button.parentNode.querySelector('.status');
+              status.textContent = 'Queueing reviewed publication; the worker will activate it after final checks…';
+              fetch(API + '/admin/api/revisions/publish', {
+                method: 'POST', headers: headers(),
+                body: JSON.stringify({
+                  revision_id: Number(button.getAttribute('data-revision')),
+                  run_id: button.getAttribute('data-run')
+                })
+              }).then(function (response) {
+                if (!response.ok) return response.json().then(function (body) { throw new Error(body.detail || 'Publication failed.'); });
+                return response.json();
+              }).then(function () { loadAll(); })
+                .catch(function (error) { confirmation.remove(); button.disabled = false; status.className = 'status err'; status.textContent = error.message; });
+            });
           });
         });
       }
@@ -1012,102 +1069,44 @@
       function buildCard(it) {
         var card = document.createElement("div");
         card.className = "card";
-
         var badges = "";
         if (it.refused) badges += '<span class="badge refused">Bot couldn\'t answer</span>';
         if (it.rating === -1) badges += '<span class="badge down">Marked not helpful</span>';
         if (it.rating_reason) badges += '<span class="badge time">' + esc(it.rating_reason) + '</span>';
         if (it.ts) badges += '<span class="badge time">' + esc(timeAgo(it.ts)) + '</span>';
-
-        // "Bot said" block only when it actually answered (a thumbs-down case).
-        var botSaid = "";
-        if (!it.refused && it.answer) {
-          botSaid = '<div class="bot-said"><span class="cap">The bot replied</span>' + esc(it.answer) + '</div>';
-        }
-
-        // Friendly technical diagnosis.
+        var relatedDraft = (_revisionItems || []).find(function (revision) {
+          return !revision.active && revision.linked_feedback_ids &&
+            revision.linked_feedback_ids.indexOf(it.id) >= 0;
+        });
         var retrieved = it.retrieved || [];
-        var explain = it.refused && retrieved.length === 0
-          ? "No retrieved excerpts were recorded. Check the official documents and retrieval coverage before deciding whether new knowledge is needed."
-          : "These are the recorded excerpts. First check whether the correct source was retrieved. A refusal may be appropriate; review the question and evidence before drafting a correction.";
-        var snippets = retrieved.length
-          ? retrieved.map(function (r) { return '<div class="snippet">' + esc(r) + '</div>'; }).join("")
-          : '<div class="snippet">(nothing was retrieved)</div>';
-
         card.innerHTML =
-          '<div class="badge-row">' + badges + '</div>' +
-          '<div class="q-label">Student asked</div>' +
+          '<div class="badge-row">' + badges + '</div><div class="q-label">Student asked</div>' +
           '<div class="q">' + esc(it.question) + '</div>' +
-          botSaid +
-          '<details class="correction"><summary>Draft a source-backed answer</summary><div class="answer-box">' +
-            '<label class="label">Proposed answer:</label>' +
-            '<textarea placeholder="Type a clear, correct answer based on the official CDC guidelines…"></textarea>' +
-            draftFields(it.question) +
-            '<div class="actions">' +
-              '<button class="publish">Save draft</button>' +
-            '</div>' +
-          '</div></details>' +
-          '<div class="actions"><button class="dismiss secondary">Dismiss</button><span class="status" role="status"></span></div>' +
-          '<details class="tech"><summary>Why couldn\'t it answer? (technical details)</summary>' +
-            '<p class="explain">' + esc(explain) + '</p>' + snippets +
-          '</details>';
-        bindSourceKind(card);
-
-        var ta = card.querySelector("textarea");
-        var status = card.querySelector(".status");
-        var publishBtn = card.querySelector(".publish");
-        var dismissBtn = card.querySelector(".dismiss");
-
-        function resolveCard(msg) {
-          status.className = "status ok";
-          status.textContent = msg;
-          publishBtn.disabled = true;
-          dismissBtn.disabled = true;
-          ta.disabled = true;
-          setTimeout(function () {
-            card.classList.add("resolving");
-            setTimeout(function () { card.remove(); bumpPending(-1); afterListChange(); }, 420);
-          }, 900);
-        }
-
-        publishBtn.addEventListener("click", function () {
-          var answer = ta.value.trim();
-          if (!answer) { status.className = "status err"; status.textContent = "Please write an answer first."; return; }
-          var payload = collectDraft(card, it.question, answer, it.id);
-          publishBtn.disabled = true; dismissBtn.disabled = true;
-          status.className = "status"; status.textContent = "Saving draft…";
-          fetch(API + "/admin/api/curate", {
-            method: "POST", headers: headers(),
-            body: JSON.stringify(payload),
-          })
-            .then(function (r) { return r.json().then(function (body) { if (!r.ok) throw new Error(body.detail || "Couldn't save draft."); return body; }); })
-            .then(function () {
-              status.className = "status ok";
-              status.textContent = "✓ Draft saved — it is not visible to students.";
-              loadAll();
-            })
-            .catch(function (e) {
-              publishBtn.disabled = false; dismissBtn.disabled = false;
-              status.className = "status err"; status.textContent = e.message;
-            });
+          (!it.refused && it.answer ? '<div class="bot-said"><span class="cap">The bot replied</span>' + esc(it.answer) + '</div>' : '') +
+          '<p class="intro">Review the official guidance, then prepare a focused answer in Knowledge Studio. The assistant compares claims and helps test whether students will find it.</p>' +
+          '<div class="actions"><button class="queue-studio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>' +
+          (relatedDraft ? 'Continue linked draft' : 'Review in Knowledge Studio') +
+          '</button><button class="dismiss secondary">Dismiss</button><span class="status" role="status"></span></div>' +
+          '<details class="tech"><summary>Inspect the original retrieval evidence</summary><p class="explain">Check whether the right source was retrieved before deciding new knowledge is needed. A refusal may be appropriate.</p>' +
+          (retrieved.length ? retrieved.map(function (snippet) { return '<div class="snippet">' + esc(snippet) + '</div>'; }).join('') :
+            '<p>No retrieved excerpts were recorded.</p>') + '</details>';
+        card.querySelector(".queue-studio").addEventListener("click", function () {
+          if (relatedDraft) selectTab('drafts');
+          else KnowledgeStudio.openQuestion(it);
         });
-
-        dismissBtn.addEventListener("click", function () {
-          if (!confirm("Dismiss this without publishing an answer? It will be removed from your list.")) return;
-          publishBtn.disabled = true; dismissBtn.disabled = true;
-          status.className = "status"; status.textContent = "Dismissing…";
+        card.querySelector(".dismiss").addEventListener("click", function (event) {
+          if (!confirm("Dismiss this question without publishing new knowledge?")) return;
+          var button = event.currentTarget, status = card.querySelector(".status");
+          button.disabled = true; status.textContent = "Dismissing…";
           fetch(API + "/admin/api/resolve", {
-            method: "POST", headers: headers(),
-            body: JSON.stringify({ interaction_id: it.id }),
-          })
-            .then(function (r) { if (!r.ok) throw new Error("Couldn't dismiss (error " + r.status + ")"); return r.json(); })
-            .then(function () { resolveCard("Dismissed."); })
-            .catch(function (e) {
-              publishBtn.disabled = false; dismissBtn.disabled = false;
-              status.className = "status err"; status.textContent = e.message;
-            });
+            method: "POST", headers: headers(), body: JSON.stringify({interaction_id:it.id})
+          }).then(function (response) {
+            if (!response.ok) throw new Error("The question could not be dismissed.");
+            return response.json();
+          }).then(function () { loadAll(); }).catch(function (error) {
+            button.disabled = false; status.className = "status err"; status.textContent = error.message;
+          });
         });
-
         return card;
       }
 
@@ -1184,6 +1183,7 @@
 
         // ---- Edit (inline) ----
         editBtn.addEventListener("click", function () {
+          if (c.source_kind === 'admin_authored') { KnowledgeStudio.openEntry(c); return; }
           var qDiv = card.querySelector(".view-q");
           var aDiv = card.querySelector(".view-a");
           var form = document.createElement("div");

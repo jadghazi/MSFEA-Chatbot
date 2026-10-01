@@ -54,3 +54,4 @@ file layout). Keep the log signal-heavy.
 | 0024 | Department-aware retrieval and stronger follow-up synthesis | Accepted |
 | 0025 | Inherit department scope in nested chunks | Accepted |
 | 0026 | Guarded KB publication with n8n coordination | Accepted |
+| 0028 | Guided Knowledge Studio with verified staff-only AI review | Implemented locally |

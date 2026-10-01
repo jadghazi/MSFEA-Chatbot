@@ -6,6 +6,25 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-10-01 — Guided Knowledge Studio
+
+- Added one shared writing/review composer for direct intake and unanswered
+  questions, with exact source-claim comparisons, explicit scope, verified AI
+  suggestions, immutable draft handoff and mandatory human review.
+- Kept canonical facts, local embeddings, normal retrieval and n8n publication
+  authority intact. Added bounded persisted review jobs to the existing worker;
+  separate Gemini configuration and quota accounting preserve student capacity.
+- Verified 361 Python tests, 10 widget tests, strict typing/lint and all eight
+  retrieval gates. Canonical context recall remained 122/124. A real synthetic
+  publication retrieved at rank 1 for three independent questions and grounded
+  two student-model answers with citations and disclaimers.
+- The guard blocked another synthetic entry that displaced a letter follow-up.
+  Live model trials exposed free-tier 503s and weaker Flash-Lite judgment; the
+  default is full 3.6 Flash, with its limitations documented rather than hidden.
+- Work used a clean attached worktree and isolated local databases. Oracle was
+  unchanged. See [the implementation review](guided-studio-quality-report.md),
+  [staff guide](guided-studio-guide.md) and ADR-0028. Production rollout remains pending.
+
 ## 2026-09-23 — Career+ grounding and named-topic follow-up repair
 
 - Expanded the existing general Career+ section from a bare URL into a concise,

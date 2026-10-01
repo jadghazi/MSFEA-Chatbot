@@ -13,6 +13,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
 from msfea_bot.config import settings
+from msfea_bot.curation.assistance import process_next
 from msfea_bot.curation.coordination import dispatch_once, invalidate_app_cache, reconcile
 from msfea_bot.curation.migrations import migrate
 from msfea_bot.curation.publication import (
@@ -37,10 +38,11 @@ async def _coordination_loop() -> None:
     while True:
         try:
             delivered = await asyncio.to_thread(dispatch_once)
+            assisted = await asyncio.to_thread(process_next)
             ticks += 1
             if ticks % 15 == 0:
                 await asyncio.to_thread(reconcile)
-            await asyncio.sleep(0.25 if delivered else 2.0)
+            await asyncio.sleep(0.25 if delivered or assisted else 2.0)
         except asyncio.CancelledError:
             raise
         except Exception as exc:  # durable state makes retry after logging safe

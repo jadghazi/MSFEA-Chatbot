@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 from time import perf_counter, sleep
+from typing import Any, Callable
 
 from msfea_bot.config import settings
 from msfea_bot.observability.usage import count
@@ -24,7 +25,12 @@ from msfea_bot.llm.base import (
 class GeminiProvider:
     """LLMProvider backed by the Gemini free tier."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self, *, model: str | None = None, response_schema: dict[str, Any] | None = None,
+        max_output_tokens: int | None = None, timeout_ms: int = 30_000,
+        purpose: str = "", retry_transient: bool = True,
+        before_request: Callable[[], None] | None = None,
+    ) -> None:
         from google import genai
         from google.genai import types
 
@@ -36,23 +42,32 @@ class GeminiProvider:
         self._client = genai.Client(
             api_key=settings.llm_api_key,
             http_options=types.HttpOptions(
-                timeout=30_000, retry_options=types.HttpRetryOptions(attempts=1)
+                timeout=timeout_ms, retry_options=types.HttpRetryOptions(attempts=1)
             ),
         )
-        self._model = settings.llm_model or "gemini-flash-lite-latest"
+        self._model = model or settings.llm_model or "gemini-flash-lite-latest"
+        self._purpose = purpose
+        self._retry_transient = retry_transient
+        self._before_request = before_request
         # Deterministic decoding (ADR-0012). Built once here rather than per call.
         self._config = types.GenerateContentConfig(
             temperature=settings.llm_temperature,
             seed=settings.llm_seed,
-            max_output_tokens=settings.llm_max_output_tokens,
+            max_output_tokens=max_output_tokens or settings.llm_max_output_tokens,
+            response_mime_type="application/json" if response_schema else None,
+            response_json_schema=response_schema,
+            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MEDIUM) if purpose else None,
         )
+
+    def _count(self, name: str, value: int = 1) -> None:
+        count(self._purpose + name, value)
 
     def generate(self, prompt: str) -> GenerationResult:
         from google.genai import errors
         from httpx import TransportError
 
         started = perf_counter()
-        for attempt in range(2):
+        for attempt in range(2 if self._retry_transient else 1):
             try:
                 return self._generate_once(prompt)
             except LLMError as exc:
@@ -68,11 +83,12 @@ class GeminiProvider:
                 logging.getLogger(__name__).warning(
                     "llm_failure model=%s reason=%s cause=%s status=%s attempt=%d elapsed_ms=%d retry=%s",
                     self._model, str(exc), type(cause).__name__, status, attempt + 1,
-                    round((perf_counter() - started) * 1000), transient and attempt == 0,
+                    round((perf_counter() - started) * 1000),
+                    transient and attempt == 0 and self._retry_transient,
                 )
-                if not transient or attempt == 1:
+                if not transient or attempt == 1 or not self._retry_transient:
                     raise
-                count("provider_retries")
+                self._count("provider_retries")
                 sleep(0.5)
         raise AssertionError("unreachable")
 
@@ -83,13 +99,15 @@ class GeminiProvider:
         from httpx import TransportError
 
         started = perf_counter()
-        count("llm_calls")
+        if self._before_request is not None:
+            self._before_request()
+        self._count("llm_calls")
         try:
             response = self._client.models.generate_content(
                 model=self._model, contents=prompt, config=self._config
             )
         except errors.ClientError as exc:
-            count("provider_errors")
+            self._count("provider_errors")
             if exc.code == 429:
                 raise LLMRateLimitError("Gemini rate or quota limit reached") from exc
             if exc.code in (408,):
@@ -98,10 +116,10 @@ class GeminiProvider:
                 raise LLMConfigurationError("Gemini credentials or model are unavailable") from exc
             raise LLMServiceError("Gemini rejected the request") from exc
         except errors.ServerError as exc:
-            count("provider_errors")
+            self._count("provider_errors")
             raise LLMServiceError("Gemini is temporarily unavailable") from exc
         except (TimeoutError, ConnectionError, TransportError) as exc:
-            count("provider_errors")
+            self._count("provider_errors")
             raise LLMServiceError("Could not reach Gemini") from exc
 
         usage = getattr(response, "usage_metadata", None)
@@ -112,15 +130,15 @@ class GeminiProvider:
         ):
             value = getattr(usage, field, None)
             if value is not None:
-                count(name, value)
-        count("llm_latency_ms", round((perf_counter() - started) * 1000))
+                self._count(name, value)
+        self._count("llm_latency_ms", round((perf_counter() - started) * 1000))
         candidates = getattr(response, "candidates", None) or []
         if candidates and candidates[0].finish_reason == types.FinishReason.MAX_TOKENS:
-            count("provider_errors")
+            self._count("provider_errors")
             raise LLMServiceError("Gemini response was truncated")
         text = response.text or ""
         if not text.strip():
-            count("provider_errors")
+            self._count("provider_errors")
             raise LLMServiceError("Gemini returned no answer")
 
         usage = getattr(response, "usage_metadata", None)
