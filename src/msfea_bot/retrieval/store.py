@@ -88,6 +88,7 @@ def _init_schema(conn: Any, dim: int | None = None) -> None:
         " GENERATED ALWAYS AS (to_tsvector('english', text)) STORED"
     )
     conn.execute("CREATE INDEX IF NOT EXISTS chunks_tsv_idx ON chunks USING GIN (tsv)")
+    conn.execute("ALTER TABLE chunks ADD COLUMN IF NOT EXISTS retrieval_text TEXT NOT NULL DEFAULT ''")
     # Display-only context (e.g. the header row of a split table), deliberately NOT
     # part of `text` so it reaches neither the embedding nor `tsv`. Prepended when a
     # chunk is read back. See Chunk.display_prefix for the measurements.
@@ -136,6 +137,7 @@ def _generation_hash(chunks: list[Chunk]) -> str:
             "section": chunk.section,
             "metadata": chunk.metadata,
             "display_prefix": chunk.display_prefix,
+            **({"retrieval_text": chunk.retrieval_text} if chunk.retrieval_text else {}),
         }
         for chunk in sorted(chunks, key=lambda item: item.id)
     ]
@@ -143,13 +145,17 @@ def _generation_hash(chunks: list[Chunk]) -> str:
     return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
 
-def prepare_chunks(chunks: list[Chunk]) -> list[PreparedChunk]:
+def prepare_chunks(chunks: list[Chunk], reuse_database_url: str | None = None) -> list[PreparedChunk]:
     """Embed chunks before a short database write transaction begins."""
-    vectors = embed_texts([chunk.text for chunk in chunks])
-    return [
-        PreparedChunk(chunk, vector)
-        for chunk, vector in zip(chunks, vectors, strict=True)
-    ]
+    reusable: dict[tuple[str, str], list[float]] = {}
+    if reuse_database_url and indexed_model(reuse_database_url) == model_fingerprint():
+        with _connect(database_url=reuse_database_url) as conn:
+            rows = conn.execute("SELECT id, COALESCE(NULLIF(retrieval_text,''),text), embedding::real[] FROM chunks").fetchall()
+        reusable = {(str(row[0]), str(row[1])): list(row[2]) for row in rows if row[2] is not None}
+    missing = [chunk for chunk in chunks if (chunk.id, chunk.retrieval_text or chunk.text) not in reusable]
+    vectors = embed_texts([chunk.retrieval_text or chunk.text for chunk in missing]) if missing else []
+    reusable.update({(chunk.id, chunk.retrieval_text or chunk.text): vector for chunk, vector in zip(missing, vectors, strict=True)})
+    return [PreparedChunk(chunk, reusable[(chunk.id, chunk.retrieval_text or chunk.text)]) for chunk in chunks]
 
 
 def acquire_kb_write_lock(conn: Any) -> None:
@@ -170,8 +176,8 @@ def replace_prepared_chunks(conn: Any, id_prefix: str, prepared: list[PreparedCh
             chunk = item.chunk
             cur.execute(
                 "INSERT INTO chunks"
-                " (id, text, source_doc, section, embedding, display_prefix, metadata)"
-                " VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                " (id, text, source_doc, section, embedding, display_prefix, metadata, retrieval_text)"
+                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                 (
                     chunk.id,
                     chunk.text,
@@ -180,6 +186,7 @@ def replace_prepared_chunks(conn: Any, id_prefix: str, prepared: list[PreparedCh
                     item.vector,
                     chunk.display_prefix,
                     Json(chunk.metadata),
+                    chunk.retrieval_text,
                 ),
             )
 
@@ -187,7 +194,7 @@ def replace_prepared_chunks(conn: Any, id_prefix: str, prepared: list[PreparedCh
 def refresh_generation(conn: Any) -> str:
     """Derive the generation from committed-intent chunk content in this transaction."""
     rows = conn.execute(
-        "SELECT id, text, source_doc, section, metadata, display_prefix"
+        "SELECT id, text, source_doc, section, metadata, display_prefix, retrieval_text"
         " FROM chunks ORDER BY id"
     ).fetchall()
     chunks = [
@@ -198,6 +205,7 @@ def refresh_generation(conn: Any) -> str:
             section=str(row[3]),
             metadata=dict(row[4]),
             display_prefix=str(row[5]),
+            retrieval_text=str(row[6]),
         )
         for row in rows
     ]
@@ -215,6 +223,7 @@ def index_chunks(
     database_url: str | None = None,
     *,
     expected_generation: str | None = None,
+    reuse_database_url: str | None = None,
 ) -> int:
     """Embed all chunks and (re)build the store atomically. Returns the number indexed.
 
@@ -224,7 +233,7 @@ def index_chunks(
     part-way through the insert loop left the live API answering from an empty or
     half-built index with no way to roll back.
     """
-    prepared = prepare_chunks(chunks)
+    prepared = prepare_chunks(chunks, reuse_database_url)
     with _connect(
         autocommit=False, ensure_extension=True, database_url=database_url
     ) as conn:
@@ -242,8 +251,8 @@ def index_chunks(
                 chunk = item.chunk
                 cur.execute(
                     "INSERT INTO chunks"
-                    " (id, text, source_doc, section, embedding, display_prefix, metadata)"
-                    " VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    " (id, text, source_doc, section, embedding, display_prefix, metadata, retrieval_text)"
+                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                     (
                         chunk.id,
                         chunk.text,
@@ -252,6 +261,7 @@ def index_chunks(
                         item.vector,
                         chunk.display_prefix,
                         Json(chunk.metadata),
+                        chunk.retrieval_text,
                     ),
                 )
         conn.execute(
@@ -309,13 +319,13 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
                 chunk = item.chunk
                 cur.execute(
                     "INSERT INTO chunks"
-                    " (id, text, source_doc, section, embedding, display_prefix, metadata)"
-                    " VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                    " (id, text, source_doc, section, embedding, display_prefix, metadata, retrieval_text)"
+                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
                     " ON CONFLICT (id) DO UPDATE SET"
                     " text = EXCLUDED.text, source_doc = EXCLUDED.source_doc,"
                     " section = EXCLUDED.section, embedding = EXCLUDED.embedding,"
                     " display_prefix = EXCLUDED.display_prefix,"
-                    " metadata = EXCLUDED.metadata",
+                    " metadata = EXCLUDED.metadata, retrieval_text = EXCLUDED.retrieval_text",
                     (
                         chunk.id,
                         chunk.text,
@@ -324,6 +334,7 @@ def upsert_chunks(chunks: list[Chunk]) -> int:
                         item.vector,
                         chunk.display_prefix,
                         Json(chunk.metadata),
+                        chunk.retrieval_text,
                     ),
                 )
         refresh_generation(conn)
@@ -523,7 +534,7 @@ def search(
             r[0]
             for r in conn.execute(
                 f"SELECT id FROM chunks{scope}"
-                " ORDER BY embedding <=> %(qv)s::vector LIMIT %(cand)s",
+                " ORDER BY embedding <=> %(qv)s::vector, id LIMIT %(cand)s",
                 params,
             ).fetchall()
         ]
@@ -538,6 +549,7 @@ def search(
                         "SELECT id FROM chunks"
                         " WHERE tsv @@ to_tsquery('english', %(kwq)s)" + kw_scope +
                         " ORDER BY ts_rank_cd(tsv, to_tsquery('english', %(kwq)s)) DESC"
+                        ", id"
                         " LIMIT %(cand)s",
                         {**params, "kwq": kwq},
                     ).fetchall()

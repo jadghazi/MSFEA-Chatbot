@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -41,6 +41,7 @@ class DraftPayload:
     authority_label: str = ""
     effective_date: str | None = None
     supporting_reference: str = ""
+    retrieval_questions: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -73,6 +74,7 @@ class Revision:
     active: bool
     predecessor_question: str | None = None
     predecessor_answer: str | None = None
+    retrieval_questions: list[str] = field(default_factory=list)
 
 
 def program_registry() -> tuple[str, ...]:
@@ -93,6 +95,10 @@ def source_registry() -> tuple[str, ...]:
 
 
 def validate_payload(payload: DraftPayload) -> DraftPayload:
+    if len(payload.retrieval_questions) > 4 or any(
+        not 10 <= len(question.strip()) <= 300 for question in payload.retrieval_questions
+    ):
+        raise ValueError("Use at most four focused retrieval questions of 10–300 characters.")
     if payload.source_kind not in {"official_reference", "admin_authored"}:
         raise ValueError("source kind must be an official reference or admin-authored knowledge")
     allowed_departments = {"all", *(department.code for department in departments.DEPARTMENTS)}
@@ -176,9 +182,9 @@ def _insert_revision(
         " department, programs, evidence_refs, representative_question,"
         " paraphrase_question, expected_evidence, change_reason, linked_feedback_ids,"
         " provenance_status, content_hash, created_by, source_kind, document_title,"
-        " authority_label, effective_date, supporting_reference)"
+        " authority_label, effective_date, supporting_reference, retrieval_questions)"
         " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,"
-        " 'submitted', %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+        " 'submitted', %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
         (
             entry_id,
             revision_number,
@@ -200,6 +206,7 @@ def _insert_revision(
             payload.authority_label.strip(),
             payload.effective_date or None,
             payload.supporting_reference.strip(),
+            Json(list(payload.retrieval_questions)),
         ),
     ).fetchone()
     if row is None:
@@ -264,7 +271,7 @@ def list_revisions() -> list[Revision]:
             " r.change_reason, r.linked_feedback_ids, r.provenance_status, r.content_hash,"
             " r.created_by, r.created_at, r.source_kind, r.document_title,"
             " r.authority_label, r.effective_date::text, r.supporting_reference,"
-            " s.state, s.reason, e.active_revision_id = r.id, p.question, p.answer"
+            " s.state, s.reason, e.active_revision_id = r.id, p.question, p.answer, r.retrieval_questions"
             " FROM curated_revisions r"
             " JOIN curated_entries e ON e.id = r.entry_id"
             " JOIN curation_revision_state s ON s.revision_id = r.id"
@@ -301,6 +308,7 @@ def list_revisions() -> list[Revision]:
             active=bool(row[25]),
             predecessor_question=str(row[26]) if row[26] is not None else None,
             predecessor_answer=str(row[27]) if row[27] is not None else None,
+            retrieval_questions=list(row[28]),
         )
         for row in rows
     ]

@@ -33,10 +33,20 @@ def dispatch_once(opener: UrlOpen = urlopen) -> bool:
     """Lease and deliver one fixed-destination outbox event."""
     _require_coordination_secrets()
     with _connect() as conn:
+        conn.execute("SELECT pg_advisory_xact_lock(820261005)")
         row = conn.execute(
             "SELECT id, event_type, aggregate_id, payload, attempts"
             " FROM curation_outbox WHERE status IN ('pending', 'failed')"
             " AND available_at <= now() AND attempts < %s"
+            " AND (event_type <> 'validation_requested' OR ("
+            " NOT EXISTS (SELECT 1 FROM curation_workspace_jobs WHERE status IN ('queued','running'))"
+            " AND NOT EXISTS (SELECT 1 FROM curation_validation_runs r"
+            " WHERE r.id <> curation_outbox.aggregate_id AND r.status='running')"
+            " AND NOT EXISTS (SELECT 1 FROM curation_outbox other WHERE other.event_type='validation_requested'"
+            " AND other.id <> curation_outbox.id AND other.status IN ('delivering','delivered')"
+            " AND EXISTS (SELECT 1 FROM curation_validation_runs r WHERE r.id=other.aggregate_id"
+            " AND r.status IN ('pending','running')))"
+            " ))"
             " ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1",
             (settings.curation_outbox_max_attempts,),
         ).fetchone()

@@ -11,6 +11,8 @@ widget to call the API from an explicitly configured origin.
 
 from __future__ import annotations
 
+from dataclasses import asdict
+
 import hmac
 import json
 import logging
@@ -478,6 +480,7 @@ class CurateRequest(BaseModel):
     expected_evidence: str = Field(min_length=1, max_length=2000)
     change_reason: str = Field(min_length=1, max_length=2000)
     linked_feedback_ids: list[int] = Field(default_factory=list, max_length=20)
+    retrieval_questions: list[str] = Field(default_factory=list, max_length=4)
 
 
 class EvidenceRequest(BaseModel):
@@ -557,6 +560,7 @@ def _draft_payload(req: CurateRequest) -> DraftPayload:
         authority_label=req.authority_label,
         effective_date=req.effective_date,
         supporting_reference=req.supporting_reference,
+        retrieval_questions=tuple(req.retrieval_questions),
     )
 
 
@@ -681,6 +685,7 @@ class RevisionOut(BaseModel):
     predecessor_answer: str | None
     linked_feedback_ids: list[int]
     assistance: dict[str, Any] | None = None
+    retrieval_questions: list[str] = Field(default_factory=list)
 
 
 @app.get("/admin/api/revisions", response_model=list[RevisionOut])
@@ -713,6 +718,67 @@ def admin_curation_options(_: None = Depends(require_admin)) -> dict[str, object
         "programs": list(program_registry()),
         "sources": list(source_registry()),
     }
+
+
+@app.get("/admin/api/studio/workspaces/{revision_id}")
+def admin_studio_workspace(revision_id: int, _: None = Depends(require_admin)) -> dict[str, Any]:
+    from msfea_bot.curation.workspace import workspace
+    try:
+        return workspace(revision_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+class StudioOperationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    revision_id: int = Field(gt=0)
+
+
+@app.post("/admin/api/studio/preview/retry")
+def admin_studio_retry_preview(req: StudioOperationRequest, _: None = Depends(require_admin)) -> dict[str, str]:
+    from msfea_bot.curation.workspace import retry_preview
+    try:
+        retry_preview(req.revision_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"status": "queued"}
+
+
+class StudioApprovalRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    revision_id: int = Field(gt=0)
+    run_id: str = Field(min_length=1, max_length=64)
+    reviewer_label: str = Field(min_length=2, max_length=120)
+    reason: str = Field(min_length=5, max_length=2000)
+    decision: Literal["confirm_no_conflict", "valid_scoped_exception", "replace_outdated"]
+
+
+@app.post("/admin/api/studio/repair/retry")
+def admin_studio_retry_repair(req: StudioOperationRequest, _: None = Depends(require_admin)) -> dict[str, str]:
+    from msfea_bot.curation.workspace import retry_repair
+    try:
+        retry_repair(req.revision_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"status": "queued"}
+
+
+@app.post("/admin/api/studio/approve")
+def admin_studio_approve(req: StudioApprovalRequest, _: None = Depends(require_admin)) -> dict[str, Any]:
+    from msfea_bot.curation.workspace import workspace
+    try:
+        state = workspace(req.revision_id)
+        run = state["run"]
+        preview = next((job for job in state["jobs"] if job["kind"] == "preview"), None)
+        if state["stale"] or state["review_outdated"] or not run or run["id"] != req.run_id or not preview or preview["status"] != "completed" or not preview["result"].get("passed"):
+            raise ValueError("Complete fresh checks and successful answer previews before approving.")
+        report = state["assistance"]["report"] if state["assistance"] else {}
+        if any(finding["category"] in {"direct_conflict", "supersedes"} and finding.get("entry_id") != state["revision"]["entry_id"] for finding in report.get("findings", [])):
+            raise ValueError("Resolve the conflicting source first. A second active rule cannot silently replace official guidance.")
+        record_human_review(req.run_id, req.reviewer_label, req.decision, req.reason)
+        return asdict(request_publication(req.revision_id, req.run_id))
+    except (ValueError, PublicationError) as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 class ValidateRevisionRequest(BaseModel):

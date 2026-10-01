@@ -71,6 +71,25 @@ def _draft() -> int:
 
 
 @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_private_candidate_is_not_overwritten_while_answer_previews_own_it(coordination_db):
+    first = start_validation(_draft())
+    second = start_validation(_draft())
+    with psycopg.connect(coordination_db) as conn:
+        revision_id = conn.execute("SELECT revision_id FROM curation_validation_runs WHERE id=%s", (first,)).fetchone()[0]
+        conn.execute("UPDATE curation_validation_runs SET status='passed' WHERE id=%s", (first,))
+        conn.execute("UPDATE curation_outbox SET status='delivered' WHERE aggregate_id=%s", (first,))
+        conn.execute("INSERT INTO curation_workspace_jobs (id,revision_id,run_id,kind) VALUES (%s,%s,%s,'preview')", (uuid4().hex, revision_id, first))
+    assert not dispatch_once(opener=lambda *_a, **_kw: pytest.fail("Candidate still belongs to previews"))
+    with psycopg.connect(coordination_db) as conn:
+        conn.execute("UPDATE curation_workspace_jobs SET status='completed'")
+    def unavailable(*_args, **_kwargs):
+        raise URLError("Synthetic outage")
+    assert dispatch_once(opener=unavailable)
+    with psycopg.connect(coordination_db) as conn:
+        assert conn.execute("SELECT attempts FROM curation_outbox WHERE aggregate_id=%s", (second,)).fetchone()[0] == 1
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
 def test_n8n_outage_retains_work_without_changing_student_index(
     coordination_db: str,
 ) -> None:

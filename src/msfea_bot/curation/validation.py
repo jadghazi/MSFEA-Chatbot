@@ -29,7 +29,7 @@ from msfea_bot.ingestion.chunking import Chunk, chunk_normalized_dir
 from msfea_bot.ingestion.embeddings import model_fingerprint
 from msfea_bot.retrieval.store import index_chunks, indexed_generation, retrieval_depth, search
 
-VALIDATOR_VERSION = "publication-guard-v3-guided-review"
+VALIDATOR_VERSION = "publication-guard-v5-canonical-first"
 REQUIRED_STEPS = (
     "schema_source",
     "candidate_index",
@@ -412,10 +412,11 @@ def _declared_evidence_candidates(revision: Revision) -> list[dict[str, Any]]:
 def _positive_retrieval(revision: Revision, dsn: str) -> tuple[bool, dict[str, Any]]:
     expected_ids = _candidate_ids(revision)
     cases: list[dict[str, Any]] = []
-    from msfea_bot.curation.assistance import original_question
+    from msfea_bot.curation.assistance import original_question, prepared_questions
 
     questions = dict.fromkeys((
         revision.representative_question, revision.paraphrase_question, original_question(revision.id),
+        *prepared_questions(revision.id),
     ))
     for question in questions:
         if question is None:
@@ -602,6 +603,9 @@ def _save_result(
                     " WHERE revision_id = %s",
                     (f"Automatic validation failed: {step}", revision_id[0]),
                 )
+                if step in {"positive_retrieval", "regression"}:
+                    from msfea_bot.curation.workspace import schedule
+                    schedule(conn, run_id, int(revision_id[0]), "repair")
     _finalize_if_complete(run_id)
 
 
@@ -635,6 +639,9 @@ def _finalize_if_complete(run_id: str) -> None:
             " state_version = state_version + 1, updated_at = now() WHERE revision_id = %s",
             (state, reason, revision.id),
         )
+        if run_status == "passed":
+            from msfea_bot.curation.workspace import schedule
+            schedule(conn, run_id, revision.id, "preview")
 
 
 def execute_step(run_id: str, step: str, validation_database_url: str | None = None) -> None:
@@ -681,7 +688,7 @@ def execute_step(run_id: str, step: str, validation_database_url: str | None = N
     if step == "schema_source":
         passed, details = _source_check(revision)
     elif step == "candidate_index":
-        count = index_chunks(_candidate_chunks(revision), database_url=dsn)
+        count = index_chunks(_candidate_chunks(revision), database_url=dsn, reuse_database_url=settings.database_url)
         generation = indexed_generation(dsn)
         with _connect() as conn:
             conn.execute(
@@ -838,6 +845,16 @@ def record_human_review(
             (row[2] for row in results if str(row[0]) == "conflict_review"), {}
         )
         has_flags = bool(conflict_details.get("flags", []))
+        if decision != "reject" and any(
+            flag.get("reason") in {"ai_direct_conflict", "ai_supersedes"}
+            and flag.get("entry_id") != revision.entry_id
+            for flag in conflict_details.get("flags", [])
+        ):
+            raise ValueError(
+                "The existing conflicting source would remain active. Correct the guidance "
+                "or review an explicit approved scoped exception; official documents must "
+                "be corrected through source ingestion."
+            )
         if has_flags and decision == "confirm_no_conflict":
             raise ValueError(
                 "potential conflicts or duplicates require an exception, supersession, or rejection"

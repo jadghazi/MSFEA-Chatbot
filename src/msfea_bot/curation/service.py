@@ -125,6 +125,11 @@ def revision_chunks(revision: Revision, *, candidate: bool = False) -> list[Chun
             source_doc=source_label,
             section=revision.document_title[:80] or revision.question[:80],
             metadata=metadata,
+            retrieval_text=(
+                f"{header}\nA: {window}\nStudent questions: "
+                + " ".join(revision.retrieval_questions)
+                if revision.retrieval_questions and len(windows) == 1 else ""
+            ),
         )
         for index, window in enumerate(windows)
     ]

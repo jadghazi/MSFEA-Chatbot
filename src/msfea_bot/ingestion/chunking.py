@@ -30,8 +30,9 @@ _NON_CONTENT_SECTIONS = {"about this document"}
 class Chunk:
     """One retrievable passage plus where it came from.
 
-    `text` is the retrieval text: it is what gets embedded *and* what the full-text
-    index is built from. `display_prefix` is context shown to the reader/LLM but
+    `text` is canonical answer evidence and supplies the full-text index. Embeddings
+    use `retrieval_text` when a focused curated entry has verified search questions,
+    otherwise `text`. `display_prefix` is context shown to the reader/LLM but
     deliberately kept out of both — currently the header row of a table whose body
     was split across windows.
 
@@ -48,6 +49,8 @@ class Chunk:
     section: str
     metadata: dict[str, str] = field(default_factory=dict)
     display_prefix: str = ""
+    # Optional approved search representation; `text` remains canonical grounding.
+    retrieval_text: str = ""
 
 
 def parse_frontmatter(md: str) -> tuple[dict[str, str], str]:

@@ -22,6 +22,7 @@ from msfea_bot.curation.publication import (
     recover_committed_publications,
 )
 from msfea_bot.curation.validation import REQUIRED_STEPS, execute_step_idempotent
+from msfea_bot.curation.workspace import process_next_workspace_job
 
 _LOG = logging.getLogger(__name__)
 
@@ -37,12 +38,13 @@ async def _coordination_loop() -> None:
     ticks = 0
     while True:
         try:
+            workspace_done = await asyncio.to_thread(process_next_workspace_job)
             delivered = await asyncio.to_thread(dispatch_once)
             assisted = await asyncio.to_thread(process_next)
             ticks += 1
             if ticks % 15 == 0:
                 await asyncio.to_thread(reconcile)
-            await asyncio.sleep(0.25 if delivered or assisted else 2.0)
+            await asyncio.sleep(0.25 if delivered or assisted or workspace_done else 2.0)
         except asyncio.CancelledError:
             raise
         except Exception as exc:  # durable state makes retry after logging safe

@@ -56,7 +56,7 @@ class GeminiProvider:
             max_output_tokens=max_output_tokens or settings.llm_max_output_tokens,
             response_mime_type="application/json" if response_schema else None,
             response_json_schema=response_schema,
-            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MEDIUM) if purpose else None,
+            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MEDIUM) if purpose == "curation_" else None,
         )
 
     def _count(self, name: str, value: int = 1) -> None:

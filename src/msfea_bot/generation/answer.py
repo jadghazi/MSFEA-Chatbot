@@ -536,6 +536,7 @@ def generate_answer(
     provider: LLMProvider | None = None,
     department: str | None = None,
     history: Sequence[ConversationMessage] | None = None,
+    database_url: str | None = None,
 ) -> Answer:
     """Full guarded generation: retrieve -> threshold gate -> LLM -> structured answer.
 
@@ -544,7 +545,7 @@ def generate_answer(
     unrecognised, everything behaves exactly as before.
     """
     top_k = k if k is not None else retrieval_depth(question, settings.top_k)
-    chunks = retrieve_context(question, top_k, department, history)
+    chunks = retrieve_context(question, top_k, department, history, database_url=database_url)
     retrieved = [f"{c.source_doc} > {c.section} ({c.score:.2f})" for c in chunks]
 
     if len(

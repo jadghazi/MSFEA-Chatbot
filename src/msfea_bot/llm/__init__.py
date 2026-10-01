@@ -63,3 +63,11 @@ def get_curation_provider(
             retry_transient=True, before_request=before_request,
         )
     raise LLMConfigurationError("The configured provider does not support staff review")
+
+
+def get_preview_provider(*, before_request: Callable[[], None]) -> LLMProvider:
+    """Use the actual student configuration with private preview quota accounting."""
+    if settings.llm_provider.lower() == "gemini":
+        from msfea_bot.llm.gemini import GeminiProvider
+        return GeminiProvider(purpose="curation_preview_", before_request=before_request)
+    raise LLMConfigurationError("The configured provider does not support previews")

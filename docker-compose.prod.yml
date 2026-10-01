@@ -57,6 +57,9 @@ services:
       CURATION_WORKER_TOKEN: ${CURATION_WORKER_TOKEN:?set a dedicated app-worker token}
       N8N_WEBHOOK_SECRET: ${N8N_WEBHOOK_SECRET:?set a dedicated n8n webhook secret}
       WARM_MODELS_ON_STARTUP: "false"
+      # One inference thread avoids oversubscribing this worker's 0.75 CPU quota.
+      OMP_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
     depends_on:
       db:
         condition: service_healthy
