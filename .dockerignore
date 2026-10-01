@@ -17,6 +17,9 @@ __pycache__/
 
 # Generated / large artifacts not needed at runtime
 data/
+tmp/
+output/
+backups/
 kb/source/          # original PDFs/docx; only kb/normalized/ is ingested
 
 # Dev-only material not needed to run the app

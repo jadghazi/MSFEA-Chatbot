@@ -19,6 +19,13 @@
    It cannot invent an exception or silently replace an official document. A
    duplicate points to the existing source. A change to an official source needs
    reviewed source-file ingestion; approving a second contrary rule is blocked.
+   **Suggest an improved answer** can add missing details from related approved
+   sources and clarify wording. Green additions and crossed-out removals show
+   changes; expand the literal source facts if needed. Choose **Edit suggestion**,
+   **Discard suggestion**, or **Use & review again**. Your original answer stays
+   unchanged until use, and accepting either version starts a fresh review.
+   A direct conflict or possible policy replacement must be resolved by staff
+   before AI can rewrite the answer; the assistant cannot choose the approved rule.
 6. Confirm the contributor, responsible office, optional date/reference and reason.
    Check the source confirmation and select **Continue to checks & previews**.
    Stay in Studio: seven private checks run automatically.
@@ -47,6 +54,10 @@ evidence. Longer entries keep ordinary section embeddings.
   answer are shown. A bounded automatic correction may run. If it still fails,
   revise genuinely incomplete guidance or leave it private for technical diagnosis.
   Never weaken the original tests to obtain a passing result.
+  A saved admin-authored draft also offers an optional answer suggestion based
+  on its recorded failures and unsuccessful previews. Using it creates a newly
+  reviewed successor; the old revision and failed results remain in the audit.
+  Adding unrelated policy facts cannot fix a search regression.
 - **Quota or provider failure:** your work remains saved. Retry previews or review
   later. A failed service call is not a policy judgment or permission to publish.
   **Retry interrupted search correction** resumes the same bounded repair job
@@ -71,6 +82,14 @@ Approval cannot waive failed checks.
   once. Every actual provider attempt consumes the admission budget.
 - Actual student previews have a separate 60-call daily admission cap and share
   the student model's provider quota. They never silently use another model.
+- Optional answer suggestions use two staff-model calls: draft from numbered
+  facts, then independently verify support and original meaning. Original numbers
+  and URLs are also protected deterministically. Missing facts stay questions.
+  These checks reduce risk; human review and fresh publication checks still apply.
+- Run the fixed suggestion examples only on a disposable stack:
+  `python -m eval.studio_suggestion_eval --url URL --output tmp/suggestions.jsonl`.
+  Set `STUDIO_TEST_TOKEN` in the environment. `--resume` explicitly retries failed
+  cases, retaining earlier attempts and reusing completed parent reviews.
 - Migration 0007 adds stage records, immutable search questions and private jobs.
   Normal source ingestion rebuilds active knowledge, including approved search text.
   The worker uses one inference thread under its CPU cap.

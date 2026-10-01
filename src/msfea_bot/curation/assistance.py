@@ -26,6 +26,7 @@ from msfea_bot.observability.privacy import _ner, anonymize
 from msfea_bot.retrieval.store import indexed_generation
 
 PROMPT_VERSION = "self-service-studio-v9"
+SUGGESTION_PROMPT_VERSION = "source-backed-answer-suggestion-v1"
 _LOG = logging.getLogger(__name__)
 _DECISIONS = {"duplicate", "potential_conflict", "direct_conflict", "supersedes"}
 
@@ -46,6 +47,7 @@ class Intake(BaseModel):
     programs: list[str] = Field(min_length=1, max_length=6)
     linked_feedback_ids: list[int] = Field(default_factory=list, max_length=1)
     entry_id: int | None = Field(default=None, gt=0)
+    suggestion_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
 
 
 class Finding(BaseModel):
@@ -198,13 +200,16 @@ def enqueue(intake: Intake, request_key: str) -> str:
         # Serializes request deduplication and queue admission across API workers.
         conn.execute("SELECT pg_advisory_xact_lock(820261001)")
         old = conn.execute(
-            "SELECT id, intake FROM curation_assistance WHERE request_key = %s",
+            "SELECT id, intake, prompt_version FROM curation_assistance WHERE request_key = %s",
             (request_key,),
         ).fetchone()
         if old:
-            if old[1] != intake.model_dump():
+            if Intake.model_validate(old[1]).model_dump() != intake.model_dump() or old[2] != PROMPT_VERSION:
                 raise ValueError("This request key belongs to different guidance.")
             return str(old[0])
+        if intake.suggestion_id:
+            from msfea_bot.curation.suggestions import validate_acceptance
+            validate_acceptance(conn, intake)
         if intake.linked_feedback_ids:
             linked = conn.execute(
                 "SELECT question FROM interactions WHERE id = %s AND resolved_at IS NULL",
@@ -265,7 +270,7 @@ def get_review(review_id: str) -> dict[str, Any] | None:
         "report": row[7], "error_code": row[8], "accepted_revision_id": row[9],
         "created_at": row[10].isoformat(), "evidence": row[11],
         "steps": row[12],
-        "outdated": row[4] != PROMPT_VERSION and row[9] is None,
+        "outdated": row[4] not in {PROMPT_VERSION,SUGGESTION_PROMPT_VERSION} and row[9] is None,
     }
 
 
@@ -580,8 +585,8 @@ def process_next() -> bool:
     with _connect() as conn:
         conn.execute(
             "UPDATE curation_assistance SET status = 'failed', error_code = 'stale_review',"
-            " completed_at = now() WHERE status = 'queued' AND prompt_version <> %s",
-            (PROMPT_VERSION,),
+            " completed_at = now() WHERE status = 'queued' AND prompt_version NOT IN (%s,%s)",
+            (PROMPT_VERSION,SUGGESTION_PROMPT_VERSION),
         )
         conn.execute(
             "UPDATE curation_assistance SET status = 'failed',"
@@ -596,7 +601,7 @@ def process_next() -> bool:
         if recent and recent[0]:
             return False
         row = conn.execute(
-            "SELECT id, intake, model FROM curation_assistance WHERE status = 'queued'"
+            "SELECT id, intake, model, prompt_version, report, kb_generation FROM curation_assistance WHERE status = 'queued'"
             " ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1"
         ).fetchone()
         if row is None:
@@ -620,6 +625,9 @@ def process_next() -> bool:
             (row[0],),
         )
     review_id = str(row[0])
+    if row[3] == SUGGESTION_PROMPT_VERSION:
+        from msfea_bot.curation.suggestions import process
+        return process(review_id, Intake.model_validate(row[1]), str(row[2]), row[4]["context"], row[5])
     error_code: str | None = None
     try:
         intake = Intake.model_validate(row[1])

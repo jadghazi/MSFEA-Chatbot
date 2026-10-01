@@ -5,6 +5,12 @@ const ai = {model:'recorded-model', report:{classification:'new_information', su
 const item = {id:1, source_kind:'admin_authored', document_title:'CDC Weekly Advising Window', answer:'Thursday, 2–4 p.m.', assistance:ai};
 const run = {id:'recorded-run', status:'failed', results:[{step:'regression', status:'failed', details:{lost_cases:[{id:'followup-letter-location', question:'Where do I get it?', history:[{role:'user',content:'Can the CDC provide a required-internship letter?'},{role:'assistant',content:'Yes, it can.'}], expected_answer:'Request the letter through the CDC letter request form.', source_doc:'summer-training-guidelines-2026.md', source_section:'Requesting a Letter'}]}}]};
 
+test('independent coverage failure overrides the initial positive assessment', () => {
+  const html = review.ai({model:'test-model',report:{...ai.report,question_supported:true,coverage:{supported:false,missing_details:['Disclose and cite AI use.']}}});
+  assert.match(html,/approved details are missing/);
+  assert.doesNotMatch(html,/guidance covers the supplied question/);
+});
+
 test('a new entry cannot treat an official conflict with no entry ID as its own predecessor', () => {
   assert.equal(review.externalPolicyConflict([{category:'direct_conflict',entry_id:null}], null), true);
   assert.equal(review.externalPolicyConflict([{category:'supersedes',entry_id:2}], 2), false);

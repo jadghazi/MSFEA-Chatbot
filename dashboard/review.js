@@ -35,11 +35,12 @@
   function ai(data, allowUpdates) {
     if (!data || !data.report) return '<section class="review-ai missing"><div class="review-section-head"><span class="review-label">AI WRITING & POLICY REVIEW</span><span class="review-chip neutral">Not used for this revision</span></div><h4>No AI feedback was recorded</h4><p>This revision was saved through the manual editor. The search checks below do not constitute an AI policy review.</p></section>';
     var report = data.report;
+    var questionSupported = report.coverage ? report.coverage.supported && !(report.coverage.missing_details || []).length : report.question_supported;
     var decision = report.requires_decision || report.blocked || report.classification === 'duplicate';
     return '<section class="review-ai"><div class="review-section-head"><span class="review-label">AI WRITING & POLICY REVIEW</span><span class="review-chip ' + (decision ? 'attention' : 'good') + '">AI review completed</span></div>' +
       '<h4>What the AI found</h4><div class="review-model">Reviewed by ' + e(data.model) + ' · ' + e(labels[report.classification] || report.classification) + '</div><p class="review-ai-summary">' + e(report.summary) + '</p>' +
       '<div class="review-coverage">' + (typeof report.one_focused_topic === 'boolean' ? '<span>Topic check · AI says: <strong>' + (report.one_focused_topic ? 'one focused topic' : 'split the topics') + '</strong></span>' : '') +
-      (typeof report.question_supported === 'boolean' ? '<span>Question check · AI says: <strong>' + (report.question_supported ? 'guidance covers the supplied question or topic' : 'approved details are missing') + '</strong></span>' : '') + '</div>' +
+      (typeof questionSupported === 'boolean' ? '<span>Question check · AI says: <strong>' + (questionSupported ? 'guidance covers the supplied question or topic' : 'approved details are missing') + '</strong></span>' : '') + '</div>' +
       (report.clarifications && report.clarifications.length ? '<div class="review-next"><strong>What to add before continuing</strong><ul>' + report.clarifications.map(function (item) { return '<li>' + e(item) + '</li>'; }).join('') + '</ul></div>' : '') +
       (report.findings || []).map(function (finding) {
         var next = finding.category === 'duplicate' ? 'This claim is already covered. Keep the existing rule unless you are making an approved update.' : finding.category === 'complementary' ? 'Confirm that the added detail applies to the stated scope.' : finding.entry_id ? 'Verify the approved change, then record whether it replaces this entry’s existing rule or defines a scoped exception.' : 'Correct the proposed guidance or define an approved exception and its scope. An official policy change must be reviewed at its source.';

@@ -6,6 +6,25 @@ short: what changed, why, what's next, what's blocked.
 
 ---
 
+## 2026-10-01 — Optional source-backed answer improvements
+
+- Added visible, editable suggestions to the shared Studio using two bounded
+  staff-model calls, numbered evidence, tracked changes and explicit use/discard.
+  Acceptance records provenance and requires a fresh review and new private checks.
+  No migrations, dependencies, student-model or retrieval changes.
+- Live fixed examples now pass 5/5 after explicit retries; original Gemini 503
+  failures remain recorded. A conflicting 3-credit trial caught the model wrongly
+  choosing the existing 1-credit policy. Added a pre-call policy-decision guard
+  plus deterministic preservation of original numbers/URLs; nothing was published.
+- Backend suite passed 399 tests/two skips before final guards; all 21 final
+  suggestion tests pass, including immutable failed-check/preview context and
+  compatibility with old review requests. All 32 frontend tests, Ruff and strict
+  typing pass. All eight existing retrieval/publication gates match the baseline.
+- Browser-tested real source additions, edit/refresh/discard and acceptance into
+  a new review. The duplicate safeguard prevented an unnecessary KB entry.
+  Desktop/mobile inspected; a private saved-draft successor is also being checked.
+  See [the measured review](studio-answer-suggestion-quality-report.md).
+
 ## 2026-10-01 — Oracle self-service Studio rollout verified
 
 - Pushed release `fb1d837`; CI run 36882309552 passed. Updated Oracle from

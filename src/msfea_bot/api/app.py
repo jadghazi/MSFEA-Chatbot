@@ -36,6 +36,7 @@ from msfea_bot.observability.usage import count, snapshot
 from msfea_bot.observability.analytics import analytics
 from msfea_bot.config import settings
 from msfea_bot.curation.assistance import Intake, accept_draft, accepted_reviews, enqueue, get_review
+from msfea_bot.curation import suggestions
 from msfea_bot.curation.migrations import migrate as migrate_curation
 from msfea_bot.curation.publication import PublicationError, request_publication, retire_entry
 from msfea_bot.curation.revisions import (
@@ -502,6 +503,32 @@ class AssistedDraftRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     review_id: str = Field(min_length=1, max_length=64)
     draft: CurateRequest
+
+
+class AnswerSuggestionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    review_id: str | None = Field(default=None, min_length=1, max_length=64)
+    revision_id: int | None = Field(default=None, gt=0)
+    request_key: str = Field(min_length=16, max_length=80)
+
+
+@app.post("/admin/api/studio/suggestions")
+def admin_answer_suggestion(req: AnswerSuggestionRequest, _: None = Depends(require_admin)) -> dict[str,str]:
+    if not settings.curation_worker_token:
+        raise HTTPException(status_code=503,detail="The private curation worker is not configured.")
+    try:
+        job_id = suggestions.enqueue(req.review_id,req.revision_id,req.request_key)
+    except ValueError as exc:
+        raise HTTPException(status_code=409,detail=str(exc)) from exc
+    return {"id":job_id,"status":"queued"}
+
+
+@app.get("/admin/api/studio/suggestions/{suggestion_id}")
+def admin_answer_suggestion_status(suggestion_id: str, _: None = Depends(require_admin)) -> dict[str,Any]:
+    job = suggestions.get(suggestion_id)
+    if job is None:
+        raise HTTPException(status_code=404,detail="This answer suggestion was not found.")
+    return job
 
 
 @app.post("/admin/api/studio/reviews")

@@ -4,6 +4,7 @@
   var host, hooks, current = null, timer = null, feedback = null, entry = null;
   var draft = null, requestKey = null, lastIntake = null, busy = false;
   var workspaceId = null;
+  var proposal = null, suggestionTimer = null, acceptedSuggestion = null;
   var labels = {
     new_information: "New information", complementary: "Adds useful detail",
     duplicate: "Already covered", potential_conflict: "Needs your judgment",
@@ -51,7 +52,8 @@
       department: el("#studio-department").value,
       programs: Array.prototype.map.call(host.querySelectorAll('.studio-program-choice input:checked'), function (input) { return input.value; }),
       linked_feedback_ids: feedback ? [feedback.id] : [],
-      entry_id: entry ? entry.id : null
+      entry_id: entry ? entry.id : null,
+      suggestion_id: acceptedSuggestion
     };
   }
   function sameIntake(left, right) {
@@ -67,7 +69,7 @@
       sessionStorage.setItem("msfea_studio_intake", JSON.stringify({
         intake: intake(), feedback: feedback, entry: entry, current: current,
         requestKey: requestKey, lastIntake: lastIntake
-        , workspaceId: workspaceId
+        , workspaceId: workspaceId, proposal: proposal
       }));
     } catch (_) { /* Storage may be disabled; the composer still works. */ }
   }
@@ -178,6 +180,8 @@
     });
   }
   function start() {
+    clearTimeout(suggestionTimer);
+    proposal = null;
     var data = intake();
     if (!data.guidance || data.guidance.length < 20) return message("Add the complete approved guidance for one topic (at least 20 characters).", true);
     if (!data.department || !data.programs[0]) return message("Choose the department and program this guidance applies to.", true);
@@ -265,6 +269,94 @@
       el(".studio-save").disabled = true;
       message("The guidance or scope changed while this review was running. Review the updated input again.", true);
     }
+    if (data.intake.suggestion_id) {
+      var note = document.createElement('p'); note.className = 'studio-verified-note';
+      note.textContent = 'You selected an AI-assisted answer revision. This is its fresh review; earlier checks do not authorize this version.';
+      el('.studio-verdict').insertAdjacentElement('afterend', note);
+    }
+    if (!duplicate) attachSuggestion({key:'review:'+data.id,review_id:data.id,intake:data.intake,report:data.report});
+  }
+  function attachSuggestion(context) {
+    var node=document.createElement('section'); node.className='studio-suggestion';
+    node.setAttribute('aria-label','Optional AI answer revision');
+    var before=el('.studio-approval') || el('.studio-workspace-actions') || el('.studio-audit');
+    if (before) before.parentNode.insertBefore(node,before);
+    else el('.studio-report').appendChild(node);
+    if (context.report && ['direct_conflict','supersedes'].indexOf(context.report.classification)>=0) {
+      node.innerHTML='<span class="eyebrow">Your policy decision comes first</span><h4>The AI cannot choose which rule is approved</h4><p>Compare the claims shown above. For a policy change, enter the complete approved replacement yourself, then review again. The normal checks and publication decision still apply; AI rewriting stays paused while the proposed rule conflicts with existing policy.</p>'; return;
+    }
+    function introduction(status) {
+      node.innerHTML='<div class="studio-suggestion-head"><div><span class="eyebrow">Optional writing assistance</span><h4>Want help improving this answer?</h4></div></div><p class="studio-suggestion-why">The AI can clarify your wording and add relevant details supported by existing sources. It uses this review’s feedback and failed checks. Your original answer stays unchanged until you choose.</p><button class="studio-suggestion-generate secondary">Suggest an improved answer</button><p class="studio-source-note">You can edit or discard it. Every accepted revision goes through fresh review and private tests.</p><div class="studio-suggestion-status" role="status">'+e(status || '')+'</div>';
+      node.querySelector('.studio-suggestion-generate').addEventListener('click', function () {
+        if (!context.revision_id && !sameIntake(intake(),context.intake)) {
+          node.querySelector('.studio-suggestion-status').textContent='Your guidance or scope changed. Run a fresh review before asking for a matching suggestion.'; return;
+        }
+        clearTimeout(timer);
+        proposal={key:context.key,requestKey:unique(),id:null,edited:null};
+        requestSuggestion();
+      });
+    }
+    function working(job) {
+      node.innerHTML='<span class="eyebrow">Optional AI revision · '+e(job && job.model || 'staff model')+'</span><div class="studio-suggestion-working" role="status"><strong>'+e(job && job.stage==='verifying' ? 'Checking the revised answer against its sources' : 'Preparing a source-backed revision')+'</strong><p>Your original answer is preserved. Nothing is being published.</p><ol><li>Read your guidance and the recorded feedback</li><li>Draft focused wording from the available facts</li><li>Independently verify the suggested claims</li><li>Show changes for your choice</li></ol></div>';
+    }
+    function requestSuggestion() {
+      working(); remember();
+      var body={request_key:proposal.requestKey};
+      if (context.revision_id) body.revision_id=context.revision_id;
+      else body.review_id=context.review_id;
+      request('/admin/api/studio/suggestions',body).then(function (result) {
+        if (!proposal || proposal.key!==context.key) return;
+        proposal.id=result.id; remember(); pollSuggestion();
+      }).catch(function (error) { introduction(error.message+' Your original answer is unchanged.'); });
+    }
+    function pollSuggestion() {
+      clearTimeout(suggestionTimer);
+      if (!proposal || proposal.key!==context.key || !hooks.signedIn()) return;
+      request('/admin/api/studio/suggestions/'+proposal.id).then(function (job) {
+        if (!proposal || proposal.key!==context.key || !node.isConnected) return;
+        if (job.status==='failed') {
+          var text={unsupported_suggestion:'The proposed wording did not pass its source checks, so it has not been offered for use.',suggestion_unavailable:'The suggestion service could not finish.',stale_index:'The knowledge base changed. Run a fresh review before requesting another suggestion.'};
+          proposal=null; remember(); introduction((text[job.error_code] || errors[job.error_code] || 'The suggestion could not finish.')+' Your original answer is unchanged.'); return;
+        }
+        if (job.status!=='completed') { working(job); suggestionTimer=setTimeout(pollSuggestion,2500); return; }
+        node.innerHTML=StudioSuggestion.card(job,proposal.edited);
+        var editor=node.querySelector('.studio-suggestion-text');
+        editor.value=proposal.edited == null ? job.report.suggested_answer : proposal.edited;
+        if (proposal.edited != null) node.querySelector('.studio-suggestion-editor').classList.remove('hidden');
+        editor.addEventListener('input', function () {
+          proposal.edited=editor.value; remember();
+          node.querySelector('.studio-tracked-answer').innerHTML=StudioSuggestion.diff(job.intake.guidance,editor.value);
+          node.querySelector('.studio-suggestion-verification').textContent='You edited this suggestion. The previous AI check applies to the offered wording; your version will receive a fresh review.';
+        });
+        node.querySelector('.studio-suggestion-edit').addEventListener('click', function () {
+          node.querySelector('.studio-suggestion-editor').classList.remove('hidden'); editor.focus();
+        });
+        node.querySelector('.studio-suggestion-discard').addEventListener('click', function () {
+          proposal=null; remember(); introduction('Suggestion discarded. Your original answer has been kept.');
+        });
+        node.querySelector('.studio-suggestion-use').addEventListener('click', function () {
+          var value=editor.value.trim();
+          if (value.length<20) { node.querySelector('.studio-suggestion-status').textContent='Keep at least 20 characters of factual guidance before reviewing.'; return; }
+          if (!context.revision_id && !sameIntake(intake(),context.intake)) {
+            node.querySelector('.studio-suggestion-status').textContent='Your original input changed. Keep your edits and run a fresh review instead of replacing them.'; return;
+          }
+          if (context.state) editWorking(context.state);
+          el('#studio-guidance').value=value;
+          el('#studio-topic').value=job.intake.question;
+          acceptedSuggestion=job.id; workspaceId=null; current=null; requestKey=null;
+          host.classList.remove('has-candidate');
+          remember(); updateCount(); start();
+          el('.studio-progress').scrollIntoView({block:'start',behavior:'smooth'});
+        });
+        remember();
+      }).catch(function (error) {
+        node.innerHTML='<h4>Your suggestion is saved</h4><p>'+e(error.message)+'</p><button class="studio-suggestion-resume secondary">Resume suggestion</button>';
+        node.querySelector('.studio-suggestion-resume').addEventListener('click',pollSuggestion);
+      });
+    }
+    if (proposal && proposal.key===context.key) {
+      if (proposal.id) { working(); pollSuggestion(); } else requestSuggestion();
+    } else introduction();
   }
   function save(data) {
     var status = el(".studio-save-status"), button = el(".studio-save");
@@ -294,6 +386,7 @@
     }).catch(function (error) { button.disabled = false; status.textContent = error.message; });
   }
   function reset(preserveFeedback) {
+    clearTimeout(suggestionTimer); proposal=null; acceptedSuggestion=null;
     workspaceId = null; host.classList.remove('has-candidate');
     clearTimeout(timer); current = null; requestKey = null; draft = null; entry = null;
     if (!preserveFeedback) feedback = null;
@@ -306,6 +399,7 @@
     updateCount();
   }
   function editWorking(state) {
+    clearTimeout(suggestionTimer); proposal=null; acceptedSuggestion=null;
     clearTimeout(timer); workspaceId = null; current = null; draft = null;
     host.classList.remove('has-candidate');
     entry = Object.assign({}, state.revision, {id:state.revision.entry_id, working_draft:true});
@@ -399,6 +493,9 @@
       event.currentTarget.disabled = true;
       request('/admin/api/studio/preview/retry', {revision_id:revision.id}).then(pollWorkspace).catch(function (error) { event.currentTarget.disabled = false; event.currentTarget.parentNode.appendChild(document.createTextNode(error.message)); });
     });
+    if (revision.source_kind==='admin_authored' && !active && !publishing && !testing && !state.stale && !state.review_outdated && !jobs.some(function (job) { return ['queued','running'].indexOf(job.status)>=0; })) {
+      attachSuggestion({key:'revision:'+revision.id,revision_id:revision.id,state:state,report:state.assistance && state.assistance.report});
+    }
     if (el('#studio-reviewer')) el('#studio-reviewer').value = revision.created_by;
     if (ready && !active) {
       try {
@@ -466,6 +563,7 @@
     });
     host.querySelectorAll("#studio-guidance, #studio-topic, #studio-department, .studio-program-choice input").forEach(function (input) {
       input.addEventListener("input", function () {
+        if (input.id!=='studio-guidance') acceptedSuggestion=null;
         remember(); updateCount();
         if (draft) {
           message("Your input changed. Run a fresh review to update the comparisons.");
@@ -485,6 +583,7 @@
         });
         setPrograms(restored.intake.programs);
         current = restored.current; workspaceId = restored.workspaceId || null;
+        proposal=restored.proposal || null; acceptedSuggestion=restored.intake.suggestion_id || null;
         if (feedback || entry) {
           el(".studio-origin").classList.remove("hidden");
           el(".studio-origin").innerHTML = entry ?
