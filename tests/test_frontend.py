@@ -60,7 +60,6 @@ def test_admin_dashboard_uses_guarded_drafts_not_immediate_publication() -> None
     assert "Drafts are never visible to students" in page
     assert "Save replacement draft" in page
     assert "the live answer is unchanged" in page
-    assert "No potential conflict was flagged" in page
     assert "Record mandatory review" in page
     assert 'data-tab="create"' in page
     assert "One focused knowledge document" in page
@@ -68,9 +67,9 @@ def test_admin_dashboard_uses_guarded_drafts_not_immediate_publication() -> None
     assert "Contributor name" in page
     assert "Responsible authority" in page
     assert "This submitted text is the source artifact" in page
-    assert "Sample student questions" in page
-    assert "This draft needs a correction" in page
-    assert "Fix this draft" in page
+    assert "Open manual correction editor" in page
+    assert "KnowledgeReview.render(run, item)" in page
+    assert "KnowledgeStudio.openDraft(item)" in page
     assert "Create a corrected revision" in page
     assert "Publish to chatbot" in page
     assert "Short answer phrase to verify" in page

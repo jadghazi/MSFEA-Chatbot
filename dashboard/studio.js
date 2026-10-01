@@ -13,14 +13,14 @@
     quota: "The staff-review model has reached its Gemini limit. Your guidance is still here. Try again later or use the manual source editor.",
     daily_budget: "Today's staff-review allowance has been used. Your guidance is still here; you can use the manual editor or return tomorrow.",
     provider_unavailable: "The review model is unavailable. Your guidance is saved here; retry later or use the manual editor.",
-    invalid_review: "The assistant returned a review that could not be verified. Nothing was saved as knowledge. Try a clearer, focused entry and review again.",
+    invalid_review: "The AI response could not be verified. This is a review-service failure, not a finding that your guidance is incorrect. Nothing was saved as knowledge. Retry later or use the manual editor.",
     stale_index: "The knowledge base changed during review. Run a fresh review against the latest guidance.",
     stale_review: "The review rules changed. Your guidance is preserved; start a fresh comparison.",
     interrupted: "The review was interrupted. Your guidance is still available. Start a new review when you are ready.",
     review_unavailable: "This review could not finish. Nothing was published. Try again or use the manual editor."
   };
   function e(value) { return hooks.escape(value); }
-  function quote(value) { return e(value).replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>'); }
+
   function el(selector) { return host.querySelector(selector); }
   function unique() {
     return window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() :
@@ -80,6 +80,15 @@
     node.className = "studio-status" + (error ? " error" : "");
     node.textContent = text;
   }
+  function replaceWorking(text, action) {
+    if (!intake().guidance) { action(); return; }
+    var node = el('.studio-status');
+    node.className = 'studio-status';
+    node.innerHTML = '<p>' + e(text) + '</p><div class="actions"><button type="button" class="studio-replace">Replace working guidance</button><button type="button" class="studio-keep secondary">Keep editing</button></div>';
+    node.querySelector('.studio-replace').addEventListener('click', action);
+    node.querySelector('.studio-keep').addEventListener('click', function () { message('Your working guidance has been kept.'); });
+    hooks.showStudio(); node.querySelector('.studio-replace').focus();
+  }
   function request(path, body) {
     return fetch(hooks.api + path, {
       method: body ? "POST" : "GET", headers: hooks.headers(),
@@ -106,17 +115,19 @@
   function emptyReview() {
     el(".studio-results").innerHTML =
       '<div class="studio-placeholder"><span class="studio-orbit">' + icon("source") + '</span>' +
-      '<h3>A focused draft starts here.</h3><p>Paste the approved guidance in your own words. The assistant will connect it to the knowledge base and show only the comparisons that matter.</p>' +
+      '<span class="eyebrow">AI writing & policy review</span><h3>Turn approved guidance into a reviewed draft.</h3><p>When you select Prepare & review draft, the AI checks for missing details and overlapping policies, suggests a title, and prepares realistic student questions.</p>' +
+      '<div class="review-next"><strong>You will see</strong><p>The AI’s explanation, exact policy comparisons, and a clear next step. After saving, separate search tests check whether this draft can be published safely.</p></div>' +
       '<div class="studio-promise">' + icon("shield") + '<span>Staff approve the facts.<br>Private checks protect student answers.</span></div></div>';
   }
-  function progress(stage) {
+  function progress(stage, model) {
     var comparing = stage === "comparing";
     rail(1);
     el(".studio-results").innerHTML =
       '<div class="studio-working" role="status"><span class="studio-orbit working">' + icon("spark") + '</span>' +
-      '<h3>' + (comparing ? "Comparing the actual claims" : stage === "queued" ? "Your review is queued" : "Finding relevant guidance") +
-      '</h3><p>' + (comparing ? "Checking facts, conditions and scope. Preparing a clear title and natural student questions." :
-        "Searching the existing knowledge base before comparing your entry.") + '</p>' +
+      '<span class="eyebrow">' + (comparing ? 'AI review · ' + e(model || 'staff review model') : 'Preparing the AI review') + '</span>' +
+      '<h3>' + (comparing ? "The AI is reviewing your guidance" : stage === "queued" ? "Waiting for the review worker" : "Finding policies for the AI to compare") +
+      '</h3><p>' + (comparing ? "The AI is checking coverage, facts, conditions and scope, then preparing its explanation and suggested questions." :
+        "The system retrieves related passages. The AI will compare their claims with your proposed guidance next.") + '</p>' +
       '<div class="studio-loading-track"><span></span></div><small>Nothing is visible to students. You can leave this page and return.</small></div>';
   }
   function poll() {
@@ -128,11 +139,11 @@
         setBusy(false); renderReport(data); remember(); return;
       }
       if (data.status === "failed") {
-        setBusy(false); current = null; remember(); rail(0);
+        setBusy(false); remember(); rail(0);
         message(errors[data.error_code] || errors.review_unavailable, true);
-        emptyReview(); return;
+        el('.studio-results').innerHTML = '<section class="studio-report"><div class="review-section-head"><span class="review-label">AI WRITING & POLICY REVIEW</span><span class="review-chip attention">Review did not finish</span></div><h3>There is no AI assessment yet</h3><div class="review-model">Review model: ' + e(data.model) + '</div><p class="review-ai-summary">' + e(errors[data.error_code] || errors.review_unavailable) + '</p><div class="review-next"><h4>Your next step</h4><p>Keep the approved guidance you entered. Retry when the review service is available, or use the existing manual review route. This failure does not mean your policy is wrong, and it cannot authorize publication.</p></div><p class="review-caption">No knowledge was published. Your input and the failed review remain available for inspection.</p><details class="review-disclosure"><summary>Review reference for the maintainer</summary><p>' + e(data.id) + ' · ' + e(data.error_code) + '</p></details></section>'; return;
       }
-      progress(data.stage);
+      progress(data.stage, data.model);
       timer = setTimeout(poll, 2500);
     }).catch(function (error) {
       setBusy(false);
@@ -156,20 +167,6 @@
       setBusy(false); rail(0); message(error.message, true); emptyReview();
     });
   }
-  function comparison(item) {
-    var decision = ["duplicate", "potential_conflict", "direct_conflict", "supersedes"].indexOf(item.category) >= 0;
-    return '<article class="studio-finding' + (decision ? ' decision' : '') + '">' +
-      '<div class="studio-finding-heading"><span class="studio-tag ' + e(item.category) + '">' + e(labels[item.category] || item.category) +
-      '</span><span>' + e(item.department === "all" ? "General guidance" : item.department.toUpperCase()) + '</span></div>' +
-      '<p class="studio-finding-reason">' + e(item.explanation) + '</p>' +
-      '<div class="studio-claims"><div><span>Your proposed guidance</span><blockquote>' + quote(item.proposed_claim) +
-      '</blockquote></div><div><span>Existing knowledge</span><blockquote>' + quote(item.existing_claim) +
-      '</blockquote><small>' + e(item.source_doc) + ' · ' + e(item.section) + '</small></div></div>' +
-      (item.entry_id ? '<button type="button" class="studio-update text-action" data-entry="' + e(item.entry_id) +
-        '">Open this entry as an update ' + icon("arrow") + '</button>' :
-        decision ? '<p class="studio-source-note">If the original policy needs changing, update its official source document before publishing contradictory guidance.</p>' : '') +
-      '</article>';
-  }
   function renderReport(data) {
     var report = data.report;
     draft = report.draft;
@@ -177,17 +174,13 @@
     var blocked = report.blocked || duplicate;
     rail(2); message("");
     el(".studio-results").innerHTML =
-      '<section class="studio-report"><div class="studio-report-top"><span class="eyebrow">Review complete</span><span class="studio-private">' +
+      '<section class="studio-report"><div class="studio-report-top"><span class="eyebrow">AI review complete</span><span class="studio-private">' +
       icon("shield") + ' Private draft</span></div>' +
       '<div class="studio-verdict"><span class="studio-tag ' + e(report.classification) + '">' + e(labels[report.classification]) +
-      '</span><h3>' + e(draft.document_title) + '</h3><p>' + e(report.summary) + '</p></div>' +
-      (report.blocked ? '<section class="studio-clarifications"><h4>Before this becomes knowledge</h4><ul>' +
-        report.clarifications.map(function (question) { return '<li>' + e(question) + '</li>'; }).join("") +
-        '</ul><p>Add these details to the guidance on the left, then review again.</p></section>' : '') +
+      '</span><h3>' + e(draft.document_title) + '</h3></div>' +
+      '<div class="review-next"><h4>Your next step</h4><p>' + (report.blocked ? 'Answer the AI’s specific questions below by adding approved information on the left, then run a fresh AI review. Saving is paused until those details are complete.' : duplicate ? 'Use the existing source rather than adding another copy. A retrieval failure should be investigated separately.' : report.requires_decision ? 'Read the quoted policy differences below and verify the approved rule with its owner. You can save a private draft for testing; a named policy decision is still required before publication.' : 'Check the AI’s feedback and the unchanged guidance below. Add the source owner and contributor, then save the private draft to run search tests.') + '</p></div>' +
+      KnowledgeReview.ai(data) +
       (duplicate ? '<div class="studio-clear">This guidance is already covered. Use the existing source; creating a second copy usually adds no retrieval value. If the student could not find it, inspect the original retrieval evidence.</div>' : '') +
-      '<div class="studio-section-title"><h4>Claim comparison</h4><span>' + e(report.comparison_count) + ' passages checked</span></div>' +
-      (report.findings.length ? report.findings.map(comparison).join("") :
-        '<div class="studio-clear">' + icon("shield") + '<span>No relevant duplicate or conflict was identified in the retrieved passages. Staff must still verify the policy.</span></div>') +
       '<details class="studio-evidence"><summary>Inspect the comparison sources (' + e(data.evidence.length) + ')</summary>' +
         data.evidence.map(function (source) { return '<details><summary>' + e(source.source_doc + " · " + source.section) +
           '</summary><p>' + e(source.text) + '</p></details>'; }).join("") + '</details>' +
@@ -207,11 +200,18 @@
           (report.requires_decision ? ', and read the flagged claims. I understand these still require a recorded decision during validation' : '') +
           '.</span></label><div class="studio-save-row"><button type="button" class="studio-save"' + (blocked ? ' disabled' : '') +
           '>Save draft & run checks ' + icon("arrow") + '</button><small>Final human review is required before publishing.</small></div>' +
+        (blocked ? '<p class="review-caption">Saving is paused: ' + (duplicate ? 'the guidance is already covered by an existing source.' : 'the requested approved information is missing.') + '</p>' : '') +
         '<div class="studio-save-status" role="status" aria-live="polite"></div></section>' +
       '<details class="studio-audit"><summary>Review provenance</summary><p>Model: ' + e(data.model) + ' · ' + e(data.prompt_version) +
         '<br>Review: ' + e(data.id) + '<br>Knowledge generation: ' + e(data.kb_generation) + '</p></details></section>';
     el("#studio-reason").value = feedback ? "Address the reviewed student question: " + feedback.question :
       entry ? "Update existing CDC guidance after staff review." : "";
+    if (entry) {
+      el('#studio-author').value = entry.created_by || '';
+      el('#studio-authority').value = entry.authority_label || '';
+      el('#studio-reference').value = entry.supporting_reference || '';
+      el('#studio-effective').value = entry.effective_date || '';
+    }
     host.querySelectorAll(".studio-update").forEach(function (button) {
       button.addEventListener("click", function () {
         var item = hooks.entries().find(function (value) { return value.id === Number(button.dataset.entry); });
@@ -310,8 +310,7 @@
     emptyReview();
     el(".studio-review").addEventListener("click", start);
     el(".studio-reset").addEventListener("click", function () {
-      if (intake().guidance && !window.confirm("Clear this working guidance and start a new entry?")) return;
-      reset(false);
+      replaceWorking('Start a new entry? The current working guidance will be cleared; any saved draft remains in Drafts.', function () { reset(false); });
     });
     host.querySelectorAll("#studio-guidance, #studio-topic, #studio-department, .studio-program-choice input").forEach(function (input) {
       input.addEventListener("input", function () {
@@ -336,9 +335,10 @@
         current = restored.current;
         if (feedback || entry) {
           el(".studio-origin").classList.remove("hidden");
-          el(".studio-origin").innerHTML = feedback ?
+          el(".studio-origin").innerHTML = entry ?
+            '<strong>' + ((entry.working_draft || entry.active === false) ? 'Reviewing saved draft: ' : 'Updating published entry: ') + e(entry.document_title || entry.question) + '</strong><span>' + ((entry.working_draft || entry.active === false) ? 'The saved revision and its failed check stay in the history. A new AI review cannot waive that failure.' : 'The current published version stays active until a successor is approved.') + (feedback ? ' The original student question remains linked.' : '') + '</span>' : feedback ?
             '<span class="studio-origin-label">From Needs attention</span><strong>' + e(feedback.question) + '</strong><span>This question remains in the queue until publication or dismissal.</span>' :
-            'Updating <strong>' + e(entry.document_title || entry.question) + '</strong>. The current version remains active.';
+            '';
         }
         if (current) { setBusy(true); poll(); }
         updateCount();
@@ -349,7 +349,7 @@
     mount: mount,
     openQuestion: function (item) {
       if (busy) { hooks.showStudio(); message("Finish the current review before opening another question.", true); return; }
-      if (intake().guidance && !window.confirm("Replace the current working entry with this student question?")) return;
+      replaceWorking('Open this student question in place of the current working guidance?', function () {
       reset(false); feedback = {id:item.id, question:item.question};
       el("#studio-topic").value = item.question;
       el("#studio-topic").readOnly = true;
@@ -357,10 +357,11 @@
         e(item.question) + '</strong><span>This question stays in the queue until reviewed knowledge is published or you dismiss it.</span>';
       el(".studio-origin").classList.remove("hidden");
       hooks.showStudio(); remember(); el("#studio-guidance").focus();
+      });
     },
     openEntry: function (item) {
       if (busy) { hooks.showStudio(); message("Finish the current review before updating another entry.", true); return; }
-      if (intake().guidance && !window.confirm("Replace the current working entry with this published source?")) return;
+      replaceWorking('Open this published entry in place of the current working guidance?', function () {
       reset(false); entry = item;
       el("#studio-guidance").value = item.answer; el("#studio-topic").value = item.question;
       el("#studio-department").value = item.department || "";
@@ -368,6 +369,23 @@
       el(".studio-origin").innerHTML = 'Updating <strong>' + e(item.document_title || item.question) + '</strong>. Its current version stays active until the successor is approved.';
       el(".studio-origin").classList.remove("hidden");
       hooks.showStudio(); remember(); updateCount(); el("#studio-guidance").focus();
+      });
+    },
+    openDraft: function (item) {
+      if (busy) { hooks.showStudio(); message('Finish the current AI review first.', true); return; }
+      replaceWorking('Review this saved draft in place of the current working guidance?', function () {
+        reset(false); entry = Object.assign({}, item, {id:item.entry_id, working_draft:true});
+        var original = item.assistance && item.assistance.intake;
+        if (item.linked_feedback_ids.length && original) feedback = {id:item.linked_feedback_ids[0], question:original.question};
+        el('#studio-guidance').value = item.answer;
+        el('#studio-topic').value = feedback ? feedback.question : item.question;
+        el('#studio-topic').readOnly = !!feedback;
+        el('#studio-department').value = item.department || '';
+        setPrograms(item.programs || []);
+        el('.studio-origin').innerHTML = '<strong>Reviewing draft: ' + e(item.document_title) + '</strong><span>This will create a new revision of the same entry. The saved draft and failed test remain in its history. An AI review cannot waive the search failure.</span>';
+        el('.studio-origin').classList.remove('hidden');
+        hooks.showStudio(); remember(); updateCount(); el('#studio-guidance').focus();
+      });
     },
     signOut: function () {
       if (host) reset(false);

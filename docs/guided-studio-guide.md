@@ -24,6 +24,28 @@ An exact duplicate points to the existing source instead of producing a second
 copy. If a student failed to find existing information, inspect the recorded
 retrieval evidence; adding a duplicate is not a retrieval repair.
 
+## Understand a paused draft
+
+Drafts show three separate responsibilities: **AI writing/policy review**, **search
+tests**, and **staff approval**. The actual AI summary, model and quoted findings
+remain visible after saving. Manual revisions explicitly say that no AI review
+was used. Broad rule-based comparison flags remain expandable and are labelled
+separately from AI findings.
+
+For an existing-answer regression, the page shows the affected conversation,
+the answer/source the student should receive, and whether evidence was found
+before and after adding the draft privately. No original policy was deleted.
+Use **Copy issue for maintainer** to prepare a handoff; this copies a report and
+does not send a message. Staff are not expected to diagnose ranking changes.
+**Review guidance with AI** reopens the same entry, scope and original linked
+question. A genuine correction becomes a new revision and must pass all checks.
+Neither an AI review nor human approval can waive a failed retrieval check.
+
+Earlier runs that recorded only failed test IDs receive readable descriptions
+from the evaluation set when displayed. Their outcomes and stored audit records
+are unchanged. Missing historical passage rankings are explicitly disclosed;
+the page does not invent a cause. New failures retain the actual source passages.
+
 ## Correct existing knowledge
 
 Use **Edit** on a published admin-authored entry to prepare a successor in the same

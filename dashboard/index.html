@@ -283,7 +283,7 @@
       }
     </style>
     <link rel="stylesheet" href="admin.css?v=2" />
-    <link rel="stylesheet" href="studio.css?v=1" />
+    <link rel="stylesheet" href="studio.css?v=2" />
   </head>
   <body>
     <header>
@@ -371,8 +371,8 @@
         <!-- Tab: guarded drafts -->
         <div id="tab-drafts" class="hidden">
           <p class="intro">
-            Immutable draft revisions and their current workflow state. “Draft” means unpublished;
-            automatic checks and final human review are required before Publish becomes available.
+            See what the AI found, what the search tests found, and your next step.
+            Drafts stay private until the checks pass and staff approve publication.
           </p>
           <div id="drafts-list"></div>
         </div>
@@ -406,7 +406,8 @@
     </main>
 
     <script src="usage.js?v=2"></script>
-    <script src="studio.js?v=1"></script>
+    <script src="review.js?v=2"></script>
+    <script src="studio.js?v=2"></script>
     <script>
       var API = ""; // same origin (served from /dashboard/)
       var TOKEN_KEY = "msfea_admin_token";
@@ -724,147 +725,7 @@
         function latestRun(revisionId) {
           return _validationRuns.find(function (run) { return run.revision_id === revisionId; }) || null;
         }
-        var checkCatalog = [
-          { step: 'schema_source', name: 'Source and scope', waiting: 'Check the source, authority, department and program.' },
-          { step: 'candidate_index', name: 'Private test copy', waiting: 'Prepare a private copy without changing student answers.' },
-          { step: 'conflict_review', name: 'Related guidance', waiting: 'Compare this draft with existing guidance.' },
-          { step: 'positive_retrieval', name: 'Sample student questions', waiting: 'Make sure both sample questions find this answer.' },
-          { step: 'department_isolation', name: 'Department scope', waiting: 'Check that department-specific guidance stays in scope.' },
-          { step: 'unknown_department', name: 'Missing department', waiting: 'Check how the answer appears when a student gives no department.' },
-          { step: 'regression', name: 'Existing answers', waiting: 'Confirm existing tested answers are not lost.' }
-        ];
-        function shorten(value, limit) {
-          value = String(value || '').replace(/\s+/g, ' ').trim();
-          return value.length > limit ? value.slice(0, limit - 1) + '…' : value;
-        }
-        function flagLabel(reason) {
-          return {
-            exact_duplicate: 'Very similar guidance may already exist',
-            possible_duplicate: 'Similar guidance may already exist',
-            possible_numeric_conflict: 'A related passage uses a different number',
-            possible_negation_conflict: 'A related passage may say the opposite',
-            ai_duplicate: 'AI review: this claim is already covered',
-            ai_potential_conflict: 'AI review: these claims need your judgment',
-            ai_direct_conflict: 'AI review: these claims conflict',
-            ai_supersedes: 'AI review: a previous policy may need replacement'
-          }[reason] || 'This related passage needs a closer look';
-        }
-        function resultExplanation(result, item) {
-          var details = result.details || {};
-          if (result.step === 'schema_source') {
-            return result.status === 'passed' ? 'The source identity, authority and scope are complete.' :
-              ((details.errors || []).join(' ') || 'Some required source information needs correction.');
-          }
-          if (result.step === 'candidate_index') return result.status === 'passed' ?
-            'A private test copy was prepared. Nothing changed for students.' : 'The private test copy could not be prepared.';
-          if (result.step === 'conflict_review') {
-            var count = (details.flags || []).length;
-            return count ? count + ' related passage' + (count === 1 ? '' : 's') +
-              (count === 1 ? ' needs' : ' need') + ' your judgment below. This is not an automatic rejection.' :
-              'No potential conflict was flagged. A person must still review the source and scope.';
-          }
-          if (result.step === 'positive_retrieval') {
-            if (result.status === 'passed') return (details.cases || []).length > 2 ?
-              'The sample questions and original student question found this draft and its verification phrase.' :
-              'Both sample student questions found this draft and its verification phrase.';
-            var cases = details.cases || [];
-            if (cases.some(function (item) { return item.candidate_hit === false; }))
-              return 'At least one realistic sample question did not find this draft. Improve the entry’s focused title or question coverage, then test again. Keep the student question realistic.';
-            if (cases.some(function (item) { return item.evidence_hit === false; })) {
-              var phrase = (cases.find(function (testCase) { return testCase.evidence_hit === false; }) || {}).expected_evidence || item.expected_evidence || '';
-              return 'The draft was found, but the verification phrase “' + phrase + '” was not found in its answer. Copy a short phrase directly from the answer.';
-            }
-            return 'The draft appeared, but a realistic sample question did not clear the similarity gate. Review the entry’s topic and wording before trying again.';
-          }
-          if (result.step === 'department_isolation') return result.status === 'passed' ?
-            'The draft appears only for the departments it applies to.' : 'The department scope did not behave safely.';
-          if (result.step === 'unknown_department') return result.status === 'passed' ?
-            (item.department === 'all' ? 'Students who do not state a department can still receive this general guidance.' :
-              'Students who do not state a department still see which department this guidance applies to.') :
-            'The answer was unclear when no department was provided.';
-          if (result.step === 'regression') return result.status === 'passed' ?
-            'Existing tested answers remain retrievable.' : 'At least one existing tested answer would be lost.';
-          return result.status === 'passed' ? 'Check completed.' : 'This check needs correction.';
-        }
-        function validationMarkup(run, item) {
-          if (!run) return '<div class="validation-summary"><h4>Ready for automatic checks</h4><p>This safely tests the draft against a private copy of the knowledge base. Students will not see it.</p></div>';
-          var resultMap = {};
-          (run.results || []).forEach(function (result) { resultMap[result.step] = result; });
-          var stopped = run.status === 'failed';
-          var rows = checkCatalog.map(function (check) {
-            var result = resultMap[check.step];
-            var state = !result ? 'wait' : result.status === 'passed' ? 'pass' : 'fail';
-            var icon = state === 'pass' ? '✓' : state === 'fail' ? '!' : '·';
-            var explanation = result ? resultExplanation(result, item) :
-              (stopped ? 'Not run because an earlier check needs correction.' : check.waiting);
-            return '<div class="check-row ' + state + '"><span class="check-icon">' + icon + '</span>' +
-              '<span class="check-name">' + esc(check.name) + '</span><span class="check-explain">' + esc(explanation) + '</span></div>';
-          }).join('');
-          var conflict = resultMap.conflict_review;
-          var conflictDetails = conflict ? (conflict.details || {}) : {};
-          var related = conflictDetails.related || [];
-          var flagged = (conflictDetails.flags || []).map(function (flag) {
-            var candidate = related.find(function (item) { return item.id === flag.candidate_id; });
-            return { flag: flag, candidate: candidate };
-          }).filter(function (item) { return item.candidate; });
-          var primaryFindings = conflictDetails.assisted ? flagged.filter(function (item) { return item.flag.existing_claim; }) : flagged;
-          var findings = primaryFindings.slice(0, 8).map(function (item) {
-            if (item.flag.existing_claim) return '<div class="studio-finding decision"><strong>' +
-              esc(flagLabel(item.flag.reason)) + '</strong><p class="studio-finding-reason">' + esc(item.flag.explanation) +
-              '</p><div class="studio-claims"><div><span>Proposed claim</span><blockquote>' + esc(item.flag.proposed_claim).replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>') +
-              '</blockquote></div><div><span>Existing claim</span><blockquote>' + esc(item.flag.existing_claim).replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>') +
-              '</blockquote><small>' + esc(item.candidate.source_doc + ' › ' + item.candidate.section) +
-              '</small></div></div></div>';
-            return '<div class="finding"><strong>' + esc(flagLabel(item.flag.reason)) + '</strong>' +
-              esc(item.candidate.source_doc + ' › ' + item.candidate.section) + '<br />' +
-              esc(shorten(item.candidate.text, 430)) + '</div>';
-          }).join('');
-          var otherFlags = conflictDetails.assisted ? flagged.filter(function (item) { return !item.flag.existing_claim; }) : primaryFindings.slice(8);
-          if (otherFlags.length) findings += '<details class="studio-evidence"><summary>' + esc(otherFlags.length) +
-            ' additional rule-based flags to inspect before approving</summary>' + otherFlags.map(function (item) {
-              return '<details><summary>' + esc(flagLabel(item.flag.reason) + ' · ' + item.candidate.source_doc + ' › ' + item.candidate.section) +
-                '</summary><p>' + esc(item.candidate.text) + '</p></details>';
-            }).join('') + '</details>';
-          var allUnflagged = related.filter(function (candidate) {
-            return !flagged.some(function (item) { return item.candidate.id === candidate.id; });
-          });
-          var unflagged = allUnflagged.slice(0, 4);
-          var relatedDetails = unflagged.length ? '<details class="tech"><summary>See other guidance checked (' +
-            esc(unflagged.length) + ' of ' + esc(allUnflagged.length) + ' shown)</summary>' +
-            unflagged.map(function (candidate) {
-              return '<div class="snippet">' + esc(candidate.source_doc + ' › ' + candidate.section + '\n' + shorten(candidate.text, 430)) + '</div>';
-            }).join('') + '</details>' : '';
-          var regression = resultMap.regression;
-          var lostCases = regression && (regression.details || {}).lost_cases || [];
-          var regressionDetails = lostCases.length ? '<section class="studio-clarifications"><h4>Existing questions affected</h4><p>Make this entry more specific. Keep these student questions unchanged when checking the correction.</p>' +
-            lostCases.map(function (lost) {
-              return '<details><summary>' + esc(lost.question) + '</summary><p>' +
-                esc((lost.history || []).map(function (message) { return message.role + ': ' + message.content; }).join('\n')) +
-                '</p><p>Expected source evidence: ' + esc(Array.isArray(lost.evidence) ? lost.evidence.join('; ') : lost.evidence) + '</p></details>';
-            }).join('') + '</section>' : '';
-          var heading = run.status === 'passed' ? 'Automatic checks completed' :
-            run.status === 'failed' ? 'This draft needs a correction' : 'Checks are running';
-          var summary = run.status === 'passed' ? 'Next: review the related guidance and record your decision below.' :
-            run.status === 'failed' ? 'Nothing was published. Fix the failed item below; the remaining checks will run on the corrected revision.' :
-            'You can leave this page. Progress refreshes automatically.';
-          return '<div class="validation-summary ' + (run.status === 'passed' ? 'ready' : run.status === 'failed' ? 'failed' : '') +
-            '"><h4>' + heading + '</h4><p>' + summary + '</p></div><div class="check-list">' + rows + '</div>' +
-            findings + relatedDetails + regressionDetails + '<details class="tech"><summary>Technical audit record</summary><div class="snippet">Run ' +
-            esc(run.id) + '\nStatus: ' + esc(run.status) + '\nFingerprint: ' + esc(run.fingerprint) + '</div></details>';
-        }
-        function workflowMarkup(item, run) {
-          var reviewed = run && (run.reviews || []).length > 0;
-          var validationDone = run && run.status === 'passed';
-          var validating = item.state === 'validating' || (run && ['pending','running'].indexOf(run.status) >= 0);
-          function step(n, label, done, current, failed) {
-            return '<div class="workflow-step' + (done ? ' done' : failed ? ' failed' : current ? ' current' : '') + '" data-step="' + n + '">' + label + '</div>';
-          }
-          return '<div class="workflow-rail">' +
-            step(1, 'Draft captured', true, false, false) +
-            step(2, 'Validate & compare', validationDone, !validationDone && (validating || !run), run && run.status === 'failed') +
-            step(3, 'Named human review', reviewed, validationDone && !reviewed, false) +
-            step(4, 'Publish to chatbot', false, reviewed && item.state === 'ready', false) + '</div>';
-        }
+        function validationMarkup(run, item) { return KnowledgeReview.render(run, item); }
         $("drafts-list").innerHTML = drafts.map(function (item) {
           var run = latestRun(item.id);
           var reviews = run ? (run.reviews || []) : [];
@@ -919,16 +780,16 @@
           var actionButton = !run ?
             '<button class="run-validation" data-revision="' + esc(item.id) + '">Start safe checks</button>' :
             (['pending','running'].indexOf(run.status) >= 0 ? '<button disabled>Checks running…</button>' :
-            (needsCorrection ? '<button class="fix-draft">Fix this draft</button>' : ''));
-          return '<div class="card"><div class="badge-row"><span class="badge time">' + esc(item.state) + '</span><span class="badge time">Revision ' + esc(item.revision_number) + '</span></div>' +
-            workflowMarkup(item, run) +
-            '<div class="q-label">Source artifact</div><div class="q">' + esc(item.source_kind === 'admin_authored' ? item.document_title : 'Existing official document correction') + '</div>' +
+            (needsCorrection ? '<button class="fix-draft secondary">Open manual correction editor</button>' : ''));
+          return '<div class="card review-draft"><div class="badge-row"><span class="badge time">Private draft</span><span class="badge time">Revision ' + esc(item.revision_number) + '</span></div>' +
+            '<div class="q-label">Knowledge entry</div><div class="q">' + esc(item.source_kind === 'admin_authored' ? item.document_title : 'Existing official document correction') + '</div>' +
             '<div class="curated-meta">Contributed by ' + esc(item.created_by) + (item.authority_label ? ' · Authority: ' + esc(item.authority_label) : '') + (item.effective_date ? ' · Effective ' + esc(item.effective_date) : '') + '</div>' +
+            validationMarkup(run, item) +
+            '<details class="review-disclosure"><summary>Review the submitted guidance, scope and source</summary>' +
             '<div class="q-label">Question</div><div class="q">' + esc(item.question) + '</div>' +
             '<div class="q-label">Proposed answer — not live</div><div class="curated-answer">' + esc(item.answer) + '</div>' +
-            '<div class="curated-meta">Scope: ' + esc(item.department) + ' · Program: ' + esc((item.programs || []).join(', ')) + '</div>' +
+            '<div class="curated-meta">Scope: ' + esc(item.department === 'all' ? 'All departments' : item.department) + ' · Programs: ' + esc((item.programs || []).join(', ')) + '</div></details>' +
             '<details class="tech"><summary>Evidence and test cases</summary>' + evidence + '<div class="snippet">Representative: ' + esc(item.representative_question) + '\nParaphrase: ' + esc(item.paraphrase_question) + '\nExpected: ' + esc(item.expected_evidence) + '</div></details>' + prior +
-            validationMarkup(run, item) +
             recordedReviews +
             reviewPanel +
             correctionForm +
@@ -937,6 +798,27 @@
                 '" data-run="' + esc(run.id) + '">Publish to chatbot</button>' : '') +
               '<span class="status"></span></div></div>';
         }).join('');
+        document.querySelectorAll('.guided-correction').forEach(function (button) {
+          button.addEventListener('click', function () {
+            var item = drafts.find(function (value) { return value.id === Number(button.dataset.revision); });
+            KnowledgeStudio.openDraft(item);
+          });
+        });
+        document.querySelectorAll('.copy-review-issue').forEach(function (button) {
+          button.addEventListener('click', function () {
+            var item = drafts.find(function (value) { return value.id === Number(button.dataset.revision); });
+            var text = KnowledgeReview.diagnostic(item, latestRun(item.id));
+            var status = button.parentNode.querySelector('.status');
+            if (!navigator.clipboard) { status.textContent = 'Copy the report from the text box below.'; showReport(); return; }
+            navigator.clipboard.writeText(text).then(function () { status.textContent = 'Copied. Share this with the project maintainer; no message was sent.'; }).catch(showReport);
+            function showReport() {
+              var field = button.parentNode.querySelector('textarea');
+              if (!field) { field = document.createElement('textarea'); field.className = 'review-report-text'; field.setAttribute('aria-label', 'Issue report for maintainer'); field.readOnly = true; button.parentNode.appendChild(field); }
+              field.value = text; field.focus(); field.select();
+              status.textContent = 'Select and copy this report for the project maintainer.';
+            }
+          });
+        });
         Array.prototype.forEach.call(document.querySelectorAll('.fix-panel'), function (panel) {
           bindSourceKind(panel);
         });
@@ -964,11 +846,14 @@
               status.className = 'status err'; status.textContent = 'Question and answer are required.'; return;
             }
             button.disabled = true; status.className = 'status'; status.textContent = 'Saving corrected revision…';
+            var original = drafts.find(function (draft) { return draft.entry_id === Number(button.getAttribute('data-entry')); });
+            var correctedDraft = collectDraft(panel, question, answer, null);
+            correctedDraft.linked_feedback_ids = original ? original.linked_feedback_ids : [];
             fetch(API + '/admin/api/curated/edit', {
               method: 'POST', headers: headers(),
               body: JSON.stringify({
                 id: Number(button.getAttribute('data-entry')),
-                draft: collectDraft(panel, question, answer, null)
+                draft: correctedDraft
               })
             }).then(function (response) {
               return response.json().then(function (body) {

@@ -54,6 +54,9 @@ jobs:
       - name: Widget submission guards
         run: node --test tests/widget_submission.test.cjs
 
+      - name: Guided review explanations
+        run: node --test tests/studio_review.test.cjs
+
       - name: Type-check (mypy --strict)
         run: mypy --strict src eval
 

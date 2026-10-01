@@ -187,7 +187,10 @@ def enqueue(intake: Intake, request_key: str) -> str:
         if intake.entry_id is not None:
             entry = conn.execute(
                 "SELECT r.source_kind FROM curated_entries e JOIN curated_revisions r"
-                " ON r.id = e.active_revision_id WHERE e.id = %s", (intake.entry_id,),
+                " ON r.entry_id = e.id JOIN curation_revision_state s ON s.revision_id=r.id"
+                " WHERE e.id = %s AND (r.id=e.active_revision_id OR"
+                " (e.active_revision_id IS NULL AND s.state IN ('draft','blocked')))"
+                " ORDER BY r.revision_number DESC LIMIT 1", (intake.entry_id,),
             ).fetchone()
             if entry is None or entry[0] != "admin_authored":
                 raise ValueError("Use the existing-document editor to correct an official-source entry.")
@@ -204,6 +207,19 @@ def enqueue(intake: Intake, request_key: str) -> str:
              PROMPT_VERSION),
         )
     return review_id
+
+
+def accepted_reviews() -> dict[int, dict[str, Any]]:
+    """Keep the actual AI feedback visible after draft handoff; one dashboard query."""
+    with _connect() as conn:
+        rows = conn.execute(
+            "SELECT accepted_revision_id, id, model, prompt_version, intake, report"
+            " FROM curation_assistance WHERE accepted_revision_id IS NOT NULL"
+        ).fetchall()
+    return {int(row[0]): {
+        "id": str(row[1]), "model": row[2], "prompt_version": row[3],
+        "intake": row[4], "report": row[5],
+    } for row in rows}
 
 
 def get_review(review_id: str) -> dict[str, Any] | None:
@@ -600,6 +616,16 @@ def accept_draft(review_id: str, payload: DraftPayload, actor: str) -> tuple[int
                 " ORDER BY revision_number DESC LIMIT 1", (entry_id,),
             ).fetchone()
             predecessor, number = int(prior[0]), int(prior[1]) + 1
+        attached = conn.execute(
+            "SELECT r.id FROM curated_revisions r JOIN curation_assistance a"
+            " ON a.accepted_revision_id=r.id WHERE r.entry_id=%s AND r.content_hash=%s",
+            (entry_id, _content_hash(payload)),
+        ).fetchone()
+        if attached:
+            raise ValueError(
+                "This identical reviewed draft already exists. Continue with its recorded checks "
+                "in Drafts, or make a real correction before saving another revision."
+            )
         revision_id = _insert_revision(conn, entry_id, number, predecessor, payload, actor)
         conn.execute(
             "UPDATE curation_assistance SET accepted_revision_id = %s WHERE id = %s",

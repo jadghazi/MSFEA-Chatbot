@@ -8,6 +8,16 @@ short: what changed, why, what's next, what's blocked.
 
 ## 2026-10-01 — Guided Knowledge Studio
 
+- Follow-up: replaced the opaque draft checklist with explicit AI feedback,
+  search-test impact and next-action panels. The older advising failure now shows
+  the exact letter-request conversation and expected source. Added read-only
+  historical explanations, copied maintainer reports and guided corrections of
+  unpublished entries. Quota failure and input recovery were browser-tested.
+  See [the clarity review](guided-studio-clarity-review.md) for contracts and limits.
+  Follow-up verification: 368 Python tests passed (two skips), 9 explanation and
+  10 widget Node tests passed, lint/strict typing passed, and live demo context
+  recall remained 123/125. Original student sources and Oracle remained unchanged.
+
 - Added one shared writing/review composer for direct intake and unanswered
   questions, with exact source-claim comparisons, explicit scope, verified AI
   suggestions, immutable draft handoff and mandatory human review.

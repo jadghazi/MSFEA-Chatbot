@@ -18,7 +18,7 @@ from time import perf_counter
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Literal, cast
+from typing import Any, Literal, cast
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,7 +33,7 @@ from msfea_bot.api.abuse import BodyLimitMiddleware, RequestGuard, fingerprint, 
 from msfea_bot.observability.usage import count, snapshot
 from msfea_bot.observability.analytics import analytics
 from msfea_bot.config import settings
-from msfea_bot.curation.assistance import Intake, accept_draft, enqueue, get_review
+from msfea_bot.curation.assistance import Intake, accept_draft, accepted_reviews, enqueue, get_review
 from msfea_bot.curation.migrations import migrate as migrate_curation
 from msfea_bot.curation.publication import PublicationError, request_publication, retire_entry
 from msfea_bot.curation.revisions import (
@@ -680,10 +680,12 @@ class RevisionOut(BaseModel):
     predecessor_question: str | None
     predecessor_answer: str | None
     linked_feedback_ids: list[int]
+    assistance: dict[str, Any] | None = None
 
 
 @app.get("/admin/api/revisions", response_model=list[RevisionOut])
 def admin_revisions(_: None = Depends(require_admin)) -> list[RevisionOut]:
+    reviews = accepted_reviews()
     return [
         RevisionOut(
             **{
@@ -692,6 +694,7 @@ def admin_revisions(_: None = Depends(require_admin)) -> list[RevisionOut]:
                 if key not in {"content_hash", "created_at"}
             },
             created_at=revision.created_at.isoformat(),
+            assistance=reviews.get(revision.id),
         )
         for revision in list_revisions()
     ]

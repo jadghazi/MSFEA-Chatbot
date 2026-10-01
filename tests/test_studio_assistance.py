@@ -105,6 +105,48 @@ def test_short_negative_answer_keeps_its_rule_and_literal_spacing() -> None:
     assert assistance.claim_units(text) == {"c1": text}
 
 
+def test_saved_draft_keeps_real_ai_feedback_and_can_reenter_guided_review(
+    studio_database: str, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    report = checked_report(json.dumps(response()), INTAKE, EVIDENCE)
+    review_id = saved_review(studio_database, report)
+    entry_id, revision_id = accept_draft(review_id, payload(report), "CDC staff")
+    monkeypatch.setattr(settings, "admin_token", "test-admin")
+    client = TestClient(api.app)
+    assert client.get('/admin/api/revisions').status_code == 401
+    result = client.get('/admin/api/revisions', headers={"Authorization": "Bearer test-admin"})
+    assert result.status_code == 200
+    stored = next(item for item in result.json() if item['id'] == revision_id)['assistance']
+    assert stored['id'] == review_id
+    assert stored['model'] == 'test-model'
+    assert stored['report'] == report
+    assert stored['intake']['guidance'] == GUIDANCE
+    with psycopg.connect(studio_database, autocommit=True) as conn:
+        conn.execute("UPDATE curation_revision_state SET state='blocked' WHERE revision_id=%s", (revision_id,))
+    monkeypatch.setattr(assistance, "validate_intake", lambda value: value)
+    retry = INTAKE.model_copy(update={"entry_id": entry_id, "guidance": GUIDANCE.replace('Thursday', 'Monday')})
+    next_review = enqueue(retry, uuid4().hex)
+    assert assistance.get_review(next_review)['intake']['entry_id'] == entry_id
+    next_response = response()
+    next_response['expected_evidence'] = 'Monday from 2 to 4 p.m.'
+    next_report = checked_report(json.dumps(next_response), retry, EVIDENCE)
+    new_id = saved_review(studio_database, next_report, retry)
+    _, corrected_id = accept_draft(new_id, payload(next_report), "CDC staff")
+    correction = next(item for item in list_revisions() if item.id == corrected_id)
+    assert correction.revision_number == 2 and correction.predecessor_revision_id == revision_id
+    assert not correction.active and correction.linked_feedback_ids == [7]
+
+
+def test_identical_draft_from_a_second_ai_review_has_a_readable_conflict(
+    studio_database: str,
+) -> None:
+    report = checked_report(json.dumps(response()), INTAKE, EVIDENCE)
+    entry_id, _ = accept_draft(saved_review(studio_database, report), payload(report), 'CDC staff')
+    same = INTAKE.model_copy(update={'entry_id': entry_id})
+    with pytest.raises(ValueError, match='identical reviewed draft already exists'):
+        accept_draft(saved_review(studio_database, report, same), payload(report), 'CDC staff')
+
+
 def test_regression_failure_shows_the_original_question_and_history(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

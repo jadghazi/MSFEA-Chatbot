@@ -511,6 +511,16 @@ def _regression(dsn: str) -> tuple[bool, dict[str, Any]]:
             lost_cases.append({
                 "id": item.id, "question": item.question, "evidence": item.evidence,
                 "source_doc": item.source_doc,
+                "source_section": item.source_section,
+                "expected_answer": item.expected_answer_or_behavior,
+                "before_sources": [
+                    {"source_doc": chunk.source_doc, "section": chunk.section, "text": chunk.text}
+                    for chunk in before if evidence_present([chunk.text], item.evidence)
+                ][:2],
+                "after_sources": [
+                    {"source_doc": chunk.source_doc, "section": chunk.section, "text": chunk.text}
+                    for chunk in after[:3]
+                ],
                 "history": [message.__dict__ for message in item.history],
             })
     premise_baseline_failures: list[str] = []
@@ -870,6 +880,7 @@ def record_human_review(
 
 def validation_runs() -> list[dict[str, Any]]:
     """Return complete run/check/review state for the authenticated dashboard."""
+    from msfea_bot.curation.explanations import explain_regression
     with _connect() as conn:
         runs = conn.execute(
             "SELECT id, revision_id, fingerprint, status, workflow_execution_id,"
@@ -890,7 +901,7 @@ def validation_runs() -> list[dict[str, Any]]:
             {
                 "step": str(row[1]),
                 "status": str(row[2]),
-                "details": row[3],
+                "details": explain_regression(row[3]) if str(row[1]) == "regression" else row[3],
                 "case_ids": row[4],
             }
         )

@@ -26,3 +26,16 @@ Acceptance conditions, recorded before implementation:
 Deliberately deferred: embedding synthetic aliases or rewritten answer text.
 Existing Q&A/title chunking already accepts focused curated sources. Additional
 retrieval representations need a separate measured comparison before adoption.
+
+Follow-up interface acceptance:
+
+- Staff can see the actual AI feedback both before and after saving, including the
+  model and literal compared claims. Manual revisions identify the absence of AI.
+- A failed existing-answer check names the affected conversation and expected
+  answer/source, explains the impact, and gives a maintainer handoff action.
+- Older test IDs receive readable context without changing their recorded outcome
+  or fabricating missing historical rankings.
+- Search problems, policy decisions and incomplete guidance have distinct next
+  steps. An AI/provider error cannot be presented as rejection of the guidance.
+- Corrections preserve entry identity, scope and original question. No UI action
+  can weaken or bypass the existing publication guard.

@@ -5,6 +5,10 @@ connected to, migrated, restarted or deployed during this work.
 
 ## Delivered behavior
 
+The subsequent interface rework and historical-diagnostic handling are described
+in the [clarity review](guided-studio-clarity-review.md). The checks below record
+the original implementation; the progress journal records the follow-up tests.
+
 **Add knowledge** and **Needs attention** open the same guided composer. Staff
 provide approved facts, department scope and applicable programs. The assistant
 suggests a focused title and realistic questions, checks topic/question coverage,
