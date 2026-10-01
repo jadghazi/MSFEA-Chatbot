@@ -13,6 +13,10 @@ claims** section above the word diff. Original input remains unchanged until use
 the admin can edit/discard. Human-edited proposals clearly identify the earlier
 AI explanations as applying to the offered version. Use starts fresh review;
 normal source confirmation, private tests and publication approval still apply.
+The clean proposed answer is the primary view; word changes and extra evidence
+are expandable. Essential unanswered questions appear directly under the answer.
+The verifier can add a missing question even if the writer omitted it, rather
+than only selecting among the writer's questions.
 
 Code rejects unknown evidence, invented numbers/URLs, invalid claim/sentence references,
 disputed-original references used to justify a correction, and unexplained removal

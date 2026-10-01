@@ -33,6 +33,8 @@ test('missing facts are questions and human choices explicitly require fresh rev
  assert.match(html,/Discard suggestion/);
  assert.match(html,/publication approval are still required/);
  assert.match(html,/Read your original answer/);
+ assert.ok(html.indexOf('studio-suggested-answer')<html.indexOf('See highlighted word changes'));
+ assert.ok(html.indexOf('These details still need you')<html.indexOf('See highlighted word changes'));
 });
 test('large edits stay bounded and show both original and proposed text',()=>{
  const html=suggestion.diff('before '.repeat(1200),'after '.repeat(1200));

@@ -51,7 +51,7 @@ class Verification(BaseModel):
     all_changes_explained: bool
     scope_preserved: bool
     one_focused_topic: bool
-    necessary_missing_detail_indexes: list[int] = Field(max_length=4)
+    missing_details: list[str] = Field(max_length=4)
     explanation: str = Field(min_length=10, max_length=900)
 
 
@@ -252,6 +252,9 @@ Nor does "normally" establish a mandatory rule requiring an exception petition.
 A general petition/exception procedure does not establish whether the requested
 timing is permitted or which approval procedure applies to it. Without explicit
 source confirmation, keep that requested exception as a missing_details question.
+Do not write "any exception to this requirement" after stating merely normal timing.
+Instead state the normal timing and, if useful, that these sources do not explicitly
+resolve the requested alternative. Do not imply an approval route that is not stated.
 If the sources do not resolve the requested exception, state only supported guidance
 and ask a specific missing_details question; never fabricate a yes/no answer.
 A short complete answer needs no extra length. Missing unsupported details
@@ -294,17 +297,14 @@ DATA:\n""" + json.dumps({"intake":intake.model_dump(),"feedback":context,"facts"
             "A general petition procedure does not establish that normally-completed timing is "
             "a mandatory rule or that a winter internship can be approved via that procedure. "
             "If no source explicitly resolves the requested exception, a missing_details question "
-            "about that permission is essential; select it and do not discard it as already answered "
+            "about that permission is essential; include it and do not discard it as already answered "
             "by generic guidance. "
-            "A pending question in missing_details is not an assertion. Return zero-based "
-            "necessary_missing_detail_indexes selecting ONLY questions essential to answering the "
-            "original supplied question. Exclude optional follow-ups and questions already answered "
-            "by the proposal. Keep genuinely missing requested facts as questions. Return only structured JSON. DATA:\n"
+            "A pending question in missing_details is not an assertion. Return missing_details with "
+            "ONLY questions essential to answering the original supplied question, including any "
+            "the writer omitted. Remove optional follow-ups and questions already answered by the "
+            "proposal. Keep genuinely missing requested facts as questions. Return only structured JSON. DATA:\n"
             + json.dumps({"original":intake.model_dump(),"facts":available,"proposal":proposal.model_dump()},ensure_ascii=False)
         ).text)
-        if any(index < 0 or index >= len(proposal.missing_details)
-               for index in verification.necessary_missing_detail_indexes):
-            raise ValueError("The verification references an unknown missing detail.")
         if verification.unsupported_sentences or not all((verification.all_changes_explained,verification.scope_preserved,verification.one_focused_topic)):
             error = "unsupported_suggestion"
             rejection_reason = anonymize(verification.explanation)
@@ -312,8 +312,7 @@ DATA:\n""" + json.dumps({"intake":intake.model_dump(),"feedback":context,"facts"
         answer = " ".join(sentence.text.strip() for sentence in proposal.sentences)
         used = list(dict.fromkeys(ref for sentence in proposal.sentences for ref in sentence.support_ids))
         result = {"context":context,"suggested_answer":answer,"explanation":proposal.explanation,
-                  "missing_details":[proposal.missing_details[index] for index in
-                                     dict.fromkeys(verification.necessary_missing_detail_indexes)],
+                  "missing_details":list(dict.fromkeys(anonymize(question) for question in verification.missing_details)),
                   "verification":verification.model_dump(),
                   "claim_changes":[{**change.model_dump(),
                                       "before":available[change.original_claim_id]['text'],

@@ -326,6 +326,7 @@
         editor.addEventListener('input', function () {
           proposal.edited=editor.value; remember();
           node.querySelector('.studio-tracked-answer').innerHTML=StudioSuggestion.diff(job.intake.guidance,editor.value);
+          node.querySelector('.studio-suggested-answer').textContent=editor.value;
           node.querySelector('.studio-suggestion-verification').textContent='You edited this suggestion. The previous AI check applies to the offered wording; your version will receive a fresh review.';
         });
         node.querySelector('.studio-suggestion-edit').addEventListener('click', function () {

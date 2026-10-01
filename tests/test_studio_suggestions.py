@@ -50,7 +50,7 @@ def proposal() -> dict:
 
 def verification() -> dict:
     return {"unsupported_sentences":[],"all_changes_explained":True,"scope_preserved":True,
-            "necessary_missing_detail_indexes":[],
+            "missing_details":[],
             "one_focused_topic":True,"explanation":"Both credit facts are supported and the original course value is preserved."}
 
 
@@ -252,7 +252,7 @@ def test_missing_facts_remain_questions_without_becoming_canonical_text(
     offered={"sentences":[proposal()["sentences"][0]],"explanation":"The supplied facts do not provide office opening hours.",
              "missing_details":["What are the approved office opening hours?"],"claim_changes":[]}
     checked=verification()
-    checked["necessary_missing_detail_indexes"]=[0]
+    checked["missing_details"]=offered["missing_details"]
     model(monkeypatch,offered=offered,verified=checked)
     job_id=suggestions.enqueue(parent(_publication_database),None,uuid4().hex)
     assistance.process_next()
@@ -315,16 +315,21 @@ def test_official_source_correction_stays_in_source_ingestion_flow(_publication_
         suggestions.enqueue(None,revision_id,uuid4().hex)
 
 
-def test_invalid_missing_detail_reference_rejects_suggestion(
+def test_verifier_adds_essential_question_omitted_by_writer(
     _publication_database: str,monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    intake=INTAKE.model_copy(update={'guidance':'The new CDC alumni networking desk helps students discuss networking.',
+                                     'question':'What are the opening hours of the new CDC alumni networking desk?'})
+    offered={'sentences':[{'text':intake.guidance,'support_ids':['original:c1']}],
+             'explanation':'No approved opening hours are provided.','claim_changes':[],'missing_details':[]}
     checked=verification()
-    checked["necessary_missing_detail_indexes"]=[5]
-    model(monkeypatch,verified=checked)
-    job_id=suggestions.enqueue(parent(_publication_database),None,uuid4().hex)
+    checked['missing_details']=['What are the approved opening hours of the new CDC alumni networking desk?']
+    model(monkeypatch,offered=offered,verified=checked)
+    job_id=suggestions.enqueue(parent(_publication_database,intake),None,uuid4().hex)
     assistance.process_next()
     job=suggestions.get(job_id)
-    assert job and job["status"]=="failed" and 'suggested_answer' not in job["report"]
+    assert job and job['status']=='completed' and job['report']['missing_details']==checked['missing_details']
+    assert job['report']['suggested_answer']==intake.guidance
 
 
 def test_selecting_an_edited_suggestion_enqueues_fresh_review_and_records_choice(
