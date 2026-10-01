@@ -32,7 +32,7 @@
       return '<div class="review-turn"><span>' + (message.role === 'user' ? 'Student' : 'Previous bot reply') + '</span><p>' + e(message.content) + '</p></div>';
     }).join('') + '<div class="review-turn current"><span>Student’s follow-up</span><p>' + e(lost.question || ('Test ' + lost.id)) + '</p></div></div>';
   }
-  function ai(data) {
+  function ai(data, allowUpdates) {
     if (!data || !data.report) return '<section class="review-ai missing"><div class="review-section-head"><span class="review-label">AI WRITING & POLICY REVIEW</span><span class="review-chip neutral">Not used for this revision</span></div><h4>No AI feedback was recorded</h4><p>This revision was saved through the manual editor. The search checks below do not constitute an AI policy review.</p></section>';
     var report = data.report;
     var decision = report.requires_decision || report.blocked || report.classification === 'duplicate';
@@ -42,7 +42,8 @@
       (typeof report.question_supported === 'boolean' ? '<span>Question check · AI says: <strong>' + (report.question_supported ? 'guidance covers the supplied question or topic' : 'approved details are missing') + '</strong></span>' : '') + '</div>' +
       (report.clarifications && report.clarifications.length ? '<div class="review-next"><strong>What to add before continuing</strong><ul>' + report.clarifications.map(function (item) { return '<li>' + e(item) + '</li>'; }).join('') + '</ul></div>' : '') +
       (report.findings || []).map(function (finding) {
-        return '<article class="review-claim"><div class="review-model">AI finding · ' + e(labels[finding.category] || finding.category) + '</div><p>' + e(finding.explanation) + '</p><div class="studio-claims"><div><span>Your proposed claim</span><blockquote>' + quote(finding.proposed_claim) + '</blockquote></div><div><span>Existing policy claim</span><blockquote>' + quote(finding.existing_claim) + '</blockquote><small>' + e(source(finding.source_doc)) + ' › ' + e(finding.section) + '</small></div></div><p class="review-caption">Staff must verify whether the original policy needs correcting or this is an authorized, clearly scoped exception.</p>' + (finding.entry_id ? '<button type="button" class="studio-update secondary" data-entry="' + e(finding.entry_id) + '">Open existing entry as an update</button>' : '') + '</article>';
+        var next = finding.category === 'duplicate' ? 'This claim is already covered. Keep the existing rule unless you are making an approved update.' : finding.category === 'complementary' ? 'Confirm that the added detail applies to the stated scope.' : finding.entry_id ? 'Verify the approved change, then record whether it replaces this entry’s existing rule or defines a scoped exception.' : 'Correct the proposed guidance or define an approved exception and its scope. An official policy change must be reviewed at its source.';
+        return '<article class="review-claim"><div class="review-model">AI finding · ' + e(labels[finding.category] || finding.category) + '</div><p>' + e(finding.explanation) + '</p><div class="studio-claims"><div><span>Your proposed claim</span><blockquote>' + quote(finding.proposed_claim) + '</blockquote></div><div><span>Existing policy claim</span><blockquote>' + quote(finding.existing_claim) + '</blockquote><small>' + e(source(finding.source_doc)) + ' › ' + e(finding.section) + '</small></div></div><p class="review-caption">' + next + '</p>' + (finding.entry_id && allowUpdates !== false ? '<button type="button" class="studio-update secondary" data-entry="' + e(finding.entry_id) + '">Open existing entry as an update</button>' : '') + '</article>';
       }).join('') +
       (!(report.findings || []).length ? '<p class="review-caption">The AI did not identify a relevant duplicate or conflict in the passages it reviewed. This does not guarantee that every policy was checked.</p>' : '') +
       '<details class="review-disclosure"><summary>See the AI’s suggested title and test questions</summary><p><strong>' + e((report.draft || {}).document_title) + '</strong></p><ol><li>' + e((report.draft || {}).representative_question) + '</li><li>' + e((report.draft || {}).paraphrase_question) + '</li></ol><p>The factual guidance was preserved verbatim. These suggestions organize and test it.</p></details>' +
@@ -99,5 +100,11 @@
       }).join('') + '</details></section>' : '') +
       (run ? '<details class="review-disclosure review-audit"><summary>Technical record for maintainers</summary><p>Run: ' + e(run.id) + '<br>Fingerprint: ' + e(run.fingerprint) + '</p></details>' : '');
   }
-  return {render:render, ai:ai, diagnostic:diagnostic};
+  function externalPolicyConflict(findings, entryId) {
+    return findings.some(function (finding) {
+      return ['direct_conflict','supersedes'].indexOf(finding.category) >= 0 &&
+        (entryId == null || finding.entry_id !== entryId);
+    });
+  }
+  return {render:render, ai:ai, diagnostic:diagnostic, externalPolicyConflict:externalPolicyConflict};
 }));

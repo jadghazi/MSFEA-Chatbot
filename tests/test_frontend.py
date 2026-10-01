@@ -56,7 +56,9 @@ def test_admin_dashboard_uses_guarded_drafts_not_immediate_publication() -> None
     assert "/admin/api/revisions/publish" in page
     assert "/admin/api/curated/retire" in page
     studio = (ROOT / "dashboard" / "studio.js").read_text(encoding="utf-8")
-    assert "Save draft & run checks" in studio
+    assert "Continue to checks & previews" in studio
+    assert "/admin/api/studio/workspaces/" in studio
+    assert "/admin/api/studio/approve" in studio
     assert "Drafts are never visible to students" in page
     assert "Save replacement draft" in page
     assert "the live answer is unchanged" in page

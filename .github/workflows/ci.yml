@@ -55,7 +55,7 @@ jobs:
         run: node --test tests/widget_submission.test.cjs
 
       - name: Guided review explanations
-        run: node --test tests/studio_review.test.cjs
+        run: node --test tests/studio_review.test.cjs tests/studio_preview.test.cjs
 
       - name: Type-check (mypy --strict)
         run: mypy --strict src eval

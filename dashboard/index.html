@@ -283,7 +283,7 @@
       }
     </style>
     <link rel="stylesheet" href="admin.css?v=2" />
-    <link rel="stylesheet" href="studio.css?v=2" />
+    <link rel="stylesheet" href="studio.css?v=4" />
   </head>
   <body>
     <header>
@@ -406,8 +406,9 @@
     </main>
 
     <script src="usage.js?v=2"></script>
-    <script src="review.js?v=2"></script>
-    <script src="studio.js?v=2"></script>
+    <script src="review.js?v=4"></script>
+    <script src="studio_preview.js?v=1"></script>
+    <script src="studio.js?v=7"></script>
     <script>
       var API = ""; // same origin (served from /dashboard/)
       var TOKEN_KEY = "msfea_admin_token";
@@ -649,7 +650,6 @@
           showStudio: function () { selectTab('create'); },
           onSaved: function (error) {
             loadAll(function () {
-              selectTab('drafts');
               if (error) $("banner").innerHTML = '<div class="banner err">Draft saved. Start its automatic checks below: ' + esc(error) + '</div>';
             });
           }
@@ -728,6 +728,9 @@
         function validationMarkup(run, item) { return KnowledgeReview.render(run, item); }
         $("drafts-list").innerHTML = drafts.map(function (item) {
           var run = latestRun(item.id);
+          if (item.assistance) {
+            return '<div class="card"><div class="badge-row"><span class="badge time">Private draft · Version ' + esc(item.revision_number) + '</span></div><div class="q">' + esc(item.document_title) + '</div><p class="intro">' + esc(item.state === 'validating' ? 'Private checks are running.' : item.state === 'publishing' ? 'Publication is in progress.' : 'Continue the guided review, inspect student previews, and approve in the same workspace.') + '</p><div class="actions"><button class="resume-studio" data-revision="' + esc(item.id) + '">Continue in Knowledge Studio</button></div></div>';
+          }
           var reviews = run ? (run.reviews || []) : [];
           var reviewed = reviews.length > 0;
           var conflictResult = run && (run.results || []).find(function (result) { return result.step === 'conflict_review'; });
@@ -798,6 +801,11 @@
                 '" data-run="' + esc(run.id) + '">Publish to chatbot</button>' : '') +
               '<span class="status"></span></div></div>';
         }).join('');
+        document.querySelectorAll('.resume-studio').forEach(function (button) {
+          button.addEventListener('click', function () {
+            KnowledgeStudio.resumeDraft(drafts.find(function (item) { return item.id === Number(button.dataset.revision); }));
+          });
+        });
         document.querySelectorAll('.guided-correction').forEach(function (button) {
           button.addEventListener('click', function () {
             var item = drafts.find(function (value) { return value.id === Number(button.dataset.revision); });
@@ -976,7 +984,7 @@
           (retrieved.length ? retrieved.map(function (snippet) { return '<div class="snippet">' + esc(snippet) + '</div>'; }).join('') :
             '<p>No retrieved excerpts were recorded.</p>') + '</details>';
         card.querySelector(".queue-studio").addEventListener("click", function () {
-          if (relatedDraft) selectTab('drafts');
+          if (relatedDraft) KnowledgeStudio.resumeDraft(relatedDraft);
           else KnowledgeStudio.openQuestion(it);
         });
         card.querySelector(".dismiss").addEventListener("click", function (event) {

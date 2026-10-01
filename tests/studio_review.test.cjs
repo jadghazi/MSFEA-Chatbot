@@ -5,6 +5,13 @@ const ai = {model:'recorded-model', report:{classification:'new_information', su
 const item = {id:1, source_kind:'admin_authored', document_title:'CDC Weekly Advising Window', answer:'Thursday, 2–4 p.m.', assistance:ai};
 const run = {id:'recorded-run', status:'failed', results:[{step:'regression', status:'failed', details:{lost_cases:[{id:'followup-letter-location', question:'Where do I get it?', history:[{role:'user',content:'Can the CDC provide a required-internship letter?'},{role:'assistant',content:'Yes, it can.'}], expected_answer:'Request the letter through the CDC letter request form.', source_doc:'summer-training-guidelines-2026.md', source_section:'Requesting a Letter'}]}}]};
 
+test('a new entry cannot treat an official conflict with no entry ID as its own predecessor', () => {
+  assert.equal(review.externalPolicyConflict([{category:'direct_conflict',entry_id:null}], null), true);
+  assert.equal(review.externalPolicyConflict([{category:'supersedes',entry_id:2}], 2), false);
+  assert.equal(review.externalPolicyConflict([{category:'direct_conflict',entry_id:1}], 2), true);
+  assert.equal(review.externalPolicyConflict([{category:'potential_conflict',entry_id:null}], null), false);
+});
+
 test('a regression shows the conversation, expected answer and a maintainer action above positive AI advice', () => {
   const html = review.render(run,item);
   assert.match(html,/Can the CDC provide a required-internship letter/);
@@ -71,4 +78,12 @@ test('missing coverage is explicit AI advice and never displayed as a passed che
   assert.match(html,/approved details are missing/);
   assert.match(html,/Provide the approved eligibility conditions/);
   assert.doesNotMatch(html,/guidance covers the supplied question/);
+});
+
+test('saved workspaces show an actionable replacement explanation without a second update action', () => {
+  const html = review.ai({model:'test-model',report:{...ai.report,findings:[{category:'direct_conflict',entry_id:2,proposed_claim:'Tuesday',existing_claim:'Thursday'}]}},false);
+  assert.match(html,/replaces this entry’s existing rule/);
+  assert.doesNotMatch(html,/Open existing entry as an update/);
+  const duplicate = review.ai({model:'test-model',report:{...ai.report,findings:[{category:'duplicate',entry_id:2,proposed_claim:'No booking',existing_claim:'No booking'}]}});
+  assert.match(duplicate,/This claim is already covered/);
 });
