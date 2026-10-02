@@ -33,8 +33,9 @@ test('missing facts are questions and human choices explicitly require fresh rev
  assert.match(html,/Discard suggestion/);
  assert.match(html,/publication approval are still required/);
  assert.match(html,/Read your original answer/);
- assert.ok(html.indexOf('studio-suggested-answer')<html.indexOf('See highlighted word changes'));
- assert.ok(html.indexOf('These details still need you')<html.indexOf('See highlighted word changes'));
+ assert.ok(html.indexOf('studio-tracked-answer')<html.indexOf('studio-suggested-answer'));
+ assert.doesNotMatch(html,/See highlighted word changes/);
+ assert.ok(html.indexOf('studio-tracked-answer')<html.indexOf('<details'));
 });
 test('large edits stay bounded and show both original and proposed text',()=>{
  const html=suggestion.diff('before '.repeat(1200),'after '.repeat(1200));
@@ -59,4 +60,13 @@ test('claim corrections cannot inject HTML into explanations or source quotes',(
  const html=suggestion.card(corrected);
  assert.doesNotMatch(html,/<script>|<iframe>|<img|<svg/);
  assert.match(html,/&lt;script/);
+});
+test('source concerns are visible warnings and keep all human choices available',()=>{
+ const html=suggestion.card({...job,report:{...job.report,warnings:['Verify 6 and 2 in the attached source.','<script>bad</script>']}});
+ assert.match(html,/Check these details before using this draft/);
+ assert.match(html,/Verify 6 and 2/);
+ assert.match(html,/&lt;script&gt;bad/);
+ for(const label of ['Use & review again','Edit suggestion','Discard suggestion']) assert.ok(html.includes(label));
+ assert.ok(html.indexOf('Verify 6 and 2')<html.indexOf('studio-tracked-answer'));
+ assert.doesNotMatch(html,/<script>/);
 });

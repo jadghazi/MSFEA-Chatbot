@@ -1,4 +1,4 @@
-"""Answer suggestions cannot invent facts or bypass review/publication authority."""
+"""Answer suggestions show factual warnings without bypassing fresh review."""
 
 from __future__ import annotations
 
@@ -170,7 +170,7 @@ def test_original_link_replacement_requires_explanation_and_existing_kb_link() -
         suggestions.checked_proposal(json.dumps(offered),available,intake)
 
 
-def test_hidden_qualifier_change_is_rejected_by_verifier(
+def test_hidden_qualifier_change_is_shown_with_verifier_warning(
     _publication_database: str,monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     intake=INTAKE.model_copy(update={'guidance':'The internship must be completed in summer.'})
@@ -184,7 +184,8 @@ def test_hidden_qualifier_change_is_rejected_by_verifier(
     job_id=suggestions.enqueue(parent(_publication_database,intake),None,uuid4().hex)
     assistance.process_next()
     job=suggestions.get(job_id)
-    assert job and job['status']=='failed' and 'suggested_answer' not in job['report']
+    assert job and job['status']=='completed' and job['report']['suggested_answer']==source['text']
+    assert job['report']['warnings']==[checked['explanation']]
 
 
 @pytest.mark.parametrize('classification',['direct_conflict','supersedes'])
@@ -232,7 +233,7 @@ def test_same_worker_completes_two_call_suggestion_without_creating_knowledge(
 
 
 @pytest.mark.parametrize('failed_check',["unsupported_sentences","all_changes_explained","scope_preserved","one_focused_topic"])
-def test_independent_rejection_never_offers_an_unverified_answer(
+def test_independent_concern_shows_the_answer_with_warning_for_fresh_review(
     _publication_database: str,monkeypatch: pytest.MonkeyPatch,failed_check: str,
 ) -> None:
     invalid=verification()
@@ -241,9 +242,52 @@ def test_independent_rejection_never_offers_an_unverified_answer(
     job_id=suggestions.enqueue(parent(_publication_database),None,uuid4().hex)
     assert assistance.process_next()
     job=suggestions.get(job_id)
-    assert job and job["status"]=="failed" and job["error_code"]=="unsupported_suggestion"
-    assert 'suggested_answer' not in job["report"]
-    assert job['report']['rejection_reason']==invalid['explanation']
+    assert job and job["status"]=="completed" and job["error_code"] is None
+    assert '90 credits' in job["report"]['suggested_answer']
+    assert job['report']['warnings']==[invalid['explanation']]
+    fresh=assistance.enqueue(INTAKE.model_copy(update={'guidance':job['report']['suggested_answer'],'suggestion_id':job_id}),uuid4().hex)
+    assert assistance.get_review(fresh)['status']=='queued'
+    with psycopg.connect(_publication_database) as conn:
+        assert conn.execute('SELECT count(*) FROM curated_entries').fetchone()[0]==0
+
+
+@pytest.mark.parametrize('unknown_reference',[False,True])
+def test_numeric_or_missing_citation_warning_does_not_hide_the_draft(
+    _publication_database: str,monkeypatch: pytest.MonkeyPatch,unknown_reference: bool,
+) -> None:
+    offered=proposal()
+    offered['sentences'][1]['text']='A student needs 100 credits before registration.'
+    if unknown_reference:
+        offered['sentences'][1]['support_ids']=['unknown-source']
+        offered['claim_changes']=[{'original_claim_id':'original:missing','sentence_index':8,
+                                  'reason':'The AI attached an invalid change reference.','support_ids':['unknown-source']}]
+    model(monkeypatch,offered=offered)
+    job_id=suggestions.enqueue(parent(_publication_database),None,uuid4().hex)
+    assert assistance.process_next()
+    job=suggestions.get(job_id)
+    assert job and job['status']=='completed' and '100 credits' in job['report']['suggested_answer']
+    assert job['report']['warnings'] and job['intake']['guidance']==ORIGINAL
+    if not unknown_reference:
+        assert 'Some numbers do not appear' in job['report']['warnings'][0]
+
+
+def test_verifier_service_failure_keeps_the_draft_visible_with_warning(
+    _publication_database: str,monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    model(monkeypatch)
+    base_provider=suggestions.get_curation_provider
+    def provider(schema,model,before_request):
+        if schema['title']=='Verification':
+            def generate(prompt):
+                raise LLMRateLimitError('No remaining verification calls')
+            return SimpleNamespace(generate=generate)
+        return base_provider(schema,model,before_request)
+    monkeypatch.setattr(suggestions,'get_curation_provider',provider)
+    job_id=suggestions.enqueue(parent(_publication_database),None,uuid4().hex)
+    assert assistance.process_next()
+    job=suggestions.get(job_id)
+    assert job and job['status']=='completed' and '90 credits' in job['report']['suggested_answer']
+    assert 'could not finish' in job['report']['warnings'][0]
 
 
 def test_missing_facts_remain_questions_without_becoming_canonical_text(
