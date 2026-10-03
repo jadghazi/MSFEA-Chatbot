@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../../docs/README.md) for today's implementation and verification.
+
 # Broader golden-set review
 
 `golden_final.jsonl` is the clean broader verification run. It uses the selected

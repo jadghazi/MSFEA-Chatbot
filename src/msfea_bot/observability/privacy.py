@@ -1,4 +1,4 @@
-"""Best-effort anonymization of student-identifying data (CLAUDE.md §7).
+"""Best-effort anonymization of student-identifying data (AGENTS.md §7).
 
 Applied to the question BEFORE it is sent to the LLM or stored in logs. Removes:
 - email addresses and long digit sequences (student IDs, phone numbers) via regex,

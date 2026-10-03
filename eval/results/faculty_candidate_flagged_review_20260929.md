@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../docs/README.md) for today's implementation and verification.
+
 # Faculty full-set answer review
 
 A case appears below if the annotated source document missed retrieval, the bot refused, or the judge marked the answer wrong/uncertain. The answer and judgment are shown so a document annotation or grader mistake can be audited.

@@ -6,8 +6,8 @@
 
 ## Context
 
-The walking skeleton (CLAUDE.md §5.3) needs an actual LLM for the final
-generation step. AUB's approved vendor is not yet known, and CLAUDE.md §3
+The walking skeleton (AGENTS.md §5.3) needs an actual LLM for the final
+generation step. AUB's approved vendor is not yet known, and AGENTS.md §3
 requires the provider to sit behind a one-file abstraction (`msfea_bot.llm`) so
 it can be swapped. We need *a* provider now, chosen for low cost to a solo
 student.
@@ -35,7 +35,7 @@ later is a one-file change in the `llm/` package.
   for production traffic.
 - **Privacy:** queries sent to Gemini leave the machine to Google. Acceptable now
   (no real student data in the skeleton). Before any real student data flows,
-  revisit this per CLAUDE.md §7 (anonymize; and AUB's approved-vendor decision).
+  revisit this per AGENTS.md §7 (anonymize; and AUB's approved-vendor decision).
 - The `llm/` abstraction is exercised for real for the first time, validating the
   swap-in design.
 

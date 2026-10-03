@@ -1,4 +1,4 @@
-"""Generation + guardrails (CLAUDE.md §5.6).
+"""Generation + guardrails (AGENTS.md §5.6).
 
 Answer ONLY from retrieved context, cite the sources used, and refuse + escalate
 when the context does not contain the answer. Two layers of refusal:
@@ -12,9 +12,9 @@ when the context does not contain the answer. Two layers of refusal:
    it is the one measured by the eval (correct-refusal 5/5, 0 missed).
 
 Citations are **verified against the context that was actually supplied** — a label
-the model invents is dropped rather than shown to the student (CLAUDE.md §1).
+the model invents is dropped rather than shown to the student (AGENTS.md §1).
 
-Every answer carries a visible AI-generated disclaimer (CLAUDE.md §1).
+Every answer carries a visible AI-generated disclaimer (AGENTS.md §1).
 """
 
 from __future__ import annotations
@@ -217,7 +217,7 @@ class Answer:
     refused: bool = False
     disclaimer: str = DISCLAIMER
     # The chunks retrieved for this question ("source > section (score)"), for
-    # observability/diagnosis (CLAUDE.md §9). Not returned to the student.
+    # observability/diagnosis (AGENTS.md §9). Not returned to the student.
     retrieved: list[str] = field(default_factory=list)
     # Operational failures are not knowledge-base refusals and must not pollute the
     # unanswered-content queue (ADR-0018).

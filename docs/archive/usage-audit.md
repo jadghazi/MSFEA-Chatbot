@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 > Updated 2026-09-10: transient transport/408/500/502/503/504 failures now get
 > one retry after 0.5 seconds (two 30-second attempts maximum). SDK retries
 > remain disabled. Transient error responses are no longer cached; rate-limit

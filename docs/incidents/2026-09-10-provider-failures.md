@@ -41,7 +41,7 @@ quality issue requiring a separate measured retrieval-first investigation.
 Hermetic timeout/503-then-success cases now recover in two attempts (previously
 failed on the first). Persistent transient failures stop at two; quota at one.
 Repeated user retries make fresh attempts and release concurrency slots.
-Final check and production deployment results are recorded in docs/progress.md.
+Final check and production deployment results are recorded in docs/archive/progress-through-20261002.md.
 
 ## Live reproduction after deployment
 

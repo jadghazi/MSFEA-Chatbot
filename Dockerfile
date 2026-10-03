@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 #
-# Production image for the MSFEA CDC chatbot API (CLAUDE.md §3, §5.10).
+# Production image for the MSFEA CDC chatbot API (AGENTS.md §3, §5.10).
 # Design goals: portable (builds on x86_64 and Apple-Silicon/arm64), offline at
 # runtime (models baked in — safe behind AUB's firewall), reproducible, non-root.
 

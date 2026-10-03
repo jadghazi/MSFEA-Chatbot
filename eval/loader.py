@@ -1,6 +1,6 @@
 """Load and validate the golden set (`golden_set.jsonl`).
 
-One JSON object per line. Fields follow CLAUDE.md §4 (`question`,
+One JSON object per line. Fields follow AGENTS.md §4 (`question`,
 `expected_answer_or_behavior`, `source_doc`, `should_refuse`) plus a few helpers
 (`id`, `source_section`, `tags`, `is_synthetic`, `notes`).
 """

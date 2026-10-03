@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../docs/README.md) for today's implementation and verification.
+
 # Conversational retrieval change: before/after review (2026-09-30)
 
 The production Oracle index and department-scoped search were held fixed. Baseline code was commit `928fce0`; candidate conversation code was mounted read-only into an ephemeral app container. No index or production container was changed during this comparison. The 21 frozen cases include genuine pronoun follow-ups, topic switches, switch-backs, and the observed CO-OP credit failure. Raw per-case rankings are in the adjacent `conversation_dual_path_before_20260930.json` and `conversation_dual_path_after_20260930.json` files.

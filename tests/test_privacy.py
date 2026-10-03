@@ -1,4 +1,4 @@
-"""Tests for question anonymization (CLAUDE.md §7)."""
+"""Tests for question anonymization (AGENTS.md §7)."""
 
 import pytest
 

@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../../docs/README.md) for today's implementation and verification.
+
 # Synthesis experiments — reviewed measurements
 
 Review method: Coding assistant manual review against saved source chunks and frozen expected qualities; not an independent human or calibrated judge.

@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../docs/README.md) for today's implementation and verification.
+
 # Synthesis experiment protocol — 2026-09-08
 
 Frozen before baseline or application changes. Twelve synthetic cases drawn from

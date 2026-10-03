@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../docs/README.md) for today's implementation and verification.
+
 # Focused faculty-question recheck — 2026-09-29
 
 The previous 205-case run exposed three false refusals and several answers that missed the student's actual question or a consequential requirement. This follow-up changed only source-backed KB passages, rebuilt the local pgvector index from source, and replayed 19 selected, anonymized faculty questions across five departments. No model judge was used. The review below is a human assessment of the answer text against the current approved KB and the owner's conflict decisions; it is not a new full-set accuracy score.

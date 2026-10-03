@@ -19,7 +19,7 @@ Several internship rules differ by department, and they **contradict each other*
 | Summer course while interning? | If hours are completed | Allowed | — |
 
 Answering a MECH student with CEE's rule is precisely the confidently-wrong answer
-CLAUDE.md §1 forbids — worse than refusing, because it looks authoritative.
+AGENTS.md §1 forbids — worse than refusing, because it looks authoritative.
 
 Separately, every refusal escalated to one generic address, even though the KB lists
 a named coordinator per department. B-1's point is that a *well-routed* escalation

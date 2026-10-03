@@ -1,7 +1,7 @@
 """CLI: `python -m msfea_bot.observability` — show the unanswered-questions log.
 
 These are the questions the bot escalated because it couldn't answer them from
-the KB — i.e. the roadmap for what content to add next (CLAUDE.md §5.9, §5.12).
+the KB — i.e. the roadmap for what content to add next (AGENTS.md §5.9, §5.12).
 """
 
 from __future__ import annotations

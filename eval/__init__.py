@@ -1,4 +1,4 @@
-"""Evaluation harness (CLAUDE.md §4).
+"""Evaluation harness (AGENTS.md §4).
 
 Golden set + metrics, built before the bot so every later change is measurable.
 Two metric families are kept strictly separate (see ADR-0002):

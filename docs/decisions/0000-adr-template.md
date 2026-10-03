@@ -7,7 +7,7 @@
 ## Context
 
 What is the situation that forces a decision? What constraints apply
-(from CLAUDE.md, from the department, from the eval set)? What did the data /
+(from AGENTS.md, from the department, from the eval set)? What did the data /
 metric say, if anything?
 
 ## Options considered

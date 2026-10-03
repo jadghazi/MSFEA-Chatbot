@@ -1,4 +1,4 @@
-"""Section-aware chunking (CLAUDE.md §5.4).
+"""Section-aware chunking (AGENTS.md §5.4).
 
 Splits a normalized Markdown document at headings (level >= 2), then further
 splits any oversized section into smaller overlapping windows so that specific

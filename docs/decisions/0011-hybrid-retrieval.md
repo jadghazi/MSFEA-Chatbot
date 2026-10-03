@@ -10,7 +10,7 @@ Retrieval was pure vector (cosine over pgvector). A real student question —
 "what's the difference between an internship and a co-op?" — produced a correct
 but *incomplete* answer: it covered co-op's duration/pay but missed that the
 internship is a **graduation requirement** and co-op is **optional**. Diagnosis
-(retrieval-before-generation, CLAUDE.md §2): the internship-side evidence chunk
+(retrieval-before-generation, AGENTS.md §2): the internship-side evidence chunk
 sat at **vector rank ~40** for that query — both the question and the top chunks
 were co-op-dominated, so the internship side was never retrieved. Pure embeddings
 also blur exact tokens (course codes like `FEAA 500A`, "8 weeks").
@@ -18,7 +18,7 @@ also blur exact tokens (course codes like `FEAA 500A`, "8 weeks").
 A second, humbling finding: the golden set had **no cross-topic/comparison
 cases**, so retrieval metrics read a false **100%** context-recall. The metric was
 green because the test was incomplete, not because retrieval was perfect (§4).
-This is Phase 5 (retrieval tuning), whose enhancements CLAUDE.md gates on a
+This is Phase 5 (retrieval tuning), whose enhancements AGENTS.md gates on a
 *measured* need — which had now appeared.
 
 ## Decisions

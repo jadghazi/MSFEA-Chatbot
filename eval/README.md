@@ -1,8 +1,19 @@
-# Evaluation harness (Phase 2)
+# Evaluation: datasets, gates and answer review
 
-The golden set + metrics, built **before** the bot so every later change is
-measurable (CLAUDE.md §4). Grading methodology is defined in
-[ADR-0002](../docs/decisions/0002-evaluation-methodology.md).
+Current navigation reviewed 2026-10-03. Start with
+[AGENTS.md](../AGENTS.md) and [architecture](../docs/architecture.md).
+The harness separates retrieval evidence from answer correctness; grading rationale
+is in [ADR-0002](../docs/decisions/0002-evaluation-methodology.md).
+Current deterministic commands are defined in
+[CI](../.github/workflows/ci.yml). Run them on isolated databases through
+[the development workflow](../docs/development.md), never against the serving index.
+
+Dated result reviews below retain their original measurements and limitations.
+They are not live scorecards. See [faculty evaluation](results/faculty_evaluation_report_20260929.md),
+[conversation routing review](results/conversation_dual_path_review_20260930.md) and
+[October rollout gates](../docs/archive/oracle-studio-deployment-20261001.md)
+for the applicable recorded runs. Provider errors/retries and judge uncertainty
+must remain visible; independent human answer calibration is still pending.
 
 ## Contents
 
@@ -55,7 +66,7 @@ measurable (CLAUDE.md §4). Grading methodology is defined in
 - `publication_guard_baseline_set.jsonl` — the frozen pre-publication-guard answer
   preservation sample across all departments, unknown department, follow-ups,
   comparison, topic switching, and refusal. The reviewed baseline and raw traces are
-  documented in `docs/kb-publication-guard-baseline.md` and
+  documented in `docs/archive/kb-publication-guard-baseline.md` and
   `results/publication_guard/`.
 - `scope_regression_set.jsonl` — independently source-grounded department,
   condition-boundary, paraphrase, and follow-up cases added by publication-guard

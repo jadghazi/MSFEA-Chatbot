@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Failed approaches and debugging lessons
 
 ## 2026-09-08 — Synthesis and follow-up investigation

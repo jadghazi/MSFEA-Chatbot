@@ -19,8 +19,8 @@ revision of each entry.
 kb/
   source/       original documents exactly as received (PDF/docx/etc.).
                 Preserved unchanged, for provenance. TRACKED in git.
-  normalized/   cleaned, section-split text derived from source/ (created during
-                ingestion; reviewable so the cleaning is auditable). TRACKED.
+  normalized/   reviewed text derived from source/ before indexing.
+                Canonical input to ingestion; cleaning is auditable. TRACKED.
 ```
 
 The built vector index lives in PostgreSQL/pgvector — it is regenerated, never
@@ -79,7 +79,11 @@ Record every document as it lands, so freshness (`last-updated`) is trackable.
 | `msfea-cdc-coop-handbook.pdf` | Official 10-page MSFEA CO-OP (Cooperative Education) handbook | Provided by student (batch 2) | 2026-07 (received; undated in source) | Authoritative CO-OP reference. **Known extraction gap:** the application-deadline workflow is an image (Figure 1) and the FEAA 500 syllabus (Appendix 1) is not in the text — see the "About this document" note in the normalized file. |
 | `email-clarifications.md` | Reusable internship-course clarifications extracted from email information | Approved during project review | 2026-09 | Contains only question/topic, answer, and department. ECE exceptions are explicitly scoped; temporary remote and CO-OP proposals were excluded. |
 
-## Adding or updating content later
+## Updating knowledge
+
+Current system: [architecture](../docs/architecture.md). Staff-created entries:
+[Studio](../docs/studio.md) and [curation contract](../docs/curation.md).
+
 
 ### Faculty FAQ review — 27 September 2026
 
@@ -100,8 +104,9 @@ For a change to an existing official document:
 
 1. Drop the new/updated file into `kb/source/`.
 2. Add/update its row in the manifest above.
-3. Re-run ingestion (full rebuild by default — simple and consistent).
-4. Add matching questions to the eval golden set and re-run the eval, to confirm
+3. Extract/review the corresponding Markdown in `kb/normalized/`. Ingestion reads this reviewed text; it does not re-extract originals.
+4. Re-run ingestion (full rebuild by default) and restart the app after an offline rebuild.
+5. Add matching questions to the eval golden set and re-run the eval, to confirm
    the new content is retrievable and nothing regressed.
 
 For a new focused clarification or guideline that is not in an official file, use
@@ -113,7 +118,7 @@ under `kb/source/` or `kb/normalized/`.
 
 ## Rules
 
-- No student-identifying data in here (CLAUDE.md §7).
+- No student-identifying data in here (AGENTS.md §7).
 - Originals in `source/` stay byte-for-byte as received; all cleaning happens in
   the pipeline and lands in `normalized/`.
 

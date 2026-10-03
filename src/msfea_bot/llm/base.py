@@ -2,7 +2,7 @@
 
 Every LLM call in the app goes through this interface, so swapping
 OpenAI / Azure / Gemini / a local model is a one-file change inside this
-package (CLAUDE.md §3).
+package (AGENTS.md §3).
 """
 
 from dataclasses import dataclass
@@ -49,7 +49,7 @@ class LLMProvider(Protocol):
         this bot answers only from retrieved context, so decoding must be
         deterministic. Note that temperature alone was measured to be insufficient
         on Gemini — pin the seed too, if the vendor supports one. Sampling params
-        stay out of this signature because they are global config (CLAUDE.md §6),
+        stay out of this signature because they are global config (AGENTS.md §6),
         not per-call state.
         """
         ...

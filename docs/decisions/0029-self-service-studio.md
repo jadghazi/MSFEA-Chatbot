@@ -62,4 +62,4 @@ Frozen retrieval had no new losses, and the repeated UI follow-up included its f
   separate vector store, frontend framework or parallel retrieval path adds no
   measured value to this scope.
 
-See [the implementation review](../studio-self-service-quality-report.md).
+See [the implementation review](../archive/studio-self-service-quality-report.md).

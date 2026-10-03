@@ -6,7 +6,7 @@
 
 ## Context
 
-A checklist audit of the RAG pipeline (`rag-audit-checklist.md`) found that **no
+A checklist audit of the RAG pipeline (`docs/archive/rag-audit-20260730.md`) found that **no
 generation parameters were set anywhere in the project**. `GeminiProvider.generate`
 passed only `model` and `contents`, and a repo-wide search for `temperature`,
 `top_p`, `seed`, `max_output_tokens` and `generation_config` returned zero hits in
@@ -20,10 +20,10 @@ here to have been reasoned about. It was an unconsidered default.
 Two distinct problems follow from it:
 
 1. **Correctness.** High-temperature sampling is the regime where a model
-   paraphrases loosely, drops a qualifier, or embellishes a number. CLAUDE.md §1
+   paraphrases loosely, drops a qualifier, or embellishes a number. AGENTS.md §1
    states a confidently wrong answer about eligibility can harm a student, and this
    bot's whole job is faithful extraction from retrieved text — not writing.
-2. **It undermined the project's method.** CLAUDE.md §2 requires showing a metric
+2. **It undermined the project's method.** AGENTS.md §2 requires showing a metric
    moved before claiming an improvement. At temperature ~1.0 two runs of
    `eval.answer_eval` over *identical* code produce different output, so a small
    change in the false-refusal rate is indistinguishable from sampling noise. The
@@ -40,7 +40,7 @@ instrument every other change is validated with.
    `max_output_tokens` per call. Makes the requirement explicit at the contract
    level and allows per-call overrides. Cost: every provider must thread parameters
    the SDKs express differently, and there is no current caller that needs to vary
-   them per request — premature (CLAUDE.md §2).
+   them per request — premature (AGENTS.md §2).
 3. **Read the settings inside each provider, and state the requirement in the
    Protocol docstring.** Chosen.
 
@@ -50,12 +50,12 @@ Option 3.
 
 - Three new settings in `config.py`: `llm_temperature` (default **0.0**),
   `llm_seed` (default **42**) and `llm_max_output_tokens` (default **1024**),
-  documented in `.env.example`. All config stays in one place per CLAUDE.md §6.
+  documented in `.env.example`. All config stays in one place per AGENTS.md §6.
 - `GeminiProvider` builds a `types.GenerateContentConfig` **once in `__init__`**
   from those settings and passes it on every `generate` call.
 - `LLMProvider.generate`'s docstring now states that implementations **MUST** apply
   all three, and why. The signature is unchanged, so swapping providers stays a
-  one-file change (CLAUDE.md §3).
+  one-file change (AGENTS.md §3).
 
 **The seed was added because temperature 0 alone did not work.** This ADR originally
 proposed temperature only; verifying that claim disproved it. Measured 2026-07-30

@@ -1,4 +1,4 @@
-"""Interaction logging in PostgreSQL (CLAUDE.md §5.9).
+"""Interaction logging in PostgreSQL (AGENTS.md §5.9).
 
 One row per interaction: the (already anonymized) question, whether the bot
 refused, the answer, its citations, the chunks retrieved, and an optional

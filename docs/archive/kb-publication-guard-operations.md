@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # KB publication guard — operator handover
 
 Status: implementation and disposable-stack rehearsal only. **Do not apply this
@@ -26,7 +28,7 @@ catalog/registry fetches and narrows the available destinations.
 1. Preserve the authoritative original under `kb/source/` and review its normalized
    Markdown in `kb/normalized/`. Correct extraction, section metadata and source
    provenance there; do not hand-edit pgvector rows. Unknown source approval dates
-   remain unknown. See `kb/README.md` and `docs/kb-scope-provenance-audit.md`.
+   remain unknown. See `kb/README.md` and `docs/archive/kb-scope-provenance-audit.md`.
 2. After reviewed Markdown changes, run the normal one-command ingestion on an
    isolated candidate first. The rebuild reads normalized Markdown plus active
    curated revisions; it does **not** re-extract originals. Check the 210-chunk
@@ -125,7 +127,7 @@ briefly return webhook 404, which the outbox retries.
 - A committed attempt interrupted before smoke is compensated on worker startup.
   Compensation restores only the predecessor still associated with that exact
   attempt; it cannot undo a newer publication. See
-  `docs/kb-publication-recovery.md` for the bounded post-commit exposure risk.
+  `docs/curation.md` for the bounded post-commit exposure risk.
 - A failed post-commit app cache callback compensates before smoke and retries
   invalidation. If the callback remains unavailable, the database/index are
   restored but process-local cached replies can live for their 30-second TTL

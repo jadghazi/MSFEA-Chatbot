@@ -8,7 +8,7 @@ Two things depend on knowing a student's department:
 2. **Department-conditional rules (B-2).** Several internship rules differ by
    department (MECH forbids splitting an internship; CEE allows it when at least
    one period is civil/construction). Answering with another department's rule is
-   exactly the confidently-wrong answer CLAUDE.md §1 forbids.
+   exactly the confidently-wrong answer AGENTS.md §1 forbids.
 
 **The source of truth is the knowledge base, not this file.** Contacts come from the
 "Department Contacts" table and the abbreviations from the "Department-Specific

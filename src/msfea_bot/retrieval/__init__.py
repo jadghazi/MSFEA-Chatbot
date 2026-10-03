@@ -1,4 +1,4 @@
-"""Retrieval (CLAUDE.md §5.5).
+"""Retrieval (AGENTS.md §5.5).
 
 Embed the user query, search pgvector, and return the top-k chunks with their
 metadata. Tuned independently of the LLM against the retrieval metric (§4) —

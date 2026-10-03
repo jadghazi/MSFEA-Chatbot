@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../docs/README.md) for today's implementation and verification.
+
 # Faculty answer-quality follow-up — 2026-09-29
 
 ## Change and evidence

@@ -1,4 +1,4 @@
-"""Tests for input sanitization and the rate limiter (CLAUDE.md §5.8)."""
+"""Tests for input sanitization and the rate limiter (AGENTS.md §5.8)."""
 
 import time
 

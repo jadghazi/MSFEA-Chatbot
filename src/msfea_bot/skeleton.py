@@ -1,8 +1,7 @@
-"""Walking skeleton (CLAUDE.md §5.3).
+"""Command-line ingestion and grounded-answer entry point.
 
-The thinnest end-to-end path: chunk -> embed -> store -> retrieve -> LLM ->
-printed grounded answer. Deliberately crude; citations, the refusal threshold,
-and the real guardrail prompt are Phase 6.
+The module name comes from the original walking skeleton. It now uses the
+production source rebuild, citations, refusal threshold and guarded generation.
 
 Usage:
     python -m msfea_bot.skeleton ingest        # (re)build the vector store

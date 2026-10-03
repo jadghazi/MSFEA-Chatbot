@@ -6,12 +6,12 @@ case **at run time** — it is deliberately NOT written into ``golden_set.jsonl`
 Deriving live is what keeps the eval consistent with the dashboard's edit/retire:
 an edit regenerates the case from the current row, and a retire (``active=false``)
 makes the case disappear automatically. There is no snapshot in the golden file
-to drift out of sync. See docs/progress.md (2026-07-23).
+to drift out of sync. See docs/archive/progress-through-20261002.md (2026-07-23).
 
 These are *retrieval-and-grounding* checks, not independent quality golds: the
 expected text is the same admin answer we indexed, so they verify "does the bot
 still retrieve and stay grounded in this curated chunk?" — the #1 place RAG
-regresses (CLAUDE.md §2) — rather than answer quality against a separate truth.
+regresses (AGENTS.md §2) — rather than answer quality against a separate truth.
 """
 
 from __future__ import annotations

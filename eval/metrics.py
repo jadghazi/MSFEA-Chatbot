@@ -1,7 +1,7 @@
 """Evaluation metrics (ADR-0002).
 
 Two independent families, kept separate on purpose so a wrong answer is
-diagnosed as retrieval-vs-generation first (CLAUDE.md §2, §4):
+diagnosed as retrieval-vs-generation first (AGENTS.md §2, §4):
 
 - Retrieval: recall@k / hit rate.
 - Answer, Layer 1: deterministic, no-LLM checks (refusal correctness, citation
@@ -80,7 +80,7 @@ def refusal_is_correct(answer: BotAnswer, should_refuse: bool) -> bool:
 
 
 def citation_present(answer: BotAnswer) -> bool:
-    """Non-refusal answers must cite at least one source (CLAUDE.md §1).
+    """Non-refusal answers must cite at least one source (AGENTS.md §1).
 
     Refusals escalate to a human and need not cite, so they pass this check.
     """

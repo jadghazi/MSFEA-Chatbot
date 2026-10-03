@@ -1,4 +1,4 @@
-"""FastAPI application — the thin backend the widget calls (CLAUDE.md §5.7).
+"""FastAPI application — the thin backend the widget calls (AGENTS.md §5.7).
 
 Endpoints:
 - GET  /health  — liveness check.

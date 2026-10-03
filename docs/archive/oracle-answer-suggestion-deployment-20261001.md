@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Oracle answer-suggestion deployment verification
 
 2026-10-01. Public [dashboard](https://msfea-chatbot.duckdns.org/dashboard/).

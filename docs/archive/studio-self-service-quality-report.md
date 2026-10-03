@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Self-service Knowledge Studio — implementation review
 
 2026-10-01. Implemented and exercised in a disposable local Compose stack,
@@ -122,7 +124,7 @@ Frozen gates passed again after the final document-reference correction:
 
 The two existing golden misses are `internship-vs-coop` and `faq-cee-exception`.
 The final gate rerun and browser replacement/rebuild results are recorded in the
-machine-readable [measurement record](../eval/results/studio_self_service_20261001.json).
+machine-readable [measurement record](../../eval/results/studio_self_service_20261001.json).
 
 ## Model and operational limits
 
@@ -145,4 +147,4 @@ AI checks and previews reduce routine admin work. They do not certify policy
 authority or every possible answer. Persistent retrieval faults can still require
 technical diagnosis. Legacy manual publication remains available under its existing
 guard. No faculty usability study or comprehensive new answer-quality score is
-claimed. See [the staff guide](guided-studio-guide.md) and [ADR-0029](decisions/0029-self-service-studio.md).
+claimed. See [the staff guide](../studio.md) and [ADR-0029](../decisions/0029-self-service-studio.md).

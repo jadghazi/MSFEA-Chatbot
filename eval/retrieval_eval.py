@@ -2,7 +2,7 @@
 
 For each answerable golden question, retrieve the top-k chunks and check whether
 a chunk from the expected ``source_doc`` is among them (document-level recall).
-This is the retrieval metric from CLAUDE.md §4, kept independent of the LLM.
+This is the retrieval metric from AGENTS.md §4, kept independent of the LLM.
 
 Prerequisites: the vector store is populated (`python -m msfea_bot.skeleton
 ingest`) and Docker is up.
@@ -102,7 +102,7 @@ def evaluate_retrieval(ks: tuple[int, ...] | None = None) -> float:
 
 def main() -> None:
     score = evaluate_retrieval()
-    # CI gate (CLAUDE.md §4): fail the build if context-recall drops below a floor.
+    # CI gate (AGENTS.md §4): fail the build if context-recall drops below a floor.
     # Off by default for local runs; CI sets EVAL_MIN_CONTEXT_RECALL (e.g. 0.90).
     floor = os.getenv("EVAL_MIN_CONTEXT_RECALL")
     if floor:

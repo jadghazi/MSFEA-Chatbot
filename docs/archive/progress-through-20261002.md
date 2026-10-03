@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Progress journal
 
 Dated log of what was built each working session and why. This is the
@@ -109,7 +111,7 @@ short: what changed, why, what's next, what's blocked.
   21/21 and stress 43/43. Final live AI batch: 9/10 initial completion; 10/10 after
   explicitly retrying one recorded provider failure. No faculty usability study claimed.
 - See [the review](studio-self-service-quality-report.md),
-  [staff guide](guided-studio-guide.md) and [ADR-0029](decisions/0029-self-service-studio.md).
+  [staff guide](../studio.md) and [ADR-0029](../decisions/0029-self-service-studio.md).
   Oracle rollout was completed later this day (entry above); original working-copy edits were left untouched.
 
 ## 2026-10-01 — Guided Knowledge Studio
@@ -139,7 +141,7 @@ short: what changed, why, what's next, what's blocked.
   default is full 3.6 Flash, with its limitations documented rather than hidden.
 - Work used a clean attached worktree and isolated local databases. Oracle was
   unchanged. See [the implementation review](guided-studio-quality-report.md),
-  [staff guide](guided-studio-guide.md) and ADR-0028. Production rollout remains pending.
+  [staff guide](../studio.md) and ADR-0028. Production rollout remains pending.
 
 ## 2026-09-23 — Career+ grounding and named-topic follow-up repair
 
@@ -376,7 +378,7 @@ short: what changed, why, what's next, what's blocked.
 ## 2026-09-15 — KB publication guard Step 1 scope/provenance audit
 
 - Added the five-department high-risk rule/provenance matrix in
-  `docs/kb-scope-provenance-audit.md`, retaining unresolved owner questions instead
+  `docs/archive/kb-scope-provenance-audit.md`, retaining unresolved owner questions instead
   of manufacturing rules.
 - Added verified program and project-review provenance to both copies of the approved
   email clarifications. Passage text, headings, and chunk boundaries are unchanged.
@@ -420,7 +422,7 @@ snapshot). The daily timer was active with a fresh September 15 dump. That dump 
 successfully into an isolated temporary database with 210 chunks, zero curated rows and
 132 interactions; cleanup and unchanged production counts were verified. This closes
 the Step 0 resource/restore gate. A current off-VM backup copy still needs independent
-verification before deployment. See `docs/kb-publication-guard-baseline.md` for the
+verification before deployment. See `docs/archive/kb-publication-guard-baseline.md` for the
 full evidence and constraints.
 
 Baseline SHA-256 fingerprints: case set
@@ -461,7 +463,7 @@ Inspected existing protections before adding local acknowledgement/noise replies
 IP/session rate windows, backend concurrency and exact-context replay, body/context
 size guards and content-free usage counters. Preserved bounded follow-up memory and
 measured retrieval/prompt behavior. Fixed friendly error display and excluded local
-replies from memory. No new dependencies. See ADR-0023 and `docs/usage-audit.md`.
+replies from memory. No new dependencies. See ADR-0023 and `docs/archive/usage-audit.md`.
 
 Measured five acknowledgements: 5 -> 0 expensive pipeline calls; five identical
 questions: 5 -> 1. No local false blocks across 74 golden questions. Python tests:
@@ -588,7 +590,7 @@ seconds and about 1.9k/2.0k input tokens. Retrieval remained 41/42 (98%) at both
 and k=7. `top_k=7`, prompt text, and local PII detection were deliberately left
 unchanged until answer-quality or pilot evidence supports trading them for savings.
 
-Added `docs/pilot-readiness.md` as the current operator release checklist. The older
+Added `docs/archive/pilot-readiness.md` as the current operator release checklist. The older
 department-wide Definition of Done remains as long-term outcome criteria, not a blocker
 whose unknown email-volume targets prevent a limited learning pilot.
 
@@ -665,7 +667,7 @@ into every disposable test container. The live repository is bind-mounted at
 `/workspace`; the database dependency and Python 3.12/model environment remain the
 same as production.
 
-Documented the one-time build and daily commands in `docs/dev-workflow.md` and
+Documented the one-time build and daily commands in `docs/development.md` and
 linked them from the README. Verified through the new overlay, with **no install
 step at runtime**: Ruff clean, strict mypy clean, API health test passed, and a
 real pgvector hybrid-retrieval integration test passed. The first mypy run seeded
@@ -932,7 +934,7 @@ error. Stubs now take `**kwargs`. 102 tests pass; ruff/mypy clean.
 ## 2026-07-30 — RAG practice audit + remediation (ADR-0012/0013/0014)
 
 Audited the whole pipeline against a 32-item RAG practice checklist
-(`rag-audit-checklist.md`), then fixed what it found. Every load-bearing claim was
+(`docs/archive/rag-audit-20260730.md`), then fixed what it found. Every load-bearing claim was
 **measured** rather than reasoned about, which changed the conclusion three times.
 
 - **Audit result:** 16 PASS, 10 PARTIAL, 5 INTENTIONAL, 1 FAIL. Five items are
@@ -984,7 +986,7 @@ tracked `internship-vs-coop` miss. 82 tests pass; ruff/mypy clean.
 ## 2026-07-27 — Security review + production hardening
 
 Pre-exposure pass on the public LLM endpoint, plus turnkey deploy assets. Full
-write-up in [deployment.md](deployment.md) §6.
+write-up in [deployment.md](../deployment.md) §6.
 
 - **Security review — no critical issues.** Verified safe: parameterized SQL (no
   injection), widget/dashboard output escaping (no XSS), PII anonymized before LLM
@@ -1317,7 +1319,7 @@ Name-stripping in logs still a gap (needs NER) — carried from ADR-0007.
 - `observability/privacy.py`: `anonymize()` strips emails + long digit runs
   (student IDs, phones), preserves domain numbers ("8 weeks", "3.3", "75%").
 - `/chat` anonymizes the question once and uses it for BOTH the LLM and the log
-  (CLAUDE.md §7). `Answer` now carries `retrieved` chunks for logging/diagnosis.
+  (AGENTS.md §7). `Answer` now carries `retrieved` chunks for logging/diagnosis.
 - `python -m msfea_bot.observability` prints the unanswered-questions log.
 
 **Verified live:** the "how many credits is the internship?" refusal is now
@@ -1372,7 +1374,7 @@ Added windowing unit tests. All checks green.
 ## 2026-07-22 — Phase 4/5 prep: built the metric that measures the real gap
 
 Before tuning retrieval, built the metric that captures the actual problem
-(CLAUDE.md §2: build the metric first).
+(AGENTS.md §2: build the metric first).
 
 **Added `evidence` to every answerable golden item** — a verbatim fact that must
 appear in retrieved context (e.g. "75%", "formal petition"). A test enforces that
@@ -1506,7 +1508,7 @@ gives the eval harness something to actually score. First RAG design decisions
 ## 2026-07-22 — Phase 1: scope broadened + batch-1 sources normalized
 
 **Scope decision applied (ADR-0003).** Bot scope = all CDC content. Updated
-CLAUDE.md §1 wording accordingly (user confirmed; new preference: update plan
+AGENTS.md §1 wording accordingly (user confirmed; new preference: update plan
 docs on new decisions without re-asking).
 
 **Tooling.** Added `python-docx` + `python-pptx` as ingestion/parse dependencies.
@@ -1531,7 +1533,7 @@ come (batch 2). Then ingestion (Phase 4).
 ## 2026-07-22 — First KB content arriving — starting Phase 1 (KB intake)
 
 **Phase-numbering note.** Earlier commits labelled the repo scaffolding as
-"Phase 1"; that was un-numbered groundwork. CLAUDE.md's *numbered* Phase 1 is
+"Phase 1"; that was un-numbered groundwork. AGENTS.md's *numbered* Phase 1 is
 **Knowledge base intake**, which begins now that some real content has arrived.
 
 **Done.** Set up the KB source-of-truth structure: `kb/source/` (tracked
@@ -1592,7 +1594,7 @@ yet.
 ## 2026-07-20 — Phase 1: scaffolding
 
 **Done.** Built the repo skeleton (no RAG logic yet — labelled `# PLACEHOLDER`
-where empty, per CLAUDE.md §2):
+where empty, per AGENTS.md §2):
 - `src/msfea_bot/` split into `ingestion` / `retrieval` / `generation` / `llm`
   (the provider abstraction, §3) / `api`, plus `config.py` (all env vars in one
   place, §6).
@@ -1604,13 +1606,13 @@ where empty, per CLAUDE.md §2):
   fastapi/uvicorn/pydantic-settings — heavier RAG deps added in their phases),
   `.env.example`, `.gitattributes` (LF normalization), Docker/compose skeletons
   (app + pgvector), `eval/` placeholder, expanded README.
-- `docs/dev-workflow.md` added.
+- `docs/development.md` added.
 
 **Verified before push:** `pytest` 1 passed, `ruff check` clean, `mypy --strict`
 clean.
 
 **Workflow change (this session).** Switched to committing **directly to `main`,
-no branches** (solo dev, tested before push). Recorded in `docs/dev-workflow.md`.
+no branches** (solo dev, tested before push). Recorded in `docs/development.md`.
 
 **Next.** Phase 2 — evaluation harness: `eval/golden_set.jsonl` structure + the
 two-metric runner (retrieval recall@k, answer correctness/refusal) on placeholder
@@ -1621,7 +1623,7 @@ presented with trade-offs as ADRs when we reach ingestion.
 
 ## 2026-07-20 — Phase 0 kickoff (no content yet)
 
-**Situation.** Repo was empty except `CLAUDE.md`. Department has not yet
+**Situation.** Repo was empty except `AGENTS.md`. Department has not yet
 provided source material or numeric success criteria. Goal confirmed with the
 user: reduce repetitive student internship emails by deflecting questions the
 guidelines/FAQ already answer, and safely escalating the rest.
@@ -1630,7 +1632,7 @@ guidelines/FAQ already answer, and safely escalating the rest.
 - `git init` — repo under version control.
 - Set up the documentation system:
   - `docs/decisions/` — ADR process (README + template + ADR-0001).
-  - `docs/progress.md` — this journal.
+  - `docs/archive/progress-through-20261002.md` — this journal.
 - Wrote Phase 0 **Definition of Done** (`docs/definition-of-done.md`) with
   binary product behaviors (Tier A), measurable quality gates (Tier B),
   pilot outcomes (Tier C), and operational/handover criteria (Tier D).
@@ -1641,7 +1643,7 @@ guidelines/FAQ already answer, and safely escalating the rest.
 source docs + real past student questions.
 
 **Also captured.** Two future requirements from the user, recorded in
-[backlog.md](backlog.md) (not built now): B-1 smart escalation routing to the
+[backlog.md](../backlog.md) (not built now): B-1 smart escalation routing to the
 most-relevant person, and B-2 department-specific answers. B-2 carries a
 forward-compat note: reserve a `department`/`applies_to` metadata field in
 Phase 4 ingestion so we don't have to retrofit the index later.

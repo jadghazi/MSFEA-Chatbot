@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Oracle self-service Studio deployment verification
 
 2026-10-01, following explicit deployment authorization. Public pilot:

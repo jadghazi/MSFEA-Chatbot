@@ -6,12 +6,12 @@
 
 ## Context
 
-CLAUDE.md §5.9 requires structured logging of every interaction (question,
+AGENTS.md §5.9 requires structured logging of every interaction (question,
 retrieved chunks, answer, whether it escalated) and, critically, an
 **unanswered-questions log** — the roadmap for what KB content to add next. A live
 example motivated this: a student asked "how many credits is the internship?",
 which the KB doesn't cover; the bot correctly refused, but that signal must be
-captured. CLAUDE.md §7 also forbids sending/storing student-identifying data.
+captured. AGENTS.md §7 also forbids sending/storing student-identifying data.
 
 ## Options considered
 

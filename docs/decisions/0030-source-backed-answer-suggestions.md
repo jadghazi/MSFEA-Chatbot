@@ -28,5 +28,5 @@ retrieval path or student-provider changes. The trade-off is two extra calls and
 possible service failure; optional requests preserve the original answer. AI
 suggestions cannot guarantee policy correctness or repair retrieval regressions.
 
-See [acceptance](../studio-answer-suggestion-plan.md) and
-[the measured review](../studio-answer-suggestion-quality-report.md).
+See [acceptance](../studio.md) and
+[the measured review](../archive/studio-answer-suggestion-quality-report.md).

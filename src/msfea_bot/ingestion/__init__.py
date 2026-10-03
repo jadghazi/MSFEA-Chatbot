@@ -1,4 +1,4 @@
-"""Ingestion pipeline (CLAUDE.md §5.4).
+"""Ingestion pipeline (AGENTS.md §5.4).
 
 load -> clean/normalize -> chunk -> embed source documents -> store in pgvector.
 One command rebuilds the index from source (`python -m msfea_bot.skeleton

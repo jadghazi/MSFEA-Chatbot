@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # KB publication guard — pre-change baseline
 
 **Captured:** 2026-09-15 (Asia/Beirut)
@@ -17,7 +19,7 @@ indexed **210 normalized-document chunks** and **0 curated answers** in that iso
 database.
 
 The working tree already contained an untracked
-`docs/kb-publication-guard-plan.md` and a deleted generated
+`docs/curation.md` and a deleted generated
 `output/documents/MSFEA_LLM_Options_Comparison.docx`. The deleted artifact was not
 restored, staged, or otherwise changed. A pre-existing orphaned
 `msfea-synthesis` container was reported by Compose and left untouched.

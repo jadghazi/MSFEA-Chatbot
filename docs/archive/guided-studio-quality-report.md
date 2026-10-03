@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Guided Knowledge Studio — implementation review
 
 Date: 2026-10-01. Base: `93c877b`. Implemented and tested locally; Oracle was not
@@ -53,7 +55,7 @@ for successors; official-source corrections keep their existing editor.
 The unchanged misses are `internship-vs-coop` and `faq-cee-exception`. They were not
 hidden or counted as new regressions. One stress runner initially refused to
 overwrite its earlier result file; a fresh output path passed the gate. See the
-[recorded checks](../eval/results/guided_studio_checks_20261001.json).
+[recorded checks](../../eval/results/guided_studio_checks_20261001.json).
 
 Tests cover numeric and negated conflicts, exact statement/source verification,
 duplicates, department scope, missing details, mixed topics, original-question
@@ -63,7 +65,7 @@ failure now supplies the affected question and history for staff inspection.
 
 ## Live model results and choice
 
-The frozen [ten-case matrix](../eval/studio_review_set.jsonl) includes invented
+The frozen [ten-case matrix](../../eval/studio_review_set.jsonl) includes invented
 guidelines against the real canonical KB. Evaluation submits private review jobs;
 it never publishes. Completed reports must match expected judgment and preserve
 the supplied answer. Provider failures count as failed cases, not correct judgments.
@@ -78,7 +80,7 @@ the supplied answer. Provider failures count as failed cases, not correct judgme
 | 3.1 Flash-Lite / v4 and v5 | 5 each | Remaining missing-condition and malformed-review failures |
 
 These are sequential engineering trials with evolving prompts, not a randomized
-model ranking. [Compact outcomes](../eval/results/guided_studio_model_trials_20261001.json)
+model ranking. [Compact outcomes](../../eval/results/guided_studio_model_trials_20261001.json)
 retain the failures. The final v5 contract was also exercised in the actual browser
 for a focused addition and a useful three-finding ECE conflict comparison.
 

@@ -1,216 +1,183 @@
-# Production deployment & hardening
+# Deployment and operations
 
-How to take the containerized bot (see the README for the basic run) from "works
-on my machine" to "safe to expose to students." Everything here is engineering
-that's already done or templated; the only IT-supplied inputs are a handful of
-**values** (a domain, the page origin, a cert or auto-cert), noted below.
+Reviewed 2026-10-03 against the current Compose files and application.
+Oracle pilot location: `/opt/msfea-chatbot`; public hostname:
+`msfea-chatbot.duckdns.org`. A different institution can supply its own host/domain
+without changing application code. Dated rollout evidence is in [the archive](archive/README.md).
 
----
+## Configuration and topology
 
-## What IT / the department needs to provide
+Use [.env.example](../.env.example) and [config.py](../src/msfea_bot/config.py) as the
+configuration inventory. Keep real secrets in `.env` or the operator's secret store.
+Set `LLM_PROVIDER=gemini`, the student model/key, `ADMIN_TOKEN`, `DOMAIN`,
+`CORS_ALLOW_ORIGINS` and `APP_COMMIT` for the exact running release.
+Use independent `CURATION_WORKER_TOKEN`, `N8N_WEBHOOK_SECRET`, `N8N_DB_PASSWORD`
+and persistent `N8N_ENCRYPTION_KEY`. Do not reuse the admin token.
 
-| Thing | Used for | Where it goes |
-|---|---|---|
-| A **domain** (e.g. `chatbot.aub.edu.lb`) + DNS pointing at the server | Public HTTPS URL | `DOMAIN` env (Caddy) or `server_name` (nginx) |
-| The **page origin** that embeds the widget (e.g. `https://www.aub.edu.lb`) | CORS allow-list | `CORS_ALLOW_ORIGINS` in `.env` |
-| A **TLS certificate** | HTTPS | *Automatic* with Caddy; or IT's cert with nginx |
-| The **LLM provider/quota** decision | Real traffic (active free limits vary by model/project; check AI Studio) | `LLM_PROVIDER` / `LLM_API_KEY` / `LLM_MODEL` |
-| Backup storage location | Off-box backups | `BACKUP_DIR` for `deploy/backup.sh` |
+The base stack is app + PostgreSQL/pgvector. The production overlay adds Caddy,
+the private worker, self-hosted n8n and its PostgreSQL 17 database. Validation is
+a separate database (`msfea_validation`) on application PostgreSQL, not another
+permanent database container. Initialization/import/publish jobs exit after setup.
 
----
+Only Caddy exposes 80/443. The overlay removes app/database host ports. Internal
+routes return 404 through the public proxy. Keep databases, worker and n8n private;
+never give n8n a Docker socket, shell node or application DB credentials.
+n8n's internal network has no external egress; the worker bridges application and
+workflow networks. Student chat does not depend on n8n.
 
-## 1. HTTPS in front of the app (required for a public page)
+## Release procedure
 
-A browser on an `https://` AUB page **cannot** call an `http://` API — so the API
-must be served over HTTPS. The app itself speaks plain HTTP; a reverse proxy
-terminates TLS in front of it. Two options:
+Use an authorized, verified commit and inspect the diff and relevant evaluation
+evidence. Do not copy synthetic demo data or a developer's database into production.
 
-### Option A — Caddy (recommended, automatic HTTPS)
-Turnkey: Caddy obtains and renews the certificate from Let's Encrypt automatically.
-
-```bash
-DOMAIN=chatbot.aub.edu.lb docker compose \
-    -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-```
-Config: [`deploy/Caddyfile`](../deploy/Caddyfile). Requires DNS for `DOMAIN` on this
-server and ports 80 + 443 open.
-
-### Option B — IT-managed nginx
-If IT already runs nginx and provides certs, use
-[`deploy/nginx.conf`](../deploy/nginx.conf) as a template (fill in `server_name`
-and the cert paths). It proxies to the app on `127.0.0.1:8000`.
-
----
-
-## 2. Proxy ↔ rate-limit setting (important, easy to get wrong)
-
-Run one application worker. The usage limits, concurrency guard, 30-second response
-cache and usage counters are process-local; see [the usage audit](usage-audit.md)
-for exact limits and shared-campus-network considerations. Restart the app after
-offline KB re-ingestion to invalidate cached responses. Admin curation invalidates
-them automatically.
-
-The per-client rate limiter keys on the client's IP. Behind a proxy, **every**
-request arrives from the *proxy's* IP unless you trust the forwarded header:
-
-- **Behind a proxy** (Options A or B): set **`TRUST_PROXY_HEADERS=true`** so the
-  app reads the real client IP from `X-Forwarded-For`. (The Caddy overlay sets this
-  for you.) Without it, all students share one rate-limit bucket and throttle each
-  other.
-- **NOT behind a proxy:** keep it **`false`**. If it were `true` with no proxy,
-  clients could spoof `X-Forwarded-For` to bypass the limit.
-
-Rule of thumb: `TRUST_PROXY_HEADERS` should be `true` **iff** there's a trusted
-proxy in front.
-
-The backend must also be inaccessible directly from the public network. The supplied
-templates assume one edge proxy: nginx overwrites `X-Forwarded-For`, and the app uses
-its rightmost address. Review trust configuration before adding a CDN or more hops.
-
----
-
-## 3. Lock down CORS
-
-`CORS_ALLOW_ORIGINS` defaults to **empty = deny all cross-origin** (same-origin
-still works). In production set it to the exact page origin(s) that embed the
-widget:
-
-```
-CORS_ALLOW_ORIGINS=https://www.aub.edu.lb
-```
-Never use `*` in production — it lets any website call your API and burn your LLM
-quota.
-
----
-
-## 4. Secrets
-
-- All secrets come from the environment (`.env`), never baked into the image.
-  `.env` is gitignored; keep it off version control and off shared drives.
-- **Rotate the admin token**: change `ADMIN_TOKEN` in `.env` and
-  `docker compose up -d` to apply. Generate one with
-  `python -c "import secrets; print(secrets.token_urlsafe(24))"`.
-- The production Compose overlay automatically removes the base app/database host
-  ports. It adds a private curation worker and n8n with a separate PostgreSQL 17
-  database/user. Set independent `CURATION_WORKER_TOKEN`, `N8N_WEBHOOK_SECRET`,
-  `N8N_DB_PASSWORD`, and persistent `N8N_ENCRYPTION_KEY`; never reuse `ADMIN_TOKEN`.
-  Verify only Caddy publishes 80/443 before exposing the machine. Do not enable
-  `docker-compose.n8n-editor.yml` except for a maintenance session; its temporary
-  proxy binds loopback for an operator SSH tunnel only. Both Caddy and the nginx template return 404 for
-  `/internal` routes.
-
----
-
-## 5. Backups
-
-The vector index is rebuildable from source, but **admin-curated answers and the
-interaction logs and anonymous experience feedback are not** — back up the database.
-
-The application performs an additive schema initialization at startup. Deploying this
-version creates `experience_feedback` and adds the nullable `interactions.rating_reason`
-column if needed; no separate migration command is required. The database role configured
-by `DATABASE_URL` must retain its existing `CREATE TABLE` and `ALTER TABLE` permissions for
-that first startup.
+1. Check CPU/RAM/disk capacity and fresh application/n8n backups. Preserve off-VM
+   copies and the encryption key; rehearse schema/image changes on isolated restores.
+2. Update source at the exact release commit and set `APP_COMMIT` to that SHA.
+   Git/build files must be readable by the non-root image user: use normal
+   `umask 022` for checkout/build and restrict secrets/backups separately.
+3. Build the exact target image natively for the host architecture before switching.
+   Startup applies pending checksum-verified curation migrations. Current code has
+   migrations 0001–0007; never modify already-applied SQL files.
+4. Start the production stack:
 
 ```bash
-./deploy/backup.sh          # -> ./backups/msfea-YYYYmmdd-HHMMSS.sql.gz
-./deploy/restore.sh ./backups/msfea-20260727-020000.sql.gz
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
 ```
-Schedule `backup.sh` (e.g. daily cron) and store copies off the box (`BACKUP_DIR`).
-The application dump now also carries immutable curation revisions, validation
-results, publication attempts, outbox and audit records. Separately back up the
-n8n database with `./deploy/backup-n8n.sh` after deploying the production overlay;
-preserve its encryption key in an independent secret store. n8n execution pruning
-does not replace the application audit. Restore both dumps to disposable databases
-and rehearse the workflow import/publish before release; never overwrite the live
-application database as a routine rollback.
 
-For the Oracle pilot, install the version-controlled systemd timer:
+5. Ingest only when the source/index/embedding change requires it. A documentation
+   update does not need rebuild, ingestion or deployment. For a required rebuild:
 
 ```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm app python -m msfea_bot.skeleton ingest
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart app
+```
+
+6. Verify public `/health` and `/ready`, embedding/index compatibility, expected
+   generation/content, citations/links and department/follow-up smoke answers.
+   Verify private services and the workflow where affected. Do not run index-rebuilding
+   pytest fixtures against Oracle. Use isolated regression databases.
+7. Record commit/image/configuration, observed results and remaining failures in
+   a dated release record. Never describe old measurements as a new verification.
+
+If a rebuild aborts because the generation changed, rerun from reviewed source.
+Never force a stale candidate index over a newer publication.
+
+## HTTPS, CORS and worker count
+
+Caddy obtains certificates when DNS points to the host and ports 80/443 are open.
+[deploy/Caddyfile](../deploy/Caddyfile) is the default.
+[The nginx template](../deploy/nginx.conf) supports IT-managed TLS; supply its
+domain/certificate paths and review the actual private upstream arrangement.
+
+`CORS_ALLOW_ORIGINS` should contain exact host-page origins. Empty denies
+cross-origin browser access while allowing same-origin. CORS does not stop direct
+API callers. Enable `TRUST_PROXY_HEADERS` only behind the trusted single proxy
+with no direct public backend access. Additional CDNs/proxy hops need a trust review.
+
+Use one Uvicorn app worker/instance: rate limits, concurrency guard, response cache
+and usage counters are process-local. Offline ingestion requires app restart to
+clear cached answers; guarded publication invalidates them automatically.
+
+## Admission controls and provider failures
+
+| Layer | Current bounds/defaults |
+| --- | --- |
+| HTTP/question/history | 64 KiB body; 2,000-character question; eight history messages, 1,200 characters each |
+| IP | Configurable minute window, default 60/minute; also 12/5 seconds and 300/hour |
+| Browser session | 20/minute, 80/hour; session IDs are not authentication |
+| Expensive concurrency | One/session, four/IP, sixteen/app worker |
+| Response reuse | Exact effective session/context, 30 seconds, bounded 256 entries |
+| Evidence/output | 24,000 context characters; student output default 1,024 tokens |
+| Staff AI | Default 12 attempts/minute, 400/day/model |
+| Student-model previews | Separate 60-call daily admission cap; shares student provider quota |
+
+Runtime `.env` overrides can differ. The local demo's 500 staff attempts/day override
+is not the Oracle/default setting. Daily caps count calls/attempts, not entries;
+a routine assessment uses multiple calls and previews use the student model.
+Provider quotas depend on project/model and other usage; inspect the actual
+allowance before changing budgets. Do not hard-code a universal free-tier limit.
+
+The Gemini SDK has one attempt; the application allows one transient retry
+after 0.5 seconds. Student timeout is 30 seconds per attempt. Staff calls can set
+their own timeout. Quota errors do not get an automatic transient retry.
+Transient failure responses are not cached; rate-limit cooldown responses can be.
+For a provider outage, preserve saved drafts, explain the service failure and retry
+when available. Do not turn a transport failure into a content judgment.
+
+## n8n import, editor and workflow recovery
+
+The exported workflow is [kb-publication-guard.json](../n8n/workflows/kb-publication-guard.json).
+Import deactivates workflows, so the separate publish bootstrap job is required.
+After a workflow change, rerun the import/publish jobs and restart n8n:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm n8n-import
+docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm n8n-publish
+docker compose -f docker-compose.yml -f docker-compose.prod.yml restart n8n
+```
+
+n8n process health does not prove webhook activation; short startup 404s are retried
+by the durable outbox. Workflows accept only existing validation/publication IDs.
+
+For visual maintenance, use the optional loopback editor proxy and SSH tunnel:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.n8n-editor.yml up -d --no-deps n8n-editor
+docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.n8n-editor.yml stop n8n-editor
+```
+
+It binds `127.0.0.1:5678`; never expose the editor publicly. Closing the editor
+does not require stopping n8n.
+
+If n8n is down, leave app/db serving. Stop only the worker if dispatch must pause;
+drafts/jobs/intents remain in PostgreSQL. Restore n8n/database/key, rerun
+import/publish, verify private webhooks, then resume the worker.
+
+Inspect `curation_outbox`, `curation_jobs`, `curation_validation_runs`,
+`curation_publication_attempts` and `curation_events`. Delivery retries default
+to eight attempts; delivered-but-unfinished work can replay after 20 minutes.
+A terminal outbox event needs investigation. Only after verifying its run/intent
+remains valid may an operator requeue that exact event and record the incident.
+Stale/timed-out checks need fresh validation. Never directly mark results passed
+or set a revision active.
+
+## Backups and restore
+
+Application backups contain source revisions, audit/workflow records, interactions,
+ratings and experience feedback as well as derived chunks. n8n storage is separate;
+its execution history is not the application audit.
+
+```bash
+./deploy/backup.sh
+./deploy/backup-n8n.sh
 sudo ./deploy/install-backup-timer.sh
-sudo systemctl start msfea-chatbot-backup.service  # immediate verification run
-systemctl status msfea-chatbot-backup.service --no-pager
+sudo systemctl start msfea-chatbot-backup.service
 systemctl list-timers msfea-chatbot-backup.timer --no-pager
 ```
 
-It runs daily at 02:00 in the VM's local timezone, catches up after downtime,
-uses a randomized delay of up to 15 minutes, and retains 14 days of compressed
-on-VM dumps for both application and n8n databases. Do not install the revised
-unit until the production n8n database exists; verify both dumps after the update.
-A dump must also be copied to separate storage; the local retention
-does not protect against losing the VM or boot volume.
+The systemd timer runs at 02:00 in the VM's local timezone, with up to 15 minutes'
+random delay, catches up after downtime and retains 14 days locally. Verify both
+dumps and copy them off the VM. Keep `N8N_ENCRYPTION_KEY` recoverable separately.
 
----
+Rehearse restoration in disposable databases with `psql -v ON_ERROR_STOP=1` and
+validate records/workflow import. [restore.sh](../deploy/restore.sh) is destructive
+and targets the configured application database; do not use it as a routine
+rollback or an isolated-restore command without adapting the target deliberately.
+Old full-database restoration can erase newer interactions and approvals.
 
-## 6. Security review (2026-07-27)
+Prefer migration-compatible image rollback. Older direct-write admin endpoints
+must stay disabled; additive tables do not make old admin behavior safe.
+[The curation contract](curation.md) details compensation after failed activation.
 
-A review of the public-endpoint threat model. **No critical issues.**
+## Ownership and security maintenance
 
-**Verified safe:**
-- **SQL injection** — all queries parameterized; no user input in any f-string SQL.
-- **XSS** — the widget renders user text and answers via `textContent` and escapes
-  citations; the dashboard escapes all output.
-- **PII** — questions are anonymized (emails, IDs, names) *before* the LLM call and
-  *before* logging; fail-safe.
-- **Prompt injection** — the system prompt treats the question as untrusted and is
-  scope-locked to CDC topics.
-- **Errors** — `/chat` degrades gracefully; no stack traces leak to users.
-- **Conversation scope** — at most four prior messages live in the current page only;
-  every history message is anonymized again at the API boundary (ADR-0018).
-- **LLM operations** — quota/service failures are distinct from KB refusals; aggregate
-  provider token usage and generation latency are available on the Usage dashboard.
-- **Dependencies** — the 2026-09-07 scan found advisories in the base image's
-  `pip`/`setuptools`; the Dockerfile now upgrades them to fixed versions. Re-scan
-  the built production image before launch. The local package, spaCy model, and
-  PyTorch CPU index are not fully covered by PyPI audit metadata.
-- **Offline startup** — Hugging Face and Transformers offline modes are forced after
-  model baking; `/ready` also verifies that the populated index uses the configured
-  embedding fingerprint.
+The CDC policy owner decides source authority, exceptions and replacements.
+Engineering owns infrastructure, backups, source ingestion and incident recovery.
+Reviewer names/roles are self-reported under a shared admin token, not verified
+identity or two-person approval. Confirm institutional owners at handover.
 
-**Fixed in this pass:**
-- **CORS** was open (`*`) → now strict-by-default (deny cross-origin unless
-  configured).
-- **Rate-limiter memory** could grow unbounded under many distinct IPs → now sweeps
-  stale keys.
-
-**Accepted / documented (no code change):**
-- Admin endpoints aren't rate-limited, but the 192-bit random `ADMIN_TOKEN` +
-  constant-time comparison make brute force infeasible. Front with AUB SSO when
-  available (ADR-0010).
-- In-memory rate limiter is per-process — fine for a single instance / pilot; a
-  multi-instance deployment needs a shared store (Redis) (ADR-0008).
-
-Re-run the dependency scan periodically: `pip-audit`.
-
----
-
-## Pre-launch checklist
-
-- [ ] Real LLM provider/quota set (not the ~20/day free tier).
-- [ ] `CORS_ALLOW_ORIGINS` = the real page origin (not `*`, not empty).
-- [ ] HTTPS working (Caddy or nginx); `TRUST_PROXY_HEADERS=true` behind the proxy.
-- [ ] `ADMIN_TOKEN` set to a fresh strong value.
-- [ ] Database port not publicly published.
-- [ ] Ingestion run once; `/health` green.
-- [ ] `/ready` returns `{"status":"ready"}` after ingestion.
-- [ ] Backups scheduled and a restore tested.
-- [ ] n8n workflow import/publish tested, private webhook registered, internal
-      route returns 404 through public Caddy, and n8n is not host-published.
-- [ ] Current off-VM application and n8n backup copies plus the encryption key
-      are recoverable; validation database has capacity and is not student-serving.
-- [ ] Real student questions in the golden set; `eval` passing.
-
-## Oracle Studio release, 2026-10-01
-
-The self-service Studio is deployed; see [the verified release record](oracle-studio-deployment-20261001.md)
-for images, migration state, production measurements and recovery material.
-Use `CURATION_LLM_MODEL=gemini-3.1-flash-lite`,
-`CURATION_LLM_DAILY_CALL_LIMIT=400`, `CURATION_LLM_REQUESTS_PER_MINUTE=12`
-and `CURATION_PREVIEW_DAILY_CALL_LIMIT=60` for the verified configuration.
-Keep the student's `LLM_MODEL` separate.
-
-Source checkout/build files must be readable by the image's non-root runtime user.
-Use the normal `umask 022` for Git checkout/build; restrict backup files and `.env`
-separately. A global `umask 077` around a Git update creates unreadable new source
-files that Docker preserves. Verify imports before restarting serving containers.
+Redaction is best effort; keep the baked local NER model available and do not
+claim complete anonymization. Review dependency advisories on the built image,
+public-port/proxy assumptions and real quota/capacity periodically. Historical
+security audits are dated evidence, not a current blanket security certification.

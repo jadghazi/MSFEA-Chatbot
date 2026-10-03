@@ -6,7 +6,7 @@ Date: 2026-09-09
 The free-tier usage audit found that bounded prompts and provider retry controls
 already existed, but repeated acknowledgements, duplicate requests and simultaneous
 submissions could still reach expensive processing. The widget alone cannot enforce
-backend limits. See [the audit](../usage-audit.md) for measurements and all findings.
+backend limits. See [the audit](../archive/usage-audit.md) for measurements and all findings.
 
 Use deterministic whole-message local replies before inference, bounded in-memory
 rate/concurrency state and a 30-second response replay cache. Scope replay to IP,

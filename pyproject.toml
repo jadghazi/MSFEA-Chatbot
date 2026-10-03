@@ -9,7 +9,7 @@ description = "RAG chatbot for the AUB MSFEA internship course"
 requires-python = ">=3.11"
 
 # Runtime dependencies. We add only what the CURRENT phase needs, with a reason,
-# per CLAUDE.md §6. Heavier, choice-dependent libraries (the embedding model, the
+# per AGENTS.md §6. Heavier, choice-dependent libraries (the embedding model, the
 # pgvector driver, the LLM SDK) are added in the phase that introduces them, so
 # each choice can be made on the record with trade-offs (§4/§5) instead of guessed
 # now.

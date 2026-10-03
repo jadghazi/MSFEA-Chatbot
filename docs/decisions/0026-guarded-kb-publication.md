@@ -111,4 +111,4 @@ blocks release.
 - Existing active content remains available through migration but is not retroactively
   represented as validated. High-risk legacy scope gaps must be reviewed explicitly.
 - The pre-change evidence and known failure are frozen in
-  `docs/kb-publication-guard-baseline.md` and `eval/results/publication_guard/`.
+  `docs/archive/kb-publication-guard-baseline.md` and `eval/results/publication_guard/`.

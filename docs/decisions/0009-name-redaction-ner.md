@@ -6,7 +6,7 @@
 
 ## Context
 
-CLAUDE.md §7 requires stripping student-identifying data (names/emails) before it
+AGENTS.md §7 requires stripping student-identifying data (names/emails) before it
 is sent to the LLM or stored in logs. ADR-0007 added regex redaction of emails and
 long numbers (IDs/phones) but left **personal names** unredacted — a real privacy
 gap before a pilot with real students.

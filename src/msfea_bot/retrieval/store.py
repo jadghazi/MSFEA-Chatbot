@@ -1,4 +1,4 @@
-"""pgvector-backed vector store (CLAUDE.md §3).
+"""pgvector-backed vector store (AGENTS.md §3).
 
 Stores chunks + embeddings in PostgreSQL and does top-k cosine similarity search.
 The store is always rebuilt from source (TRUNCATE + insert), so it stays
@@ -93,9 +93,8 @@ def _init_schema(conn: Any, dim: int | None = None) -> None:
     # part of `text` so it reaches neither the embedding nor `tsv`. Prepended when a
     # chunk is read back. See Chunk.display_prefix for the measurements.
     conn.execute("ALTER TABLE chunks ADD COLUMN IF NOT EXISTS display_prefix TEXT NOT NULL DEFAULT ''")
-    # Chunk frontmatter (last_updated, program, department, ...). Backlog B-2 asks
-    # for this slot to be reserved NOW because retrofitting it once the index exists
-    # is expensive; department-scoped *filtering* is the v2 feature, not this column.
+    # Chunk frontmatter (last_updated, program, department, ...). Department
+    # scope is preserved here and enforced by search(); see ADR-0015/0025.
     conn.execute(
         "ALTER TABLE chunks ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb"
     )
@@ -113,7 +112,7 @@ def _init_schema(conn: Any, dim: int | None = None) -> None:
     # corpus size (~175 chunks) pgvector's exact sequential scan is sub-millisecond
     # and returns 100% recall, whereas HNSW/IVFFlat are approximate — they would
     # trade recall away and add tuning knobs (m, ef_construction, lists) to solve a
-    # speed problem we do not have (CLAUDE.md §2: no premature optimization).
+    # speed problem we do not have (AGENTS.md §2: no premature optimization).
     # Revisit if the KB grows past roughly 10k chunks or search latency becomes
     # visible; add the index THEN and re-measure context-recall, since an
     # approximate index can silently lower it.

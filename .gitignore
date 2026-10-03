@@ -16,7 +16,7 @@ htmlcov/
 venv/
 env/
 
-# --- Secrets & config (NEVER commit real secrets — see CLAUDE.md §6) ---
+# --- Secrets & config (NEVER commit real secrets — see AGENTS.md §6) ---
 .env
 .env.*
 !.env.example

@@ -1,1 +1,1 @@
-"""FastAPI backend the widget talks to (CLAUDE.md §5.7)."""
+"""FastAPI backend the widget talks to (AGENTS.md §5.7)."""

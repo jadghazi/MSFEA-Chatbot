@@ -6,7 +6,7 @@
 
 ## Context
 
-Before exposing the bot to real students (Phase 8, CLAUDE.md §5.8), it needs
+Before exposing the bot to real students (Phase 8, AGENTS.md §5.8), it needs
 per-session rate limiting, input sanitization, input length caps, and a system
 prompt that resists jailbreaks / off-topic abuse ("write my essay",
 prompt injection).

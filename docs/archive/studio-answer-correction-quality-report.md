@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Source-backed corrections in the writing assistant
 
 2026-10-01. Suggestions remain available for completed conflict, replacement,

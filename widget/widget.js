@@ -1,4 +1,4 @@
-/* MSFEA CDC chatbot widget — vanilla JS, no dependencies (CLAUDE.md §3, §5.7).
+/* MSFEA CDC chatbot widget — vanilla JS, no dependencies (AGENTS.md §3, §5.7).
  * Embed with:  <script src=".../widget.js" data-api-url="https://your-api"></script>
  * The API base can also be set via window.MSFEA_CHAT_API. Defaults to same origin.
  *

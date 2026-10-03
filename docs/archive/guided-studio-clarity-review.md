@@ -1,3 +1,5 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # Knowledge Studio: explain the decision and the next step
 
 The first implementation exposed seven pass/fail checks after saving but dropped

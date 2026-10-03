@@ -1,8 +1,10 @@
+> Historical evidence. This file describes the implementation and measurements at the time recorded below; it is not current operating guidance. Start with [the documentation index](../README.md) and [current architecture](../architecture.md). Later decisions may supersede it.
+
 # KB publication guard — independent quality review
 
 Date: 2026-09-16
 
-Implementation stage: Step 6 of `kb-publication-guard-plan.md`
+Implementation stage: Step 6 of `docs/curation.md`
 
 Candidate base commit: `2e3c4f505eb2d5cf7416650217a91e01c2728032`
 

@@ -7,7 +7,7 @@
 ## Context
 
 The RAG pipeline needs an embedding model to turn chunks (and queries) into
-vectors for similarity search. CLAUDE.md §3 defaults to a local/open model so
+vectors for similarity search. AGENTS.md §3 defaults to a local/open model so
 there is no per-token cost and nothing external is required. The project is a
 solo student's, optimized for low cost and modest hardware.
 
@@ -34,6 +34,6 @@ It is swappable behind the ingestion/retrieval code.
   RAG project.
 - Embeddings are **384-dimensional**; the pgvector column dimension must match.
 - If retrieval recall on the eval set is weak, swap to `bge-base`/`e5` and
-  **re-measure** — don't switch on a hunch (CLAUDE.md §2). Changing the model
+  **re-measure** — don't switch on a hunch (AGENTS.md §2). Changing the model
   means re-embedding the KB (one ingestion rebuild).
 - Everything runs locally; no student data leaves the machine at embedding time.

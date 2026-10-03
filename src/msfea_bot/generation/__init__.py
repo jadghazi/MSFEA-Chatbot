@@ -1,4 +1,4 @@
-"""Generation + guardrails (CLAUDE.md §5.6).
+"""Generation + guardrails (AGENTS.md §5.6).
 
 Builds a prompt that answers ONLY from retrieved context, cites the source, and
 refuses + escalates when context is insufficient (with a similarity-threshold

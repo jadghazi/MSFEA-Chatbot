@@ -1,4 +1,4 @@
-"""LLM provider abstraction (CLAUDE.md §3).
+"""LLM provider abstraction (AGENTS.md §3).
 
 Student generation and staff review obtain providers through this module.
 Concrete vendor code and purpose-specific configuration stay in this package;
@@ -34,7 +34,7 @@ __all__ = [
 def get_llm_provider() -> LLMProvider:
     """Return the configured LLM provider.
 
-    This factory is the one place that changes when swapping vendors (CLAUDE.md
+    This factory is the one place that changes when swapping vendors (AGENTS.md
     §3): add a branch here mapping ``settings.llm_provider`` to a concrete class.
     Reusing one provider also preserves its HTTP connection pool between turns.
     """

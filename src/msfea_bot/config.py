@@ -1,7 +1,7 @@
 """Central configuration.
 
 Every environment variable the app reads is loaded and validated *here* and
-nowhere else (CLAUDE.md §6). Import the singleton `settings` from this module.
+nowhere else (AGENTS.md §6). Import the singleton `settings` from this module.
 """
 
 from pydantic import Field
@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    # LLM provider (swapped behind msfea_bot.llm — CLAUDE.md §3)
+    # LLM provider (swapped behind msfea_bot.llm — AGENTS.md §3)
     llm_provider: str = "placeholder"
     llm_api_key: str = ""
     llm_model: str = ""
@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     # Embeddings (local/open by default — §3, ADR-0004)
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     # Pinned to an exact Hugging Face commit, not just the tag. "Reproducible from
-    # source" (CLAUDE.md §2) means a rebuild must produce the *same* vectors: the
+    # source" (AGENTS.md §2) means a rebuild must produce the *same* vectors: the
     # `v1.5` name alone would still let re-uploaded weights change them silently,
     # and a rebuilt image querying a persisted pgdata volume would then compare new
     # vectors against old ones with no error — just quietly worse retrieval.

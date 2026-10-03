@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../../docs/README.md) for today's implementation and verification.
+
 # Local RAG improvement review — 2026-09-08
 
 This report covers the pre-deployment local validation. Oracle was not contacted
@@ -105,4 +107,4 @@ internship-vs-CO-OP probe still misses its graduation-requirement premise.
 Full case scores, citations and verbatim outputs: [reviewed results](reviewed_results.md).
 Raw traces include every prompt, retrieved chunk and provider response. Partial
 and invalid runs are explicitly identified in [operational notes](operational_notes.md).
-Dead ends: [MISTAKES.md](../../../MISTAKES.md).
+Dead ends: [MISTAKES.md](../../../docs/archive/engineering-lessons-20260908.md).

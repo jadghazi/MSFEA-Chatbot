@@ -7,9 +7,9 @@
 ## Context
 
 This is a monitored capstone that will be handed off after graduation
-([CLAUDE.md](../../CLAUDE.md) §2, §12). Decisions must be traceable and their
+([AGENTS.md](../../AGENTS.md) §2, §12). Decisions must be traceable and their
 rationale must outlive the author. Separately, we need a Phase 0 Definition of
-Done ([CLAUDE.md](../../CLAUDE.md) §5.0) before building, but the department has
+Done ([AGENTS.md](../../AGENTS.md) §5.0) before building, but the department has
 **not yet provided** the real source material, a baseline email volume, or
 numeric success targets — only the goal: *reduce repetitive student emails by
 deflecting questions the guidelines already answer.*
@@ -30,7 +30,7 @@ deflecting questions the guidelines already answer.*
 ## Decision
 
 Option 3. Use ADRs (this folder) for reversible-but-costly decisions, a dated
-progress journal ([../progress.md](../progress.md)) for the monitoring trail, and
+progress journal ([historical progress](../archive/progress-through-20261002.md)) for the monitoring trail, and
 a Definition of Done ([../definition-of-done.md](../definition-of-done.md)) whose
 quantitative targets are marked `[CONFIRM]` until the department ratifies them.
 

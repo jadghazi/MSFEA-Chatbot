@@ -1,4 +1,4 @@
-"""Request-safety helpers (CLAUDE.md §5.8): input sanitization + rate limiting."""
+"""Request-safety helpers (AGENTS.md §5.8): input sanitization + rate limiting."""
 
 from __future__ import annotations
 

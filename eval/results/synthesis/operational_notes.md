@@ -1,3 +1,5 @@
+> Historical evaluation evidence/protocol. Settings, results and instructions refer to the dated run below; use [current task guidance](../../../docs/README.md) for today's implementation and verification.
+
 # Operational notes
 
 - Baseline uses the unchanged current checkout at `afbe3ab`, 206 existing local

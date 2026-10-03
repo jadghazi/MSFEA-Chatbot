@@ -7,7 +7,7 @@
 ## Context
 
 We need to grade "is an answer correct and safe?" both offline (the Phase 2
-evaluation harness, [CLAUDE.md](../../CLAUDE.md) §4) and online once deployed
+evaluation harness, [AGENTS.md](../../AGENTS.md) §4) and online once deployed
 (Phase 9 observability). The naive options each fail on their own:
 
 - **Exact / keyword matching (BLEU/ROUGE/F1):** simple and free, but brittle —
@@ -74,6 +74,6 @@ unanswered-questions log.
   student.
 - **Separation preserved.** Retrieval metric (recall@k) stays independent of all
   of the above, so a wrong answer is still diagnosed as retrieval-vs-generation
-  first ([CLAUDE.md](../../CLAUDE.md) §2, §4).
+  first ([AGENTS.md](../../AGENTS.md) §2, §4).
 - **What we watch.** If the LLM judge drifts from human labels, Layer 3 catches
   it; we fix the rubric before trusting Layer 2 again.

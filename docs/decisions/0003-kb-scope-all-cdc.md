@@ -11,7 +11,7 @@ manifest) covers the whole MSFEA Career Development Center: internships (Approve
 Experience), CO-OP, IAESTE, full-time job support, and mentorship — not only the
 internship course.
 
-CLAUDE.md §1 originally scoped Phase 1 to *"the internship course only"* and
+AGENTS.md §1 originally scoped Phase 1 to *"the internship course only"* and
 warns to *"resist scope creep."* But the same section also says a later
 expansion *"should mean adding a new content set, not rewriting the system,"* and
 the actual product goal is to **deflect repetitive student emails** — students
@@ -32,14 +32,14 @@ email the CDC about all of these topics, not just internships.
 - It maximizes the north-star metric (email deflection): students email about the
   whole CDC, so answering the whole CDC deflects the most.
 - The content already exists and is coherent (one curated KB + the guidelines).
-- Crucially, this is **content-set expansion**, which CLAUDE.md explicitly
+- Crucially, this is **content-set expansion**, which AGENTS.md explicitly
   sanctions — *not* a rewrite and *not* new features.
 
 ## Consequences
 
 - **The guardrail we still hold: no career-center *features*.** No logins, no
   portals, no per-program workflows — the system stays "RAG over documents." The
-  boundary is features, not content. (CLAUDE.md §7 still applies.)
+  boundary is features, not content. (AGENTS.md §7 still applies.)
 - **Eval + prompt must cover the broader surface.** The golden set, the system
   prompt's in-scope definition, and the refusal boundaries must span internship,
   CO-OP, IAESTE, full-time, and mentorship. Refusal still fires for anything
@@ -47,6 +47,6 @@ email the CDC about all of these topics, not just internships.
 - **Don't let breadth dilute internship depth.** Internships are the richest and
   most-emailed area; the eval set must keep strong internship coverage, not just
   spread thin across topics.
-- **Supersedes** CLAUDE.md §1's "internship course only" scope line. Proposed:
+- **Supersedes** AGENTS.md §1's "internship course only" scope line. Proposed:
   update that wording to "the MSFEA CDC content set (internship + CO-OP + IAESTE +
-  full-time + mentorship)". Pending owner approval before editing CLAUDE.md.
+  full-time + mentorship)". Pending owner approval before editing AGENTS.md.

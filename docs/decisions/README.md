@@ -1,58 +1,54 @@
-# Decision log (ADRs)
+# Architecture decisions
 
-This folder holds **Architecture Decision Records** — one short file per real
-decision, in the order they were made. It exists because [CLAUDE.md](../../CLAUDE.md)
-§2 requires us to *explain trade-offs, not just pick*, and because this is a
-monitored capstone that will be handed to someone else: the *why* behind each
-choice must outlive the person who made it.
+Read [current architecture](../architecture.md) first. ADRs explain the reasoning
+and evidence at decision time; accepted bodies are historical, not a second
+current runbook. The current task guides and later superseding decisions identify
+which behavior is deployed.
 
-## When to write one
+Write a short ADR only for an expensive-to-reverse or consequential choice.
+Use [the template](0000-adr-template.md), the next unused number, and clear
+context/options/decision/consequences. Do not rewrite accepted decisions to match
+new behavior; record a superseding decision and update this index.
 
-Write an ADR when you make a decision that is **expensive to reverse** or that a
-future maintainer would otherwise have to reverse-engineer:
-chunking strategy, top-k, embedding model, LLM provider, retrieval approach
-(semantic vs. hybrid), refusal threshold, etc.
-
-Do **not** write one for trivial or easily-reversed choices (variable names,
-file layout). Keep the log signal-heavy.
-
-## How
-
-1. Copy [`0000-adr-template.md`](0000-adr-template.md).
-2. Name it `NNNN-short-title.md` with the next number.
-3. Fill it in. Keep it short — context, options, decision, consequences.
-4. An ADR is **immutable** once accepted. If a later decision reverses it, write
-   a *new* ADR that supersedes it and link back. We never rewrite history.
+Two historical files were independently numbered 0025. Their full filenames are
+the stable identifiers below; no renumbering changes their existing citations.
+ADR-0031 documents the already-deployed October 2 draft-warning change and partially
+supersedes ADR-0030. Navigation/rules-file references were repaired during cleanup;
+historical measurements and decision content were retained.
 
 ## Index
 
-| ADR | Title | Status |
-|-----|-------|--------|
-| 0001 | Adopt ADR process + provisional success metrics | Accepted |
-| 0002 | Evaluation methodology: layered hybrid | Accepted |
-| 0003 | Phase 1 KB scope: all CDC content | Accepted |
-| 0004 | Embedding model: local bge-small-en-v1.5 | Accepted |
-| 0005 | Provisional LLM provider: Google Gemini (free tier) | Accepted (provisional) |
-| 0006 | Chunking: section-aware + size-bounded overlapping windows | Accepted |
-| 0007 | Observability: interaction logging + anonymization | Accepted |
-| 0008 | Safety / abuse hardening | Accepted |
-| 0009 | Name redaction via local NER | Accepted |
-| 0010 | Admin dashboard + curation feedback loop | Accepted |
-| 0011 | Hybrid retrieval (semantic + keyword, RRF) | Accepted |
-| 0012 | Deterministic decoding (temperature, seed, token ceiling) | Accepted |
-| 0013 | Curated answers use the same windowing as KB content | Accepted |
-| 0014 | Split-table headers are display context, not retrieval text | Accepted |
-| 0015 | Department-scoped answers and escalation routing (B-1, B-2) | Accepted |
-| 0016 | Actionable links; top_k 5->7; provenance excluded from the index | Accepted |
-| 0017 | Tables are atomic chunks (supersedes 0014's split-table handling) | Accepted |
-| 0018 | Bounded same-chat context and LLM operational failures | Accepted |
-| 0019 | Minimal hardening for a small hosted pilot | Accepted |
-| 0020 | Calibrated pre-LLM similarity threshold of 0.60 | Accepted |
-| 0021 | Intent-aware grounded answer planning in one LLM call | Accepted |
-| 0022 | Measured synthesis, adaptive comparison retrieval and confirmations | Local testing |
-| 0023 | Local usage guards for the single-worker pilot | Accepted and deployed |
-| 0024 | Department-aware retrieval and stronger follow-up synthesis | Accepted |
-| 0025 | Inherit department scope in nested chunks | Accepted |
-| 0026 | Guarded KB publication with n8n coordination | Accepted |
-| 0028 | Guided Knowledge Studio with verified staff-only AI review | Superseded by 0029 |
-| 0029 | Self-service Studio, independent review and measured search preparation | Deployed on Oracle |
+| ADR | Decision | Current relationship |
+| --- | --- | --- |
+| 0001 | [Adopt ADR process + provisional success metrics](0001-adr-process-and-provisional-metrics.md) | Accepted; success targets remain provisional |
+| 0002 | [Evaluation methodology: layered hybrid](0002-evaluation-methodology.md) | Accepted; consult current guides for subsequent refinements |
+| 0003 | [Phase 1 KB scope: all CDC content](0003-kb-scope-all-cdc.md) | Accepted; consult current guides for subsequent refinements |
+| 0004 | [Embedding model: local bge-small-en-v1.5](0004-embedding-model.md) | Accepted; consult current guides for subsequent refinements |
+| 0005 | [Provisional LLM provider: Google Gemini (free tier)](0005-provisional-llm-provider-gemini.md) | Provisional vendor choice; Gemini adapter currently implemented |
+| 0006 | [Chunking: section-aware with size-bounded overlapping windows](0006-chunking-strategy.md) | Accepted; consult current guides for subsequent refinements |
+| 0007 | [Observability: interaction logging + anonymization](0007-observability-logging.md) | Accepted; consult current guides for subsequent refinements |
+| 0008 | [Safety / abuse hardening](0008-safety-hardening.md) | Accepted; consult current guides for subsequent refinements |
+| 0009 | [Name redaction via local NER](0009-name-redaction-ner.md) | Accepted; consult current guides for subsequent refinements |
+| 0010 | [Admin dashboard + curation feedback loop](0010-admin-curation-dashboard.md) | Dashboard foundation; publication extended by 0026–0031 |
+| 0011 | [Hybrid retrieval (semantic + keyword, RRF)](0011-hybrid-retrieval.md) | Accepted; consult current guides for subsequent refinements |
+| 0012 | [Deterministic decoding (temperature 0) + an output ceiling](0012-generation-sampling-params.md) | Accepted; consult current guides for subsequent refinements |
+| 0013 | [Curated answers go through the same windowing as KB content](0013-curated-answer-chunking.md) | Accepted; consult current guides for subsequent refinements |
+| 0014 | [Split-table headers are display context, not retrieval text](0014-display-prefix-for-split-tables.md) | Split-table strategy superseded by 0017 |
+| 0015 | [Department-scoped answers and escalation routing](0015-department-scoped-answers-and-routing.md) | Accepted; consult current guides for subsequent refinements |
+| 0016 | [Actionable links in answers, and the retrieval changes they forced](0016-actionable-links-and-retrieval-depth.md) | Accepted; consult current guides for subsequent refinements |
+| 0017 | [Tables are atomic chunks](0017-tables-are-atomic-chunks.md) | Accepted; consult current guides for subsequent refinements |
+| 0018 | [Bounded same-chat context and LLM operational failures](0018-bounded-conversation-and-llm-failures.md) | Accepted; consult current guides for subsequent refinements |
+| 0019 | [Minimal hardening for a small hosted pilot](0019-small-pilot-hardening.md) | Accepted; consult current guides for subsequent refinements |
+| 0020 | [Calibrated pre-LLM similarity threshold of 0.60](0020-calibrated-similarity-threshold.md) | Accepted; consult current guides for subsequent refinements |
+| 0021 | [Intent-aware grounded answer planning in one LLM call](0021-intent-aware-grounded-answer-planning.md) | Accepted; consult current guides for subsequent refinements |
+| 0022 | [Direct answers and confirmation follow-ups](0022-measured-synthesis-and-followups.md) | Accepted and implemented; later follow-up refinements in 0024/0025/0027 |
+| 0023 | [Local usage guards for the single-worker pilot](0023-local-usage-guards.md) | Accepted; consult current guides for subsequent refinements |
+| 0024 | [Improve follow-up synthesis without changing the pilot model](0024-followup-answer-quality.md) | Accepted; consult current guides for subsequent refinements |
+| 0025 (conversation) | [Current-question-first conversation retrieval](0025-conversation-topic-routing.md) | Accepted; conversation refined by 0027 |
+| 0025 (scope) | [Inherit department scope in nested chunks](0025-inherit-department-scope-in-nested-chunks.md) | Accepted; nested scope inheritance implemented |
+| 0026 | [Guarded KB publication with n8n coordination](0026-guarded-kb-publication.md) | Accepted; consult current guides for subsequent refinements |
+| 0027 | [Keep selective LLM rewriting out of the pilot](0027-conversational-rewrite-evaluation.md) | Accepted; second student rewrite model remains excluded |
+| 0028 | [Guided Knowledge Studio](0028-guided-knowledge-studio.md) | Superseded by 0029 |
+| 0029 | [Self-service Studio with measured search preparation](0029-self-service-studio.md) | Deployed; optional writing extended by 0030/0031 |
+| 0030 | [Optional source-backed answer suggestions](0030-source-backed-answer-suggestions.md) | Deployed; strict draft withholding superseded by 0031 |
+| 0031 | [Show private AI drafts with advisory source warnings](0031-advisory-ai-drafts.md) | Deployed in 2601082; private warnings, fresh-review/publish gates retained |
