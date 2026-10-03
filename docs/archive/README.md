@@ -22,6 +22,8 @@ period. The latest optional-draft rule is [ADR-0031](../decisions/0031-advisory-
 | Self-service Studio and Oracle rollout | [Quality report](studio-self-service-quality-report.md), [rollout receipt](oracle-studio-deployment-20261001.md) |
 | Optional answer writer and subsequent correction trials | [Writer review](studio-answer-suggestion-quality-report.md), [correction review](studio-answer-correction-quality-report.md), [initial rollout receipt](oracle-answer-suggestion-deployment-20261001.md) |
 | Prelaunch engineering snapshot | [Pilot-readiness snapshot](pilot-readiness.md) |
+| Earlier local dashboard/student-page visual reviews | [Dashboard review](dashboard-design-review-2026-09-27.md), [student page review](frontend-design-review-2026-09-27.md); fixtures are not live policy answers |
+| Superseded early faculty workbook review | [September 25 draft review](faq-workbook-classification-2026-09-25.md); later approved intake records remain canonical |
 | Original chronological capstone journal | [Progress through October 2](progress-through-20261002.md) |
 
 Superseded Studio/publication implementation plans and overlapping technical guides

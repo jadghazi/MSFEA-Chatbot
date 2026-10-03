@@ -68,6 +68,11 @@ repair. This text never becomes factual answer evidence. See [curation](curation
    provider usage/latency. Provider failures do not become unanswered-content work.
    `experience/` separately stores anonymous experience feedback.
 
+The protected Usage view aggregates persisted interactions over 7/30/90-day UTC
+windows. Answer rate excludes provider errors; helpfulness covers submitted
+ratings only. Neither establishes answer accuracy, unique students or email
+deflection. Process-local usage counters are separate from durable analytics.
+
 The browser allows six completed questions per chat. The API history limit is eight
 messages of at most 1,200 characters each; questions are at most 2,000 characters.
 There is no persistent student account or server conversation store.
