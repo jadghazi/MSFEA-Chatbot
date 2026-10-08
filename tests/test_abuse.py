@@ -324,3 +324,23 @@ def test_transient_failure_retry_is_fresh_and_lock_released(monkeypatch):
     assert client.post("/chat", json=payload).status_code == 200
     assert len(calls) == 3
     assert not api._guard.active
+
+
+def test_slow_request_body_has_a_deadline(monkeypatch):
+    import msfea_bot.api.abuse as abuse
+    async def scenario():
+        sent = []
+        async def receive():
+            await asyncio.sleep(1)
+            return {"type": "http.request", "body": b"{}", "more_body": False}
+        async def send(message):
+            sent.append(message)
+        async def downstream(*args):
+            pytest.fail("Slow body reached the parser")
+        ticks = iter([0, 11])
+        from types import SimpleNamespace
+        monkeypatch.setattr(abuse, "time", SimpleNamespace(monotonic=lambda: next(ticks, 11)))
+        await BodyLimitMiddleware(downstream)(
+            {"type": "http", "method": "POST", "path": "/chat", "headers": []}, receive, send)
+        assert sent[0]["status"] == 408
+    asyncio.run(scenario())

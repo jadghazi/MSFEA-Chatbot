@@ -16,6 +16,7 @@ from msfea_bot.curation import assistance
 from msfea_bot.curation.assistance import SUGGESTION_PROMPT_VERSION, Intake, _connect, claim_units, stage
 from msfea_bot.curation.validation import get_revision, validation_runs
 from msfea_bot.llm import LLMError, LLMRateLimitError, get_curation_provider
+from msfea_bot.llm.base import LLMAdmissionError
 from msfea_bot.observability.privacy import anonymize
 from msfea_bot.retrieval.store import indexed_generation
 
@@ -359,6 +360,8 @@ DATA:\n""" + json.dumps({"intake":intake.model_dump(),"feedback":context,"facts"
                 " lease_expires_at=NULL WHERE id=%s",(Json(result),job_id),
             )
         return True
+    except LLMAdmissionError:
+        error = "spending_paused"
     except LLMRateLimitError:
         error = "quota"
     except LLMError:

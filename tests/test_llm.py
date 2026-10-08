@@ -9,10 +9,23 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 from typing import Any, cast
+from contextlib import contextmanager
 
 import pytest
 
 from msfea_bot.config import Settings, settings
+
+
+@pytest.fixture(autouse=True)
+def hermetic_paid_accounting(monkeypatch: pytest.MonkeyPatch) -> None:
+    from msfea_bot.llm import budget
+
+    @contextmanager
+    def attempt(*args: Any, **kwargs: Any) -> Any:
+        yield 1
+
+    monkeypatch.setattr(budget, "attempt", attempt)
+    monkeypatch.setattr(budget, "settle", lambda ticket, usage: None)
 
 
 class _FakeResponse:

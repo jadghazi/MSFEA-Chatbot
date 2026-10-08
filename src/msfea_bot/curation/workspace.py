@@ -19,6 +19,7 @@ from msfea_bot.curation.revisions import DraftPayload, EvidenceReference, _inser
 from msfea_bot.curation.validation import get_revision, start_validation, validation_fingerprint, validation_runs
 from msfea_bot.generation.answer import generate_answer
 from msfea_bot.llm import LLMError, LLMRateLimitError, get_preview_provider
+from msfea_bot.llm.base import LLMAdmissionError
 from msfea_bot.retrieval.store import indexed_generation
 
 
@@ -182,7 +183,7 @@ def retry_repair(revision_id: int) -> None:
         row = conn.execute(
             "UPDATE curation_workspace_jobs SET status='queued',error_code=NULL,completed_at=NULL"
             " WHERE run_id=%s AND kind='repair' AND status='failed'"
-            " AND error_code IN ('quota','provider_unavailable','interrupted','service_unavailable')"
+            " AND error_code IN ('quota','provider_unavailable','interrupted','service_unavailable','spending_paused')"
             " AND NOT result ? 'successor_revision_id' RETURNING id", (run["id"],),
         ).fetchone()
         if not row:
@@ -231,6 +232,8 @@ def process_next_workspace_job() -> bool:
         checked_revision = get_revision(int(row[1]))
         if checked_revision is None or validation_fingerprint(checked_revision) != run["fingerprint"]:
             raise ValueError("The KB changed during this operation.")
+    except LLMAdmissionError:
+        error = "spending_paused"
     except LLMRateLimitError:
         error = "quota"
     except LLMError:

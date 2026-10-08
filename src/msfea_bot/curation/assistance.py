@@ -23,6 +23,7 @@ from msfea_bot.curation.revisions import (
 from msfea_bot.curation.validation import review_candidates
 from msfea_bot.curation.service import _revision_stage
 from msfea_bot.llm import LLMError, LLMRateLimitError, get_curation_provider
+from msfea_bot.llm.base import LLMAdmissionError
 from msfea_bot.observability.privacy import _ner, anonymize
 from msfea_bot.retrieval.store import indexed_generation
 
@@ -718,6 +719,8 @@ def process_next() -> bool:
                     (Json(report), review_id),
                 )
             return True
+    except LLMAdmissionError:
+        error_code = "spending_paused"
     except LLMRateLimitError:
         error_code = "quota"
     except LLMError:

@@ -224,8 +224,15 @@ PostgreSQL server, not a seventh permanent container. Bootstrap jobs initialize
 validation and import/publish the Git workflow, then exit. Student chat is independent
 of n8n; n8n sequences checks/publication IDs and cannot approve content.
 
-Use one application worker/instance: rate limiting, concurrency, response cache and
-usage counters are process-local. API admission limits and backup/recovery procedures
+Use one application worker/instance: short-term rate limiting, request concurrency,
+response cache and legacy usage counters are process-local. Daily IP/chat admission,
+paid attempt/token/cost ceilings, provider concurrency and operator pause are durable
+in application PostgreSQL and shared by app/worker. Every Gemini generation attempt,
+including retries, is admitted before the SDK call. Complete usage includes reasoning;
+uncertain attempts retain conservative reservations. A protected Paid usage & controls
+tab exposes the shared ledger and pause/resume. Environment override and cooldown
+remain independent. See the paid-call section in operations for bounds and Google
+project controls; app estimates are not the provider balance. API admission limits and backup/recovery procedures
 are in [operations](deployment.md). Persistent application records are authoritative;
 n8n execution history and process counters are not audit or billing ledgers.
 

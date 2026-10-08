@@ -111,3 +111,11 @@ not verified identity or two-person approval.
 
 See [curation contract](curation.md) for technical guarantees and
 [operations](deployment.md) for models, budgets, services and recovery.
+
+
+Paid generation shares the student assistant's durable daily request/token/cost
+allowance. **Paid usage & controls** reports staff work and previews separately and
+can pause all new calls. Pausing or exhausting an allowance preserves saved drafts;
+resume/retry after the operator restores service. Existing review, validation,
+source confirmation and human publication gates remain required. See
+[paid-call operations](deployment.md#paid-call-controls-and-billing).

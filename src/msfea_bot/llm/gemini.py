@@ -13,6 +13,7 @@ from typing import Any, Callable
 
 from msfea_bot.config import settings
 from msfea_bot.observability.usage import count
+from msfea_bot.llm import budget
 from msfea_bot.llm.base import (
     GenerationResult,
     LLMConfigurationError,
@@ -127,11 +128,16 @@ class GeminiProvider:
         started = perf_counter()
         if self._before_request is not None:
             self._before_request()
-        self._count("llm_calls")
         try:
-            response = self._client.models.generate_content(
-                model=self._model, contents=prompt, config=self._config
-            )
+            with budget.attempt(
+                prompt, self._model, self._config.max_output_tokens or 1024,
+                self._purpose, self._config.response_json_schema,
+            ) as ticket:
+                self._count("llm_calls")
+                response = self._client.models.generate_content(
+                    model=self._model, contents=prompt, config=self._config
+                )
+                budget.settle(ticket, getattr(response, "usage_metadata", None))
         except errors.ClientError as exc:
             self._count("provider_errors")
             if exc.code == 429:

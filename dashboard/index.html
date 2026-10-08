@@ -321,6 +321,7 @@
           <div class="nav-label">Monitor</div>
           <nav class="tabs" aria-label="Admin navigation">
             <button class="tab active" data-tab="usage"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M8 15v-4m5 4V7m5 8V3"/></svg>Usage overview</button>
+            <button class="tab" data-tab="paid"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5m0 14h16M8 15v-4m5 4V7m5 8V3"/></svg>Paid usage & controls</button>
             <button class="tab" data-tab="attention">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v13H8l-4 4V4zM12 8v4m0 2v.2"/></svg>Needs attention <span id="pending-badge" class="badge zero">0</span>
             </button>
@@ -387,6 +388,11 @@
           <div id="curated-list"></div>
         </div>
 
+        <div id="tab-paid" class="hidden">
+          <div class="usage-toolbar"><p>Monitor paid calls, spending and protection events.</p><button class="secondary" onclick="loadPaidUsage()">Refresh paid usage</button></div>
+          <div id="paid-status" role="status" aria-live="polite"></div>
+          <div id="paid-report"></div>
+        </div>
         <!-- Tab: usage -->
         <div id="tab-usage">
           <div class="usage-toolbar">
@@ -406,6 +412,7 @@
     </main>
 
     <script src="usage.js?v=2"></script>
+    <script src="paid-usage.js?v=1"></script>
     <script src="review.js?v=5"></script>
     <script src="studio_preview.js?v=1"></script>
     <script src="studio_suggestion.js?v=4"></script>
@@ -467,11 +474,12 @@
       }
 
       // ---- Tabs ----
-      var TABS = ["create", "attention", "drafts", "curated", "usage", "experience"];
+      var TABS = ["create", "attention", "drafts", "curated", "usage", "paid", "experience"];
       function selectTab(name) {
         window.scrollTo(0, 0);
-        var titles = {create:"Knowledge Studio", attention:"Needs attention", drafts:"Knowledge drafts", curated:"Published knowledge", usage:"Usage overview", experience:"Experience feedback"};
+        var titles = {create:"Knowledge Studio", attention:"Needs attention", drafts:"Knowledge drafts", curated:"Published knowledge", usage:"Usage overview", paid:"Paid usage & controls", experience:"Experience feedback"};
         $("page-title").textContent = titles[name];
+        if (name === "paid" && token()) loadPaidUsage();
         TABS.forEach(function (t) {
           $("tab-" + t).classList.toggle("hidden", t !== name);
         });
@@ -1160,6 +1168,10 @@
       $("token").addEventListener("keydown", function (e) { if (e.key === "Enter") signIn(); });
       $("signout").addEventListener("click", signOut);
       $("refresh").addEventListener("click", function () { loadAll(); });
+      setInterval(function () {
+        if (document.visibilityState === "visible" && token() && !$("app").classList.contains("hidden") &&
+            !$("tab-paid").classList.contains("hidden") && !$("paid-report").hasAttribute("aria-busy")) loadPaidUsage();
+      }, 30000);
       setInterval(function () {
         if (_pendingWorkflow && !$("app").classList.contains("hidden") && !$("refresh").disabled) {
           loadAll();

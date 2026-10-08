@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import asyncio
 import re
 import threading
 import time
@@ -66,7 +67,7 @@ def busy() -> HTTPException:
 
 
 class RequestGuard:
-    """Reject in-flight repeats; replay completed responses for 30 seconds.
+    """Reject in-flight repeats; replay completed responses for five minutes.
 
     Cache only clients supplying a session ID, scoped to IP + session + complete
     request context. Never hold the lock over inference or wait in a worker thread.
@@ -117,7 +118,7 @@ class RequestGuard:
             if session:
                 self.sessions.discard(session)
                 if response is not None:
-                    self.cache[key] = (time.monotonic() + 30, response)
+                    self.cache[key] = (time.monotonic() + 300, response)
                     self.cache.move_to_end(key)
                     while len(self.cache) > 256:
                         self.cache.popitem(last=False)
@@ -149,8 +150,13 @@ class BodyLimitMiddleware:
             )(scope, receive, send)
             return
         body = bytearray()
+        deadline = time.monotonic() + 10
         while True:
-            message = await receive()
+            try:
+                message = await asyncio.wait_for(receive(), timeout=max(0.001, deadline-time.monotonic()))
+            except TimeoutError:
+                await JSONResponse({"detail": "Request body timed out."}, status_code=408)(scope, receive, send)
+                return
             if message["type"] == "http.disconnect":
                 return
             chunk = message.get("body", b"")

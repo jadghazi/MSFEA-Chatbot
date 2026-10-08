@@ -12,6 +12,7 @@
     needs_clarification: "A few details are missing"
   };
   var errors = {
+    spending_paused: "Paid calls are paused or have reached the shared allowance. Your guidance is saved. Check Paid usage & controls; resume or retry later.",
     quota: "The staff-review model has reached its Gemini limit. Your guidance is still here. Try again later or use the manual source editor.",
     daily_budget: "Today's staff-review allowance has been used. Your guidance is still here; you can use the manual editor or return tomorrow.",
     provider_unavailable: "The review model is unavailable. Your guidance is saved here; retry later or use the manual editor.",

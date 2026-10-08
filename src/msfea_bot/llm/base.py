@@ -16,6 +16,10 @@ class LLMRateLimitError(LLMError):
     """The provider rejected a request because a rate/quota limit was reached."""
 
 
+class LLMAdmissionError(LLMRateLimitError):
+    """Local paid-call protection blocked an attempt before contacting Gemini."""
+
+
 class LLMServiceError(LLMError):
     """A transient provider/network failure."""
 

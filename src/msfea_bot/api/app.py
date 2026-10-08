@@ -71,6 +71,8 @@ from msfea_bot.experience import (
 )
 from msfea_bot.ingestion.embeddings import warm_embedding_model
 from msfea_bot.llm import LLMConfigurationError, LLMRateLimitError, LLMServiceError
+from msfea_bot.llm.base import LLMAdmissionError
+from msfea_bot.llm import budget
 from msfea_bot.observability.privacy import anonymize, warm_anonymizer
 from msfea_bot.observability.store import (
     feedback_items,
@@ -147,11 +149,13 @@ def experience_rate_limit(request: Request) -> None:
 
 
 class HistoryMessage(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
     role: Literal["user", "assistant"]
     content: str = Field(min_length=1, max_length=MAX_HISTORY_MESSAGE_CHARS)
 
 
 class ChatRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
     session_id: str | None = Field(
         default=None, min_length=16, max_length=64, pattern=r"^[A-Za-z0-9_-]+$"
     )
@@ -183,7 +187,12 @@ def _temporary_failure(code: str, department: str | None) -> Answer:
         if dept
         else settings.escalation_contact or "the CDC office"
     )
-    if code == "rate_limited":
+    if code == "spending_paused":
+        text = (
+            "The assistant's answer service is temporarily paused. Please try again later. "
+            f"For help now, contact {contact}."
+        )
+    elif code == "rate_limited":
         text = (
             "The assistant is temporarily busy. Please try again in "
             f"a few minutes. If it is still unavailable later today, contact {contact}."
@@ -246,6 +255,16 @@ def chat(req: ChatRequest, request: Request, _rl: None = Depends(rate_limit)) ->
             429, "Please slow down and try again shortly.", headers={"Retry-After": "60"}
         )
     question = sanitize(req.question)
+    try:
+        limited = budget.admit_chat(ip, req.session_id)
+    except Exception as exc:
+        raise HTTPException(503, "The service is temporarily unavailable. Please try again later.") from exc
+    if limited:
+        raise HTTPException(
+            429, "This chat has reached its question allowance. Please return later."
+            if limited == "session" else "Today's request allowance has been reached. Please return tomorrow.",
+            headers={"Retry-After": "3600"},
+        )
     reply = local_reply(question, has_history=bool(req.history))
     if reply:
         count("local_replies")
@@ -290,6 +309,8 @@ def chat(req: ChatRequest, request: Request, _rl: None = Depends(rate_limit)) ->
         ]
         try:
             result = generate_answer(question, department=dept_code, history=history)
+        except LLMAdmissionError:
+            result = _temporary_failure("spending_paused", dept_code)
         except LLMRateLimitError:
             result = _temporary_failure("rate_limited", dept_code)
         except LLMConfigurationError:
@@ -313,7 +334,7 @@ def chat(req: ChatRequest, request: Request, _rl: None = Depends(rate_limit)) ->
     finally:
         # Retry must make a fresh attempt after a transient failure. Quota failures
         # retain the cooldown; existing rate/concurrency limits still bound retries.
-        cacheable = response if response and response.error_code != "service_unavailable" else None
+        cacheable = response if response and response.error_code not in {"service_unavailable", "spending_paused"} else None
         _guard.finish(ip, session, key, cacheable)
         count("chat_processing_ms", round((perf_counter() - started) * 1000))
 
@@ -405,6 +426,28 @@ def admin_stats(_: None = Depends(require_admin)) -> dict[str, int]:
 def admin_usage(_: None = Depends(require_admin)) -> dict[str, int]:
     """Content-free operational counters for this worker since startup."""
     return snapshot()
+
+
+class LLMControlRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    enabled: bool
+
+
+@app.get("/admin/api/llm-usage")
+def admin_llm_usage(_: None = Depends(require_admin)) -> dict[str, Any]:
+    try:
+        return budget.report()
+    except Exception as exc:
+        raise HTTPException(503, "Paid-call accounting is unavailable.") from exc
+
+
+@app.post("/admin/api/llm-control")
+def admin_llm_control(req: LLMControlRequest, _: None = Depends(require_admin)) -> dict[str, bool]:
+    try:
+        budget.set_enabled(req.enabled)
+    except Exception as exc:
+        raise HTTPException(503, "The control could not be saved. Refresh before retrying.") from exc
+    return {"enabled": req.enabled}
 
 
 @app.get("/admin/api/analytics")

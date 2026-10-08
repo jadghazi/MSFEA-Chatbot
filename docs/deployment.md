@@ -46,7 +46,7 @@ evidence. Do not copy synthetic demo data or a developer's database into product
    `umask 022` for checkout/build and restrict secrets/backups separately.
 3. Build the exact target image natively for the host architecture before switching.
    Startup applies pending checksum-verified curation migrations. Current code has
-   migrations 0001–0007; never modify already-applied SQL files.
+   migrations 0001–0008; never modify already-applied SQL files.
 4. For an existing installation with unchanged dependencies/workflow, recreate
    only the affected services after the native build:
 
@@ -102,14 +102,15 @@ clear cached answers; guarded publication invalidates them automatically.
 
 | Layer | Current bounds/defaults |
 | --- | --- |
-| HTTP/question/history | 64 KiB body; 2,000-character question; eight history messages, 1,200 characters each |
-| IP | Configurable minute window, default 60/minute; also 12/5 seconds and 300/hour |
-| Browser session | 20/minute, 80/hour; session IDs are not authentication |
-| Expensive concurrency | One/session, four/IP, sixteen/app worker |
-| Response reuse | Exact effective session/context, 30 seconds, bounded 256 entries |
+| HTTP/question/history | 10-second body-read deadline; 64 KiB body; 2,000-character question; eight history messages, 1,200 characters each |
+| IP | Default 60/minute; 12/5 seconds and 300/hour; persistent 200/UTC day |
+| Browser session | 20/minute, 80/hour; persistent 40/chat per rolling 24 hours; IDs are not authentication |
+| Expensive concurrency | One/session, four/IP, sixteen/app worker; shared eight paid attempts across app/worker |
+| Response reuse | Exact IP/session/department/effective context/index version, five minutes, 256 entries |
 | Evidence/output | 24,000 context characters; code output default 1,024 tokens, deployed paid profile 4,096 |
 | Staff AI | Default 12 attempts/minute, 400/day/model |
 | Student-model previews | Separate 60-call daily admission cap; shares student provider quota |
+| All paid workloads | Persistent 100 attempts, 500,000 budgeted tokens and estimated $0.50/UTC day; first reached stops new calls |
 
 Runtime `.env` overrides can differ. The local demo's 500 staff attempts/day override
 is not the Oracle/default setting. Daily caps count calls/attempts, not entries;
@@ -123,6 +124,68 @@ their own timeout. Quota errors do not get an automatic transient retry.
 Transient failure responses are not cached; rate-limit cooldown responses can be.
 For a provider outage, preserve saved drafts, explain the service failure and retry
 when available. Do not turn a transport failure into a content judgment.
+
+## Paid-call controls and billing
+
+Every Gemini generation attempt, including retries, staff advice/writing and student
+previews, reserves tokens and estimated cost atomically in application PostgreSQL.
+The reservation uses a conservative UTF-8 input bound plus schema/framing and the
+full server output ceiling. Complete SDK usage settles input and all output,
+including reasoning. Failed, unmeasured and interrupted attempts keep their holds.
+Therefore an allowance can block earlier than its nominal actual-use capacity.
+Neither restart nor a new chat resets global usage. Database failure blocks paid
+calls before contacting Gemini. UTC rollover resets daily admission, not the pause.
+
+Configure `LLM_DAILY_REQUEST_LIMIT`, `LLM_DAILY_TOKEN_LIMIT`,
+`LLM_DAILY_COST_LIMIT_USD` and `LLM_GLOBAL_CONCURRENCY` in both app/worker environments.
+The configured prices are estimates, not the provider invoice; changing models
+requires reviewing their input/output prices. `LLM_PRICE_VALID_UNTIL` blocks calls
+after expiry until reviewed. Current rates expire on 2026-12-31. A usage-bound
+violation automatically pauses new calls. Unmeasured usage remains reserved.
+
+**Paid usage & controls** in the authenticated dashboard shows seven UTC days by
+model/workload, input, visible output, reasoning, estimated cost, uncertain holds
+and protection events. It refreshes every 30 seconds while visible. Warning banners
+flag 80% usage, expired pricing, pauses and provider cooldowns; server warning logs
+record near-limit, rejection, circuit and operator events. No email/SMS alert
+service is configured. This ledger starts at this release; historical student
+analytics remain in Usage overview. Neither view is the prepaid account balance.
+
+The dashboard Pause/Resume control persists in PostgreSQL and affects new attempts
+in both services. It cannot reset counters, raise ceilings or clear the cooldown.
+Already dispatched calls may finish. `LLM_CALLS_ENABLED=false` is an additional
+operator environment override that the dashboard cannot lift. Authentication/quota/
+payment failures or five recent provider failures open a two-minute cooldown.
+Resuming does not bypass daily limits; saved Studio drafts remain available.
+
+Daily IP/chat counters store keyed hashes, not raw IPs or session IDs. Rotating a
+session cannot bypass the IP/global ceiling; IDs are not identity. The browser's
+six-question UX cap is separate. Shared campus IPs may need an operator allowance
+adjustment. Short-term guards, bounded cache, local acknowledgements/noise replies,
+retrieval gates and private staff authentication provide the initial bot protection;
+CAPTCHA is not required to contain paid spend. Distributed attacks can still deny
+service by exhausting the finite allowance. Monitor events before adding another
+anti-bot service. CORS alone cannot stop direct callers.
+
+### Google project safeguards (separate operator step)
+
+In the correct Google AI Studio project, **Spend → Monthly spend cap → Edit** can
+set a monthly project cap; $5 is a reasonable starting cap for the current trial
+budget. On Billing, check prepaid balance and keep auto-reload disabled unless
+additional charges are intentional. Check the project's actual rate quotas too.
+The default Tier 1 billing cap is much larger than this trial budget. Google's
+project cap/prepay halt can lag by about ten minutes, so retain application limits.
+App controls do not cover other services or leaked keys used outside this app.
+See [Google billing guidance](https://ai.google.dev/gemini-api/docs/billing/#project-spend-caps)
+and [pricing](https://ai.google.dev/gemini-api/docs/pricing).
+The agent session had no authenticated Google console; these settings were not
+verified or changed during the safeguard rollout.
+
+Migration 0008 adds only usage/control tables. After it is applied, an older image
+that recognizes only migrations 0001–0007 will reject the database at startup.
+For rollback, build a reviewed revert retaining migration 0008 and the guard, or
+restore the pre-release backup with an explicit plan for any subsequent writes.
+Never delete usage rows or migration history just to resume spend or start old code.
 
 ## n8n import, editor and workflow recovery
 

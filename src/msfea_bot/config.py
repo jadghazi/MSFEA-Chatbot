@@ -5,6 +5,7 @@ nowhere else (AGENTS.md §6). Import the singleton `settings` from this module.
 """
 
 from typing import Literal
+from datetime import date
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -34,7 +35,20 @@ class Settings(BaseSettings):
     # deprecated fields and use an explicitly recorded thinking profile instead.
     llm_temperature: float = 0.0
     llm_seed: int = 42
-    llm_max_output_tokens: int = 1024
+    llm_max_output_tokens: int = Field(default=1024, ge=128, le=8192)
+    # Shared app/worker paid-call admission. Prices are dollars per million tokens.
+    llm_calls_enabled: bool = True
+    llm_daily_request_limit: int = Field(default=100, ge=1, le=100000)
+    llm_daily_token_limit: int = Field(default=500000, ge=10000, le=100000000)
+    llm_daily_cost_limit_usd: float = Field(default=0.50, gt=0, le=1000)
+    llm_input_price_per_million: float = Field(default=0.75, gt=0, le=1000)
+    llm_output_price_per_million: float = Field(default=3.75, gt=0, le=1000)
+    curation_input_price_per_million: float = Field(default=0.25, gt=0, le=1000)
+    curation_output_price_per_million: float = Field(default=1.50, gt=0, le=1000)
+    llm_price_valid_until: date = date(2026, 12, 31)
+    llm_global_concurrency: int = Field(default=8, ge=1, le=32)
+    ip_daily_request_limit: int = Field(default=200, ge=1, le=10000)
+    session_question_limit: int = Field(default=40, ge=1, le=1000)
     # Student/preview Gemini API compatibility. Newer models deprecate sampling
     # parameters; preserve the legacy profile until a measured migration.
     llm_gemini_use_sampling_params: bool = True

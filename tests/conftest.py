@@ -15,3 +15,6 @@ def fresh_api_guards(monkeypatch: pytest.MonkeyPatch) -> None:
         if isinstance(value, RateLimiter):
             monkeypatch.setattr(api, name, RateLimiter(value.max_requests, value.window_seconds))
     monkeypatch.setattr(api, "_guard", RequestGuard())
+    # Existing endpoint unit tests are hermetic. Persistent admission has its own
+    # DB-backed concurrency/restart tests and is explicitly restored there.
+    monkeypatch.setattr(api.budget, "admit_chat", lambda ip, session: None)
