@@ -1,8 +1,10 @@
 """Paid admission tested against an isolated schema, with no hosted LLM calls."""
 from concurrent.futures import ThreadPoolExecutor
+from datetime import date
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
+import json
 import uuid
 
 import psycopg
@@ -32,6 +34,9 @@ def paid_db(monkeypatch: pytest.MonkeyPatch) -> Any:
     for name, value in dict(llm_model="student", curation_llm_model="staff", llm_calls_enabled=True,
                             llm_daily_cost_limit_usd=0.5, llm_daily_request_limit=100,
                             llm_daily_token_limit=500000, llm_global_concurrency=8,
+                            llm_input_price_per_million=0.75, llm_output_price_per_million=3.75,
+                            curation_input_price_per_million=0.25, curation_output_price_per_million=1.50,
+                            llm_price_valid_until=date(2099, 12, 31),
                             admin_token="test-admin", ip_daily_request_limit=3,
                             session_question_limit=2).items():
         monkeypatch.setattr(settings, name, value)
@@ -73,6 +78,8 @@ def test_usage_settles_reasoning_and_is_idempotent(paid_db: Any) -> None:
     assert (row["input_tokens"], row["visible_output_tokens"], row["reasoning_tokens"]) == (1000, 100, 800)
     assert row["charged_usd"] == pytest.approx(0.004125)
     assert row["charged_tokens"] == 1900 and row["requests"] == 1
+    assert isinstance(row["charged_tokens"], int)
+    json.dumps(budget.report())
 
 
 def test_uncertain_usage_and_failures_keep_reservations(paid_db: Any) -> None:
@@ -112,7 +119,6 @@ def test_provider_errors_trip_a_cooldown(paid_db: Any) -> None:
 
 
 def test_budget_expires_and_utc_rollover_preserves_operator_pause(paid_db: Any, monkeypatch: pytest.MonkeyPatch) -> None:
-    from datetime import date
     monkeypatch.setattr(settings, "llm_daily_request_limit", 1)
     ticket = reserve()
     with paid_db() as conn:
@@ -159,6 +165,7 @@ def test_admin_control_is_authenticated_strict_and_does_not_reset_usage(paid_db:
     assert client.post("/admin/api/llm-control", headers=headers, json={"enabled": False}).status_code == 200
     response = client.get("/admin/api/llm-usage", headers=headers).json()
     assert not response["enabled"] and response["usage"][0]["requests"] == 1
+    assert isinstance(response["usage"][0]["charged_tokens"], int)
 
 
 @pytest.mark.parametrize("extra", ["model", "max_output_tokens", "prompt", "top_k"])

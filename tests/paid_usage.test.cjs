@@ -28,6 +28,14 @@ test('includes reasoning in output and spending, preserves visible output separa
   assert.match(html,/900<\/div>/);assert.match(html,/100 visible \+ 800 reasoning/);
   assert.match(html,/\$0\.0041/);assert.match(html,/not your Gemini balance or invoice/);
 });
+test('aggregates numeric totals across models without concatenating legacy decimal strings',()=>{
+  const {context}=setup();const data=fixture();
+  data.usage[0].charged_tokens='1900';
+  data.usage.push({...data.usage[0],model:'staff-model',charged_tokens:'2100'});
+  data.usage.push({...data.usage[0],day:'2026-10-07',charged_tokens:'99999'});
+  assert.equal(context.paidUsageSummary(data).charged_tokens,4000);
+  assert.equal(context.paidUsageSummary(data).requests,4);
+});
 test('alerts on high usage, operator pause, circuit and expired pricing',()=>{
   const {context}=setup();const data=fixture();data.enabled=false;
   data.circuit_until='2099-01-01T00:00:00Z';data.price_valid_until='2020-01-01';

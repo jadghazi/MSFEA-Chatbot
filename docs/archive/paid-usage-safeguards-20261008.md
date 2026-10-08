@@ -69,3 +69,25 @@ compatible revert retaining the guard/migration, or a deliberate backup restore
 accounting for subsequent writes. Do not erase spend records to start an old image.
 No KB ingestion or synthetic publication is part of this rollout. Deployment
 verification and exact image/commit identities are recorded after rollout below.
+
+## Oracle verification
+
+Initial application release: `3920320d8516df6d471d16a0ee3a5811ce7d2340`.
+Both app/worker became healthy; public health/readiness returned 200, unauthenticated
+paid monitoring returned 401 and the private health path returned 404. Migration
+inventory was 1–8; the source index remained 246 chunks without ingestion.
+Authenticated pause blocked the student route and both staff/preview providers in
+the separate worker, with zero paid attempts. Resume restored service. One live
+IAESTE answer was grounded/cited; its immediate identical repeat reused the response
+without another SDK attempt. Ledger: 2,421 input + 86 visible + 489 reasoning =
+2,996 tokens, estimated $0.003972, one completed attempt, no uncertain holds.
+
+The smoke receipt's direct JSON printer failed after these assertions because
+PostgreSQL SUM(bigint) produced Decimal. The protected API encoded that value as a
+string, also risking concatenation when aggregating multiple workloads. A bounded
+follow-up converts the aggregate to an integer and normalizes frontend arithmetic;
+dedicated Python JSON/API and multi-model frontend regressions cover it. The revised
+guard suite passed 20 tests; frontend paid-view suite passed eight (the complete
+frontend run previously passed 47). Pricing fixtures are pinned independently of
+operator settings/expiry, with expiry tested explicitly. This correction changes
+reporting only, not admission, model configuration or knowledge behavior.

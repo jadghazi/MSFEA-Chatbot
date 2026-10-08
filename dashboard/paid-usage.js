@@ -4,7 +4,7 @@ var paidUsageRequest = 0;
 function paidUsageSummary(data) {
   return data.usage.filter(function (r) { return r.day === data.day; }).reduce(function (s, r) {
     ['requests', 'charged_tokens', 'charged_usd', 'input_tokens', 'visible_output_tokens',
-      'reasoning_tokens', 'uncertain_attempts'].forEach(function (k) { s[k] = (s[k] || 0) + r[k]; });
+      'reasoning_tokens', 'uncertain_attempts'].forEach(function (k) { s[k] = (s[k] || 0) + Number(r[k]); });
     return s;
   }, {requests: 0, charged_tokens: 0, charged_usd: 0, input_tokens: 0,
     visible_output_tokens: 0, reasoning_tokens: 0, uncertain_attempts: 0});

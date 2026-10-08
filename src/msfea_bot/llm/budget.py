@@ -215,7 +215,7 @@ def report() -> dict[str, Any]:
         ).fetchall()
     today = datetime.now(timezone.utc).date().isoformat()
     usage = [dict(day=r[0].isoformat(), model=r[1], purpose=r[2], requests=r[3], input_tokens=r[4],
-                  visible_output_tokens=r[5], reasoning_tokens=r[6], charged_tokens=r[7],
+                  visible_output_tokens=r[5], reasoning_tokens=r[6], charged_tokens=int(r[7]),
                   charged_usd=float(r[8]) / 10**9, uncertain_attempts=r[9]) for r in rows]
     limits = dict(requests=settings.llm_daily_request_limit, tokens=settings.llm_daily_token_limit,
                   cost_usd=settings.llm_daily_cost_limit_usd, ip_requests=settings.ip_daily_request_limit,
