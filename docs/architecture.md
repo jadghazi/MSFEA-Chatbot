@@ -69,6 +69,17 @@ repair. This text never becomes factual answer evidence. See [curation](curation
 1. The shared vanilla-JavaScript widget sends the question, selected department,
    ephemeral session ID and bounded page history. `frontend/` hosts the standalone
    page; `dashboard/` serves the protected staff dashboard.
+   The local presentation update (awaiting deployment) shows a subtle thinking
+   indicator while waiting. It progressively
+   reveals the complete checked response using the existing safe DOM renderer;
+   this is client-side presentation, not provider token streaming. Sources and
+   answer actions appear after the reveal, and the composer remains locked until
+   completion. Reduced-motion preference or a hidden tab skips/finishes the reveal;
+   scrolling back to earlier messages is respected. Reveal duration is capped at
+   a planned 2.8 seconds.
+   Sources use an expandable pill; copy and answer feedback share a compact icon
+   row with accessible labels, keyboard focus and larger touch targets. Feedback
+   reasons and complete source details remain available.
 2. `api/app.py` applies input/body/rate/concurrency guards and best-effort local
    redaction. Whole-message greetings/acknowledgements/noise can return locally.
    Exact effective requests in a session can replay a 30-second response.

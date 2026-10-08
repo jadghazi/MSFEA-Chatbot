@@ -9,7 +9,7 @@ const sendCode = source.slice(source.indexOf('  function send(preset, isRetry)')
 
 const departmentCodes = ['mech', 'ece', 'chem', 'iem', 'cee'];
 
-function harness(department = 'cee') {
+function harness(department = 'cee', render) {
   let resolve;
   const calls = [], answers = [];
   let limitNotices = 0;
@@ -24,7 +24,7 @@ function harness(department = 'cee') {
     MAX_HISTORY_MESSAGE_CHARS: 1200,
     sessionId: 'widget-session-0001', API: '', completedAnswers: 0, maybeInvite: noop,
     showChatLimitModal: () => { limitNotices += 1; },
-    addBot: answer => answers.push(answer),
+    addBot: answer => { answers.push(answer); return render && render(answer); },
     fetch: (...args) => { calls.push(args); return new Promise(r => { resolve = r; }); },
   };
   vm.createContext(scope);
@@ -44,6 +44,23 @@ test('repeated Send/Enter submissions have one pending fetch', async () => {
   await h.finish(200, { answer: 'Grounded answer', refused: false });
   assert.equal(h.scope.sendBtn.disabled, false);
   assert.equal(h.scope.conversation.length, 2);
+});
+
+test('answer reveal keeps Send locked and delays history/count until the full reply is visible', async () => {
+  let finishReveal;
+  const h = harness('cee', () => new Promise(resolve => { finishReveal = resolve; }));
+  h.scope.send('Requirements?');
+  await h.finish(200, { answer: 'Grounded answer', refused: false });
+  assert.equal(h.scope.sendBtn.disabled, true);
+  assert.equal(h.scope.conversation.length, 0);
+  assert.equal(h.scope.completedAnswers, 0);
+  h.scope.send('Another question?');
+  assert.equal(h.calls.length, 1);
+  finishReveal();
+  await new Promise(setImmediate);
+  assert.equal(h.scope.sendBtn.disabled, false);
+  assert.equal(h.scope.conversation.length, 2);
+  assert.equal(h.scope.completedAnswers, 1);
 });
 
 test('question submission is blocked until a valid department is selected', () => {

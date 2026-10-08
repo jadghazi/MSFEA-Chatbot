@@ -57,6 +57,9 @@ jobs:
       - name: Paid-call dashboard controls
         run: node --test tests/paid_usage.test.cjs
 
+      - name: Student answer reveal
+        run: node --test tests/widget_reveal.test.cjs
+
       - name: Guided review explanations
         run: node --test tests/studio_review.test.cjs tests/studio_preview.test.cjs tests/studio_suggestion.test.cjs
 

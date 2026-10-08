@@ -48,7 +48,7 @@ For executable changes, use the isolated suite and lint/type checks:
 docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev
 docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m ruff check src tests eval
 docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m mypy --strict src eval
-node --test tests/widget_submission.test.cjs tests/studio_review.test.cjs tests/studio_preview.test.cjs tests/studio_suggestion.test.cjs
+node --test tests/widget_submission.test.cjs tests/widget_reveal.test.cjs tests/studio_review.test.cjs tests/studio_preview.test.cjs tests/studio_suggestion.test.cjs
 ```
 
 For knowledge/chunking/retrieval/prompt/model changes, reproduce the relevant

@@ -63,6 +63,10 @@
     '<path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>';
   var ICON_COPY =
     '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 8V5.8A1.8 1.8 0 0 1 9.8 4h8.4A1.8 1.8 0 0 1 20 5.8v8.4a1.8 1.8 0 0 1-1.8 1.8H16M5.8 8h8.4A1.8 1.8 0 0 1 16 9.8v8.4a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 18.2V9.8A1.8 1.8 0 0 1 5.8 8Z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+  var ICON_CHECK =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_SOURCES =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 6.5C9 4.5 5.5 4 3 5v14c3-1 6-.5 9 1 3-1.5 6-2 9-1V5c-2.5-1-6-.5-9 1.5Zm0 0V20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICON_UP =
     '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10v10H4V10h3Zm3 10h7.2a2 2 0 0 0 1.9-1.4l1.7-5.5A2 2 0 0 0 18.9 10H15l.6-3.1A2.5 2.5 0 0 0 13.2 4L9 10v10Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
   var ICON_DOWN = ICON_UP.replace('<svg ', '<svg style="transform:rotate(180deg)" ');
@@ -205,17 +209,22 @@
 .msfea-rate button:focus-visible{outline:2px solid var(--m);outline-offset:1px}
 .msfea-thanks{font-size:11.5px;color:#2e7d32;font-weight:550}
 
-/* typing indicator — dots MUST be <span> (see showTyping) */
+/* Quiet waiting indicator and progressive display of checked answer text. */
 .msfea-thinking{display:flex;align-items:center;gap:10px;padding:12px 14px}
-.msfea-thinking-label{font-size:12.5px;color:var(--ink-soft);font-style:italic}
-.msfea-typing{display:flex;gap:4px;align-items:center;flex:0 0 auto}
-.msfea-typing span{
-  display:block;width:7px;height:7px;border-radius:50%;background:var(--m);opacity:.45;
-  animation:msfea-bounce 1.3s infinite ease-in-out both;
+.msfea-thinking-label{
+  font-size:13px;color:var(--ink-soft);font-weight:500;
+  background:linear-gradient(110deg,var(--ink-soft) 30%,var(--ink) 48%,var(--ink-soft) 66%);
+  background-size:250% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;
+  animation:msfea-shimmer 2.4s linear infinite;
 }
-.msfea-typing span:nth-child(2){animation-delay:.16s}
-.msfea-typing span:nth-child(3){animation-delay:.32s}
-@keyframes msfea-bounce{0%,72%,100%{transform:translateY(0);opacity:.35}36%{transform:translateY(-5px);opacity:1}}
+.msfea-typing,.msfea-reveal-cursor{
+  display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ink);
+  flex:none;animation:msfea-pulse 1.4s ease-in-out infinite;
+}
+.msfea-reveal-cursor{margin-left:4px;vertical-align:baseline}
+@keyframes msfea-pulse{0%,100%{opacity:.4;transform:scale(.85)}50%{opacity:1;transform:scale(1)}}
+@keyframes msfea-shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
+.msfea-answer-body [hidden],.msfea-answer-meta[hidden]{display:none!important}
 
 /* ---------- empty state ---------- */
 .msfea-welcome{padding:6px 2px 2px}
@@ -294,7 +303,8 @@
 }
 
 @media (prefers-reduced-motion:reduce){
-  .msfea-w *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .msfea-w *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .msfea-thinking-label{background:none;color:var(--ink-soft)}
 }
 
 /* ---------- full-page pilot ----------
@@ -368,24 +378,40 @@
 .msfea-bot{border-bottom-left-radius:2px}
 .msfea-bot.err{background:#fff7f6;border-color:#efcfcc;border-left:3px solid #a72d25}
 .msfea-bot.esc{background:#fffbf2;border-color:#ead9b8;border-left:3px solid #a66b16}
-.msfea-answer-tools{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
-.msfea-icon-btn,.msfea-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink-soft);padding:6px 9px;cursor:pointer;font-size:11.5px;font-weight:600}
-.msfea-icon-btn:hover,.msfea-action:hover{border-color:#c8a7ad;color:var(--m);background:#fdf9f9}
-.msfea-icon-btn svg,.msfea-action svg,.msfea-rate svg{width:16px;height:16px}
-.msfea-copy-status{color:#236b3a;font-size:11px;font-weight:650}
+.msfea-answer-tools{display:flex;align-items:flex-start;gap:2px;margin-top:8px}
+.msfea-icon-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;min-height:32px;border:0;border-radius:8px;background:transparent;color:var(--ink-soft);padding:7px;cursor:pointer;flex:none}
+.msfea-icon-btn:hover{color:var(--ink);background:#00000008}
+.msfea-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink-soft);padding:6px 9px;cursor:pointer;font-size:11.5px;font-weight:600}
+.msfea-action:hover{border-color:#c8a7ad;color:var(--m);background:#fdf9f9}
+.msfea-icon-btn svg,.msfea-action svg,.msfea-rate svg{width:18px;height:18px}
+.msfea-copy-status{color:var(--ink-soft);font-size:11px;line-height:32px;margin-left:6px}
+.msfea-copy-status:empty{display:none}
 .msfea-cite{margin-top:9px;padding-top:0;border-top:0}
-.msfea-cite summary{display:inline-flex;align-items:center;min-height:34px;color:var(--m);font-size:11.5px;font-weight:650;cursor:pointer;border-radius:3px}
+.msfea-cite summary{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:4px 10px;color:var(--ink-soft);font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid var(--line);border-radius:999px;list-style:none;background:#00000002;transition:background .15s,color .15s}
+.msfea-cite summary::-webkit-details-marker{display:none}
+.msfea-cite summary:hover{color:var(--ink);background:#00000006}
+.msfea-cite summary svg{display:block;width:14px;height:14px}
+.msfea-cite summary::after{content:"";width:5px;height:5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-1px) rotate(45deg);margin-left:3px}
+.msfea-cite[open] summary::after{transform:translateY(1px) rotate(225deg)}
 .msfea-cite summary:focus-visible{outline:2px solid var(--m);outline-offset:2px}
-.msfea-source-list{margin:7px 0 0;padding:8px 10px 8px 25px;border-left:2px solid #d9c4c8;background:#faf8f8;color:var(--ink-soft);font-size:11.5px;overflow-wrap:anywhere}
+.msfea-source-list{margin:8px 0 0;padding:10px 14px 10px 30px;border:1px solid var(--line);border-radius:12px;background:var(--canvas);color:var(--ink-soft);font-size:11.5px;overflow-wrap:anywhere}
 .msfea-source-list li+li{margin-top:5px}
 .msfea-source-list a{color:var(--m);overflow-wrap:anywhere}
 .msfea-disc{padding:8px 10px;background:#f7f7f7;border-radius:4px}
 .msfea-disc::before{content:"i";display:grid;place-items:center;width:15px;height:15px;border:1px solid currentColor;border-radius:50%;font-size:9px;font-weight:700}
-.msfea-rate{align-items:flex-start;flex-wrap:wrap}
+.msfea-rate{align-items:center;flex-wrap:wrap;gap:2px;margin:0;min-width:0}
 .msfea-rate-label{font-size:11.5px;color:var(--ink-soft);line-height:34px}
-.msfea-rate button{display:grid;place-items:center;width:34px;height:34px;padding:0;border-radius:5px;font-size:0}
-.msfea-reasons{width:100%;padding-top:5px;display:flex;flex-wrap:wrap;gap:5px}
+.msfea-rate button{display:grid;place-items:center;width:32px;min-height:32px;padding:7px;border:0;background:transparent;color:var(--ink-soft);border-radius:8px;font-size:0}
+.msfea-rate button:hover{color:var(--ink);background:#00000008;transform:none}
+.msfea-reasons{width:100%;margin-top:6px;padding:10px;display:flex;flex-wrap:wrap;gap:5px;border:1px solid var(--line);border-radius:12px;background:var(--canvas)}
+.msfea-reasons .msfea-rate-label{flex-basis:100%;line-height:1.5;margin-bottom:3px}
 .msfea-reason{min-height:32px!important;width:auto!important;padding:5px 8px!important;font-size:11px!important}
+.msfea-rate .msfea-reason{border:1px solid var(--line);background:#fff}
+.msfea-thanks{font-size:11px;font-weight:500;color:var(--ink-soft);line-height:32px;padding:0 6px}
+@media(pointer:coarse){
+  .msfea-icon-btn,.msfea-rate button{min-width:44px;min-height:44px}
+  .msfea-cite summary{min-height:44px}
+}
 .msfea-retry{margin-top:10px}
 .msfea-experience-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 14px;border-top:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:11px}
 .msfea-exp-link{border:0;background:none;color:var(--m);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-size:11.5px;padding:6px 2px}
@@ -819,18 +845,106 @@
     return frag;
   }
 
+  /* Reveal existing safe DOM text, rather than parsing incomplete Markdown or
+   * streaming unchecked provider output. One cursor and one frame loop per reply;
+   * finish immediately when hidden or reduced motion is requested. */
+  function revealAnswer(bodyEl) {
+    var motion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (document.hidden || (motion && motion.matches) || !window.requestAnimationFrame) {
+      return Promise.resolve();
+    }
+    var walker = document.createTreeWalker(bodyEl, NodeFilter.SHOW_TEXT);
+    var plan = [];
+    var total = 0;
+    var node;
+    while ((node = walker.nextNode())) {
+      var chars = Array.from(node.data);
+      if (!chars.length) continue;
+      plan.push({ node: node, chars: chars });
+      total += chars.length;
+    }
+    if (!total) return Promise.resolve();
+    var blocks = bodyEl.querySelectorAll(".msfea-p,.msfea-list,li");
+    Array.prototype.forEach.call(blocks, function (block) { block.hidden = true; });
+    plan.forEach(function (part) { part.node.data = ""; });
+    bodyEl.inert = true;
+    var cursor = document.createElement("span");
+    cursor.className = "msfea-reveal-cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    // Keep long replies responsive: cap the planned reveal duration at 2.8 seconds.
+    var duration = Math.min(2800, Math.max(300, total * 4));
+    return new Promise(function (resolve) {
+      var frameId;
+      var start = null;
+      var index = 0;
+      var consumed = 0;
+      var finished = false;
+      function finish() {
+        if (finished) return;
+        finished = true;
+        window.cancelAnimationFrame(frameId);
+        document.removeEventListener("visibilitychange", onVisibility);
+        if (motion && motion.removeEventListener) motion.removeEventListener("change", onMotion);
+        var follow = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight <= 48;
+        plan.forEach(function (part) { part.node.data = part.chars.join(""); });
+        Array.prototype.forEach.call(blocks, function (block) { block.hidden = false; });
+        cursor.remove();
+        bodyEl.inert = false;
+        if (follow) scrollDown();
+        resolve();
+      }
+      function onVisibility() { if (document.hidden) finish(); }
+      function onMotion(event) { if (event.matches) finish(); }
+      function frame(now) {
+        if (finished) return;
+        if (start === null) start = now;
+        var count = Math.min(total, Math.max(1, Math.ceil((now - start) / duration * total)));
+        var follow = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight <= 48;
+        while (index < plan.length && count > consumed) {
+          var part = plan[index];
+          var length = Math.min(part.chars.length, count - consumed);
+          part.node.data = part.chars.slice(0, length).join("");
+          for (var parent = part.node.parentElement; parent && parent !== bodyEl; parent = parent.parentElement) {
+            parent.hidden = false;
+          }
+          if (cursor.previousSibling !== part.node) {
+            part.node.parentNode.insertBefore(cursor, part.node.nextSibling);
+          }
+          if (length < part.chars.length) break;
+          consumed += part.chars.length;
+          index += 1;
+        }
+        if (follow) scrollDown();
+        if (count >= total) finish();
+        else frameId = window.requestAnimationFrame(frame);
+      }
+      document.addEventListener("visibilitychange", onVisibility);
+      if (motion && motion.addEventListener) motion.addEventListener("change", onMotion);
+      frameId = window.requestAnimationFrame(frame);
+    });
+  }
+
   function addBot(data, failedQuestion) {
     var stateClass = data.error_code ? " err" : (data.refused ? " esc" : "");
     var wrap = el("msfea-msg msfea-bot" + stateClass);
-    var bodyEl = el("");
+    var bodyEl = el("msfea-answer-body");
     bodyEl.appendChild(renderAnswer(data.answer || ""));
     wrap.appendChild(bodyEl);
+    var meta = el("msfea-answer-meta");
+    var tools = el("msfea-answer-tools");
+    var copyStatus = null;
 
     if (data.citations && data.citations.length && !data.refused) {
       var c = document.createElement("details");
       c.className = "msfea-cite";
       var summary = document.createElement("summary");
-      summary.textContent = "View sources (" + data.citations.length + ")";
+      summary.setAttribute("aria-label", "View sources (" + data.citations.length + ")");
+      var sourceIcon = document.createElement("span");
+      sourceIcon.innerHTML = ICON_SOURCES;
+      summary.appendChild(sourceIcon);
+      var sourceLabel = document.createElement("span");
+      sourceLabel.textContent = "Sources · " + data.citations.length;
+      summary.appendChild(sourceLabel);
       c.appendChild(summary);
       var sourceList = document.createElement("ol");
       sourceList.className = "msfea-source-list";
@@ -838,32 +952,31 @@
         sourceList.appendChild(citationItem(s));
       });
       c.appendChild(sourceList);
-      wrap.appendChild(c);
+      meta.appendChild(c);
     }
-    if (data.disclaimer) wrap.appendChild(el("msfea-disc", data.disclaimer));
     if (!data.refused && !data.error_code && data.answer) {
-      var tools = el("msfea-answer-tools");
       var copy = document.createElement("button");
       copy.className = "msfea-icon-btn";
       copy.type = "button";
-      copy.innerHTML = ICON_COPY + "<span>Copy answer</span>";
+      copy.innerHTML = ICON_COPY;
       copy.setAttribute("aria-label", "Copy answer text");
-      var copyStatus = el("msfea-copy-status");
+      copy.title = "Copy answer";
+      copyStatus = el("msfea-copy-status");
+      copyStatus.setAttribute("role", "status");
       copy.addEventListener("click", function () {
         var answerText = String(data.answer || "");
         var copied = navigator.clipboard && navigator.clipboard.writeText
           ? navigator.clipboard.writeText(answerText)
           : Promise.reject(new Error("Clipboard unavailable"));
         copied.then(function () {
+          copy.innerHTML = ICON_CHECK;
           copyStatus.textContent = "Copied";
-          setTimeout(function () { copyStatus.textContent = ""; }, 1800);
+          setTimeout(function () { copyStatus.textContent = ""; copy.innerHTML = ICON_COPY; }, 1800);
         }).catch(function () {
           copyStatus.textContent = "Could not copy. Select the answer text instead.";
         });
       });
       tools.appendChild(copy);
-      tools.appendChild(copyStatus);
-      wrap.appendChild(tools);
     }
     if (data.error_code && failedQuestion) {
       var retry = document.createElement("button");
@@ -874,15 +987,29 @@
         retry.disabled = true;
         send(failedQuestion, true);
       });
-      wrap.appendChild(retry);
+      meta.appendChild(retry);
     }
-    if (data.interaction_id && !data.error_code) wrap.appendChild(ratingUI(data.interaction_id));
+    if (data.interaction_id && !data.error_code) tools.appendChild(ratingUI(data.interaction_id));
+    if (copyStatus) tools.appendChild(copyStatus);
+    if (tools.children.length) meta.appendChild(tools);
+    if (data.disclaimer) meta.appendChild(el("msfea-disc", data.disclaimer));
+    wrap.appendChild(meta);
+    var revealing = !data.error_code && !data.local;
+    meta.hidden = revealing;
+    // Prepare the empty reveal before mounting to avoid flashing the full reply.
+    var ready = revealing ? revealAnswer(bodyEl) : Promise.resolve();
     row("b", wrap);
+    return ready.then(function () {
+      var follow = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight <= 48;
+      meta.hidden = false;
+      if (follow) scrollDown();
+    });
   }
 
   function ratingUI(interactionId) {
     var box = el("msfea-rate");
-    box.appendChild(el("msfea-rate-label", "Was this helpful?"));
+    box.setAttribute("role", "group");
+    box.setAttribute("aria-label", "Answer feedback");
     function finish() {
       box.textContent = "";
       box.appendChild(el("msfea-thanks", "Thanks for the feedback."));
@@ -905,11 +1032,13 @@
     up.type = "button";
     up.innerHTML = ICON_UP;
     up.setAttribute("aria-label", "This answer was helpful");
+    up.title = "Helpful";
     up.addEventListener("click", function () { vote(1, null, finish); });
     var down = document.createElement("button");
     down.type = "button";
     down.innerHTML = ICON_DOWN;
     down.setAttribute("aria-label", "This answer was not helpful");
+    down.title = "Not helpful";
     down.setAttribute("aria-expanded", "false");
     down.addEventListener("click", function () {
       if (box.querySelector(".msfea-reasons")) return;
@@ -944,11 +1073,9 @@
   function showTyping() {
     var t = el("msfea-msg msfea-bot msfea-thinking");
     var dots = el("msfea-typing");
-    dots.setAttribute("aria-label", "Assistant is looking through the documents");
-    // Must be <span>: the dot styles are scoped to `.msfea-typing span`.
-    for (var i = 0; i < 3; i++) dots.appendChild(document.createElement("span"));
+    dots.setAttribute("aria-hidden", "true");
     t.appendChild(dots);
-    t.appendChild(el("msfea-thinking-label", "Searching the CDC documents…"));
+    t.appendChild(el("msfea-thinking-label", "Thinking…"));
     typingRow = row("b", t);
   }
 
@@ -990,6 +1117,9 @@
 
   function setBusy(isBusy) {
     requestBusy = isBusy;
+    // Announce the complete response once, instead of every reveal frame.
+    msgs.setAttribute("aria-busy", String(isBusy));
+    newBtn.disabled = isBusy;
     syncComposerState();
   }
 
@@ -1230,29 +1360,30 @@
       })
       .then(function (data) {
         hideTyping();
-        addBot(data, q);
-        // Provider/network failures are not dialogue and should not contaminate
-        // the next retrieval query.
-        if (!data.error_code && !data.local) {
-          conversation.push({
-            role: "user",
-            content: q.slice(0, MAX_HISTORY_MESSAGE_CHARS),
-          });
-          if (!data.refused && data.answer) {
+        return Promise.resolve(addBot(data, q)).then(function () {
+          // Provider/network failures are not dialogue and should not contaminate
+          // the next retrieval query.
+          if (!data.error_code && !data.local) {
             conversation.push({
-              role: "assistant",
-              content: String(data.answer).slice(0, MAX_HISTORY_MESSAGE_CHARS),
+              role: "user",
+              content: q.slice(0, MAX_HISTORY_MESSAGE_CHARS),
             });
+            if (!data.refused && data.answer) {
+              conversation.push({
+                role: "assistant",
+                content: String(data.answer).slice(0, MAX_HISTORY_MESSAGE_CHARS),
+              });
+            }
+            conversation = conversation.slice(-MAX_HISTORY_MESSAGES);
+            completedAnswers += 1;
+            maybeInvite();
+            if (completedAnswers >= MAX_CHAT_QUESTIONS) showChatLimitModal();
           }
-          conversation = conversation.slice(-MAX_HISTORY_MESSAGES);
-          completedAnswers += 1;
-          maybeInvite();
-          if (completedAnswers >= MAX_CHAT_QUESTIONS) showChatLimitModal();
-        }
+        });
       })
       .catch(function (error) {
         hideTyping();
-        addBot({
+        return addBot({
           answer: error.userMessage ? error.message :
             "I couldn't reach the assistant right now. Check your connection or try again shortly.",
           refused: true,
