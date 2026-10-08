@@ -1,7 +1,10 @@
 # Current architecture and project state
 
-Reviewed 2026-10-08 against the paid student/Studio release and shared paid-usage safeguards.
-The behavior below is deployed on Oracle; the [safeguard release receipt](archive/paid-usage-safeguards-20261008.md) identifies the exact application commit. This is the current checkout map.
+Reviewed 2026-10-08 against the paid student/Studio release, shared paid-usage safeguards
+and student response UI update. The behavior below is deployed on Oracle; the
+[response UI release receipt](archive/student-response-ui-20261008.md) identifies
+the latest application commit. The [safeguard receipt](archive/paid-usage-safeguards-20261008.md)
+records the preceding guard release. This is the current checkout map.
 Defaults below describe code/example configuration; a deployed `.env` can override
 them. Deployment observations are dated evidence, not a live monitoring snapshot.
 
@@ -69,8 +72,7 @@ repair. This text never becomes factual answer evidence. See [curation](curation
 1. The shared vanilla-JavaScript widget sends the question, selected department,
    ephemeral session ID and bounded page history. `frontend/` hosts the standalone
    page; `dashboard/` serves the protected staff dashboard.
-   The local presentation update (awaiting deployment) shows a subtle thinking
-   indicator while waiting. It progressively
+   The widget shows a subtle thinking indicator while waiting. It progressively
    reveals the complete checked response using the existing safe DOM renderer;
    this is client-side presentation, not provider token streaming. Sources and
    answer actions appear after the reveal, and the composer remains locked until
