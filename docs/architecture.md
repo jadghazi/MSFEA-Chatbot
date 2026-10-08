@@ -1,7 +1,7 @@
 # Current architecture and project state
 
-Reviewed 2026-10-08 against the paid student/Studio release and its bounded rollout correction.
-The behavior below is deployed on Oracle; the [release receipt](archive/oracle-paid-release-20261008.md) identifies the exact application commit. This is the current checkout map.
+Reviewed 2026-10-08 against the paid student/Studio release and shared paid-usage safeguards.
+The behavior below is deployed on Oracle; the [safeguard release receipt](archive/paid-usage-safeguards-20261008.md) identifies the exact application commit. This is the current checkout map.
 Defaults below describe code/example configuration; a deployed `.env` can override
 them. Deployment observations are dated evidence, not a live monitoring snapshot.
 

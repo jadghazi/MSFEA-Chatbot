@@ -91,3 +91,22 @@ guard suite passed 20 tests; frontend paid-view suite passed eight (the complete
 frontend run previously passed 47). Pricing fixtures are pinned independently of
 operator settings/expiry, with expiry tested explicitly. This correction changes
 reporting only, not admission, model configuration or knowledge behavior.
+
+Final deployed application: `60d1b7226e4b9438cb296571e9d6cdabce0e8e6e`.
+App image: `sha256:eba7c40372827e2545ad248aa69c4500cab223abddc585482f99e0518e92d9e2`.
+Worker image: `sha256:aac210e68679c9bb2748adf52025c4a0fa3c29c4d0895eea91611a5badccee83`.
+Both services were recreated healthy. The persisted one-attempt ledger and enabled
+operator state survived recreation; SDK usage and estimated cost stayed unchanged.
+Protected monitoring now returns numeric token aggregates. Public health/readiness
+returned 200; unauthenticated control POST returned 401; a student request supplying
+an arbitrary model returned 422 without generation. The served paid-view asset
+matched the final Git blob, with its cache version updated to 2.
+
+Final targeted Python run: 20 passed; full frontend rerun: 48 passed; Ruff and
+strict mypy (115 source/eval files) passed. The initial implementation's complete
+[GitHub CI run](https://github.com/jadghazi/MSFEA-Chatbot/actions/runs/37777222984)
+passed, including all deterministic retrieval gates. The reporting follow-up's
+[CI run](https://github.com/jadghazi/MSFEA-Chatbot/actions/runs/37778472800) was still
+running at receipt time; its affected code was verified locally and on Oracle.
+No additional paid call was needed for the formatting correction. Google project
+monthly cap/auto-reload settings remain the separate, unverified operator step.
