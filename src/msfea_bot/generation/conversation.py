@@ -809,8 +809,11 @@ def retrieval_plan(
     """Resolve the current turn and identify when both retrieval paths are useful."""
     question = _strip_topic_framing(question)
     prior = bounded_history(history)
-    if re.fullmatch(r"what (?:can you (?:help me with|do)|do you (?:do|offer))\??",
-                    question.strip(), re.I):
+    if re.fullmatch(
+        r"(?:(?:so|okay|ok|well|hey)[,\s]+)*"
+        r"what (?:can you (?:help me with|do)|do you (?:do|offer))\??",
+        question.strip(), re.I,
+    ):
         # Capability questions need the source-backed service overview, not an
         # arbitrary policy that happens to contain "help". No topic list is encoded.
         return RetrievalPlan("What services and career support does the CDC offer?")

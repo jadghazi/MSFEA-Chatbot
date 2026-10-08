@@ -1,5 +1,7 @@
 """Deterministic same-chat contextualization (no DB and no LLM)."""
 
+import pytest
+
 from msfea_bot.generation.conversation import (
     ConversationMessage,
     bounded_history,
@@ -22,6 +24,20 @@ def _history() -> list[ConversationMessage]:
         ConversationMessage("user", "Is a support letter available from the CDC?"),
         ConversationMessage("assistant", "Yes. Request it from the CDC."),
     ]
+
+
+@pytest.mark.parametrize("prefix", ["", "So ", "Okay, ", "Well, ", "Hey, ", "OK, so "])
+@pytest.mark.parametrize("question", ["What can you help me with?", "What can you do?",
+                                      "What do you offer?"])
+def test_capability_orientation_accepts_conversational_prefixes(prefix: str, question: str) -> None:
+    assert retrieval_plan(prefix + question, _history()).query == (
+        "What services and career support does the CDC offer?"
+    )
+
+
+def test_capability_prefix_does_not_override_a_named_request() -> None:
+    question = "So what can you help me with regarding a support letter?"
+    assert retrieval_plan(question, []).query == question
 
 
 def test_pronoun_question_uses_history_for_retrieval() -> None:
