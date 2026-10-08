@@ -1,0 +1,245 @@
+{
+  "recorded_at": "2026-10-08T10:01:16.650239+00:00",
+  "application_commit": "bc6d5a805aa3e4633f458c5a118f85d65fb3efd8",
+  "origin": "https://msfea-chatbot.duckdns.org",
+  "model": "gemini-3.8-flash",
+  "department": "ece",
+  "turns": [
+    {
+      "question": "So what can you help me with?",
+      "history": [],
+      "http_status": 200,
+      "elapsed_seconds": 13.45,
+      "response": {
+        "answer": "The CDC can help you with finding and approving internships, understanding Approved Experience course requirements, exploring the optional paid CO-OP program, and participating in IAESTE international internship exchanges.\n\nFor career readiness and professional development, you can access:\n- CV and cover letter guidelines, as well as online modules covering resume writing, interview preparation, job search, and workplace skills.\n- One-to-one consultations for resume reviews, mock interviews, and career counseling.\n- Career+, an initiative for career planning and certification available at https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx.\n- MentorPlus+ to connect with AUB alumni for career guidance.\n- Full-time job vacancies shared via email and the AUB Career Portal.\n\nYou can find summer internship listings, letter requests, and self-secured internship forms on the CDC students page at https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx.",
+        "citations": [
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base",
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Career Readiness Resources > Career support overview",
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Career Readiness Resources > Career+",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > The CO-OP program at MSFEA > Career Development Preparation (modules)",
+          "summer-training-guidelines-2026.md > Career Development Center (CDC) Internship Search and Postings"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 470,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "more specifically what about the internships",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "The CDC can help you with finding and approving internships, understanding Approved Experience course requirements, exploring the optional paid CO-OP program, and participating in IAESTE international internship exchanges.\n\nFor career readiness and professional development, you can access:\n- CV and cover letter guidelines, as well as online modules covering resume writing, interview preparation, job search, and workplace skills.\n- One-to-one consultations for resume reviews, mock interviews, and career counseling.\n- Career+, an initiative for career planning and certification available at https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx.\n- MentorPlus+ to connect with AUB alumni for career guidance.\n- Full-time job vacancies shared via email and the AUB Career Portal.\n\nYou can find summer internship listings, letter requests, and self-secured internship forms on the CDC students page at https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 23.41,
+      "response": {
+        "answer": "The Approved Experience internship is a graduation requirement normally completed during the summer before your final year. It allows you to apply academic learning to practical technical challenges, develop workplace skills, and explore career paths. Registration requires at least 90 credits. The standard requirement is a minimum of eight full weeks of approved, discipline-related technical training (typically 320 work hours) in Lebanon or abroad. The course is graded Pass or Fail.\n\nThe ordinary process moves through three major stages:\n- Before training: You secure an internship independently or through Career Development Center postings, obtain formal placement approval, and submit your proposal.\n- During training: You confirm your arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- At completion: You submit your final training report, final presentation, required evaluation and summary forms, and official employer completion documentation.\n\nTo check placement eligibility or clarify any specific course arrangements, you can contact the course contact, Rafika Dinnawi, at rd39@aub.edu.lb.",
+        "citations": [
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship overview",
+          "email-clarifications.md > Finding an internship and acceptable work",
+          "email-clarifications.md > Course completion requirements (ECE)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Internship contact routing > Electrical and Computer Engineering internship contact (ECE)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 471,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "and the duration?",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "The CDC can help you with finding and approving internships, understanding Approved Experience course requirements, exploring the optional paid CO-OP program, and participating in IAESTE international internship exchanges.\n\nFor career readiness and professional development, you can access:\n- CV and cover letter guidelines, as well as online modules covering resume writing, interview preparation, job search, and workplace skills.\n- One-to-one consultations for resume reviews, mock interviews, and career counseling.\n- Career+, an initiative for career planning and certification available at https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx.\n- MentorPlus+ to connect with AUB alumni for career guidance.\n- Full-time job vacancies shared via email and the AUB Career Portal.\n\nYou can find summer internship listings, letter requests, and self-secured internship forms on the CDC students page at https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx."
+        },
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship is a graduation requirement normally completed during the summer before your final year. It allows you to apply academic learning to practical technical challenges, develop workplace skills, and explore career paths. Registration requires at least 90 credits. The standard requirement is a minimum of eight full weeks of approved, discipline-related technical training (typically 320 work hours) in Lebanon or abroad. The course is graded Pass or Fail.\n\nThe ordinary process moves through three major stages:\n- Before training: You secure an internship independently or through Career Development Center postings, obtain formal placement approval, and submit your proposal.\n- During training: You confirm your arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- At completion: You submit your final training report, final presentation, required evaluation and summary forms, and official employer completion documentation.\n\nTo check placement eligibility or clarify any specific course arrangements, you can contact the course contact, Rafika Dinnawi, at rd39@aub.edu.lb."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 8.22,
+      "response": {
+        "answer": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (8 weeks at 40 hours per week). An approved internship can be longer than eight weeks, provided the correct dates are documented on your proposal, notice of arrival, and employer letter.",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+          "summer-training-guidelines-2026.md > Internship Requirements: Duration, Hours, and Locations",
+          "email-clarifications.md > Internship dates and duration changes"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 472,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "What about CO-OP, is it mandatory?",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "The CDC can help you with finding and approving internships, understanding Approved Experience course requirements, exploring the optional paid CO-OP program, and participating in IAESTE international internship exchanges.\n\nFor career readiness and professional development, you can access:\n- CV and cover letter guidelines, as well as online modules covering resume writing, interview preparation, job search, and workplace skills.\n- One-to-one consultations for resume reviews, mock interviews, and career counseling.\n- Career+, an initiative for career planning and certification available at https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx.\n- MentorPlus+ to connect with AUB alumni for career guidance.\n- Full-time job vacancies shared via email and the AUB Career Portal.\n\nYou can find summer internship listings, letter requests, and self-secured internship forms on the CDC students page at https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx."
+        },
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship is a graduation requirement normally completed during the summer before your final year. It allows you to apply academic learning to practical technical challenges, develop workplace skills, and explore career paths. Registration requires at least 90 credits. The standard requirement is a minimum of eight full weeks of approved, discipline-related technical training (typically 320 work hours) in Lebanon or abroad. The course is graded Pass or Fail.\n\nThe ordinary process moves through three major stages:\n- Before training: You secure an internship independently or through Career Development Center postings, obtain formal placement approval, and submit your proposal.\n- During training: You confirm your arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- At completion: You submit your final training report, final presentation, required evaluation and summary forms, and official employer completion documentation.\n\nTo check placement eligibility or clarify any specific course arrangements, you can contact the course contact, Rafika Dinnawi, at rd39@aub.edu.lb."
+        },
+        {
+          "role": "user",
+          "content": "and the duration?"
+        },
+        {
+          "role": "assistant",
+          "content": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (8 weeks at 40 hours per week). An approved internship can be longer than eight weeks, provided the correct dates are documented on your proposal, notice of arrival, and employer letter."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 18.27,
+      "response": {
+        "answer": "CO-OP is an optional program that allows you to combine your studies with a paid, full-time work placement (35–40 hours per week) lasting at least 6 months. Placements typically span Summer and Fall or Spring and Summer during your 3rd or 4th year, and passing the co-op replaces your department's Approved Experience requirement.\n\nThe typical process involves:\n- Preparation and application: Attend advising sessions, complete career development modules, and apply to the program for departmental review.\n- Placement: Pursue program opportunities or submit a self-found opportunity using the Proposal of Cooperative Education and Experiential Learning Form for advisor approval.\n- Work term and registration: Maintain full-time status by registering for FEAA 500 in the first semester and FEAA 500A in the second semester, complete the work term with employer evaluations and a midterm site visit, and return to campus for at least one term before graduating.\n\nFor next steps, consult the MSFEA CO-OP Handbook or reach out to the CO-OP CDC Advisor.",
+        "citations": [
+          "cdc-knowledge-base.md > CO-OP (Cooperative Education)",
+          "msfea-cdc-coop-handbook.md > Policies",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > CO-OP FAQs > General program questions",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > CO-OP FAQs > Placement proposal procedure",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > CO-OP FAQs > Program admission and initial placement",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > The FEAA 500 course"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 473,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "what about the fee?",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "The CDC can help you with finding and approving internships, understanding Approved Experience course requirements, exploring the optional paid CO-OP program, and participating in IAESTE international internship exchanges.\n\nFor career readiness and professional development, you can access:\n- CV and cover letter guidelines, as well as online modules covering resume writing, interview preparation, job search, and workplace skills.\n- One-to-one consultations for resume reviews, mock interviews, and career counseling.\n- Career+, an initiative for career planning and certification available at https://www.aub.edu.lb/msfea/cdc/Pages/CareerPlus.aspx.\n- MentorPlus+ to connect with AUB alumni for career guidance.\n- Full-time job vacancies shared via email and the AUB Career Portal.\n\nYou can find summer internship listings, letter requests, and self-secured internship forms on the CDC students page at https://www.aub.edu.lb/msfea/cdc/Pages/students.aspx."
+        },
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship is a graduation requirement normally completed during the summer before your final year. It allows you to apply academic learning to practical technical challenges, develop workplace skills, and explore career paths. Registration requires at least 90 credits. The standard requirement is a minimum of eight full weeks of approved, discipline-related technical training (typically 320 work hours) in Lebanon or abroad. The course is graded Pass or Fail.\n\nThe ordinary process moves through three major stages:\n- Before training: You secure an internship independently or through Career Development Center postings, obtain formal placement approval, and submit your proposal.\n- During training: You confirm your arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- At completion: You submit your final training report, final presentation, required evaluation and summary forms, and official employer completion documentation.\n\nTo check placement eligibility or clarify any specific course arrangements, you can contact the course contact, Rafika Dinnawi, at rd39@aub.edu.lb."
+        },
+        {
+          "role": "user",
+          "content": "and the duration?"
+        },
+        {
+          "role": "assistant",
+          "content": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (8 weeks at 40 hours per week). An approved internship can be longer than eight weeks, provided the correct dates are documented on your proposal, notice of arrival, and employer letter."
+        },
+        {
+          "role": "user",
+          "content": "What about CO-OP, is it mandatory?"
+        },
+        {
+          "role": "assistant",
+          "content": "CO-OP is an optional program that allows you to combine your studies with a paid, full-time work placement (35–40 hours per week) lasting at least 6 months. Placements typically span Summer and Fall or Spring and Summer during your 3rd or 4th year, and passing the co-op replaces your department's Approved Experience requirement.\n\nThe typical process involves:\n- Preparation and application: Attend advising sessions, complete career development modules, and apply to the program for departmental review.\n- Placement: Pursue program opportunities or submit a self-found opportunity using the Proposal of Cooperative Education and Experiential Learning Form for advisor approval.\n- Work term and registration: Maintain full-time status by registering for FEAA 500 in the first semester and FEAA 500A in the second semester, complete the work term with employer evaluations and a midterm site visit, and return to campus for at least one term before graduating.\n\nFor next steps, consult the MSFEA CO-OP Handbook or reach out to the CO-OP CDC Advisor."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 14.83,
+      "response": {
+        "answer": "For CO-OP, you are charged regular tuition for the 3 credits of FEAA 500 during the first semester. In the second semester, you register for FEAA 500A (3 credits) with no additional tuition fees.\n\nI cannot confirm the exact monetary tuition amount from these sources. For more details on the program, you can consult the MSFEA CO-OP Handbook or contact the CO-OP CDC Advisor.",
+        "citations": [
+          "msfea-cdc-coop-handbook.md > Policies",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > The FEAA 500 course",
+          "cdc-knowledge-base.md > CO-OP (Cooperative Education)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 474,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "How long must my ECE final report be?",
+      "history": [
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship is a graduation requirement normally completed during the summer before your final year. It allows you to apply academic learning to practical technical challenges, develop workplace skills, and explore career paths. Registration requires at least 90 credits. The standard requirement is a minimum of eight full weeks of approved, discipline-related technical training (typically 320 work hours) in Lebanon or abroad. The course is graded Pass or Fail.\n\nThe ordinary process moves through three major stages:\n- Before training: You secure an internship independently or through Career Development Center postings, obtain formal placement approval, and submit your proposal.\n- During training: You confirm your arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- At completion: You submit your final training report, final presentation, required evaluation and summary forms, and official employer completion documentation.\n\nTo check placement eligibility or clarify any specific course arrangements, you can contact the course contact, Rafika Dinnawi, at rd39@aub.edu.lb."
+        },
+        {
+          "role": "user",
+          "content": "and the duration?"
+        },
+        {
+          "role": "assistant",
+          "content": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (8 weeks at 40 hours per week). An approved internship can be longer than eight weeks, provided the correct dates are documented on your proposal, notice of arrival, and employer letter."
+        },
+        {
+          "role": "user",
+          "content": "What about CO-OP, is it mandatory?"
+        },
+        {
+          "role": "assistant",
+          "content": "CO-OP is an optional program that allows you to combine your studies with a paid, full-time work placement (35–40 hours per week) lasting at least 6 months. Placements typically span Summer and Fall or Spring and Summer during your 3rd or 4th year, and passing the co-op replaces your department's Approved Experience requirement.\n\nThe typical process involves:\n- Preparation and application: Attend advising sessions, complete career development modules, and apply to the program for departmental review.\n- Placement: Pursue program opportunities or submit a self-found opportunity using the Proposal of Cooperative Education and Experiential Learning Form for advisor approval.\n- Work term and registration: Maintain full-time status by registering for FEAA 500 in the first semester and FEAA 500A in the second semester, complete the work term with employer evaluations and a midterm site visit, and return to campus for at least one term before graduating.\n\nFor next steps, consult the MSFEA CO-OP Handbook or reach out to the CO-OP CDC Advisor."
+        },
+        {
+          "role": "user",
+          "content": "what about the fee?"
+        },
+        {
+          "role": "assistant",
+          "content": "For CO-OP, you are charged regular tuition for the 3 credits of FEAA 500 during the first semester. In the second semester, you register for FEAA 500A (3 credits) with no additional tuition fees.\n\nI cannot confirm the exact monetary tuition amount from these sources. For more details on the program, you can consult the MSFEA CO-OP Handbook or contact the CO-OP CDC Advisor."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 7.83,
+      "response": {
+        "answer": "Your final training report must be at least five pages and 1,500 words, excluding the cover page, references, and appendix, and it must not exceed 20 pages.",
+        "citations": [
+          "email-clarifications.md > Final Report requirements (ECE)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 475,
+        "error_code": null,
+        "local": false
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Deployment and operations
 
-Reviewed 2026-10-03 against the current Compose files and application.
+Reviewed 2026-10-08 against the current Compose files and paid student/Studio release.
 Oracle pilot location: `/opt/msfea-chatbot`; public hostname:
 `msfea-chatbot.duckdns.org`. A different institution can supply its own host/domain
 without changing application code. Dated rollout evidence is in [the archive](archive/README.md).
@@ -13,6 +13,15 @@ Set `LLM_PROVIDER=gemini`, the student model/key, `ADMIN_TOKEN`, `DOMAIN`,
 `CORS_ALLOW_ORIGINS` and `APP_COMMIT` for the exact running release.
 Use independent `CURATION_WORKER_TOKEN`, `N8N_WEBHOOK_SECRET`, `N8N_DB_PASSWORD`
 and persistent `N8N_ENCRYPTION_KEY`. Do not reuse the admin token.
+
+The deployed paid student profile uses `LLM_MODEL=gemini-3.8-flash`,
+`LLM_MAX_OUTPUT_TOKENS=4096`, `LLM_GEMINI_THINKING_LEVEL=medium` and
+`LLM_GEMINI_USE_SAMPLING_PARAMS=false`. The limit includes reasoning and visible
+output. Staff assistance remains `CURATION_LLM_MODEL=gemini-3.1-flash-lite`;
+actual student previews use the student profile. Rotate only the intended provider
+key/configuration fields; preserve production database, admin, workflow and domain
+settings. See the [dated rollout](archive/oracle-paid-release-20261008.md).
+
 
 The base stack is app + PostgreSQL/pgvector. The production overlay adds Caddy,
 the private worker, self-hosted n8n and its PostgreSQL 17 database. Validation is
@@ -38,7 +47,14 @@ evidence. Do not copy synthetic demo data or a developer's database into product
 3. Build the exact target image natively for the host architecture before switching.
    Startup applies pending checksum-verified curation migrations. Current code has
    migrations 0001–0007; never modify already-applied SQL files.
-4. Start the production stack:
+4. For an existing installation with unchanged dependencies/workflow, recreate
+   only the affected services after the native build:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps app curation-worker
+```
+
+   For initial/full-stack setup:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
@@ -46,7 +62,10 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
 ```
 
 5. Ingest only when the source/index/embedding change requires it. A documentation
-   update does not need rebuild, ingestion or deployment. For a required rebuild:
+   update does not need rebuild, ingestion or deployment. When a release requires
+   both new retrieval code and content, stop the app/worker briefly, ingest with the
+   new image, then recreate them so old code cannot serve the new index. For a
+   content-only rebuild with compatible running code:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm app python -m msfea_bot.skeleton ingest
@@ -88,7 +107,7 @@ clear cached answers; guarded publication invalidates them automatically.
 | Browser session | 20/minute, 80/hour; session IDs are not authentication |
 | Expensive concurrency | One/session, four/IP, sixteen/app worker |
 | Response reuse | Exact effective session/context, 30 seconds, bounded 256 entries |
-| Evidence/output | 24,000 context characters; student output default 1,024 tokens |
+| Evidence/output | 24,000 context characters; code output default 1,024 tokens, deployed paid profile 4,096 |
 | Staff AI | Default 12 attempts/minute, 400/day/model |
 | Student-model previews | Separate 60-call daily admission cap; shares student provider quota |
 

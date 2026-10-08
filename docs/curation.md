@@ -1,6 +1,6 @@
 # Curation, validation and publication contract
 
-Reviewed 2026-10-08 against the local candidate; Oracle remains unchanged.
+Reviewed 2026-10-08 against the [deployed paid-profile alignment](archive/oracle-paid-release-20261008.md).
 This is the current technical contract; staff actions are in
 [Studio](studio.md), infrastructure/recovery procedures in [operations](deployment.md).
 The implementation authority is `src/msfea_bot/curation/`.

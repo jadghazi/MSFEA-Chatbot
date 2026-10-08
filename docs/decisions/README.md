@@ -52,4 +52,4 @@ historical measurements and decision content were retained.
 | 0029 | [Self-service Studio with measured search preparation](0029-self-service-studio.md) | Deployed; optional writing extended by 0030/0031 |
 | 0030 | [Optional source-backed answer suggestions](0030-source-backed-answer-suggestions.md) | Deployed; strict draft withholding superseded by 0031 |
 | 0031 | [Show private AI drafts with advisory source warnings](0031-advisory-ai-drafts.md) | Deployed in 2601082; private warnings, fresh-review/publish gates retained |
-| 0032 | [Paid student profile and coherent grounded context](0032-paid-student-profile-and-context.md) | Accepted local engineering candidate; Oracle and staff alignment separate |
+| 0032 | [Paid student profile and coherent grounded context](0032-paid-student-profile-and-context.md) | Accepted; student profile and staff alignment deployed on Oracle October 8 |

@@ -1,6 +1,6 @@
 # Documentation index
 
-Reviewed against code through `2601082` on 2026-10-03. Start with
+Reviewed against the paid student/Studio release on 2026-10-08. Start with
 [AGENTS.md](../AGENTS.md) and [architecture](architecture.md); then read the
 task-specific guide. These current guides replace scattered implementation plans.
 

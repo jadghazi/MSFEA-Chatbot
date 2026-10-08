@@ -1,0 +1,238 @@
+{
+  "recorded_at": "2026-10-08T09:56:19.732895+00:00",
+  "application_commit": "ea1cd8c7ac5ebbbbf535212a004b1db9c945dc07",
+  "origin": "https://msfea-chatbot.duckdns.org",
+  "model": "gemini-3.8-flash",
+  "department": "ece",
+  "turns": [
+    {
+      "question": "So what can you help me with?",
+      "history": [],
+      "http_status": 200,
+      "elapsed_seconds": 0.75,
+      "response": {
+        "answer": "I couldn't verify that from the CDC information available to me. For an official answer, please contact Rafika Dinnawi (rd39@aub.edu.lb), the Electrical and Computer Engineering coordinator.",
+        "citations": [],
+        "refused": true,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 464,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "more specifically what about the internships",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "I couldn't verify that from the CDC information available to me. For an official answer, please contact Rafika Dinnawi (rd39@aub.edu.lb), the Electrical and Computer Engineering coordinator."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 17.06,
+      "response": {
+        "answer": "The Approved Experience internship (EECE 500) is a graduation requirement, typically completed in the summer before your final year, with registration requiring at least 90 credits. It provides an opportunity to apply classroom knowledge to real engineering and computing problems, build workplace skills, and explore career paths.\n\nThe standard requirement is a minimum of eight full weeks of approved training, typically 320 work hours, in Lebanon or abroad doing technically relevant work. You are responsible for securing your placement, whether independently or through CDC postings, and the course is graded Pass or Fail.\n\nThe process follows three main stages:\n- Before training: secure your placement and submit the internship proposal form.\n- During training: submit your notice of arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- After training: submit your final training report, required surveys and summary sheet, official employer completion letter, and final presentation.\n\nIf you need help with placement approvals or specific course guidance, you can reach out to Rafika Dinnawi at rd39@aub.edu.lb.",
+        "citations": [
+          "cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Internship (Approved Experience Course) > Internship overview",
+          "email-clarifications.md > Approved Internship Email Clarifications > Internship contact routing > Electrical and Computer Engineering internship contact (ECE)",
+          "email-clarifications.md > Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+          "email-clarifications.md > Course completion requirements (ECE)",
+          "email-clarifications.md > Finding an internship and acceptable work"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 465,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "and the duration?",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "I couldn't verify that from the CDC information available to me. For an official answer, please contact Rafika Dinnawi (rd39@aub.edu.lb), the Electrical and Computer Engineering coordinator."
+        },
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship (EECE 500) is a graduation requirement, typically completed in the summer before your final year, with registration requiring at least 90 credits. It provides an opportunity to apply classroom knowledge to real engineering and computing problems, build workplace skills, and explore career paths.\n\nThe standard requirement is a minimum of eight full weeks of approved training, typically 320 work hours, in Lebanon or abroad doing technically relevant work. You are responsible for securing your placement, whether independently or through CDC postings, and the course is graded Pass or Fail.\n\nThe process follows three main stages:\n- Before training: secure your placement and submit the internship proposal form.\n- During training: submit your notice of arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- After training: submit your final training report, required surveys and summary sheet, official employer completion letter, and final presentation.\n\nIf you need help with placement approvals or specific course guidance, you can reach out to Rafika Dinnawi at rd39@aub.edu.lb."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 8.28,
+      "response": {
+        "answer": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (calculated as eight weeks at 40 hours per week). An approved internship can last longer than eight weeks, but eight weeks is the required minimum.",
+        "citations": [
+          "email-clarifications.md > Approved Internship Email Clarifications > Approved Experience course codes > EECE 500 internship duration (ECE)",
+          "summer-training-guidelines-2026.md > Internship Requirements: Duration, Hours, and Locations",
+          "email-clarifications.md > Internship dates and duration changes"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 466,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "What about CO-OP, is it mandatory?",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "I couldn't verify that from the CDC information available to me. For an official answer, please contact Rafika Dinnawi (rd39@aub.edu.lb), the Electrical and Computer Engineering coordinator."
+        },
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship (EECE 500) is a graduation requirement, typically completed in the summer before your final year, with registration requiring at least 90 credits. It provides an opportunity to apply classroom knowledge to real engineering and computing problems, build workplace skills, and explore career paths.\n\nThe standard requirement is a minimum of eight full weeks of approved training, typically 320 work hours, in Lebanon or abroad doing technically relevant work. You are responsible for securing your placement, whether independently or through CDC postings, and the course is graded Pass or Fail.\n\nThe process follows three main stages:\n- Before training: secure your placement and submit the internship proposal form.\n- During training: submit your notice of arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- After training: submit your final training report, required surveys and summary sheet, official employer completion letter, and final presentation.\n\nIf you need help with placement approvals or specific course guidance, you can reach out to Rafika Dinnawi at rd39@aub.edu.lb."
+        },
+        {
+          "role": "user",
+          "content": "and the duration?"
+        },
+        {
+          "role": "assistant",
+          "content": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (calculated as eight weeks at 40 hours per week). An approved internship can last longer than eight weeks, but eight weeks is the required minimum."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 13.34,
+      "response": {
+        "answer": "CO-OP is not mandatory; it is an optional program of paid, full-time work terms (at least 35 to 40 hours per week) integrated with your academic studies. \n\nThe normal path involves the following stages:\n\n- Preparation and application: You apply to the program, complete preparatory career development modules, and secure an approved placement either through program opportunities or an approved self-found position.\n- Placement and coursework: Placements last at least 6 months, typically running Summer and Fall or Spring and Summer during your 3rd or 4th year. You maintain full-time student status across two terms by enrolling in FEAA 500 and then FEAA 500A. You cannot take other courses during this time, and you must return to campus for at least one term before graduating.\n- Evaluation and credit: During the term, you participate in regular check-ins, a midterm site visit, and end-of-term employer evaluations. Successfully passing the course substitutes for your department's Approved Experience requirement.\n\nTo get started, you can consult the MSFEA CO-OP Handbook or reach out to the CO-OP CDC Advisor for guidance.",
+        "citations": [
+          "cdc-knowledge-base.md > CO-OP (Cooperative Education)",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > CO-OP FAQs > General program questions",
+          "msfea-cdc-coop-handbook.md > Policies",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > The FEAA 500 course",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for employers > Employer responsibilities during the co-op"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 467,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "what about the fee?",
+      "history": [
+        {
+          "role": "user",
+          "content": "So what can you help me with?"
+        },
+        {
+          "role": "assistant",
+          "content": "I couldn't verify that from the CDC information available to me. For an official answer, please contact Rafika Dinnawi (rd39@aub.edu.lb), the Electrical and Computer Engineering coordinator."
+        },
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship (EECE 500) is a graduation requirement, typically completed in the summer before your final year, with registration requiring at least 90 credits. It provides an opportunity to apply classroom knowledge to real engineering and computing problems, build workplace skills, and explore career paths.\n\nThe standard requirement is a minimum of eight full weeks of approved training, typically 320 work hours, in Lebanon or abroad doing technically relevant work. You are responsible for securing your placement, whether independently or through CDC postings, and the course is graded Pass or Fail.\n\nThe process follows three main stages:\n- Before training: secure your placement and submit the internship proposal form.\n- During training: submit your notice of arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- After training: submit your final training report, required surveys and summary sheet, official employer completion letter, and final presentation.\n\nIf you need help with placement approvals or specific course guidance, you can reach out to Rafika Dinnawi at rd39@aub.edu.lb."
+        },
+        {
+          "role": "user",
+          "content": "and the duration?"
+        },
+        {
+          "role": "assistant",
+          "content": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (calculated as eight weeks at 40 hours per week). An approved internship can last longer than eight weeks, but eight weeks is the required minimum."
+        },
+        {
+          "role": "user",
+          "content": "What about CO-OP, is it mandatory?"
+        },
+        {
+          "role": "assistant",
+          "content": "CO-OP is not mandatory; it is an optional program of paid, full-time work terms (at least 35 to 40 hours per week) integrated with your academic studies. \n\nThe normal path involves the following stages:\n\n- Preparation and application: You apply to the program, complete preparatory career development modules, and secure an approved placement either through program opportunities or an approved self-found position.\n- Placement and coursework: Placements last at least 6 months, typically running Summer and Fall or Spring and Summer during your 3rd or 4th year. You maintain full-time student status across two terms by enrolling in FEAA 500 and then FEAA 500A. You cannot take other courses during this time, and you must return to campus for at least one term before graduating.\n- Evaluation and credit: During the term, you participate in regular check-ins, a midterm site visit, and end-of-term employer evaluations. Successfully passing the course substitutes for your department's Approved Experience requirement.\n\nTo get started, you can consult the MSFEA CO-OP Handbook or reach out to the CO-OP CDC Advisor for guidance."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 14.36,
+      "response": {
+        "answer": "For CO-OP, you are charged regular tuition for the 3 credits of FEAA 500 in your first semester. In the second semester, you register for FEAA 500A with no additional tuition fees.\n\nI cannot confirm the exact monetary tuition amount from these sources. For help with that, you can consult the MSFEA CO-OP Handbook or contact the CO-OP CDC Advisor.",
+        "citations": [
+          "msfea-cdc-coop-handbook.md > Policies",
+          "msfea-cdc-coop-handbook.md > MSFEA CO-OP (Cooperative Education) Handbook > Information for students > The FEAA 500 course",
+          "cdc-knowledge-base.md > CO-OP (Cooperative Education)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 468,
+        "error_code": null,
+        "local": false
+      }
+    },
+    {
+      "question": "How long must my ECE final report be?",
+      "history": [
+        {
+          "role": "user",
+          "content": "more specifically what about the internships"
+        },
+        {
+          "role": "assistant",
+          "content": "The Approved Experience internship (EECE 500) is a graduation requirement, typically completed in the summer before your final year, with registration requiring at least 90 credits. It provides an opportunity to apply classroom knowledge to real engineering and computing problems, build workplace skills, and explore career paths.\n\nThe standard requirement is a minimum of eight full weeks of approved training, typically 320 work hours, in Lebanon or abroad doing technically relevant work. You are responsible for securing your placement, whether independently or through CDC postings, and the course is graded Pass or Fail.\n\nThe process follows three main stages:\n- Before training: secure your placement and submit the internship proposal form.\n- During training: submit your notice of arrival, complete the professional skills lectures and quiz, and submit a mid-experience progress report.\n- After training: submit your final training report, required surveys and summary sheet, official employer completion letter, and final presentation.\n\nIf you need help with placement approvals or specific course guidance, you can reach out to Rafika Dinnawi at rd39@aub.edu.lb."
+        },
+        {
+          "role": "user",
+          "content": "and the duration?"
+        },
+        {
+          "role": "assistant",
+          "content": "The standard requirement is a minimum of eight full weeks of approved training, typically equivalent to 320 work hours (calculated as eight weeks at 40 hours per week). An approved internship can last longer than eight weeks, but eight weeks is the required minimum."
+        },
+        {
+          "role": "user",
+          "content": "What about CO-OP, is it mandatory?"
+        },
+        {
+          "role": "assistant",
+          "content": "CO-OP is not mandatory; it is an optional program of paid, full-time work terms (at least 35 to 40 hours per week) integrated with your academic studies. \n\nThe normal path involves the following stages:\n\n- Preparation and application: You apply to the program, complete preparatory career development modules, and secure an approved placement either through program opportunities or an approved self-found position.\n- Placement and coursework: Placements last at least 6 months, typically running Summer and Fall or Spring and Summer during your 3rd or 4th year. You maintain full-time student status across two terms by enrolling in FEAA 500 and then FEAA 500A. You cannot take other courses during this time, and you must return to campus for at least one term before graduating.\n- Evaluation and credit: During the term, you participate in regular check-ins, a midterm site visit, and end-of-term employer evaluations. Successfully passing the course substitutes for your department's Approved Experience requirement.\n\nTo get started, you can consult the MSFEA CO-OP Handbook or reach out to the CO-OP CDC Advisor for guidance."
+        },
+        {
+          "role": "user",
+          "content": "what about the fee?"
+        },
+        {
+          "role": "assistant",
+          "content": "For CO-OP, you are charged regular tuition for the 3 credits of FEAA 500 in your first semester. In the second semester, you register for FEAA 500A with no additional tuition fees.\n\nI cannot confirm the exact monetary tuition amount from these sources. For help with that, you can consult the MSFEA CO-OP Handbook or contact the CO-OP CDC Advisor."
+        }
+      ],
+      "http_status": 200,
+      "elapsed_seconds": 5.12,
+      "response": {
+        "answer": "Your EECE 500 Final Training Report must be at least five pages and 1,500 words, excluding the cover page, references, and appendix. It must not exceed 20 pages.",
+        "citations": [
+          "email-clarifications.md > Final Report requirements (ECE)"
+        ],
+        "refused": false,
+        "disclaimer": "AI-generated — please verify with official CDC sources.",
+        "interaction_id": 469,
+        "error_code": null,
+        "local": false
+      }
+    }
+  ]
+}

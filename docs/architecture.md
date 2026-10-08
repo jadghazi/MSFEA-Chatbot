@@ -1,7 +1,7 @@
 # Current architecture and project state
 
-Reviewed 2026-10-08 against `a0caa4d` and the local student-quality candidate.
-The candidate behavior below has not been deployed to Oracle. This is the current checkout map.
+Reviewed 2026-10-08 against the paid student/Studio release and its bounded rollout correction.
+The behavior below is deployed on Oracle; the [release receipt](archive/oracle-paid-release-20261008.md) identifies the exact application commit. This is the current checkout map.
 Defaults below describe code/example configuration; a deployed `.env` can override
 them. Deployment observations are dated evidence, not a live monitoring snapshot.
 
@@ -10,7 +10,7 @@ them. Deployment observations are dated evidence, not a live monitoring snapshot
 The source-backed CDC knowledge base, standalone student pilot, embeddable widget,
 department scoping, bounded follow-ups, feedback/usage dashboard and guarded
 Knowledge Studio are implemented. Oracle deployment was verified through the
-2026-10-02 suggestion update. The [October rollout record](archive/oracle-studio-deployment-20261001.md)
+2026-10-08 paid student/Studio release. The [October rollout record](archive/oracle-studio-deployment-20261001.md)
 documents the serving topology and unchanged 253-chunk source index at that rollout.
 The latest private-draft behavior is recorded in [ADR-0031](decisions/0031-advisory-ai-drafts.md).
 
@@ -21,13 +21,13 @@ Do not infer 100% policy correctness from passing checks.
 The [main-model evaluation](../eval/results/student_quality_main_model_20261007.md)
 records configured-model verification, held-out actual-history conversations and
 retained failed experiments. Earlier alternate-model measurements remain separate.
-Deployment acceptance remains open.
+The local audit and subsequent Oracle rollout are separate measurements.
 The earlier Lite-model verification was interrupted by project/model daily quota.
-The local paid student candidate uses `gemini-3.8-flash` with medium thinking,
+The deployed paid student profile uses `gemini-3.8-flash` with medium thinking,
 a 4096-token output ceiling and deprecated sampling fields omitted. Its constructed-set
 engineering acceptance is complete; see the [paid audit](../eval/results/student_quality_paid_migration_20261008.md)
-and [ADR-0032](decisions/0032-paid-student-profile-and-context.md). The real local `.env`
-is aligned. Oracle deployment, policy-owner acceptance and independent calibration
+and [ADR-0032](decisions/0032-paid-student-profile-and-context.md). Local and Oracle `.env`
+profiles are aligned. Policy-owner acceptance and independent calibration
 remain separate. The dated reports retain earlier incomplete Lite measurements.
 
 ## Sources and ingestion
@@ -75,7 +75,8 @@ repair. This text never becomes factual answer evidence. See [curation](curation
 3. `generation/conversation.py` deterministically resolves follow-ups. Explicit
    new subjects take precedence; ambiguous references can search literal and
    contextual queries. Assistant history is never policy authority. No second
-   LLM query-rewrite call is deployed (ADR-0027).
+   LLM query-rewrite call is deployed (ADR-0027). Capability orientation accepts
+   conversational prefixes such as “So” or “Okay” without inserting a topic list.
    An explicit abandoned-topic preface is omitted from retrieval only when the
    remaining question is self-contained; generation retains the original wording.
    Short attribute searches retain the relevant actor or program rather than its

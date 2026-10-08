@@ -17,24 +17,19 @@ These items are not authorization to implement them automatically.
 
 ## Engineering follow-ups requiring evidence
 
-- **Student candidate release and external validation:** the local
+- **Student external validation:** the
   [paid-model audit](../eval/results/student_quality_paid_migration_20261008.md)
-  records completed constructed-set engineering acceptance, source/prompt/profile
-  verification and actual-answer conversation transfer checks. General improvements
+  records completed constructed-set engineering acceptance. The
+  [Oracle release](archive/oracle-paid-release-20261008.md) verifies deployed
+  source/profile parity and bounded student/Studio smoke checks. General improvements
   cover coherent evidence, governing exceptions, attributes, spelling, process scope
-  and current intent; no screenshot-specific rules are encoded. Oracle is unchanged.
-  Minor completeness/clarity issues and known retrieval misses remain documented.
-  Obtain policy-owner review of normalized changes and independent answer calibration
-  before institutional accuracy claims. Subsequent release work must verify serving
-  source parity and configuration; a local `.env` update is not deployment.
-  [Staff Studio alignment](../eval/results/studio_alignment_20261008.md) is complete
-  locally, and curated test facts are excluded from this candidate's evaluation.
-  FEAA 500/500A is the two-semester
-  sequence, not a conflict. The revision chunker supports reviewed process-stage
-  markers; untagged future approved revisions still require scope review. Recheck
-  active revisions before any release rather than relying on the October 7 inventory.
-  Add independently sourced student questions and real pilot observations; preserve
-  department isolation, canonical provenance and the similarity threshold.
+  and current intent. Minor completeness/clarity issues and known retrieval misses
+  remain documented. Obtain policy-owner review of normalized changes and independent
+  answer calibration before institutional accuracy claims. Studio alignment is
+  deployed; no synthetic curated test facts were published. FEAA 500/500A is the
+  two-semester sequence, not a conflict. Untagged future approved revisions still
+  require scope review. Add independently sourced student questions and real pilot
+  observations; preserve department isolation, canonical provenance and the threshold.
 
 - **Dependency reproducibility:** local model weights are pinned, but many runtime
   package ranges are not locked. Evaluate a deliberate lock/update workflow and
