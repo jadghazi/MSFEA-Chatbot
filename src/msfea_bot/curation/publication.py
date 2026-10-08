@@ -115,13 +115,25 @@ def _assert_authorized(
     ):
         raise PublicationError("validation results are incomplete or failed")
     review = conn.execute(
-        "SELECT decision FROM curation_human_reviews"
+        "SELECT decision,reviewed_at FROM curation_human_reviews"
         " WHERE revision_id = %s AND validation_run_id = %s AND fingerprint = %s"
         " ORDER BY reviewed_at DESC LIMIT 1",
         (revision.id, run_id, expected_fingerprint),
     ).fetchone()
     if review is None or review[0] == "reject":
         raise PublicationError("mandatory human source/conflict review is missing")
+    preview = conn.execute(
+        "SELECT status,result,completed_at FROM curation_workspace_jobs"
+        " WHERE run_id=%s AND kind='preview'", (run_id,),
+    ).fetchone()
+    if preview:
+        from msfea_bot.curation.workspace import preview_fingerprint
+
+        if (preview[0] != "completed" or not preview[1].get("passed")
+                or preview[1].get("profile_fingerprint") != preview_fingerprint()):
+            raise PublicationError("student previews need refreshing before publication")
+        if preview[2] is None or review[1] < preview[2]:
+            raise PublicationError("human approval must follow the current student previews")
     if row[2] not in allowed_states:
         raise PublicationError(
             f"revision state is {row[2]!r}, expected one of {sorted(allowed_states)}"

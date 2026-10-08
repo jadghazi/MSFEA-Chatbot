@@ -1,0 +1,9 @@
+ Container msfea-quality-paid-test-db-1  Running
+{
+  "cases": 179,
+  "reused_provider_answers": 164,
+  "local_replies": 15,
+  "pending_count": 0,
+  "pending_case_ids": [],
+  "live_ids": ""
+}

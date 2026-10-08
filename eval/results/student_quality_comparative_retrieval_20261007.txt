@@ -1,0 +1,6 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  23%|██▎       | 46/199 [00:00<00:00, 453.24it/s]
+Loading weights:  47%|████▋     | 94/199 [00:00<00:00, 464.73it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 692.48it/s]
+{"id": "F29", "hits": [true], "gate": false, "query": "CO-OP length and duration", "refused": null, "error": null}

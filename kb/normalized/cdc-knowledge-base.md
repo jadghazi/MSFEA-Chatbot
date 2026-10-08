@@ -8,15 +8,29 @@ department: all
 ---
 
 # MSFEA Career Development Center (CDC) — Student Knowledge Base
+<!-- content_role: catalogue -->
 
 This document covers the MSFEA Career Development Center's professional experience pathways for students: Internships (Approved Experience Course), IAESTE, CO-OP, career readiness resources, and full-time job support.
+
+The CDC can help with finding and approving internships, understanding Approved Experience course requirements, exploring the optional paid CO-OP program, and getting involved in IAESTE international internship exchange. Career support includes CV and cover letter guidelines, online modules for interview preparation and job search, Career+ career planning and certification, MentorPlus+ alumni mentorship, and full-time job postings through the AUB Career Portal and email. The sections below explain these services and their requirements; a particular service's rules do not automatically apply to the others.
 
 ---
 
 ## Internship (Approved Experience Course)
 
+### Internship overview
+<!-- content_role: overview -->
+<!-- evidence_links: email-clarifications.md > Internship dates and duration changes -->
+
+The Approved Experience internship is a graduation requirement, normally completed during the summer before your final year. It lets you apply what you have learned in class to real engineering and design challenges, develop workplace skills and explore career paths. Registration requires a minimum of 90 credits. The normal requirement is a minimum of 8 full weeks of approved training, typically 320 work hours, in Lebanon or abroad. The CDC shares internship offers by AUB email with application instructions, usually requesting a CV, cover letter and academic transcript; you can also find a placement independently, but it must follow the CDC or department approval route before it counts.
+
+The ordinary process has distinct stages. Before starting training, obtain the required placement approval and submit the Proposal of Approved Experience Form. During training, submit the Notice of Arrival after you start, complete applicable professional-skills activities, and submit the mid-experience Progress Report. At completion, submit the Final Training Report, required forms and evaluations, and employer completion documentation; complete a final presentation where your department requires it. To pass the course, complete the approved training and all required deliverables satisfactorily and on time. The course is graded Pass or Fail. Department-specific exceptions and current course instructions remain applicable; a combined placement or another summer course is not assumed in this ordinary overview.
+
 ### What it is
-The approved experience course is an internship of 8–12 weeks, normally completed during the summer semester of a student's third year. It can be facilitated by the CDC, which collects internship offers from companies and universities throughout the year. The minimum duration required to satisfy the approved experience requirement is **8 weeks**.
+<!-- evidence_links: email-clarifications.md > Internship dates and duration changes -->
+The approved experience course is an internship usually lasting 8–12 weeks, normally completed during the summer semester of a student's third year. It can be facilitated by the CDC, which collects internship offers from companies and universities throughout the year. The minimum duration required to satisfy the approved experience requirement is **8 weeks**.
+
+An approved internship may be longer than eight weeks. Its Proposal, Notice of Arrival, and final employer letter should reflect the correct dates, as explained in the internship dates and duration clarifications.
 
 ### Timing
 The MSFEA CDC usually sends internship guidelines to students around the beginning of the academic year (October), for internships to be completed the following summer. The exception is consulting internships, which may follow a different timeline. Students are encouraged to start preparing early (CV, cover letter, exploring options) even before guidelines are sent.
@@ -30,6 +44,7 @@ The MSFEA CDC usually sends internship guidelines to students around the beginni
 6. Once a student accepts an offer, they must confirm their acceptance to the CDC by email.
 
 ### Applying to an internship found independently
+<!-- evidence_links: email-clarifications.md > Internship approval authority | email-clarifications.md > Approval before beginning an internship -->
 If a student secures an internship on their own (not through the CDC), they must contact the CDC to confirm the company is approved. The CDC will then guide the student to either get the internship confirmed through the CDC, or petition their department directly.
 
 Complete the CDC's self-secured internship form (also referred to as the internship approval form): https://forms.office.com/pages/responsepage.aspx?id=Glu6x7ZB6UOhIG_2VK2hNxgNyBu3jyVItFyTXDeYtMVUM05XSkRJQThUQ1VaM1dLOEZUOVM4N1Q1RC4u
@@ -81,6 +96,7 @@ MSFEA hosts the IAESTE program (International Association for the Exchange of St
 **Contact:** iaeste.lebanon@aub.edu.lb
 
 ### Hosting an IAESTE intern (for employers)
+<!-- evidence_links: cdc-knowledge-base.md > IAESTE — International Internship Exchange -->
 Companies in Lebanon interested in hosting an international intern can participate in the exchange: for each trainee hosted locally, a Lebanese student gets the opportunity to train abroad, and a foreign student is introduced to the Lebanese culture and environment.
 > Interested companies should visit the CDC's IAESTE page on the MSFEA website to find and complete the employer interest form.
 
@@ -97,6 +113,11 @@ maintained in the dedicated **[MSFEA CO-OP Handbook](msfea-cdc-coop-handbook.md)
 which is the authoritative source for CO-OP questions.
 
 ## Career Readiness Resources
+
+### Career support overview
+<!-- content_role: overview -->
+
+The CDC offers career preparation and support besides internships. Its CV and cover letter guidelines explain how to tailor your resume, use action verbs and present relevant experience professionally. Online modules cover Resume and Cover Letter Writing, Interview Preparation, Work Placement / Job Search, and Workplace Environment and Skills. Career+ is a career-development and certification initiative that helps students explore options and navigate career uncertainty; its paths recognize academic work, applied experience, extracurricular activities and career readiness. MentorPlus+ connects students with AUB alumni for guidance about career paths and professional expectations. For full-time vacancies, students can use the AUB Career Portal and check postings shared by email. The individual sections provide the available links and joining routes; these services have distinct purposes and requirements.
 
 ### Career+
 
@@ -142,11 +163,8 @@ A resume is a concise, written summary of your education, work experience, crede
 - Full guidelines page: https://www.aub.edu.lb/msfea/cdc/Pages/guidelines.aspx
 
 ### Online Career Development Modules
-The CDC offers asynchronous online modules (via Moodle) covering:
-- **Resume and Cover Letter Writing** — preparing competitive CVs and cover letters
-- **Interview Preparation** — practicing interview skills and strategies
-- **Work Placement / Job Search** — identifying potential worksites and sources of opportunities, leveraging industry contacts
-- **Workplace Environment and Skills** — preparing for success in the workplace
+<!-- evidence_links: cdc-knowledge-base.md > MSFEA CDC Student Knowledge Base > Career Readiness Resources > Career support overview -->
+The CDC offers asynchronous online modules (via Moodle) covering **Resume and Cover Letter Writing** — preparing competitive CVs and cover letters; **Interview Preparation** — practicing interview skills and strategies; **Work Placement / Job Search** — identifying potential worksites and sources of opportunities, leveraging industry contacts; and **Workplace Environment and Skills** — preparing for success in the workplace.
 
 > To register for these modules, visit the CDC section of the MSFEA website and look for the modules registration form.
 
@@ -200,7 +218,15 @@ If a linked form ever stops working, the CDC students page above always has the 
 
 ## About this document
 
+**2026-10-07 — IAESTE governing context (local candidate).** Employer-hosting guidance links to the existing exchange-program introduction so the student and employer roles, student joining route and verified IAESTE contact remain distinguishable. No opportunity, eligibility rule or contact was created.
+
+**2026-10-07 — approval-process context (local candidate).** The independent-placement procedure links to the existing approved authority and before-start clarification, keeping who advises, who decides and the assistant's information-only role together. This is editorial context restoration, not a change to approval authority.
+
+**2026-10-07 — source-grounded topic overviews (local quality candidate).** Added ordinary internship and career-support context without replacing focused FAQs or department exceptions. Internship overview facts are supported by this document's What it is, application and Internship FAQs sections; `summer-training-guidelines-2026.md` Course Description, Eligibility, Internship Requirements, Timeline and Deliverables; and the approved grading/completion clarifications in `email-clarifications.md`. The career-support overview restates the Career+, CV guidelines, Online Career Development Modules, MentorPlus+ and Full-Time Jobs sections of this document. The companion CO-OP overview lives in `msfea-cdc-coop-handbook.md` with its supporting sections recorded there. These are reorganized existing facts, not new policies or independent source authority. Publication still requires reviewed release authorization.
+
 Normalized from `kb/source/msfea_cdc_kb.md`.
+
+**2026-10-08 — complete service-list context (local candidate).** Kept the existing four Online Career Development Modules and their descriptions together as one paragraph. A reviewed link restores the complete module section and existing career-support overview when its registration guidance is retrieved. Paragraph grouping alone did not fix that registration-only retrieval miss. Names, descriptions, Moodle delivery and registration guidance are unchanged; no fact or policy is added.
 
 **2026-08-05 — form links added, "never link a form" policy removed.** This document
 previously instructed that students always be sent to search the CDC website rather

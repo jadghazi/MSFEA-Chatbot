@@ -1,0 +1,4 @@
+All checks passed!
+src/msfea_bot/generation/answer.py:499: error: "RetrievedChunk" has no attribute "display_prefix"  [attr-defined]
+Found 1 error in 1 file (checked 93 source files)
+

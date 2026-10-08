@@ -1,0 +1,9 @@
+ Container msfea-quality-next-test-db-1  Running
+{
+  "cases": 40,
+  "reused_provider_answers": 38,
+  "local_replies": 2,
+  "pending_count": 0,
+  "pending_case_ids": [],
+  "live_ids": ""
+}

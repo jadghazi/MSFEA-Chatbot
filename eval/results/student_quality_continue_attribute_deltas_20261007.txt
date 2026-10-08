@@ -1,0 +1,35 @@
+ Container msfea-quality-next-test-db-1  Running
+{
+  "cases": 114,
+  "reused_provider_answers": 90,
+  "local_replies": 12,
+  "pending_count": 12,
+  "pending_case_ids": [
+    "Q15",
+    "Q24",
+    "Q35",
+    "Q44",
+    "Q59",
+    "H14",
+    "F07",
+    "F08",
+    "F10",
+    "F11",
+    "F12",
+    "F28"
+  ],
+  "live_ids": "Q15,Q24,Q35,Q44,Q59,H14,F07,F08,F10,F11,F12,F28"
+}
+{
+  "cases": 40,
+  "reused_provider_answers": 34,
+  "local_replies": 2,
+  "pending_count": 4,
+  "pending_case_ids": [
+    "R06",
+    "R12",
+    "R25",
+    "R27"
+  ],
+  "live_ids": "R06,R12,R25,R27"
+}

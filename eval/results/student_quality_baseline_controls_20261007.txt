@@ -1,0 +1,29 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  45%|████▍     | 89/199 [00:00<00:00, 889.71it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1160.98it/s]
+Retrieval on 124 answerable questions (124 golden + 0 live curated)
+
+Document-level recall (is a chunk from the expected source_doc in top-k?)
+  recall@1: 105/124 =   85%  #################
+  recall@3: 115/124 =   93%  ###################
+  recall@5: 121/124 =   98%  ####################
+  recall@7: 122/124 =   98%  ####################
+
+Context recall (is the answer's evidence text in top-k?) - the stricter metric
+  context-recall@1: 88/124 =   71%  ##############
+  context-recall@3: 115/124 =   93%  ###################
+  context-recall@5: 119/124 =   96%  ###################
+  context-recall@7: 122/124 =   98%  ####################
+
+Context-recall misses at k=7 (evidence not retrieved - the real gaps):
+  [internship-vs-coop] evidence 'graduation requirement' not in top-7
+  [faq-cee-exception] evidence 'reduced 6-week internship may be approved' not in top-7
+
+Production adaptive-depth context recall: 122/124
+Faculty answerable source-document recall@7: 198/205 (96.6%)
+Misses: faculty-007-chem, faculty-025-ece, faculty-045-ece, faculty-075-ece, faculty-125-ece, faculty-131-mech, faculty-158-ece
+Similarity threshold: 0.60
+Valid queries passing: 165/165 (lowest score 0.6237)
+Off-topic queries blocked before the LLM: 12/20 (60%)
+PASS: no valid calibration query is rejected and off-topic savings remain useful

@@ -1,0 +1,907 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "reviewed_cases": 179,
+  "material_failures": [
+    "H04"
+  ],
+  "decision": "Rejected for final acceptance: enrollment credit threshold incorrectly presented as application prerequisite in H04.",
+  "records": [
+    {
+      "id": "U01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U10",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "U11",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "P08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "T01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "T02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "T03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "T04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R10",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R11",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R12",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R14",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R15",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R16",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R17",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R18",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R19",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R20",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R21",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R22",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R23",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R24",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R25",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R26",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R27",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R28",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R29",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R30",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R31",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R32",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R33",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R34",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R35",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R36",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R37",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R38",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R39",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "R40",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "S01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "S02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "V01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "V02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "V03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "V04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F10",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F11",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F12",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F14",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F15",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F16",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F17",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F18",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F19",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F20",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F21",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F22",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F23",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F24",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F25",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F26",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F27",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F28",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F29",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "F30",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H04",
+      "status": "fail",
+      "note": "Misstates enrollment-stage credit threshold as application prerequisite."
+    },
+    {
+      "id": "H05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H10",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H11",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H12",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H14",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H15",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H16",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H17",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H18",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H19",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "H20",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q10",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q11",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q12",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q14",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q15",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q16",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q17",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q18",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q19",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q20",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q21",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q22",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q23",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q24",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q25",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q26",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q27",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q28",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q29",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q30",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q31",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q32",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q33",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q34",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q35",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q36",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q37",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q38",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q39",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q40",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q41",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q42",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q43",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q44",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q45",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q46",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q47",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q48",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q49",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q50",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q51",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q52",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q53",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q54",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q55",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q56",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q57",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q58",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q59",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    },
+    {
+      "id": "Q60",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the current requested intent with supported essential policy, scope, conditions or a justified limitation/clarification. Minor style/extras are not scored as core-policy failure."
+    }
+  ]
+}

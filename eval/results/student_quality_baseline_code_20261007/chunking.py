@@ -1,0 +1,328 @@
+"""Section-aware chunking (AGENTS.md §5.4).
+
+Splits a normalized Markdown document at headings (level >= 2), then further
+splits any oversized section into smaller overlapping windows so that specific
+facts (e.g. "75%") get focused embeddings instead of being diluted inside a large
+section. Each sub-chunk keeps its section heading for context. Window size and
+overlap are tuned against the eval set (context-recall).
+"""
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass, field
+from pathlib import Path
+
+from msfea_bot import departments
+
+NORMALIZED_DIR = Path(__file__).resolve().parents[3] / "kb" / "normalized"
+
+# Defaults chosen by measuring context-recall on the golden set (see ADR-0006):
+# 500 is the largest window that still reaches 100% context-recall@5.
+DEFAULT_MAX_CHARS = 500
+DEFAULT_OVERLAP = 150
+
+# Headings whose sections are editorial metadata rather than answers for students.
+_NON_CONTENT_SECTIONS = {"about this document"}
+
+
+@dataclass
+class Chunk:
+    """One retrievable passage plus where it came from.
+
+    `text` is canonical answer evidence and supplies the full-text index. Embeddings
+    use `retrieval_text` when a focused curated entry has verified search questions,
+    otherwise `text`. `display_prefix` is context shown to the reader/LLM but
+    deliberately kept out of both — currently the header row of a table whose body
+    was split across windows.
+
+    Keeping them separate is not fussiness, it was measured. Folding a table header
+    into `text` cost context-recall@5 (97% -> 93%), because the same boilerplate then
+    competes with the facts in every window of that table; letting it reach the
+    full-text column cost context-recall@1 (90% -> 83%) by shifting keyword ranks.
+    Prepending at read time gives the reader the column labels at zero retrieval cost.
+    """
+
+    id: str
+    text: str
+    source_doc: str
+    section: str
+    metadata: dict[str, str] = field(default_factory=dict)
+    display_prefix: str = ""
+    # Optional approved search representation; `text` remains canonical grounding.
+    retrieval_text: str = ""
+
+
+def parse_frontmatter(md: str) -> tuple[dict[str, str], str]:
+    """Split a leading ``---`` YAML-ish frontmatter block from the body.
+
+    Only simple ``key: value`` lines are parsed (enough for our frontmatter);
+    returns ``({}, md)`` when there is no frontmatter.
+    """
+    if not md.startswith("---"):
+        return {}, md
+    end = md.find("\n---", 3)
+    if end == -1:
+        return {}, md
+    block = md[3:end].strip()
+    body = md[end + 4 :].lstrip("\n")
+    meta: dict[str, str] = {}
+    for line in block.splitlines():
+        if ":" in line:
+            key, value = line.split(":", 1)
+            meta[key.strip()] = value.strip()
+    return meta, body
+
+
+def _heading_level(line: str) -> int:
+    """Markdown heading level (1 for ``# x``, 2 for ``## x`` ...); 0 if not a heading."""
+    stripped = line.lstrip("#")
+    level = len(line) - len(stripped)
+    if level > 0 and stripped.startswith(" "):
+        return level
+    return 0
+
+
+def _slug(text: str) -> str:
+    lowered = text.lower().replace(" ", "-")
+    return "".join(c for c in lowered if c.isalnum() or c == "-")[:50]
+
+
+def _unbreakable_lines(lines: list[str]) -> set[int]:
+    """Line indices where a window boundary must NOT fall.
+
+    Tables and structured Question/topic + Answer entries are atomic units of
+    meaning. Splitting either one can retrieve a label or question without the facts
+    needed to answer it. Oversized atomic units are deliberately allowed to exceed
+    ``max_chars`` rather than become incomplete retrieval candidates.
+
+    Cutting *at* the header row is fine (that starts a fresh table); cutting anywhere
+    after it is not.
+    """
+    blocked: set[int] = set()
+    i = 0
+    while i < len(lines) - 1:
+        if _is_table_row(lines[i]) and _is_table_separator(lines[i + 1]):
+            end = i + 2
+            while end < len(lines) and _is_table_row(lines[end]):
+                end += 1
+            blocked.update(range(i + 1, end))  # header stays cuttable, the rest doesn't
+            i = end
+        else:
+            i += 1
+
+    # Email clarifications contain many explicit Question/topic + Answer pairs.
+    # Keep each complete pair in one retrieval chunk. In particular, a long question
+    # line must never become a high-scoring candidate whose answer was moved to the
+    # next chunk: that can pass the similarity gate, spend an LLM request, and still
+    # refuse despite the KB containing the answer.
+    question_starts = [
+        index for index, line in enumerate(lines)
+        if re.match(r"^(?:\*\*)?(?:question/topic|q):", line.strip(), re.I)
+    ]
+    for position, start in enumerate(question_starts):
+        end = question_starts[position + 1] if position + 1 < len(question_starts) else len(lines)
+        has_answer = any(
+            bool(re.match(r"^(?:\*\*)?(?:answer|a):", line.strip(), re.I))
+            for line in lines[start + 1 : end]
+        )
+        if has_answer:
+            blocked.update(range(start + 1, end))
+    return blocked
+
+
+def _window_spans(lines: list[str], max_chars: int, overlap: int) -> list[tuple[int, int]]:
+    """Half-open [start, end) line spans for each window.
+
+    Spans rather than strings so callers can tell *where* a window starts — needed
+    to repair markdown tables split across windows (see `_table_headers`).
+    """
+    spans: list[tuple[int, int]] = []
+    blocked = _unbreakable_lines(lines)
+    start = 0
+    length = 0
+    for i, line in enumerate(lines):
+        # `i not in blocked` keeps tables whole: the window simply runs past
+        # max_chars until the table ends, rather than slicing it in half.
+        if length + len(line) + 1 > max_chars and i > start and i not in blocked:
+            spans.append((start, i))
+            # Step back so the next window repeats ~overlap chars of trailing lines.
+            kept = 0
+            j = i
+            while j > start and kept + len(lines[j - 1]) + 1 <= overlap:
+                j -= 1
+                kept += len(lines[j]) + 1
+            if j in blocked:  # overlap would start mid-table — take no overlap here
+                j, kept = i, 0
+            start = j
+            length = kept
+        length += len(line) + 1
+    if start < len(lines):
+        spans.append((start, len(lines)))
+    return spans
+
+
+def _is_table_row(line: str) -> bool:
+    return line.strip().startswith("|")
+
+
+def _is_table_separator(line: str) -> bool:
+    """A markdown header underline like ``|---|:---:|``."""
+    stripped = line.strip()
+    return (
+        stripped.startswith("|")
+        and "-" in stripped
+        and set(stripped) <= set("|-: \t")
+    )
+
+
+def _table_headers(lines: list[str]) -> dict[int, tuple[str, str]]:
+    """Map each table *body* line index to its (header, separator) rows.
+
+    A window that starts inside a table body would otherwise present bare columns
+    with no labels — the reader (and the model) can't tell a deadline column from a
+    submission-channel column.
+    """
+    headers: dict[int, tuple[str, str]] = {}
+    for i in range(len(lines) - 1):
+        if _is_table_row(lines[i]) and _is_table_separator(lines[i + 1]):
+            j = i + 2
+            while j < len(lines) and _is_table_row(lines[j]):
+                headers[j] = (lines[i], lines[i + 1])
+                j += 1
+    return headers
+
+
+def split_windows(text: str, max_chars: int, overlap: int) -> list[str]:
+    """Split text into <=max_chars windows on line boundaries, with overlap.
+
+    Returns [text] unchanged when it already fits.
+
+    Splits only on newlines, so a run-on paragraph with no line breaks comes back
+    as one oversized window — callers feeding free-form text (see
+    curation.service) must introduce line boundaries first.
+
+    Public because curated answers are windowed with the same rules as KB content
+    (ADR-0013); `chunk_markdown` is the KB-side caller. Note this plain form does
+    not repair split tables — that is markdown-specific and lives in
+    `chunk_markdown`.
+    """
+    if len(text) <= max_chars:
+        return [text]
+    lines = text.split("\n")
+    return ["\n".join(lines[a:b]) for a, b in _window_spans(lines, max_chars, overlap)]
+
+
+def chunk_markdown(
+    md: str,
+    source_doc: str,
+    max_chars: int = DEFAULT_MAX_CHARS,
+    overlap: int = DEFAULT_OVERLAP,
+) -> list[Chunk]:
+    """Split one Markdown document into section chunks (oversized sections windowed)."""
+    meta, body = parse_frontmatter(md)
+    section = meta.get("title", source_doc)
+    headings: dict[int, str] = {1: section}
+    section_department = departments.from_heading(section)
+    department_by_level = {1: section_department}
+    chunks: list[Chunk] = []
+    buffer: list[str] = []
+
+    def flush() -> None:
+        text = "\n".join(buffer).strip()
+        if not text:
+            return
+        # Provenance footers document the file for whoever maintains the KB; they are
+        # not student content and must not be retrievable. Measured: 7 of 182 chunks
+        # were these notes, and one was retrieved at rank 5 for "how do I submit a
+        # petition?", displacing real content.
+        if section.strip().lower() in _NON_CONTENT_SECTIONS:
+            return
+        heading = buffer[0] if buffer and _heading_level(buffer[0]) >= 2 else f"## {section}"
+        section_path = " > ".join(headings[level] for level in sorted(headings))
+        lines = text.split("\n")
+        spans = (
+            [(0, len(lines))]
+            if len(text) <= max_chars
+            else _window_spans(lines, max_chars, overlap)
+        )
+        table_headers = _table_headers(lines)
+
+        # Sections like "### Civil and Environmental Engineering (CEE)" hold rules that
+        # apply to one department only. Tagging them lets retrieval tell a
+        # department-conditional chunk from a general one (backlog B-2). Sections with
+        # no department keep the document-level default ("all").
+        chunk_meta = dict(meta)  # per-chunk copy: `meta` is shared across the document
+        if section_department is not None:
+            chunk_meta["department"] = section_department.code
+
+        def with_heading(body_lines: list[str]) -> str:
+            joined = "\n".join(body_lines)
+            # Ensure every window carries its section heading for context.
+            result = joined if joined.lstrip().startswith(heading) else f"{heading}\n{joined}"
+            return f"Topic: {section_path}\n{result}" if len(headings) > 2 else result
+
+        for start, end in spans:
+            # A window starting inside a table body has lost its column labels, so a
+            # reader sees bare columns. Carry the header as a *display prefix* only —
+            # it must not enter `text`, which is both embedded and full-text indexed.
+            carried = table_headers.get(start)
+            chunks.append(
+                Chunk(
+                    id=f"{source_doc}#{len(chunks):02d}-{_slug(section)}",
+                    text=with_heading(lines[start:end]),
+                    source_doc=source_doc,
+                    section=section_path if len(headings) > 2 else section,
+                    metadata=chunk_meta,
+                    display_prefix="\n".join(carried) if carried is not None else "",
+                )
+            )
+
+    for line in body.splitlines():
+        level = _heading_level(line)
+        if level >= 2:
+            flush()
+            section = line.lstrip("#").strip()
+            headings = {parent_level: name for parent_level, name in headings.items()
+                        if parent_level < level}
+            headings[level] = section
+            heading_department = departments.from_heading(section)
+            department_by_level = {
+                parent_level: scoped_department
+                for parent_level, scoped_department in department_by_level.items()
+                if parent_level < level
+            }
+            inherited_department = next(
+                (
+                    department_by_level[parent_level]
+                    for parent_level in sorted(department_by_level, reverse=True)
+                    if department_by_level[parent_level] is not None
+                ),
+                None,
+            )
+            section_department = heading_department or inherited_department
+            department_by_level[level] = section_department
+            buffer = [line]
+        else:
+            buffer.append(line)
+    flush()
+    return chunks
+
+
+def chunk_file(
+    path: Path, max_chars: int = DEFAULT_MAX_CHARS, overlap: int = DEFAULT_OVERLAP
+) -> list[Chunk]:
+    """Chunk a single normalized Markdown file."""
+    return chunk_markdown(path.read_text(encoding="utf-8"), path.name, max_chars, overlap)
+
+
+def chunk_normalized_dir(
+    directory: Path = NORMALIZED_DIR,
+    max_chars: int = DEFAULT_MAX_CHARS,
+    overlap: int = DEFAULT_OVERLAP,
+) -> list[Chunk]:
+    """Chunk every ``*.md`` file in the normalized KB directory."""
+    chunks: list[Chunk] = []
+    for path in sorted(directory.glob("*.md")):
+        chunks.extend(chunk_file(path, max_chars, overlap))
+    return chunks

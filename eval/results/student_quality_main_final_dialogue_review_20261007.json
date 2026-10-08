@@ -1,0 +1,42 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "records": [
+    {
+      "id": "D02.1",
+      "status": "partial",
+      "note": "Correct prior approval and relevant conditions, but unrequested numerical alternatives make the reply overlong."
+    },
+    {
+      "id": "D02.2",
+      "status": "partial",
+      "note": "Correct hypothetical arithmetic; repeats approval caveats already established in the premise."
+    },
+    {
+      "id": "D02.3",
+      "status": "pass",
+      "note": "Correct ECE report length, exclusions, format and contents."
+    },
+    {
+      "id": "D02.4",
+      "status": "pass",
+      "note": "Correctly derives that separately required written reports do not substitute for one another."
+    },
+    {
+      "id": "D02.5",
+      "status": "pass",
+      "note": "Correct interview preparation and joining guidance after abandoning reports."
+    },
+    {
+      "id": "D02.6",
+      "status": "pass",
+      "note": "Correct CV support and verified sample resource after the interview question."
+    }
+  ],
+  "counts": {
+    "pass": 4,
+    "partial": 2,
+    "fail": 0
+  },
+  "trace": "student_quality_main_final_verified_dialogue_20261007.jsonl",
+  "runtime_afterwards": "Required-item task added; none of these six prompts selects that task."
+}

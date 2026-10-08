@@ -1,6 +1,7 @@
 # Curation, validation and publication contract
 
-Reviewed 2026-10-03. This is the current technical contract; staff actions are in
+Reviewed 2026-10-08 against the local candidate; Oracle remains unchanged.
+This is the current technical contract; staff actions are in
 [Studio](studio.md), infrastructure/recovery procedures in [operations](deployment.md).
 The implementation authority is `src/msfea_bot/curation/`.
 
@@ -31,6 +32,13 @@ normally use four staff-model calls. Missing information can stop earlier.
 Classifications include new/complementary, duplicate, potential/direct conflict,
 supersedes and needs clarification. Findings should refer to the same claim,
 department, condition and service; semantic similarity alone is insufficient.
+Comparison packets retain program/process-stage labels and one-hop reviewed
+controlling context. Staff comparison remains across departments rather than
+inheriting the student flow's scope exclusions. Optional writing and its verifier
+receive the same applicability labels. Reviewed immutable revisions with multiple
+windows form one revision bundle: retrieval restores its own eligible windows,
+never an older revision or another entry sharing its title. Companion scores
+cannot authorize answers below the similarity threshold.
 
 Optional writing normally uses two calls: draft from numbered original/KB facts,
 then independently check support, scope, missing details and disclosed changes.
@@ -82,7 +90,7 @@ differ from `DATABASE_URL`; the serving chunks table is never scratch space.
 | `schema_source` | Valid scope/program/source data, exact evidence and unexpected identifying content |
 | `candidate_index` | Rebuild normalized files + active sources + candidate replacing its predecessor in an isolated index |
 | `conflict_review` | Related source passages and explainable exact/numeric/negation flags for human review |
-| `positive_retrieval` | Representative/paraphrase/generated and linked questions retrieve candidate evidence above the threshold |
+| `positive_retrieval` | Original, representative/paraphrase and prepared questions retain candidate evidence in the actual student answer context above the threshold |
 | `department_isolation` | No candidate leakage across the five department filters |
 | `unknown_department` | Department-only context retains explicit applicability labels |
 | `regression` | Current versus candidate preservation of passing golden/multi-premise evidence |
@@ -116,6 +124,17 @@ Human inspection remains required. Studio approval requires fresh successful
 checks/previews and checks direct replacement conflicts. The lower-level manual
 revision API retains deterministic checks and human-review gates without requiring
 AI assistance or model previews; it is not an alternate student retrieval path.
+
+Saved previews bind to the student model, output/thinking/sampling configuration
+and generation/provider code fingerprint. A changed profile or an older preview
+without this fingerprint blocks Studio approval. **Retry answer previews** reuses
+valid source/retrieval checks and records the prior attempt in the event audit;
+it does not create a source revision or publish anything. Source/index/validator
+changes still require the complete seven checks. A profile change during generation
+also invalidates that attempt.
+Publication rechecks preview freshness before writes, including after a queued
+intent waits for n8n. For runs with previews, named human approval must follow
+their latest completion; a retry does not reuse approval of the earlier answers.
 
 ## Activation and serving smoke
 

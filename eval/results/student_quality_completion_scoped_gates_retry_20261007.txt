@@ -1,0 +1,84 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  24%|██▍       | 48/199 [00:00<00:00, 474.53it/s]
+Loading weights:  48%|████▊     | 96/199 [00:00<00:00, 464.34it/s]
+Loading weights:  74%|███████▍  | 147/199 [00:00<00:00, 480.56it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 533.37it/s]
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  23%|██▎       | 46/199 [00:00<00:00, 345.27it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 862.98it/s]
+Indexed 254 chunks into the vector store.
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  25%|██▌       | 50/199 [00:00<00:00, 486.07it/s]
+Loading weights:  50%|████▉     | 99/199 [00:00<00:00, 463.83it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 666.61it/s]
+Retrieval on 124 answerable questions (124 golden + 0 live curated)
+
+Document-level recall (is a chunk from the expected source_doc in top-k?)
+  recall@1: 103/124 =   83%  #################
+  recall@3: 116/124 =   94%  ###################
+  recall@5: 122/124 =   98%  ####################
+  recall@7: 122/124 =   98%  ####################
+
+Context recall (is the answer's evidence text in top-k?) - the stricter metric
+  context-recall@1: 89/124 =   72%  ##############
+  context-recall@3: 115/124 =   93%  ###################
+  context-recall@5: 120/124 =   97%  ###################
+  context-recall@7: 122/124 =   98%  ####################
+
+Context-recall misses at k=7 (evidence not retrieved - the real gaps):
+  [internship-vs-coop] evidence 'graduation requirement' not in top-7
+  [faq-cee-exception] evidence 'reduced 6-week internship may be approved' not in top-7
+
+Production adaptive-depth context recall: 122/124
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 3935.45it/s]
+Faculty answerable source-document recall@7: 198/205 (96.6%)
+Misses: faculty-007-chem, faculty-025-ece, faculty-045-ece, faculty-075-ece, faculty-125-ece, faculty-131-mech, faculty-158-ece
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  24%|██▎       | 47/199 [00:00<00:00, 462.20it/s]
+Loading weights:  47%|████▋     | 94/199 [00:00<00:00, 417.64it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 640.99it/s]
+Similarity threshold: 0.60
+Valid queries passing: 165/165 (lowest score 0.6117)
+Off-topic queries blocked before the LLM: 13/20 (65%)
+PASS: no valid calibration query is rejected and off-topic savings remain useful
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  20%|██        | 40/199 [00:00<00:00, 392.46it/s]
+Loading weights:  43%|████▎     | 86/199 [00:00<00:00, 426.13it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 853.33it/s]
+Synthesis all-premise retrieval + model context + threshold: 75/75
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  21%|██        | 42/199 [00:00<00:00, 412.77it/s]
+Loading weights:  45%|████▍     | 89/199 [00:00<00:00, 445.83it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 663.55it/s]
+letter-after-salary: bare=2 history=2 same=True
+letter-after-employer: bare=2 history=2 same=True
+mentor-after-coop: bare=1 history=1 same=True
+mentor-after-internship: bare=1 history=1 same=True
+mentor-long-after-coop: bare=1 history=1 same=True
+mandatory-after-switch: bare=None history=1 same=False
+mandatory-after-switch-back: bare=1 history=1 same=False
+internship-after-coop: bare=1 history=1 same=True
+relative-that-june: bare=2 history=2 same=True
+letter-pronoun-followup: bare=None history=2 same=False
+coop-paid-followup: bare=2 history=3 same=False
+mentor-signup-after-switch: bare=6 history=1 same=False
+coop-duration-pronoun: bare=None history=1 same=False
+iaeste-after-two-switches: bare=1 history=1 same=False
+letter-switch-back: bare=1 history=1 same=True
+ambiguous-research-after-coop: bare=1 history=1 same=False
+other-two-weeks-followup: bare=1 history=2 same=False
+credits-after-application: bare=2 history=2 same=False
+credits-after-application-no-punctuation: bare=2 history=2 same=False
+credits-pronoun-after-coop: bare=4 history=2 same=False
+credits-after-mentor-switchback: bare=2 history=2 same=True
+{"cases": 21, "evidence_hit_at_7": 21, "evidence_top_1": 11, "independent_exact_parity": 9, "independent_cases": 9}
+Conversational retrieval regression
+

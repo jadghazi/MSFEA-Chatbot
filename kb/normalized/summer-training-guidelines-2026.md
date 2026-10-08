@@ -37,6 +37,7 @@ To qualify for the Bachelor of Engineering degree, you must complete:
 - Training at a recognized company, organization, laboratory, or approved research setting in Lebanon or abroad.
 
 ### Internships That Are Not Accepted
+<!-- evidence_links: summer-training-guidelines-2026.md > Internship Requirements: Duration, Hours, and Locations | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 - **Remote internships are not accepted.** Some departments allow narrow exceptions — see Department-Specific Rules.
 - **The main company internship cannot be undertaken inside AUB.** Approved faculty research at AUB is distinct from the main internship and may count as an approved research component under the department rules.
@@ -68,6 +69,7 @@ If the hiring company requires any type of letter or a convention de stage, requ
 The CDC will get back to you as soon as possible.
 
 ## Securing an Internship Independently
+<!-- evidence_links: email-clarifications.md > Internship approval authority | email-clarifications.md > Approval before beginning an internship -->
 
 Students are responsible for securing their own internship opportunities and are encouraged to seek the support of the MSFEA Career Development Center (CDC).
 
@@ -145,6 +147,7 @@ These notes will help when preparing reports and presentations.
 Important: If your assigned work does not match the internship objectives or lacks meaningful engineering/design content, report the issue immediately.
 
 ## Internship Timeline and Deliverables
+<!-- evidence_links: summer-training-guidelines-2026.md > Department-Specific Rules > Electrical and Computer Engineering (ECE) | summer-training-guidelines-2026.md > Department-Specific Rules > Chemical Engineering (CHEM) | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) | email-clarifications.md > Course completion requirements (ECE) | email-clarifications.md > Combined internship arrangements (ECE) > 6+2 arrangement definition -->
 
 To successfully complete the Approved Experience course, students must submit all required forms, reports, and evaluations on time. Your internship file will only be considered complete after all required deliverables have been submitted, including the Final Training Report and required surveys/forms.
 
@@ -181,6 +184,7 @@ Report content:
 - **Remaining Tasks** — description of the work and goals remaining for the rest of the internship.
 
 ### Final Presentation Guidelines
+<!-- evidence_links: summer-training-guidelines-2026.md > Department-Specific Rules > Electrical and Computer Engineering (ECE) | summer-training-guidelines-2026.md > Department-Specific Rules > Chemical Engineering (CHEM) | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) | email-clarifications.md > Final Voice-over Presentation duration (ECE) -->
 
 Depending on department requirements, the presentation may be delivered in person and on campus, or submitted as a recorded presentation.
 
@@ -241,8 +245,9 @@ Students may be asked to revise reports that do not meet department expectations
 - Programming-focused internships are acceptable if tied to engineering applications.
 
 ### Electrical and Computer Engineering (ECE)
+<!-- evidence_links: email-clarifications.md > Combined internship arrangements (ECE) > 6+2 arrangement definition -->
 
-- Students completing a 6-week internship must either complete 2 weeks of research with an MSFEA faculty member or a minimum 4-week internship at another company.
+- The standard minimum for a single approved placement is 8 full weeks, typically 320 work hours. Six company weeks alone are insufficient. The research completion route is six company weeks plus 2 weeks of research with an MSFEA faculty member. The alternative two-company route is six company weeks plus a minimum 4-week internship at another company. Both routes require prior approval and documentation. Combining two company internships requires prior written approval or petition; it is not automatically accepted.
 - Students completing a 6+2 arrangement must submit a separate research report for the research component.
 - ECE-specific due date: both the final training report and final presentation are due within one week after the completion of the internship, based on each student's internship end date. The general first-two-weeks-of-Fall presentation schedule above describes typical presentations across departments; it is not the ECE due date.
 
@@ -257,7 +262,7 @@ Students may be asked to revise reports that do not meet department expectations
 
 ### Industrial Engineering and Management (IEM)
 
-- Students completing a 6-week internship must either complete 2 weeks of research with an MSFEA faculty member or a minimum 4-week internship at another company.
+- The standard minimum is 8 full weeks of approved training. Six company weeks alone are insufficient. The research completion route is six company weeks plus 2 weeks of research with an MSFEA faculty member. The alternative two-company route is six company weeks plus a minimum 4-week internship at another company. Both routes require prior approval and documentation. A four-plus-four company plan is not automatically accepted; confirm a different split with the department before relying on it.
 - Final presentations are generally not required unless specified.
 - Selected students may present in seminars or orientation events.
 - Remote internships with U.S.-based companies are allowed if the student is legally eligible to work in the U.S. and the internship receives department approval.
@@ -273,6 +278,14 @@ Students may be asked to revise reports that do not meet department expectations
 ---
 
 ## About this document
+
+**2026-10-08 — self-contained alternative routes (local candidate).** Each ECE/IEM six-week completion alternative now repeats its shared six-company-week component instead of leaving it implicit in a preceding sentence. Research and second-company additions remain separate alternatives with their existing approvals and documentation. The original summer guidelines and approved FAQ decision review establish these routes; no arrangement or exception is added.
+
+**2026-10-07 — governing location context (local candidate).** The rejected-format subsection links to its existing parent requirements, which establish approved training locations and duration, alongside the existing IEM scoped exception. A retrieved restriction therefore does not replace the ordinary allowed path. No location, duration or exception was added.
+
+**2026-10-07 — controlling context links (local candidate).** Editorial metadata connects the general timeline, presentation and remote-restriction sections to their existing department rules and approved clarifications. Relative heading paths identify canonical evidence; metadata is removed from answer text. No source policy, deadline or permission was changed.
+
+The ECE and IEM duration paragraphs now keep the ordinary minimum and the arrangement approval/documentation conditions together. This reconciles abbreviated bullets with the existing approved ECE six-company-weeks, 6+2 and two-company clarifications and the IEM combined-internship clarification in `email-clarifications.md`; it introduces no new duration or exception.
 
 Normalized from `kb/source/Summer training guidelines - June 2026.docx`.
 

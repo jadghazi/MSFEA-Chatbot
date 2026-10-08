@@ -14,7 +14,7 @@ from typing import Any
 from msfea_bot.config import settings
 from msfea_bot.generation.answer import retrieve_context
 from msfea_bot.generation.conversation import ConversationMessage
-from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth, search
+from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth
 
 
 def _rank(
@@ -50,7 +50,9 @@ def main() -> None:
         question = case["question"]
         history = [ConversationMessage(**item) for item in case["history"]]
         k = retrieval_depth(question, settings.top_k)
-        bare = search(question, k, department=case["department"])
+        # Compare the same production pipeline with and without history, including
+        # linked context and conservative recovery. Expected evidence is unchanged.
+        bare = retrieve_context(question, k, case["department"], None)
         chunks = retrieve_context(question, k, case["department"], history)
         expected = case.get("expected_section")
         expected_evidence = case.get("expected_evidence")

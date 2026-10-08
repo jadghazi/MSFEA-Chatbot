@@ -1,0 +1,85 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "records": [
+    {
+      "id": "U01",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U02",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U03",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U04",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U05",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U06",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U07",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U08",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U09",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "U10",
+      "status": "fail",
+      "note": "Ordinary reporting request was answered using special arrangements despite governing context being supplied."
+    },
+    {
+      "id": "U11",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "P01",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "P02",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "P03",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "P04",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    },
+    {
+      "id": "P05",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the stated premises, scope and applicable restrictions."
+    }
+  ]
+}

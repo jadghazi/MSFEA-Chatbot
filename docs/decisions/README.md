@@ -31,7 +31,7 @@ historical measurements and decision content were retained.
 | 0009 | [Name redaction via local NER](0009-name-redaction-ner.md) | Accepted; consult current guides for subsequent refinements |
 | 0010 | [Admin dashboard + curation feedback loop](0010-admin-curation-dashboard.md) | Dashboard foundation; publication extended by 0026–0031 |
 | 0011 | [Hybrid retrieval (semantic + keyword, RRF)](0011-hybrid-retrieval.md) | Accepted; consult current guides for subsequent refinements |
-| 0012 | [Deterministic decoding (temperature 0) + an output ceiling](0012-generation-sampling-params.md) | Accepted; consult current guides for subsequent refinements |
+| 0012 | [Deterministic decoding (temperature 0) + an output ceiling](0012-generation-sampling-params.md) | Student profile partially superseded by 0032; historical decision retained |
 | 0013 | [Curated answers go through the same windowing as KB content](0013-curated-answer-chunking.md) | Accepted; consult current guides for subsequent refinements |
 | 0014 | [Split-table headers are display context, not retrieval text](0014-display-prefix-for-split-tables.md) | Split-table strategy superseded by 0017 |
 | 0015 | [Department-scoped answers and escalation routing](0015-department-scoped-answers-and-routing.md) | Accepted; consult current guides for subsequent refinements |
@@ -52,3 +52,4 @@ historical measurements and decision content were retained.
 | 0029 | [Self-service Studio with measured search preparation](0029-self-service-studio.md) | Deployed; optional writing extended by 0030/0031 |
 | 0030 | [Optional source-backed answer suggestions](0030-source-backed-answer-suggestions.md) | Deployed; strict draft withholding superseded by 0031 |
 | 0031 | [Show private AI drafts with advisory source warnings](0031-advisory-ai-drafts.md) | Deployed in 2601082; private warnings, fresh-review/publish gates retained |
+| 0032 | [Paid student profile and coherent grounded context](0032-paid-student-profile-and-context.md) | Accepted local engineering candidate; Oracle and staff alignment separate |

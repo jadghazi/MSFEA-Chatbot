@@ -1,0 +1,173 @@
+Check: eval.retrieval_eval
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  73%|███████▎  | 145/199 [00:00<00:00, 1447.38it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1646.19it/s]
+Retrieval on 124 answerable questions (124 golden + 0 live curated)
+
+Document-level recall (is a chunk from the expected source_doc in top-k?)
+  recall@1: 101/124 =   81%  ################
+  recall@3: 116/124 =   94%  ###################
+  recall@5: 122/124 =   98%  ####################
+  recall@7: 122/124 =   98%  ####################
+
+Context recall (is the answer's evidence text in top-k?) - the stricter metric
+  context-recall@1: 91/124 =   73%  ###############
+  context-recall@3: 116/124 =   94%  ###################
+  context-recall@5: 120/124 =   97%  ###################
+  context-recall@7: 123/124 =   99%  ####################
+
+Context-recall misses at k=7 (evidence not retrieved - the real gaps):
+  [faq-cee-exception] evidence 'reduced 6-week internship may be approved' not in top-7
+
+Production adaptive-depth context recall: 123/124
+Check: eval.faculty_retrieval_gate
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  26%|██▌       | 51/199 [00:00<00:00, 504.11it/s]
+Loading weights:  51%|█████▏    | 102/199 [00:00<00:00, 456.70it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 625.38it/s]
+Faculty answerable source-document recall@7: 198/205 (96.6%)
+Misses: faculty-007-chem, faculty-025-ece, faculty-045-ece, faculty-075-ece, faculty-125-ece, faculty-131-mech, faculty-158-ece
+Check: eval.threshold_eval
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  28%|██▊       | 55/199 [00:00<00:00, 536.19it/s]
+Loading weights:  55%|█████▍    | 109/199 [00:00<00:00, 524.32it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 703.36it/s]
+Similarity threshold: 0.60
+Valid queries passing: 165/165 (lowest score 0.6117)
+Off-topic queries blocked before the LLM: 13/20 (65%)
+PASS: no valid calibration query is rejected and off-topic savings remain useful
+Check: eval.synthesis_gate
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  25%|██▌       | 50/199 [00:00<00:00, 494.22it/s]
+Loading weights:  50%|█████     | 100/199 [00:00<00:00, 306.76it/s]
+Loading weights:  68%|██████▊   | 135/199 [00:00<00:00, 315.13it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 445.32it/s]
+Synthesis all-premise retrieval + model context + threshold: 75/75
+Check: eval.conversation_eval
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  26%|██▌       | 51/199 [00:00<00:00, 505.23it/s]
+Loading weights:  51%|█████▏    | 102/199 [00:00<00:00, 470.41it/s]
+Loading weights:  75%|███████▌  | 150/199 [00:00<00:00, 449.30it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 550.61it/s]
+letter-after-salary: bare=2 history=2 same=True
+letter-after-employer: bare=2 history=2 same=True
+mentor-after-coop: bare=1 history=1 same=True
+mentor-after-internship: bare=1 history=1 same=True
+mentor-long-after-coop: bare=1 history=1 same=True
+mandatory-after-switch: bare=None history=1 same=False
+mandatory-after-switch-back: bare=1 history=1 same=False
+internship-after-coop: bare=1 history=1 same=True
+relative-that-june: bare=2 history=2 same=True
+letter-pronoun-followup: bare=None history=2 same=False
+coop-paid-followup: bare=2 history=3 same=False
+mentor-signup-after-switch: bare=6 history=1 same=False
+coop-duration-pronoun: bare=None history=1 same=False
+iaeste-after-two-switches: bare=1 history=1 same=False
+letter-switch-back: bare=1 history=1 same=True
+ambiguous-research-after-coop: bare=1 history=1 same=False
+other-two-weeks-followup: bare=1 history=1 same=False
+credits-after-application: bare=1 history=1 same=False
+credits-after-application-no-punctuation: bare=1 history=1 same=False
+credits-pronoun-after-coop: bare=1 history=1 same=False
+credits-after-mentor-switchback: bare=1 history=1 same=True
+{"cases": 21, "evidence_hit_at_7": 21, "evidence_top_1": 16, "independent_exact_parity": 9, "independent_cases": 9}
+Check: eval.conversation_stress_eval
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  27%|██▋       | 53/199 [00:00<00:00, 522.43it/s]
+Loading weights:  54%|█████▍    | 107/199 [00:00<00:00, 529.10it/s]
+Loading weights:  82%|████████▏ | 164/199 [00:00<00:00, 547.18it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 624.73it/s]
+letter-after-salary: [2]
+letter-after-employer: [2]
+mentor-after-coop: [1]
+mentor-after-internship: [1]
+mentor-long-after-coop: [1]
+mandatory-after-switch: [1]
+mandatory-after-switch-back: [1]
+internship-after-coop: [1]
+relative-that-june: [2]
+letter-pronoun-followup: [2]
+coop-paid-followup: [3]
+mentor-signup-after-switch: [1]
+coop-duration-pronoun: [1]
+iaeste-after-two-switches: [1]
+letter-switch-back: [1]
+ambiguous-research-after-coop: [1]
+other-two-weeks-followup: [1]
+credits-after-application: [1]
+credits-after-application-no-punctuation: [1]
+credits-pronoun-after-coop: [1]
+credits-after-mentor-switchback: [1]
+letter-location: [2]
+coop-optional: [1]
+coop-pay-after-approval: [1]
+internship-completed-credits: [1]
+internship-course-credits: [1]
+coop-credits-after-application: [1]
+report-pronoun-after-duration: [4]
+coop-duration-ellipsis: [1]
+iaeste-join-followup: [1]
+mentor-signup-followup: [1]
+switch-to-coop: [1]
+switch-to-careerplus: [1]
+short-standalone-iaeste: [1]
+and-new-subject: [1]
+switch-back-internship: [4]
+switch-back-coop: [1]
+internship-pay-standalone: [1]
+full-time-support-standalone: [1]
+lowercase-new-subject: [1]
+switch-followup-switch-back: [2]
+relational-followup: [1]
+explicit-switch-after-switch: [1]
+{"cases": 43, "hit_at_7": 43, "all_evidence_top_3": 41, "independent_parity": 19, "independent_cases": 19}
+Check: eval.publication_guard_gate
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  22%|██▏       | 44/199 [00:00<00:00, 424.36it/s]
+Loading weights:  53%|█████▎    | 105/199 [00:00<00:00, 531.33it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 730.79it/s]
+PASS pg-ece-six-plus-two department=ece
+PASS pg-mech-no-split department=mech
+PASS pg-cee-split department=cee
+PASS pg-iem-presentation department=iem
+PASS pg-chem-eligibility department=chem
+PASS pg-unknown-department-split department=unknown
+PASS pg-followup-six-plus-two department=ece
+PASS pg-internship-coop-comparison department=unknown
+PASS pg-topic-switch-iaeste department=unknown
+Department cee: 1/1
+Department chem: 1/1
+Department ece: 2/2
+Department iem: 1/1
+Department mech: 1/1
+Department unknown: 3/3
+Check: eval.conflict_gate
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  26%|██▌       | 52/199 [00:00<00:00, 514.23it/s]
+Loading weights:  52%|█████▏    | 104/199 [00:00<00:00, 477.27it/s]
+Loading weights:  79%|███████▉  | 157/199 [00:00<00:00, 496.96it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 590.72it/s]
+PASS conflict-same-scope-number: candidates=52 flags=8
+PASS conflict-paraphrased-negation: candidates=52 flags=1
+PASS conflict-exact-duplicate: candidates=38 flags=5
+PASS conflict-valid-department-exception: candidates=46 flags=0
+PASS conflict-differing-condition: candidates=40 flags=2
+PASS conflict-outdated-replacement: candidates=52 flags=4
+PASS conflict-none: candidates=48 flags=0
+Conflict candidate coverage: 7/7; flagged=5; known false-positive fixtures=0

@@ -1,0 +1,33 @@
+{
+  "expected_cases": 179,
+  "verified_cases": 179,
+  "complete": true,
+  "missing_case_ids": [],
+  "current_prompt_and_local_reply_parity": true,
+  "source_freeze_matches": true,
+  "source_freeze": "eval/results/student_quality_paid_final_freeze_20261008.json",
+  "answer_model": "gemini-3.8-flash",
+  "production_model_acceptance": false,
+  "generation_profile": {
+    "max_output_tokens": 4096,
+    "temperature": null,
+    "seed": null,
+    "thinking_level": "low"
+  },
+  "provider_answers": 164,
+  "local_replies": 15,
+  "reused_provider_answers": 0,
+  "retained_failed_attempts": 0,
+  "attempt_files": [
+    "eval/results/student_quality_paid_low_probe_20261008.jsonl",
+    "eval/results/student_quality_paid_low_classes_20261008.jsonl",
+    "eval/results/student_quality_paid_low_full_20261008.jsonl"
+  ],
+  "semantic_accuracy_verified_by_this_script": false,
+  "artifact_sha256": {
+    "eval/results/student_quality_main_named_route_retrieval_20261007.jsonl": "d0b4d2401eb6028b44200296f1b97d7b82335cefb03aad92a036badc30f65171",
+    "eval/results/student_quality_paid_low_full_20261008.jsonl": "4a80b175f5a16d7d7c8ca29a0f8be4a0557a74cb709f18b8db73db809b612394",
+    "eval/results/student_quality_paid_low_probe_20261008.jsonl": "524c2f4fe8a906a497c633b1503b824b3539f0575a982217a13f63b475748530",
+    "eval/results/student_quality_paid_low_classes_20261008.jsonl": "01d5b4d2e95e580986ed844a1bad9c4ae2bbff5ec56c0c53a575231f7c64a87a"
+  }
+}

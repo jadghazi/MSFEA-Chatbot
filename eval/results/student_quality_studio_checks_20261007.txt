@@ -1,0 +1,33 @@
+✔ renders the actual official form as a clickable safe link (5.6688ms)
+✔ model HTML and unsafe markdown schemes cannot execute (1.503ms)
+✔ long bare form URLs remain usable without consuming the page width (1.2271ms)
+✔ independent coverage failure overrides the initial positive assessment (4.1265ms)
+✔ a new entry cannot treat an official conflict with no entry ID as its own predecessor (0.6898ms)
+✔ a regression shows the conversation, expected answer and a maintainer action above positive AI advice (2.7174ms)
+✔ historical explanations do not invent stored rankings (0.9901ms)
+✔ source and model content is escaped (1.213ms)
+✔ manual revisions do not claim an AI review occurred (0.8275ms)
+✔ passing search tests still require a policy decision (1.0712ms)
+✔ AI conflict advice shows both literal claims and its explanation (1.293ms)
+✔ new-answer failures show the actual failing question and reason (1.9393ms)
+✔ a copied issue includes the original run and advice without claiming it was sent (2.5523ms)
+✔ missing coverage is explicit AI advice and never displayed as a passed check (1.4967ms)
+✔ saved workspaces show an actionable replacement explanation without a second update action (1.0724ms)
+✔ an addition highlights the new condition while keeping the original rule readable (6.4984ms)
+✔ replacement shows removed and added words and preserves the accepted text (1.3659ms)
+✔ unchanged short answers have no manufactured diff (0.6061ms)
+✔ suggestion content and source text are escaped (3.6465ms)
+✔ missing facts are questions and human choices explicitly require fresh review (1.744ms)
+✔ large edits stay bounded and show both original and proposed text (1.9872ms)
+✔ restored human edits do not display the original AI verification as their own (0.6799ms)
+✔ policy corrections display original claim, replacement, reason and exact KB evidence (1.3181ms)
+✔ claim corrections cannot inject HTML into explanations or source quotes (1.1547ms)
+✔ source concerns are visible warnings and keep all human choices available (1.503ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 464.9976

@@ -1,0 +1,27 @@
+All checks passed!
+Success: no issues found in 86 source files
+.........................F.............................................. [ 97%]
+..                                                                       [100%]
+=================================== FAILURES ===================================
+________ test_revision_scope_survives_immutable_roundtrip_and_windowing ________
+
+publication_database = 'user=msfea password=msfea dbname=guard_publish_5eaf86c81d7c49c3a8d28d7801114244 host=test-db port=5432'
+
+    @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+    def test_revision_scope_survives_immutable_roundtrip_and_windowing(
+        publication_database: str,
+    ) -> None:
+        answer = "<!-- process_stage: completion -->\n" + _payload().answer * 15
+        entry_id, revision_id = create_draft(_payload(answer=answer))
+        revision = next(item for item in list_revisions() if item.id == revision_id)
+        assert revision.answer == answer  # The reviewed immutable input is preserved.
+        chunks = revision_chunks(revision, candidate=True)
+>       assert len(chunks) > 1
+E       AssertionError: assert 1 > 1
+E        +  where 1 = len([Chunk(id='candidate-1-r1-00', text='Q: What is the minimum ECE Final Report length?\nA: For ECE, the Final Report mus...nance_status': 'submitted', 'department': 'ece', 'process_stage': 'completion'}, display_prefix='', retrieval_text='')])
+
+tests/test_curation_publication.py:580: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_curation_publication.py::test_revision_scope_survives_immutable_roundtrip_and_windowing
+1 failed, 73 passed in 350.19s (0:05:50)
+

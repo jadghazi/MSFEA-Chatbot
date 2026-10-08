@@ -1,0 +1,24 @@
+ Container msfea-quality-tests-test-db-1  Running
+...............................................                          [100%]
+47 passed in 90.30s (0:01:30)
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  26%|██▌       | 52/199 [00:00<00:00, 513.50it/s]
+Loading weights:  53%|█████▎    | 105/199 [00:00<00:00, 517.81it/s]
+Loading weights:  79%|███████▉  | 157/199 [00:00<00:00, 493.46it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 612.77it/s]
+{
+  "chunks": 242,
+  "documents": {
+    "cdc-knowledge-base.md": 36,
+    "email-clarifications.md": 80,
+    "final-presentation-slide-template.md": 5,
+    "internship-report-templates-and-rubrics.md": 35,
+    "msfea-cdc-coop-handbook.md": 46,
+    "summer-training-guidelines-2026.md": 40
+  },
+  "qa_chunks": 94,
+  "heading_only": [],
+  "embedding_limit": 512,
+  "truncated_embeddings": []
+}

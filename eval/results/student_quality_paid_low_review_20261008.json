@@ -1,0 +1,909 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "model": "gemini-3.8-flash",
+  "thinking": "low",
+  "reviewed_cases": 179,
+  "records": [
+    {
+      "id": "U01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U05",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U06",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U07",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U08",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U09",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U10",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "U11",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P05",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P06",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P07",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "P08",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "T01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "T02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "T03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "T04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R05",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R06",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R07",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R08",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R09",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R10",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R11",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R12",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R13",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R14",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R15",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R16",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R17",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R18",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R19",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R20",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R21",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R22",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R23",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R24",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R25",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R26",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R27",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R28",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R29",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R30",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R31",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R32",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R33",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R34",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R35",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R36",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R37",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R38",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R39",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "R40",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "S01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "S02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "V01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "V02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "V03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "V04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F05",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F06",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F07",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F08",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F09",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F10",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F11",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F12",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F13",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F14",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F15",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F16",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F17",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F18",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F19",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F20",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F21",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F22",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F23",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F24",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F25",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F26",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F27",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F28",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F29",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "F30",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H05",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H06",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H07",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H08",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H09",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H10",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H11",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H12",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H13",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H14",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H15",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H16",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H17",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H18",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H19",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "H20",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q01",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q02",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q03",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q04",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q05",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q06",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q07",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q08",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q09",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q10",
+      "status": "fail",
+      "note": "Proposal form is placed under during-internship activities although context requires it before starting; process-stage synthesis error."
+    },
+    {
+      "id": "Q11",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q12",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q13",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q14",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q15",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q16",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q17",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q18",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q19",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q20",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q21",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q22",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q23",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q24",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q25",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q26",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q27",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q28",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q29",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q30",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q31",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q32",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q33",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q34",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q35",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q36",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q37",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q38",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q39",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q40",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q41",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q42",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q43",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q44",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q45",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q46",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q47",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q48",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q49",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q50",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q51",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q52",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q53",
+      "status": "fail",
+      "note": "A descriptive 8-12-week overview is expressed as up to 12 weeks. The supplied context omits the separate approved-duration clarification: combined KB structure/retrieval context and generation issue, not proof of a strict maximum."
+    },
+    {
+      "id": "Q54",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q55",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q56",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q57",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q58",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q59",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    },
+    {
+      "id": "Q60",
+      "status": "pass",
+      "note": "Addresses the actual requested intent with supported scope, conditions, limitations or clarification."
+    }
+  ],
+  "nonblocking_style_notes": [
+    "P01 redundantly restates approval conditions although the hypothetical grants approval; the calculation and scope are correct.",
+    "S01 leads with an unasked hiring-outcome limitation before giving documented search support.",
+    "Some responses use emphasis, excessive detail or unasked exceptions; these remain style limitations rather than unsupported policy.",
+    "R02/R04/P06 answer the literal elective/application/credit question; unasked rubric details are not padded into responses."
+  ]
+}

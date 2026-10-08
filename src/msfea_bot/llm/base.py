@@ -1,8 +1,7 @@
 """The LLM provider contract.
 
-Every LLM call in the app goes through this interface, so swapping
-OpenAI / Azure / Gemini / a local model is a one-file change inside this
-package (AGENTS.md §3).
+Every LLM call in the app goes through this interface. Gemini is the implemented
+provider; another vendor requires an adapter and verification (AGENTS.md §3).
 """
 
 from dataclasses import dataclass
@@ -43,13 +42,12 @@ class LLMProvider(Protocol):
     def generate(self, prompt: str) -> GenerationResult:
         """Return the model's completion for a fully-built prompt.
 
-        Implementations MUST apply `settings.llm_temperature`, `settings.llm_seed`
-        and `settings.llm_max_output_tokens` to their SDK's own config object
-        (ADR-0012). Sampling defaults differ per vendor and are usually creative;
-        this bot answers only from retrieved context, so decoding must be
-        deterministic. Note that temperature alone was measured to be insufficient
-        on Gemini — pin the seed too, if the vendor supports one. Sampling params
-        stay out of this signature because they are global config (AGENTS.md §6),
-        not per-call state.
+        Implementations apply `settings.llm_max_output_tokens` and the configured
+        model-supported sampling/reasoning profile to their SDK's own config object
+        (ADR-0012 and current configuration guidance). Omit deprecated parameters
+        for models that no longer accept them. Legacy sampling settings can reduce
+        variation but do not guarantee reproducibility or factual grounding;
+        measured answer quality remains necessary. These settings stay out of the
+        signature because they are configured globally (AGENTS.md §6).
         """
         ...

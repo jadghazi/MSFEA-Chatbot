@@ -1,0 +1,16 @@
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  29%|██▊       | 57/199 [00:00<00:00, 569.87it/s]
+Loading weights:  57%|█████▋    | 114/199 [00:00<00:00, 474.62it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 787.84it/s]
+Indexed 243 chunks into the vector store.
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  23%|██▎       | 45/199 [00:00<00:00, 437.36it/s]
+Loading weights:  46%|████▌     | 91/199 [00:00<00:00, 441.55it/s]
+Loading weights:  99%|█████████▉| 198/199 [00:00<00:00, 722.90it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 644.28it/s]
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=2593 retry=True
+{"id": "R31", "hits": [], "gate": true, "query": "If I do seven weeks at one company and one week at another, is eight weeks in total enough?", "refused": false, "error": null}

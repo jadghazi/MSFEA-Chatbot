@@ -11,6 +11,7 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import Any
 
 import psycopg
@@ -25,7 +26,9 @@ from msfea_bot.ingestion.embeddings import (
     embed_texts,
     embedding_dim,
     model_fingerprint,
+    get_model,
 )
+from msfea_bot.retrieval.repair import suggest_query, gains_lexical_support
 
 KB_WRITE_LOCK_ID = 4_771_102_027
 
@@ -474,6 +477,11 @@ def search(
     department: str | None = None,
     database_url: str | None = None,
     score_query: str | None = None,
+    prefer_overview: bool = False,
+    attribute_terms: tuple[str, ...] = (),
+    topic_query: str = "",
+    recover_typos: bool = True,
+    excluded_stages: tuple[str, ...] = (),
 ) -> list[RetrievedChunk]:
     """Hybrid retrieval: fuse semantic (vector) and keyword (full-text) rankings.
 
@@ -528,6 +536,12 @@ def search(
         scope = f" WHERE ({_GENERAL} OR metadata->>'department' = %(dept)s)"
         params["dept"] = dept.code
 
+    if excluded_stages:
+        scope += (" AND " if scope else " WHERE ") + (
+            "COALESCE(metadata->>'process_stage', '') <> ALL(%(excluded_stages)s)"
+        )
+        params["excluded_stages"] = list(excluded_stages)
+
     with _connect(database_url=database_url) as conn:
         vec_ids = [
             r[0]
@@ -555,14 +569,38 @@ def search(
                 ]
             except psycopg.errors.Error:
                 kw_ids = []  # degrade to vector-only on any tsquery hiccup (autocommit)
-        fused = reciprocal_rank_fusion([vec_ids, kw_ids])
+        rankings = [vec_ids, kw_ids]
+        if attribute_terms and topic_query:
+            # A conjunctive topic/attribute path complements broad OR recall.
+            # Synonyms describe question attributes, never policy values/topics.
+            attribute_tsquery = (
+                f"({_keyword_tsquery(topic_query)}) & "
+                f"({' | '.join(attribute_terms)})"
+            )
+            attribute_ids = [row[0] for row in conn.execute(
+                "SELECT id FROM chunks WHERE tsv @@ to_tsquery('english', %(aq)s)"
+                + (scope.replace(" WHERE ", " AND ") if scope else "")
+                + " ORDER BY ts_rank_cd(tsv, to_tsquery('english', %(aq)s)) DESC, id"
+                + " LIMIT %(cand)s", {**params, "aq": attribute_tsquery},
+            ).fetchall()]
+            if attribute_ids:
+                rankings.append(attribute_ids)
+        fused = reciprocal_rank_fusion(rankings)
         if not fused:
             return []
         # Keep the hybrid ranking as the backbone, but inspect its candidate pool
         # before truncating to k. A strong semantic match can otherwise land just
         # outside the prompt because broad OR keyword matches crowd the top slots.
         # Inspect at most 20 fused candidates; the prompt still receives k.
-        pool = fused[:max(k, 20)] if dept is not None else fused[:k]
+        pool = fused[:max(k, 20)] if dept is not None or prefer_overview else fused[:k]
+        if prefer_overview:
+            overview_scope = scope + " AND " if scope else " WHERE "
+            overview_ids = [row[0] for row in conn.execute(
+                "SELECT id FROM chunks" + overview_scope
+                + "metadata->>'content_role' = 'overview'"
+                + " ORDER BY embedding <=> %(qv)s::vector, id LIMIT 3", params,
+            ).fetchall()]
+            pool = list(dict.fromkeys(pool + overview_ids))
         rows = conn.execute(
             "SELECT id, text, source_doc, section,"
             " 1 - (embedding <=> %s::vector) AS score, display_prefix, metadata"
@@ -589,7 +627,22 @@ def search(
                 ).fetchall()
                 by_id.update({r[0]: r for r in extra})
         else:
-            selected = pool
+            selected = fused[:k]
+        if prefer_overview:
+            # Broad orientation needs ordinary topic context alongside detailed
+            # facts. Only reserve a reviewed overview already found by retrieval,
+            # close to the strongest semantic hit; never force a topic allowlist.
+            strongest_score = max((float(row[4]) for row in by_id.values()), default=0.0)
+            overviews = [cid for cid in pool
+                         if by_id[cid][6].get("content_role") == "overview"
+                         and float(by_id[cid][4]) >= settings.similarity_threshold
+                         and float(by_id[cid][4]) >= strongest_score - 0.10]
+            if overviews:
+                overview = max(overviews, key=lambda cid: float(by_id[cid][4]))
+                selected = [overview] + [cid for cid in selected if cid != overview]
+                selected = selected[:k]
+                if dept is not None:
+                    selected = _reserve_department_slot(conn, selected, vec_ids, kw_ids, dept.code, k)
     out: list[RetrievedChunk] = []
     for cid in selected:
         r = by_id.get(cid)
@@ -605,4 +658,128 @@ def search(
                     metadata=dict(r[6]),
                 )
             )
+    if recover_typos and score_query is None and out:
+        corrected = suggest_query(query, _source_vocabulary(
+            database_url, indexed_generation(database_url), dept.code if dept else None,
+        ), _known_word_tokens())
+        if corrected:
+            repaired = search(
+                corrected, k, candidates, department, database_url,
+                prefer_overview=prefer_overview, recover_typos=False,
+                attribute_terms=attribute_terms, topic_query=topic_query,
+                excluded_stages=excluded_stages,
+            )
+            best = max((chunk.score for chunk in repaired), default=0.0)
+            lexical_gain = gains_lexical_support(
+                query, corrected, [chunk.text for chunk in out], [chunk.text for chunk in repaired],
+            )
+            if (best >= settings.similarity_threshold
+                    and (best >= max(chunk.score for chunk in out) + 0.06 or lexical_gain)):
+                for chunk in repaired:
+                    chunk.metadata = {**chunk.metadata, "query_correction": corrected,
+                                      "original_query": query}
+                return repaired
+            if max(chunk.score for chunk in out) >= settings.similarity_threshold and k > 1:
+                # A typo can produce a confident but wrong semantic match. Keep
+                # the original gate/ranking backbone and add at most two canonical
+                # passages supporting every unique one-edit correction. This is
+                # query expansion, not a weaker threshold or silent intent rewrite.
+                existing = {chunk.id for chunk in out}
+                spelling_additions = [chunk for chunk in sorted(repaired, key=lambda c: c.score, reverse=True)
+                             if chunk.id not in existing and gains_lexical_support(
+                                 query, corrected, [], [chunk.text])][:min(2, k - 1)]
+                if spelling_additions:
+                    kept_chunks = out[:k - len(spelling_additions)]
+                    strongest_chunk = max(out, key=lambda chunk: chunk.score)
+                    if strongest_chunk.id not in {chunk.id for chunk in kept_chunks}:
+                        kept_chunks[-1] = strongest_chunk
+                    for chunk in spelling_additions:
+                        chunk.metadata = {**chunk.metadata, "query_correction": corrected,
+                                          "original_query": query,
+                                          "retrieval_role": "spelling_candidate"}
+                    return kept_chunks + spelling_additions
     return out
+
+
+@lru_cache(maxsize=1)
+def _known_word_tokens() -> frozenset[str]:
+    """Protect common whole-word tokens in the existing pinned tokenizer.
+
+    A tokenizer vocabulary is not a complete dictionary. This conservative guard
+    prevents converting recognized words such as 'employed' into 'employer'.
+    """
+    return frozenset(word for word in get_model().tokenizer.get_vocab()
+                     if re.fullmatch(r"[a-z]{5,}", word))
+
+
+@lru_cache(maxsize=4)
+def _source_vocabulary(
+    database_url: str | None, generation: str | None, department: str | None,
+) -> frozenset[str]:
+    """Cache approved source words by index generation and department scope."""
+    with _connect(database_url=database_url) as conn:
+        scope = f" WHERE ({_GENERAL} OR metadata->>'department' = %s)" if department else ""
+        rows = conn.execute("SELECT text FROM chunks" + scope,
+                            (department,) if department else ()).fetchall()
+    return frozenset(word.lower() for row in rows for word in re.findall(r"\b[A-Za-z]+\b", row[0]))
+
+
+def expand_evidence_links(
+    chunks: list[RetrievedChunk], query: str, department: str | None,
+    database_url: str | None = None,
+    excluded_stages: tuple[str, ...] = (),
+) -> list[RetrievedChunk]:
+    """Restore reviewed controlling context without replacing the retrieval seeds.
+
+    Links refer to canonical source sections, not topic guesses or vector IDs.
+    Expansion is one hop and department scoped. Companion scores cannot authorize
+    generation; the caller still gates on the original retrieval seeds. Oversized
+    complete bundles are handled by the existing context-size guard.
+    """
+    seeds = [chunk for chunk in chunks if chunk.metadata.get("retrieval_role") != "companion"]
+    targets = {tuple(target.strip().split(" > ", 1)) for chunk in seeds
+               for target in chunk.metadata.get("evidence_links", "").split(" | ") if target}
+    targets = {target for target in targets if len(target) == 2}
+    # A linked policy section is a coherent bundle. Its retrieved window may
+    # contain a procedure while another window holds the actual restriction.
+    # Restore its own canonical windows as well as its reviewed scoped links.
+    targets.update((chunk.source_doc, chunk.section) for chunk in seeds
+                   if chunk.metadata.get("evidence_links"))
+    bundles = {(chunk.metadata["revision_bundle"], chunk.metadata["entry_id"]) for chunk in seeds
+               if chunk.metadata.get("revision_bundle") == chunk.metadata.get("revision_id")
+               and chunk.metadata.get("revision_bundle") and chunk.metadata.get("entry_id")}
+    if not targets and not bundles:
+        return chunks
+    dept = departments.from_code(department)
+    # Relative heading paths omit the document title, which is display context.
+    # Use an exact suffix boundary, not a substring or wildcard topic match.
+    predicates = [
+        "(source_doc = %s AND (section = %s OR right(section, length(%s) + 3) = ' > ' || %s))"
+        for _ in targets
+    ]
+    predicates.extend("(metadata->>'revision_id' = %s AND metadata->>'entry_id' = %s)" for _ in bundles)
+    where = " OR ".join(predicates)
+    args: list[Any] = [embed_query(query)]
+    for source, section in sorted(targets):
+        args.extend((source, section, section, section))
+    for revision_id, entry_id in sorted(bundles):
+        args.extend((revision_id, entry_id))
+    scope = f" AND ({_GENERAL} OR metadata->>'department' = %s)" if dept else ""
+    if dept:
+        args.append(dept.code)
+    if excluded_stages:
+        scope += " AND COALESCE(metadata->>'process_stage', '') <> ALL(%s)"
+        args.append(list(excluded_stages))
+    with _connect(database_url=database_url) as conn:
+        rows = conn.execute(
+            "SELECT id, text, source_doc, section, 1 - (embedding <=> %s::vector), "
+            "display_prefix, metadata FROM chunks WHERE (" + where + ")" + scope
+            + " ORDER BY source_doc, section, id", args,
+        ).fetchall()
+    seen = {chunk.id for chunk in chunks}
+    companions = [RetrievedChunk(
+        id=row[0], text=_with_display_prefix(row[1], row[5]), source_doc=row[2],
+        section=row[3], score=float(row[4]),
+        metadata={**row[6], "retrieval_role": "companion"},
+    ) for row in rows if row[0] not in seen]
+    return chunks + companions

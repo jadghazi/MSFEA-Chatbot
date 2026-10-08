@@ -1,0 +1,55 @@
+{
+  "paired_cases": 75,
+  "before": {
+    "pass": 66,
+    "fail": 1,
+    "partial": 8
+  },
+  "after": {
+    "pass": 68,
+    "partial": 7
+  },
+  "changed_grades": [
+    {
+      "id": "F21",
+      "before": "fail",
+      "after": "pass"
+    },
+    {
+      "id": "H20",
+      "before": "partial",
+      "after": "pass"
+    },
+    {
+      "id": "P02",
+      "before": "pass",
+      "after": "partial"
+    },
+    {
+      "id": "P04",
+      "before": "pass",
+      "after": "partial"
+    },
+    {
+      "id": "Q27",
+      "before": "partial",
+      "after": "pass"
+    },
+    {
+      "id": "Q35",
+      "before": "partial",
+      "after": "pass"
+    },
+    {
+      "id": "R09",
+      "before": "partial",
+      "after": "pass"
+    },
+    {
+      "id": "R34",
+      "before": "pass",
+      "after": "partial"
+    }
+  ],
+  "note": "Provisional common subset only, not a full 179-case before/after score. Codex source review, not independent human calibration."
+}

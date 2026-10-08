@@ -1,0 +1,33 @@
+ Container msfea-quality-next-test-db-1  Running
+{
+  "expected_cases": 164,
+  "verified_cases": 164,
+  "complete": true,
+  "missing_case_ids": [],
+  "current_prompt_and_local_reply_parity": true,
+  "source_freeze_matches": true,
+  "source_freeze": "eval/results/student_quality_continue_final_freeze_20261007.json",
+  "answer_model": "gemini-3.1-flash-lite",
+  "production_model_acceptance": false,
+  "default_generation_parameters": {
+    "temperature": 0.0,
+    "seed": 42,
+    "max_output_tokens": 1024,
+    "thinking_level": "provider default"
+  },
+  "provider_answers": 149,
+  "local_replies": 15,
+  "reused_provider_answers": 124,
+  "retained_failed_attempts": 8,
+  "attempt_files": [
+    "eval/results/student_quality_continue_candidate_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_attribute_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_generalization_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_generalization_changed_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_candidate_generalization_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_attribute_generalization_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_parent_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_service_scope_after_20261007.jsonl"
+  ],
+  "semantic_accuracy_verified_by_this_script": false
+}

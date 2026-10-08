@@ -1,0 +1,605 @@
+ Container msfea-quality-candidate-test-db-1  Running
+{
+  "cases": 114,
+  "reused_provider_answers": 102,
+  "local_replies": 12,
+  "pending_count": 0,
+  "pending_case_ids": [],
+  "live_ids": ""
+}
+{
+  "baseline_commit": "a0caa4d",
+  "cases": 114,
+  "expected_cases": 114,
+  "complete": true,
+  "missing_case_ids": [],
+  "verified_provider_answers": 102,
+  "verified_local_answers": 12,
+  "reused_provider_answers": 102,
+  "fresh_provider_answers": 0,
+  "comparison": "same temporary model: before scope/overview refinement to final candidate",
+  "answer_models": [
+    "gemini-3.1-flash-lite"
+  ],
+  "baseline_answer_models": [
+    "gemini-3.1-flash-lite"
+  ],
+  "temporary_model_diagnostic": true,
+  "production_model_acceptance": false,
+  "final_prompt_matches_live_traces": true,
+  "provider_errors_before": 1,
+  "provider_errors_after": 0,
+  "retained_failed_answer_attempts": 0,
+  "reuse_source_files": [
+    "eval/results/student_quality_completion_alternate_answers_20261007.jsonl",
+    "eval/results/student_quality_completion_context_delta_answers_20261007.jsonl",
+    "eval/results/student_quality_completion_scoped_answers_20261007.jsonl"
+  ],
+  "retained_provider_errors_in_reuse_sources": 5,
+  "attempt_files": [
+    "student_quality_completion_catalogue_final_reused_20261007.jsonl"
+  ],
+  "source_review": "Codex review, not independent human calibration",
+  "invalid_phrase_probe": "Q47: generic report length conflicts with ECE override; excluded from phrase metrics"
+}
+{
+  "before": {
+    "cases": 114,
+    "evidence_cases": 94,
+    "all_evidence_hits": 88,
+    "evidence_phrases": 155,
+    "evidence_phrase_hits": 148,
+    "all_context_hits": 88,
+    "live_answers": 113,
+    "provider_errors": 1,
+    "overview": {
+      "cases": 17,
+      "all_evidence_hits": 15
+    }
+  },
+  "after": {
+    "cases": 114,
+    "evidence_cases": 94,
+    "all_evidence_hits": 90,
+    "evidence_phrases": 155,
+    "evidence_phrase_hits": 151,
+    "all_context_hits": 90,
+    "live_answers": 114,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 17,
+      "all_evidence_hits": 16
+    }
+  },
+  "categories": {
+    "ambiguous": {
+      "before": {
+        "cases": 4,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 4,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 4,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 4,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "attribute": {
+      "before": {
+        "cases": 10,
+        "evidence_cases": 9,
+        "all_evidence_hits": 9,
+        "evidence_phrases": 12,
+        "evidence_phrase_hits": 12,
+        "all_context_hits": 9,
+        "live_answers": 10,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 10,
+        "evidence_cases": 9,
+        "all_evidence_hits": 9,
+        "evidence_phrases": 12,
+        "evidence_phrase_hits": 12,
+        "all_context_hits": 9,
+        "live_answers": 10,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "contamination": {
+      "before": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "exact": {
+      "before": {
+        "cases": 5,
+        "evidence_cases": 4,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 4,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 5,
+        "evidence_cases": 4,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 4,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "followup": {
+      "before": {
+        "cases": 8,
+        "evidence_cases": 8,
+        "all_evidence_hits": 7,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 7,
+        "live_answers": 8,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 8,
+        "evidence_cases": 8,
+        "all_evidence_hits": 7,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 7,
+        "live_answers": 8,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "informal": {
+      "before": {
+        "cases": 5,
+        "evidence_cases": 5,
+        "all_evidence_hits": 5,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 5,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 5,
+        "evidence_cases": 5,
+        "all_evidence_hits": 5,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 5,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "offtopic": {
+      "before": {
+        "cases": 5,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 5,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "overview": {
+      "before": {
+        "cases": 17,
+        "evidence_cases": 17,
+        "all_evidence_hits": 15,
+        "evidence_phrases": 50,
+        "evidence_phrase_hits": 47,
+        "all_context_hits": 15,
+        "live_answers": 17,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 17,
+          "all_evidence_hits": 15
+        }
+      },
+      "after": {
+        "cases": 17,
+        "evidence_cases": 17,
+        "all_evidence_hits": 16,
+        "evidence_phrases": 50,
+        "evidence_phrase_hits": 49,
+        "all_context_hits": 16,
+        "live_answers": 17,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 17,
+          "all_evidence_hits": 16
+        }
+      }
+    },
+    "paraphrase": {
+      "before": {
+        "cases": 4,
+        "evidence_cases": 4,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 7,
+        "evidence_phrase_hits": 7,
+        "all_context_hits": 4,
+        "live_answers": 4,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 4,
+        "evidence_cases": 4,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 7,
+        "evidence_phrase_hits": 7,
+        "all_context_hits": 4,
+        "live_answers": 4,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "reasoning": {
+      "before": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 3,
+        "live_answers": 2,
+        "provider_errors": 1,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 3,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "scoped_companion": {
+      "before": {
+        "cases": 6,
+        "evidence_cases": 6,
+        "all_evidence_hits": 6,
+        "evidence_phrases": 8,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 6,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 6,
+        "evidence_cases": 6,
+        "all_evidence_hits": 6,
+        "evidence_phrases": 8,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 6,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "stage_scope": {
+      "before": {
+        "cases": 6,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 3,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 6,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 3,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "switch": {
+      "before": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 9,
+        "evidence_phrases": 11,
+        "evidence_phrase_hits": 11,
+        "all_context_hits": 9,
+        "live_answers": 9,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 9,
+        "evidence_phrases": 11,
+        "evidence_phrase_hits": 11,
+        "all_context_hits": 9,
+        "live_answers": 9,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "switchback": {
+      "before": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "synthesis": {
+      "before": {
+        "cases": 11,
+        "evidence_cases": 11,
+        "all_evidence_hits": 10,
+        "evidence_phrases": 25,
+        "evidence_phrase_hits": 24,
+        "all_context_hits": 10,
+        "live_answers": 11,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 11,
+        "evidence_cases": 11,
+        "all_evidence_hits": 10,
+        "evidence_phrases": 25,
+        "evidence_phrase_hits": 24,
+        "all_context_hits": 10,
+        "live_answers": 11,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "typo": {
+      "before": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 7,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 7,
+        "all_context_hits": 7,
+        "live_answers": 9,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 8,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 8,
+        "live_answers": 9,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "unknown": {
+      "before": {
+        "cases": 6,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 6,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    }
+  },
+  "seed_vs_context": {
+    "before": {
+      "cases_with_companions": 74,
+      "repaired_queries": 8,
+      "supplemental_spelling_cases": 3,
+      "primary_seed_all_evidence_hits": 77
+    },
+    "after": {
+      "cases_with_companions": 84,
+      "repaired_queries": 8,
+      "supplemental_spelling_cases": 3,
+      "primary_seed_all_evidence_hits": 79
+    }
+  },
+  "warm_local_retrieval_ms": {
+    "median": 293.8,
+    "p95": 1092.4,
+    "note": "Isolated local run with concurrent checks; not serving latency"
+  }
+}

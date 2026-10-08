@@ -1,0 +1,5 @@
+All checks passed!
+eval/results/student_quality_completion_quota_diagnostic_20261007.py:25: error: "Sequence[str]" has no attribute "append"  [attr-defined]
+eval/results/student_quality_completion_quota_diagnostic_20261007.py:28: error: "Sequence[str]" has no attribute "append"  [attr-defined]
+Found 2 errors in 1 file (checked 80 source files)
+

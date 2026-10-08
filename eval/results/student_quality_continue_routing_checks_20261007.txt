@@ -1,0 +1,34 @@
+ Container msfea-quality-tests-test-db-1  Running
+..........................................F.F................            [100%]
+=================================== FAILURES ===================================
+__________ test_ordinal_part_reference_preserves_topic_and_attribute ___________
+
+    def test_ordinal_part_reference_preserves_topic_and_attribute() -> None:
+        history = [ConversationMessage("user", "How do exchange fees work?")]
+        plan = retrieval_plan("Does the second part cost extra?", history)
+>       assert is_contextual_followup("Does the second part cost extra?", history)
+E       AssertionError: assert False
+E        +  where False = is_contextual_followup('Does the second part cost extra?', [ConversationMessage(role='user', content='How do exchange fees work?')])
+
+tests/test_conversation.py:395: AssertionError
+_ test_attribute_only_queries_use_subject_but_conditional_queries_keep_both_paths _
+
+    def test_attribute_only_queries_use_subject_but_conditional_queries_keep_both_paths() -> None:
+        history = [ConversationMessage("user", "Tell me about housing")]
+        for question in ("What's the email for them?", "Can you send the link again?",
+                         "And how much time would I need to set aside?"):
+            plan = retrieval_plan(question, history)
+            assert "housing" in plan.query
+            assert plan.standalone_query is None
+            assert attribute_search(question, history) is not None
+>       assert retrieval_plan("What is the fee if I leave early?", history).standalone_query
+E       AssertionError: assert None
+E        +  where None = RetrievalPlan(query='What is the fee if I leave early?', standalone_query=None).standalone_query
+E        +    where RetrievalPlan(query='What is the fee if I leave early?', standalone_query=None) = retrieval_plan('What is the fee if I leave early?', [ConversationMessage(role='user', content='Tell me about housing')])
+
+tests/test_conversation.py:424: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conversation.py::test_ordinal_part_reference_preserves_topic_and_attribute
+FAILED tests/test_conversation.py::test_attribute_only_queries_use_subject_but_conditional_queries_keep_both_paths
+2 failed, 59 passed in 3.72s
+

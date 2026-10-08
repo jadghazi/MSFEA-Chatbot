@@ -1,0 +1,54 @@
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 2874.05it/s]
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "R01", "hits": [], "gate": true, "query": "I need some work experience before graduating and have no idea where to begin. What should I look into?", "refused": false, "error": null}
+{"id": "R02", "hits": [], "gate": true, "query": "If CO-OP is a three-credit course, does that automatically make it an elective for my degree?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=1457 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=3093 retry=False
+{"id": "R03", "hits": [], "gate": true, "query": "I already registered for FEAA 500 in the first term. Do I register again for the next part?", "refused": null, "error": "LLMServiceError"}
+{"id": "R04", "hits": [], "gate": true, "query": "I have 85 credits right now. Does that stop me from applying to CO-OP a year early?", "refused": false, "error": null}
+{"id": "R05", "hits": [], "gate": true, "query": "Will finishing the CO-OP term guarantee that the employer hires me permanently?", "refused": true, "error": null}
+{"id": "R06", "hits": [], "gate": true, "query": "Does the second part cost extra for CO-OP?", "refused": false, "error": null}
+{"id": "R07", "hits": [], "gate": true, "query": "And how much time would I need to set aside for CO-OP program?", "refused": false, "error": null}
+{"id": "R08", "hits": [], "gate": true, "query": "Is Approved Experience internship duration a minimum or a maximum?", "refused": false, "error": null}
+{"id": "R09", "hits": [], "gate": true, "query": "My friend got permission last year. Can I do the same?", "refused": false, "error": null}
+{"id": "R10", "hits": [], "gate": true, "query": "Where can I get CDC help with a resume and a covering letter?", "refused": false, "error": null}
+{"id": "R11", "hits": [], "gate": true, "query": "I have a job interview coming up. What help is available through MSFEA?", "refused": false, "error": null}
+{"id": "R12", "hits": [], "gate": true, "query": "What's the email for IAESTE?", "refused": false, "error": null}
+{"id": "R13", "hits": [], "gate": true, "query": "how can an alumini mentro help me with my career?", "refused": false, "error": null}
+{"id": "R14", "hits": [], "gate": true, "query": "What's the point of Career+ and what kinds of things count toward it?", "refused": false, "error": null}
+{"id": "R15", "hits": [], "gate": true, "query": "Actually, I need information about the international exchange internships now.", "refused": false, "error": null}
+{"id": "R16", "hits": [], "gate": true, "query": "Would a paid job for 20 hours a week qualify as CO-OP if it lasts six months?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=1766 retry=True
+{"id": "R17", "hits": [], "gate": true, "query": "Could I do a remote internship for an American company?", "refused": false, "error": null}
+{"id": "R18", "hits": [], "gate": true, "query": "Can some hands-on faculty research make up the rest if my company offers six weeks?", "refused": false, "error": null}
+{"id": "R19", "hits": [], "gate": true, "query": "Does voice-over presentation limits limit apply to each slide or the entire recording?", "refused": false, "error": null}
+{"id": "R20", "hits": [], "gate": true, "query": "For six company weeks followed by two research weeks, do I wait until the research starts to send the progress report?", "refused": false, "error": null}
+{"id": "R21", "hits": [], "gate": true, "query": "I've submitted my final report but still don't have the employer's completion letter. Is my file complete?", "refused": false, "error": null}
+{"id": "R22", "hits": [], "gate": true, "query": "What should the company put in my completion letter?", "refused": false, "error": null}
+{"id": "R23", "hits": [], "gate": true, "query": "The company hosted another AUB student before. Does that mean my placement is already approved?", "refused": false, "error": null}
+{"id": "R24", "hits": [], "gate": true, "query": "Back to the exchange scheme, how do I reach the people running it?", "refused": false, "error": null}
+{"id": "R25", "hits": [], "gate": true, "query": "How many dollars is the IAESTE participation fee for this year's intake?", "refused": true, "error": null}
+{"id": "R26", "hits": [], "gate": true, "query": "heyy im trying to get an intership overseas any options?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=27277 retry=True
+{"id": "R27", "hits": [], "gate": true, "query": "Can you send the link again for MentorPlus?", "refused": false, "error": null}
+{"id": "R28", "hits": [], "gate": true, "query": "Is the CDC office open until 6 pm on Wednesdays?", "refused": true, "error": null}
+{"id": "R29", "hits": [], "gate": true, "query": "How do I sign up for CDC?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=15175 retry=True
+{"id": "R30", "hits": [], "gate": true, "query": "I'm asking about finding full-time work after graduation, not internship approval. What can the CDC help with?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=8846 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=10234 retry=False
+{"id": "R31", "hits": [], "gate": true, "query": "If I do seven weeks at one company and one week at another, is eight weeks in total enough?", "refused": null, "error": "LLMServiceError"}
+{"id": "R32", "hits": [], "gate": true, "query": "You said internships can't be inside AUB. Does that also rule out an approved faculty research component?", "refused": false, "error": null}
+{"id": "R33", "hits": [], "gate": true, "query": "Could you explain the internship thing in ordinary language before getting into special cases?", "refused": false, "error": null}
+{"id": "R34", "hits": [], "gate": true, "query": "Can I call an unpaid twelve-week placement a CO-OP?", "refused": false, "error": null}
+{"id": "R35", "hits": [], "gate": true, "query": "Would getting my alumni mentor's agreement be enough to approve an internship?", "refused": false, "error": null}
+{"id": "R36", "hits": [], "gate": true, "query": "Can CO-OP make me graduate later?", "refused": false, "error": null}
+{"id": "R37", "hits": [], "gate": true, "query": "Can I submit the Final Report instead of the Progress Report?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29917 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=31514 retry=False
+{"id": "R38", "hits": [], "gate": true, "query": "How long must my internship be?", "refused": null, "error": "LLMServiceError"}
+{"id": "R39", "hits": [], "gate": true, "query": "Should I use pictures, graphs, or charts?", "refused": false, "error": null}
+{"id": "R40", "hits": [], "gate": true, "query": "What if I just do six company weeks for CIVE 400?", "refused": false, "error": null}

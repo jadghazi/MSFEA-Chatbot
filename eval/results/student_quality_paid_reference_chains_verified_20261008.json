@@ -1,0 +1,28 @@
+[
+  {
+    "dataset": "eval/student_quality_dialogue_set.jsonl",
+    "trace": "eval/results/student_quality_paid_relation_dialogue_20261008.jsonl",
+    "verified_turns": 20,
+    "actual_answer_history_lineage": true,
+    "current_prompt_profile_parity": true,
+    "canonical_index_generation": "sha256:79a543b25a9189af7d2a902fc6b115acd6ee6606796e1ead68036454bac864ea",
+    "semantic_accuracy_verified": false,
+    "sha256": {
+      "eval/student_quality_dialogue_set.jsonl": "df37e7a795abf3a78f09cb17558c763dc157c3c829f42fa30b880cb7bea8d39e",
+      "eval/results/student_quality_paid_relation_dialogue_20261008.jsonl": "80074c48f3088529b381994323b1493eab24c26263c6aa187f434c2aff021973"
+    }
+  },
+  {
+    "dataset": "eval/student_quality_history_task_holdout.jsonl",
+    "trace": "eval/results/student_quality_paid_reference_final_holdout_20261008.jsonl",
+    "verified_turns": 6,
+    "actual_answer_history_lineage": true,
+    "current_prompt_profile_parity": true,
+    "canonical_index_generation": "sha256:79a543b25a9189af7d2a902fc6b115acd6ee6606796e1ead68036454bac864ea",
+    "semantic_accuracy_verified": false,
+    "sha256": {
+      "eval/student_quality_history_task_holdout.jsonl": "20e43685bdeb36a69f1cdf0ffdf7b0be913d15691ccec75c28f9fab0883f183c",
+      "eval/results/student_quality_paid_reference_final_holdout_20261008.jsonl": "ab4f89f63c4da7c709ada0c1652b8abbaa5f6f06a5e603851dbff01f4f99096b"
+    }
+  }
+]

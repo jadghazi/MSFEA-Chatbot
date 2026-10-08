@@ -1,0 +1,72 @@
+{
+  "baseline": {
+    "cases": 60,
+    "evidence_cases": 50,
+    "all_evidence_hits": 28,
+    "evidence_phrases": 99,
+    "evidence_phrase_hits": 56,
+    "all_context_hits": 27,
+    "live_answers": 60,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 13,
+      "all_evidence_hits": 4
+    }
+  },
+  "k12": {
+    "cases": 60,
+    "evidence_cases": 50,
+    "all_evidence_hits": 30,
+    "evidence_phrases": 99,
+    "evidence_phrase_hits": 59,
+    "all_context_hits": 29,
+    "live_answers": 0,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 13,
+      "all_evidence_hits": 4
+    }
+  },
+  "candidate": {
+    "cases": 60,
+    "evidence_cases": 50,
+    "all_evidence_hits": 38,
+    "evidence_phrases": 99,
+    "evidence_phrase_hits": 86,
+    "all_context_hits": 37,
+    "live_answers": 0,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 13,
+      "all_evidence_hits": 12
+    }
+  },
+  "holdout_before": {
+    "cases": 20,
+    "evidence_cases": 16,
+    "all_evidence_hits": 11,
+    "evidence_phrases": 22,
+    "evidence_phrase_hits": 15,
+    "all_context_hits": 11,
+    "live_answers": 20,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 4,
+      "all_evidence_hits": 1
+    }
+  },
+  "holdout_after": {
+    "cases": 20,
+    "evidence_cases": 16,
+    "all_evidence_hits": 14,
+    "evidence_phrases": 22,
+    "evidence_phrase_hits": 19,
+    "all_context_hits": 14,
+    "live_answers": 0,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 4,
+      "all_evidence_hits": 3
+    }
+  }
+}

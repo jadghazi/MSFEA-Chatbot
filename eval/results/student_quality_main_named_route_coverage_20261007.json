@@ -1,0 +1,14 @@
+{
+  "cases": 179,
+  "evidence_cases": 94,
+  "complete_retrieval": 91,
+  "complete_context": 91,
+  "phrase_hits": 152,
+  "phrases": 155,
+  "misses": [
+    "Q04",
+    "Q09",
+    "Q18"
+  ],
+  "note": "Lexical coverage only; original Q47 generic expectation retained but excluded because ECE has a controlling override."
+}

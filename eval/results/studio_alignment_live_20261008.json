@@ -1,0 +1,294 @@
+{
+  "records": [
+    {
+      "model": "gemini-3.1-flash-lite",
+      "attempt": 1,
+      "reserved_usd": 0.00924975
+    },
+    {
+      "schema": "QueryPlan",
+      "result": {
+        "text": "{\n  \"search_queries\": [\n    \"CDC weekly advising window schedule\",\n    \"CDC internship advising hours\"\n  ],\n  \"summary\": \"The CDC weekly advising window for internship programs is held on Thursdays from 2 p.m. to 4 p.m.\"\n}",
+        "input_tokens": 135,
+        "output_tokens": 63,
+        "total_tokens": 573,
+        "cached_tokens": null,
+        "latency_ms": 2326
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "attempt": 1,
+      "reserved_usd": 0.009462
+    },
+    {
+      "schema": "ReviewReport",
+      "result": {
+        "text": "{\n  \"one_focused_topic\": true,\n  \"question_supported\": true,\n  \"classification\": \"direct_conflict\",\n  \"summary\": \"The proposed guidance updates the weekly CDC advising window to Thursday from 2 to 4 p.m., which directly conflicts with the existing policy stating the window is on Wednesday from 2 to 4 p.m.\",\n  \"document_title\": \"CDC Weekly Advising Window Schedule\",\n  \"question\": \"When can I attend the weekly CDC advising window?\",\n  \"paraphrase_question\": \"What are the scheduled hours for the weekly CDC advising sessions?\",\n  \"expected_evidence\": \"The weekly CDC advising window is Thursday from 2 to 4 p.m.\",\n  \"findings\": [\n    {\n      \"category\": \"direct_conflict\",\n      \"candidate_id\": \"policy-1\",\n      \"proposed_claim_id\": \"c1\",\n      \"existing_claim_id\": \"c1\",\n      \"explanation\": \"The proposed guidance sets the advising window on Thursday, while the existing policy states it is on Wednesday.\"\n    }\n  ],\n  \"clarifications\": []\n}",
+        "input_tokens": 984,
+        "output_tokens": 257,
+        "total_tokens": 1821,
+        "cached_tokens": null,
+        "latency_ms": 5541
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "attempt": 1,
+      "reserved_usd": 0.0092995
+    },
+    {
+      "schema": "RetrievalPreparation",
+      "result": {
+        "text": "{\n  \"retrieval_questions\": [\n    \"When is the weekly CDC advising window?\",\n    \"What time are the CDC advising sessions on Thursday?\"\n  ],\n  \"explanation\": \"These questions are designed to retrieve the specific day and time for the weekly CDC advising window as stated in the provided canonical guidance.\"\n}",
+        "input_tokens": 334,
+        "output_tokens": 71,
+        "total_tokens": 745,
+        "cached_tokens": null,
+        "latency_ms": 2991
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "attempt": 1,
+      "reserved_usd": 0.00933575
+    },
+    {
+      "schema": "CoverageReview",
+      "result": {
+        "text": "{\n  \"supported\": true,\n  \"explanation\": \"The canonical guidance explicitly defines the weekly CDC advising window as Thursday from 2 to 4 p.m., which provides a complete answer to all test questions regarding the schedule.\",\n  \"missing_details\": [],\n  \"finding_checks\": [\n    {\n      \"finding_index\": 0,\n      \"same_claim\": true,\n      \"classification\": \"direct_conflict\",\n      \"explanation\": \"The proposed claim aligns with the canonical guidance, whereas the existing claim incorrectly identifies the day as Wednesday, creating a direct conflict.\"\n    }\n  ]\n}",
+        "input_tokens": 479,
+        "output_tokens": 136,
+        "total_tokens": 1256,
+        "cached_tokens": null,
+        "latency_ms": 5718
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "attempt": 1,
+      "reserved_usd": 0.009607
+    },
+    {
+      "schema": "ProposedAnswer",
+      "result": {
+        "text": "{\n  \"sentences\": [\n    {\n      \"text\": \"The weekly CDC advising window is Wednesday from 2 to 4 p.m.\",\n      \"support_ids\": [\n        \"source:0:c1\"\n      ]\n    }\n  ],\n  \"explanation\": \"The KB explicitly states that the weekly CDC advising window occurs on Wednesday from 2 to 4 p.m., which corrects the previously provided information.\",\n  \"missing_details\": [],\n  \"claim_changes\": [\n    {\n      \"original_claim_id\": \"original:c1\",\n      \"sentence_index\": 0,\n      \"reason\": \"The KB source specifies the advising window is on Wednesday, contradicting the original claim of Thursday.\",\n      \"support_ids\": [\n        \"source:0:c1\"\n      ]\n    }\n  ]\n}",
+        "input_tokens": 1564,
+        "output_tokens": 193,
+        "total_tokens": 2186,
+        "cached_tokens": null,
+        "latency_ms": 4494
+      }
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "attempt": 1,
+      "reserved_usd": 0.00940375
+    },
+    {
+      "schema": "Verification",
+      "result": {
+        "text": "{\n  \"unsupported_sentences\": [],\n  \"all_changes_explained\": true,\n  \"scope_preserved\": true,\n  \"one_focused_topic\": true,\n  \"missing_details\": [],\n  \"explanation\": \"The proposal correctly identifies that the original information was incorrect and updates the advising window time to Wednesday from 2 to 4 p.m. based on the provided source.\"\n}",
+        "input_tokens": 751,
+        "output_tokens": 91,
+        "total_tokens": 1306,
+        "cached_tokens": null,
+        "latency_ms": 3134
+      }
+    },
+    {
+      "review": {
+        "draft": {
+          "answer": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+          "question": "When can I attend the weekly CDC advising window?",
+          "document_title": "CDC Weekly Advising Window Schedule",
+          "expected_evidence": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+          "paraphrase_question": "What are the scheduled hours for the weekly CDC advising sessions?",
+          "retrieval_questions": [],
+          "representative_question": "When can I attend the weekly CDC advising window?"
+        },
+        "blocked": false,
+        "summary": "The proposed guidance updates the weekly CDC advising window to Thursday from 2 to 4 p.m., which directly conflicts with the existing policy stating the window is on Wednesday from 2 to 4 p.m.",
+        "coverage": {
+          "supported": true,
+          "explanation": "The canonical guidance explicitly defines the weekly CDC advising window as Thursday from 2 to 4 p.m., which provides a complete answer to all test questions regarding the schedule.",
+          "finding_checks": [
+            {
+              "same_claim": true,
+              "explanation": "The proposed claim aligns with the canonical guidance, whereas the existing claim incorrectly identifies the day as Wednesday, creating a direct conflict.",
+              "finding_index": 0,
+              "classification": "direct_conflict"
+            }
+          ],
+          "missing_details": []
+        },
+        "findings": [
+          {
+            "section": "Advising",
+            "category": "direct_conflict",
+            "entry_id": null,
+            "department": "all",
+            "source_doc": "advising.md",
+            "explanation": "The proposed claim aligns with the canonical guidance, whereas the existing claim incorrectly identifies the day as Wednesday, creating a direct conflict.",
+            "candidate_id": "policy-1",
+            "existing_claim": "The weekly CDC advising window is Wednesday from 2 to 4 p.m.",
+            "proposed_claim": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+            "existing_claim_id": "c1",
+            "proposed_claim_id": "c1"
+          }
+        ],
+        "question": "When can I attend the weekly CDC advising window?",
+        "clarifications": [],
+        "classification": "direct_conflict",
+        "document_title": "CDC Weekly Advising Window Schedule",
+        "comparison_count": 1,
+        "expected_evidence": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+        "one_focused_topic": true,
+        "requires_decision": true,
+        "dismissed_findings": [],
+        "question_supported": true,
+        "paraphrase_question": "What are the scheduled hours for the weekly CDC advising sessions?",
+        "prepared_retrieval_questions": [
+          "When is the weekly CDC advising window?",
+          "What time are the CDC advising sessions on Thursday?"
+        ]
+      },
+      "suggestion": {
+        "context": {
+          "review_id": "fa91df2cb20348a7a5fca8b7148ffc94",
+          "revision_id": null,
+          "failed_checks": [],
+          "review_feedback": {
+            "draft": {
+              "answer": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+              "question": "When can I attend the weekly CDC advising window?",
+              "document_title": "CDC Weekly Advising Window Schedule",
+              "expected_evidence": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+              "paraphrase_question": "What are the scheduled hours for the weekly CDC advising sessions?",
+              "retrieval_questions": [],
+              "representative_question": "When can I attend the weekly CDC advising window?"
+            },
+            "blocked": false,
+            "summary": "The proposed guidance updates the weekly CDC advising window to Thursday from 2 to 4 p.m., which directly conflicts with the existing policy stating the window is on Wednesday from 2 to 4 p.m.",
+            "coverage": {
+              "supported": true,
+              "explanation": "The canonical guidance explicitly defines the weekly CDC advising window as Thursday from 2 to 4 p.m., which provides a complete answer to all test questions regarding the schedule.",
+              "finding_checks": [
+                {
+                  "same_claim": true,
+                  "explanation": "The proposed claim aligns with the canonical guidance, whereas the existing claim incorrectly identifies the day as Wednesday, creating a direct conflict.",
+                  "finding_index": 0,
+                  "classification": "direct_conflict"
+                }
+              ],
+              "missing_details": []
+            },
+            "findings": [
+              {
+                "section": "Advising",
+                "category": "direct_conflict",
+                "entry_id": null,
+                "department": "all",
+                "source_doc": "advising.md",
+                "explanation": "The proposed claim aligns with the canonical guidance, whereas the existing claim incorrectly identifies the day as Wednesday, creating a direct conflict.",
+                "candidate_id": "policy-1",
+                "existing_claim": "The weekly CDC advising window is Wednesday from 2 to 4 p.m.",
+                "proposed_claim": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+                "existing_claim_id": "c1",
+                "proposed_claim_id": "c1"
+              }
+            ],
+            "question": "When can I attend the weekly CDC advising window?",
+            "clarifications": [],
+            "classification": "direct_conflict",
+            "document_title": "CDC Weekly Advising Window Schedule",
+            "comparison_count": 1,
+            "expected_evidence": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+            "one_focused_topic": true,
+            "requires_decision": true,
+            "dismissed_findings": [],
+            "question_supported": true,
+            "paraphrase_question": "What are the scheduled hours for the weekly CDC advising sessions?",
+            "prepared_retrieval_questions": [
+              "When is the weekly CDC advising window?",
+              "What time are the CDC advising sessions on Thursday?"
+            ]
+          },
+          "preview_feedback": []
+        },
+        "sources": [
+          {
+            "id": "source:0:c1",
+            "text": "The weekly CDC advising window is Wednesday from 2 to 4 p.m.",
+            "source": "advising.md",
+            "program": "",
+            "section": "Advising",
+            "department": "all",
+            "process_stage": ""
+          }
+        ],
+        "warnings": [],
+        "sentences": [
+          {
+            "text": "The weekly CDC advising window is Wednesday from 2 to 4 p.m.",
+            "support_ids": [
+              "source:0:c1"
+            ]
+          }
+        ],
+        "explanation": "The KB explicitly states that the weekly CDC advising window occurs on Wednesday from 2 to 4 p.m., which corrects the previously provided information.",
+        "verification": {
+          "explanation": "The proposal correctly identifies that the original information was incorrect and updates the advising window time to Wednesday from 2 to 4 p.m. based on the provided source.",
+          "missing_details": [],
+          "scope_preserved": true,
+          "one_focused_topic": true,
+          "all_changes_explained": true,
+          "unsupported_sentences": []
+        },
+        "claim_changes": [
+          {
+            "after": "The weekly CDC advising window is Wednesday from 2 to 4 p.m.",
+            "before": "The weekly CDC advising window is Thursday from 2 to 4 p.m.",
+            "reason": "The KB source specifies the advising window is on Wednesday, contradicting the original claim of Thursday.",
+            "sources": [
+              {
+                "id": "source:0:c1",
+                "text": "The weekly CDC advising window is Wednesday from 2 to 4 p.m.",
+                "source": "advising.md",
+                "program": "",
+                "section": "Advising",
+                "department": "all",
+                "process_stage": ""
+              }
+            ],
+            "support_ids": [
+              "source:0:c1"
+            ],
+            "sentence_index": 0,
+            "original_claim_id": "original:c1"
+          }
+        ],
+        "missing_details": [],
+        "suggested_answer": "The weekly CDC advising window is Wednesday from 2 to 4 p.m."
+      },
+      "index_unchanged": true
+    },
+    {
+      "model": "gemini-3.1-flash-lite",
+      "attempt": 1,
+      "reserved_usd": 0.0094605
+    },
+    {
+      "schema": "ReviewReport",
+      "result": {
+        "text": "{\n  \"one_focused_topic\": true,\n  \"question_supported\": true,\n  \"classification\": \"complementary\",\n  \"summary\": \"The proposed guidance confirms that the CDC provides career support to students after they complete their CO-OP program, which is distinct from the existing policy regarding CO-OP admission and placement.\",\n  \"document_title\": \"CDC CO-OP Career Support Policy\",\n  \"question\": \"Can I get career support after CO-OP?\",\n  \"paraphrase_question\": \"What career assistance is available to students once they finish their CO-OP?\",\n  \"expected_evidence\": \"After CO-OP completion, the CDC provides career support.\",\n  \"findings\": [\n    {\n      \"category\": \"complementary\",\n      \"candidate_id\": \"placement\",\n      \"proposed_claim_id\": \"c1\",\n      \"existing_claim_id\": \"c1\",\n      \"explanation\": \"The proposed guidance provides information on post-completion support, while the existing passage addresses the separate topic of CO-OP admission and placement guarantees.\"\n    }\n  ],\n  \"clarifications\": []\n}",
+        "input_tokens": 978,
+        "output_tokens": 252,
+        "total_tokens": 1663,
+        "cached_tokens": null,
+        "latency_ms": 2744
+      }
+    }
+  ],
+  "reserved_upper_bound_usd": 0.06581825000000001
+}

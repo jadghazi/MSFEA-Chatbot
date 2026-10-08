@@ -1,0 +1,563 @@
+{
+  "before": {
+    "cases": 114,
+    "evidence_cases": 94,
+    "all_evidence_hits": 74,
+    "evidence_phrases": 155,
+    "evidence_phrase_hits": 132,
+    "all_context_hits": 71,
+    "live_answers": 114,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 17,
+      "all_evidence_hits": 15
+    }
+  },
+  "after": {
+    "cases": 114,
+    "evidence_cases": 94,
+    "all_evidence_hits": 90,
+    "evidence_phrases": 155,
+    "evidence_phrase_hits": 151,
+    "all_context_hits": 90,
+    "live_answers": 0,
+    "provider_errors": 0,
+    "overview": {
+      "cases": 17,
+      "all_evidence_hits": 16
+    }
+  },
+  "categories": {
+    "ambiguous": {
+      "before": {
+        "cases": 4,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 4,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 4,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "attribute": {
+      "before": {
+        "cases": 10,
+        "evidence_cases": 9,
+        "all_evidence_hits": 7,
+        "evidence_phrases": 12,
+        "evidence_phrase_hits": 9,
+        "all_context_hits": 6,
+        "live_answers": 10,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 10,
+        "evidence_cases": 9,
+        "all_evidence_hits": 9,
+        "evidence_phrases": 12,
+        "evidence_phrase_hits": 12,
+        "all_context_hits": 9,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "contamination": {
+      "before": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "exact": {
+      "before": {
+        "cases": 5,
+        "evidence_cases": 4,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 5,
+        "evidence_cases": 4,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 4,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "followup": {
+      "before": {
+        "cases": 8,
+        "evidence_cases": 8,
+        "all_evidence_hits": 6,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 7,
+        "all_context_hits": 6,
+        "live_answers": 8,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 8,
+        "evidence_cases": 8,
+        "all_evidence_hits": 7,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 7,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "informal": {
+      "before": {
+        "cases": 5,
+        "evidence_cases": 5,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 4,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 5,
+        "evidence_cases": 5,
+        "all_evidence_hits": 5,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 5,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "offtopic": {
+      "before": {
+        "cases": 5,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 5,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 5,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "overview": {
+      "before": {
+        "cases": 17,
+        "evidence_cases": 17,
+        "all_evidence_hits": 15,
+        "evidence_phrases": 50,
+        "evidence_phrase_hits": 47,
+        "all_context_hits": 15,
+        "live_answers": 17,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 17,
+          "all_evidence_hits": 15
+        }
+      },
+      "after": {
+        "cases": 17,
+        "evidence_cases": 17,
+        "all_evidence_hits": 16,
+        "evidence_phrases": 50,
+        "evidence_phrase_hits": 49,
+        "all_context_hits": 16,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 17,
+          "all_evidence_hits": 16
+        }
+      }
+    },
+    "paraphrase": {
+      "before": {
+        "cases": 4,
+        "evidence_cases": 4,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 7,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 3,
+        "live_answers": 4,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 4,
+        "evidence_cases": 4,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 7,
+        "evidence_phrase_hits": 7,
+        "all_context_hits": 4,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "reasoning": {
+      "before": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 3,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 5,
+        "evidence_phrase_hits": 5,
+        "all_context_hits": 3,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "scoped_companion": {
+      "before": {
+        "cases": 6,
+        "evidence_cases": 6,
+        "all_evidence_hits": 4,
+        "evidence_phrases": 8,
+        "evidence_phrase_hits": 6,
+        "all_context_hits": 4,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 6,
+        "evidence_cases": 6,
+        "all_evidence_hits": 6,
+        "evidence_phrases": 8,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 6,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "stage_scope": {
+      "before": {
+        "cases": 6,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 3,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 6,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 4,
+        "evidence_phrase_hits": 4,
+        "all_context_hits": 3,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "switch": {
+      "before": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 8,
+        "evidence_phrases": 11,
+        "evidence_phrase_hits": 10,
+        "all_context_hits": 8,
+        "live_answers": 9,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 9,
+        "evidence_phrases": 11,
+        "evidence_phrase_hits": 11,
+        "all_context_hits": 9,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "switchback": {
+      "before": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 2,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 2,
+        "all_context_hits": 2,
+        "live_answers": 3,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 3,
+        "evidence_cases": 3,
+        "all_evidence_hits": 3,
+        "evidence_phrases": 3,
+        "evidence_phrase_hits": 3,
+        "all_context_hits": 3,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "synthesis": {
+      "before": {
+        "cases": 11,
+        "evidence_cases": 11,
+        "all_evidence_hits": 7,
+        "evidence_phrases": 25,
+        "evidence_phrase_hits": 21,
+        "all_context_hits": 7,
+        "live_answers": 11,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 11,
+        "evidence_cases": 11,
+        "all_evidence_hits": 10,
+        "evidence_phrases": 25,
+        "evidence_phrase_hits": 24,
+        "all_context_hits": 10,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "typo": {
+      "before": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 6,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 6,
+        "all_context_hits": 4,
+        "live_answers": 9,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 9,
+        "evidence_cases": 9,
+        "all_evidence_hits": 8,
+        "evidence_phrases": 9,
+        "evidence_phrase_hits": 8,
+        "all_context_hits": 8,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    },
+    "unknown": {
+      "before": {
+        "cases": 6,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 6,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      },
+      "after": {
+        "cases": 6,
+        "evidence_cases": 0,
+        "all_evidence_hits": 0,
+        "evidence_phrases": 0,
+        "evidence_phrase_hits": 0,
+        "all_context_hits": 0,
+        "live_answers": 0,
+        "provider_errors": 0,
+        "overview": {
+          "cases": 0,
+          "all_evidence_hits": 0
+        }
+      }
+    }
+  },
+  "seed_vs_context": {
+    "before": {
+      "cases_with_companions": 0,
+      "repaired_queries": 0,
+      "supplemental_spelling_cases": 0,
+      "primary_seed_all_evidence_hits": 74
+    },
+    "after": {
+      "cases_with_companions": 84,
+      "repaired_queries": 8,
+      "supplemental_spelling_cases": 3,
+      "primary_seed_all_evidence_hits": 79
+    }
+  },
+  "warm_local_retrieval_ms": {
+    "median": 902.9000000000001,
+    "p95": 2624.8,
+    "note": "Isolated local run with concurrent checks; not serving latency"
+  }
+}
+All checks passed!
+Success: no issues found in 86 source files

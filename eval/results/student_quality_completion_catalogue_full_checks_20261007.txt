@@ -1,0 +1,4 @@
+All checks passed!
+eval/student_quality_delta.py:70: error: Argument 2 to "next" has incompatible type "None"; expected "dict[str, Any]"  [arg-type]
+Found 1 error in 1 file (checked 94 source files)
+

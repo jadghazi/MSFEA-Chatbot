@@ -1,0 +1,43 @@
+ Container msfea-quality-tests-test-db-1  Running
+All checks passed!
+Success: no issues found in 42 source files
+........................................................................ [ 14%]
+........................................................................ [ 29%]
+...............F................................................ss...... [ 43%]
+........................................................................ [ 58%]
+........................................................................ [ 73%]
+........................................................................ [ 87%]
+...........................................................              [100%]
+=================================== FAILURES ===================================
+____ test_activity_permission_does_not_assume_a_quantified_completion_plan _____
+
+    def test_activity_permission_does_not_assume_a_quantified_completion_plan() -> None:
+        for question in ("Could I do online training?", "Can I do a placement overseas?",
+                         "Can I complete the ACME 500 course remotely?"):
+>           assert answer_task(question, []).startswith("Activity permission:")
+E           assert False
+E            +  where False = <built-in method startswith of str object at 0x57fd0eaf8590>('Activity permission:')
+E            +    where <built-in method startswith of str object at 0x57fd0eaf8590> = "Decision: decide whether the student's exact proposed combination is a documented option for their department. A gene...ngements and restrictions. Do not add forms, reports, deadlines, or other procedures unless the student asks for them.".startswith
+E            +      where "Decision: decide whether the student's exact proposed combination is a documented option for their department. A gene...ngements and restrictions. Do not add forms, reports, deadlines, or other procedures unless the student asks for them." = answer_task('Can I complete the ACME 500 course remotely?', [])
+
+tests/test_conversation.py:441: AssertionError
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+../usr/local/lib/python3.12/site-packages/starlette/testclient.py:53
+  /usr/local/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================= slowest 5 durations ==============================
+233.03s call     tests/test_curation_validation.py::test_full_validation_is_isolated_complete_and_human_gated
+94.26s call     tests/test_curation_validation.py::test_admin_authored_source_validates_without_fake_official_evidence
+85.43s teardown tests/test_retrieval.py::test_rebuild_is_atomic_and_keeps_the_old_index_on_failure
+83.99s teardown tests/test_retrieval.py::test_search_returns_chunk_metadata
+80.55s teardown tests/test_retrieval.py::test_chunk_metadata_is_persisted
+=========================== short test summary info ============================
+FAILED tests/test_conversation.py::test_activity_permission_does_not_assume_a_quantified_completion_plan
+1 failed, 488 passed, 2 skipped, 2 warnings in 850.46s (0:14:10)
+

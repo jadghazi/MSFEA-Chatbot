@@ -24,6 +24,7 @@ DEFAULT_OVERLAP = 150
 
 # Headings whose sections are editorial metadata rather than answers for students.
 _NON_CONTENT_SECTIONS = {"about this document"}
+_SECTION_METADATA = re.compile(r"^<!-- (content_role|evidence_links|process_stage): (.*?) -->$")
 
 
 @dataclass
@@ -88,11 +89,17 @@ def _slug(text: str) -> str:
     return "".join(c for c in lowered if c.isalnum() or c == "-")[:50]
 
 
-def _unbreakable_lines(lines: list[str]) -> set[int]:
+def _evidence_line(line: str) -> bool:
+    """Headings, separators and scope annotations alone are not answer evidence."""
+    return bool(line.strip() and not _heading_level(line) and line.strip() != "---"
+                and not re.match(r"^\*\*Department:\*\*", line.strip()))
+
+
+def _unbreakable_lines(lines: list[str], *, preserve_paragraphs: bool = False) -> set[int]:
     """Line indices where a window boundary must NOT fall.
 
-    Tables and structured Question/topic + Answer entries are atomic units of
-    meaning. Splitting either one can retrieve a label or question without the facts
+    Paragraphs, wrapped list items, tables and structured Question/topic + Answer
+    entries are atomic units of meaning. Splitting them can retrieve a claim without
     needed to answer it. Oversized atomic units are deliberately allowed to exceed
     ``max_chars`` rather than become incomplete retrieval candidates.
 
@@ -100,6 +107,18 @@ def _unbreakable_lines(lines: list[str]) -> set[int]:
     after it is not.
     """
     blocked: set[int] = set()
+    # Markdown source line wrapping is presentation, not a semantic boundary.
+    # A new paragraph, heading or list item can begin a window; continuation lines
+    # must remain attached to their subject and qualifications.
+    if preserve_paragraphs:
+        for index in range(1, len(lines)):
+            current, previous = lines[index].strip(), lines[index - 1].strip()
+            if (current and previous and current != "---" and previous != "---"
+                    and not _heading_level(current) and not _heading_level(previous)
+                    and not _is_table_row(current) and not _is_table_row(previous)
+                    and not re.match(r"^(?:[-+*]\s|\d+[.)]\s)", current)
+                    and not re.match(r"^(?:\*\*)?(?:question/topic|q):", current, re.I)):
+                blocked.add(index)
     i = 0
     while i < len(lines) - 1:
         if _is_table_row(lines[i]) and _is_table_separator(lines[i + 1]):
@@ -131,14 +150,16 @@ def _unbreakable_lines(lines: list[str]) -> set[int]:
     return blocked
 
 
-def _window_spans(lines: list[str], max_chars: int, overlap: int) -> list[tuple[int, int]]:
+def _window_spans(
+    lines: list[str], max_chars: int, overlap: int, *, preserve_paragraphs: bool = False,
+) -> list[tuple[int, int]]:
     """Half-open [start, end) line spans for each window.
 
     Spans rather than strings so callers can tell *where* a window starts — needed
     to repair markdown tables split across windows (see `_table_headers`).
     """
     spans: list[tuple[int, int]] = []
-    blocked = _unbreakable_lines(lines)
+    blocked = _unbreakable_lines(lines, preserve_paragraphs=preserve_paragraphs)
     start = 0
     length = 0
     for i, line in enumerate(lines):
@@ -225,11 +246,17 @@ def chunk_markdown(
     headings: dict[int, str] = {1: section}
     section_department = departments.from_heading(section)
     department_by_level = {1: section_department}
+    links_by_level: dict[int, str] = {}
     chunks: list[Chunk] = []
     buffer: list[str] = []
 
     def flush() -> None:
-        text = "\n".join(buffer).strip()
+        markers = {match.group(1): match.group(2) for line in buffer
+                   if (match := _SECTION_METADATA.fullmatch(line))}
+        if markers.get("evidence_links"):
+            links_by_level[max(headings)] = markers["evidence_links"]
+        overview = markers.get("content_role") == "overview"
+        text = "\n".join(line for line in buffer if not _SECTION_METADATA.fullmatch(line)).strip()
         if not text:
             return
         # Provenance footers document the file for whoever maintains the KB; they are
@@ -238,13 +265,17 @@ def chunk_markdown(
         # petition?", displacing real content.
         if section.strip().lower() in _NON_CONTENT_SECTIONS:
             return
+        # A heading names a topic but supplies no policy evidence. Embedding these
+        # empty parents crowds out factual overview passages for broad questions.
+        if not any(_evidence_line(line) for line in text.splitlines()):
+            return
         heading = buffer[0] if buffer and _heading_level(buffer[0]) >= 2 else f"## {section}"
         section_path = " > ".join(headings[level] for level in sorted(headings))
         lines = text.split("\n")
         spans = (
             [(0, len(lines))]
             if len(text) <= max_chars
-            else _window_spans(lines, max_chars, overlap)
+            else _window_spans(lines, max_chars, overlap, preserve_paragraphs=True)
         )
         table_headers = _table_headers(lines)
 
@@ -253,6 +284,13 @@ def chunk_markdown(
         # department-conditional chunk from a general one (backlog B-2). Sections with
         # no department keep the document-level default ("all").
         chunk_meta = dict(meta)  # per-chunk copy: `meta` is shared across the document
+        chunk_meta.update(markers)
+        inherited_links = [link for level in sorted(links_by_level)
+                           for link in links_by_level[level].split(" | ")]
+        if inherited_links:
+            chunk_meta["evidence_links"] = " | ".join(dict.fromkeys(inherited_links))
+        if overview:
+            chunk_meta["content_role"] = "overview"
         if section_department is not None:
             chunk_meta["department"] = section_department.code
 
@@ -263,10 +301,23 @@ def chunk_markdown(
             return f"Topic: {section_path}\n{result}" if len(headings) > 2 else result
 
         for start, end in spans:
+            # An oversized atomic paragraph can put its heading/blank lines in
+            # a separate first window. Skip that window as well as empty parents.
+            if not any(_evidence_line(line) for line in lines[start:end]):
+                continue
             # A window starting inside a table body has lost its column labels, so a
             # reader sees bare columns. Carry the header as a *display prefix* only —
             # it must not enter `text`, which is both embedded and full-text indexed.
             carried = table_headers.get(start)
+            retrieval_text = ""
+            if overview:
+                evidence_lines = [line.strip() for line in lines[start:end]
+                                  if _evidence_line(line)]
+                purpose = re.split(r"(?<=[.!?])\s+", evidence_lines[0], maxsplit=1)[0]
+                # A compact topic/purpose representation avoids diluting a broad
+                # semantic match with every procedural fact in the overview.
+                # The complete canonical paragraph remains answer evidence.
+                retrieval_text = f"{section}\n{purpose}"
             chunks.append(
                 Chunk(
                     id=f"{source_doc}#{len(chunks):02d}-{_slug(section)}",
@@ -275,6 +326,7 @@ def chunk_markdown(
                     section=section_path if len(headings) > 2 else section,
                     metadata=chunk_meta,
                     display_prefix="\n".join(carried) if carried is not None else "",
+                    retrieval_text=retrieval_text,
                 )
             )
 
@@ -286,6 +338,8 @@ def chunk_markdown(
             headings = {parent_level: name for parent_level, name in headings.items()
                         if parent_level < level}
             headings[level] = section
+            links_by_level = {parent_level: links for parent_level, links in links_by_level.items()
+                              if parent_level < level}
             heading_department = departments.from_heading(section)
             department_by_level = {
                 parent_level: scoped_department
@@ -325,4 +379,14 @@ def chunk_normalized_dir(
     chunks: list[Chunk] = []
     for path in sorted(directory.glob("*.md")):
         chunks.extend(chunk_file(path, max_chars, overlap))
+    targets = {(chunk.source_doc, chunk.section) for chunk in chunks}
+    for chunk in chunks:
+        for link in chunk.metadata.get("evidence_links", "").split(" | "):
+            if not link:
+                continue
+            source, separator, section = link.partition(" > ")
+            matches = {path for doc, path in targets if doc == source
+                       and (path == section or path.endswith(" > " + section))}
+            if not separator or len(matches) != 1:
+                raise ValueError(f"Unresolved or ambiguous evidence link in {chunk.id}: {link}")
     return chunks

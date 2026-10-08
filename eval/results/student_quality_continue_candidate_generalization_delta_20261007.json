@@ -1,0 +1,23 @@
+{
+  "cases": 40,
+  "reused_provider_answers": 24,
+  "local_replies": 2,
+  "pending_count": 14,
+  "pending_case_ids": [
+    "R06",
+    "R08",
+    "R09",
+    "R15",
+    "R16",
+    "R18",
+    "R20",
+    "R23",
+    "R31",
+    "R32",
+    "R33",
+    "R34",
+    "R35",
+    "R37"
+  ],
+  "live_ids": "R06,R08,R09,R15,R16,R18,R20,R23,R31,R32,R33,R34,R35,R37"
+}

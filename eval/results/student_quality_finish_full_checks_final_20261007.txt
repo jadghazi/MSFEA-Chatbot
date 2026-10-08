@@ -1,0 +1,13 @@
+All checks passed!
+src/msfea_bot/retrieval/store.py:680: error: Incompatible types in assignment (expression has type "list[RetrievedChunk]", variable has type "list[str]")  [assignment]
+src/msfea_bot/retrieval/store.py:685: error: Argument 1 to "max" has incompatible type "list[RetrievedChunk]"; expected "Iterable[list[str]]"  [arg-type]
+src/msfea_bot/retrieval/store.py:685: error: "list[str]" has no attribute "score"  [attr-defined]
+src/msfea_bot/retrieval/store.py:686: error: "list[str]" has no attribute "id"  [attr-defined]
+src/msfea_bot/retrieval/store.py:687: error: No overload variant of "__setitem__" of "list" matches argument types "int", "list[str]"  [call-overload]
+src/msfea_bot/retrieval/store.py:687: note: Possible overload variants:
+src/msfea_bot/retrieval/store.py:687: note:     def __setitem__(self, SupportsIndex, RetrievedChunk, /) -> None
+src/msfea_bot/retrieval/store.py:687: note:     def __setitem__(self, slice[SupportsIndex | None, SupportsIndex | None, SupportsIndex | None], Iterable[RetrievedChunk], /) -> None
+src/msfea_bot/retrieval/store.py:688: error: Incompatible types in assignment (expression has type "str", variable has type "RetrievedChunk")  [assignment]
+src/msfea_bot/retrieval/store.py:692: error: Unsupported operand types for + ("list[RetrievedChunk]" and "list[str]")  [operator]
+Found 7 errors in 1 file (checked 79 source files)
+

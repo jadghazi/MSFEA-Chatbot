@@ -1,0 +1,50 @@
+All checks passed!
+Success: no issues found in 79 source files
+..........................F.......................F.F................... [ 71%]
+.............................                                            [100%]
+=================================== FAILURES ===================================
+_______ test_what_about_cue_answers_the_option_without_unasked_paperwork _______
+
+    def test_what_about_cue_answers_the_option_without_unasked_paperwork() -> None:
+        cue = answer_task("what about the 6+2", _history())
+>       assert cue.startswith("Alternative or missing component:")
+E       AssertionError: assert False
+E        +  where False = <built-in method startswith of str object at 0x7806807f9480>('Alternative or missing component:')
+E        +    where <built-in method startswith of str object at 0x7806807f9480> = 'Topic overview: orient the student to the subject they named. Combine supported purpose, normal requirements and main...les checklist. Mention only facts supported by the evidence, state any material gap and offer a useful next direction.'.startswith
+
+tests/test_conversation.py:95: AssertionError
+_ test_overview_intent_generalizes_across_subjects_without_overriding_decisions _
+
+    def test_overview_intent_generalizes_across_subjects_without_overriding_decisions() -> None:
+        for question in ("Tell me about housing", "Give me an overview of the exchange",
+                         "Can you walk me through registration?", "What's the whole process?",
+                         "Explain the program like I've never heard of it"):
+            assert is_overview_request(question)
+            assert answer_task(question, []).startswith("Topic overview:")
+        for question in ("Is six weeks enough?", "Can I combine two placements?",
+                         "What is the deadline?", "Explain how to submit the form"):
+            assert not is_overview_request(question)
+>       assert not is_overview_request("what about the 6+2", _history())
+E       AssertionError: assert not True
+E        +  where True = is_overview_request('what about the 6+2', [ConversationMessage(role='user', content='Is a support letter available from the CDC?'), ConversationMessage(role='assistant', content='Yes. Request it from the CDC.')])
+E        +    where [ConversationMessage(role='user', content='Is a support letter available from the CDC?'), ConversationMessage(role='assistant', content='Yes. Request it from the CDC.')] = _history()
+
+tests/test_conversation.py:314: AssertionError
+_____ test_attribute_followup_is_not_forced_into_an_alternative_plan_task ______
+
+    def test_attribute_followup_is_not_forced_into_an_alternative_plan_task() -> None:
+        history = [ConversationMessage("user", "What is the exchange program?")]
+        assert not answer_task("what about the fee?", history).startswith("Alternative")
+>       assert answer_task("what about the 6+2", history).startswith("Alternative")
+E       AssertionError: assert False
+E        +  where False = <built-in method startswith of str object at 0x7806807f9480>('Alternative')
+E        +    where <built-in method startswith of str object at 0x7806807f9480> = 'Topic overview: orient the student to the subject they named. Combine supported purpose, normal requirements and main...les checklist. Mention only facts supported by the evidence, state any material gap and offer a useful next direction.'.startswith
+E        +      where 'Topic overview: orient the student to the subject they named. Combine supported purpose, normal requirements and main...les checklist. Mention only facts supported by the evidence, state any material gap and offer a useful next direction.' = answer_task('what about the 6+2', [ConversationMessage(role='user', content='What is the exchange program?')])
+
+tests/test_conversation.py:329: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conversation.py::test_what_about_cue_answers_the_option_without_unasked_paperwork
+FAILED tests/test_conversation.py::test_overview_intent_generalizes_across_subjects_without_overriding_decisions
+FAILED tests/test_conversation.py::test_attribute_followup_is_not_forced_into_an_alternative_plan_task
+3 failed, 98 passed in 6.98s
+

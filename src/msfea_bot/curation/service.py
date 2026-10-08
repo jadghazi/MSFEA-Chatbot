@@ -27,6 +27,29 @@ CURATED_SOURCE = "admin-curated"
 # the embedding model's 512-token limit; the full question is always kept in the
 # curated_answers row regardless.
 _MAX_HEADER_CHARS = 300
+_REVISION_STAGE = re.compile(r"^<!-- process_stage: ([a-z][a-z0-9_-]*) -->$")
+
+
+def _revision_stage(answer: str) -> tuple[str, str | None]:
+    """A focused revision may carry one reviewed scope, never student evidence.
+
+    The immutable answer retains the marker for normal source/human review.
+    Only its factual body enters embeddings and generation. Mixed stages must be
+    separate revisions rather than making an entire answer applicable to both.
+    """
+    stages: set[str] = set()
+    body: list[str] = []
+    for line in answer.splitlines():
+        match = _REVISION_STAGE.fullmatch(line.strip())
+        if match:
+            stages.add(match.group(1))
+        elif line.strip().startswith("<!-- process_stage:"):
+            raise ValueError("Invalid process-stage marker in focused knowledge revision")
+        else:
+            body.append(line)
+    if len(stages) > 1:
+        raise ValueError("Use one process stage per focused knowledge revision")
+    return ("\n".join(body), next(iter(stages), None)) if stages else (answer, None)
 
 
 def _chunk_id(curated_id: int, index: int) -> str:
@@ -98,7 +121,8 @@ def revision_chunks(revision: Revision, *, candidate: bool = False) -> list[Chun
         if revision.source_kind == "admin_authored"
         else f"Q: {revision.question[:_MAX_HEADER_CHARS]}"
     )
-    windows = split_windows(_as_lines(revision.answer), DEFAULT_MAX_CHARS, DEFAULT_OVERLAP)
+    answer, stage = _revision_stage(revision.answer)
+    windows = split_windows(_as_lines(answer), DEFAULT_MAX_CHARS, DEFAULT_OVERLAP)
     prefix = "candidate" if candidate else "curated"
     metadata = {
         "source": source_label,
@@ -118,6 +142,12 @@ def revision_chunks(revision: Revision, *, candidate: bool = False) -> list[Chun
     # submitted revisions can carry an explicit department claim.
     if revision.department:
         metadata["department"] = revision.department
+    if stage:
+        metadata["process_stage"] = stage
+    if len(windows) > 1:
+        # A reviewed focused revision is one policy bundle, including conditions
+        # which may not fit in the highest-scoring embedding window.
+        metadata["revision_bundle"] = str(revision.id)
     return [
         Chunk(
             id=f"{prefix}-{revision.entry_id}-r{revision.revision_number}-{index:02d}",

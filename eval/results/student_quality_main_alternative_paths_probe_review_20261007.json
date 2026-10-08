@@ -1,0 +1,45 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "records": [
+    {
+      "id": "U03",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the normal topic path or applicable approval, duration and scoped restrictions."
+    },
+    {
+      "id": "U06",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the normal topic path or applicable approval, duration and scoped restrictions."
+    },
+    {
+      "id": "P02",
+      "status": "partial",
+      "note": "Correctly rejects automatic approval, but omits the controlling four-week minimum after a six-week first placement."
+    },
+    {
+      "id": "P03",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the normal topic path or applicable approval, duration and scoped restrictions."
+    },
+    {
+      "id": "P04",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the normal topic path or applicable approval, duration and scoped restrictions."
+    },
+    {
+      "id": "R33",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves the normal topic path or applicable approval, duration and scoped restrictions."
+    },
+    {
+      "id": "H01",
+      "status": "partial",
+      "note": "Correct full alternative paths replace the unsupported combined path; still adds unrequested alternatives to an ordinary overview."
+    },
+    {
+      "id": "Q02",
+      "status": "partial",
+      "note": "Useful ordinary orientation replaces the narrow FAQ, but still adds unasked alternative routes and a long deliverables list."
+    }
+  ]
+}

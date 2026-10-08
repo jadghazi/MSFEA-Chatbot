@@ -1,0 +1,15 @@
+{
+  "chunks": 254,
+  "documents": {
+    "cdc-knowledge-base.md": 36,
+    "email-clarifications.md": 80,
+    "final-presentation-slide-template.md": 5,
+    "internship-report-templates-and-rubrics.md": 35,
+    "msfea-cdc-coop-handbook.md": 58,
+    "summer-training-guidelines-2026.md": 40
+  },
+  "qa_chunks": 94,
+  "heading_only": [],
+  "embedding_limit": 512,
+  "truncated_embeddings": []
+}

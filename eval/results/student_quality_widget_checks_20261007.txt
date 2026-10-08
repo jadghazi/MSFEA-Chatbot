@@ -1,0 +1,18 @@
+✔ repeated Send/Enter submissions have one pending fetch (29.9864ms)
+✔ question submission is blocked until a valid department is selected (3.8627ms)
+✔ student picker contains exactly the five supported departments (7.956ms)
+✔ opening the department picker clears the selected department and conversation (4.7701ms)
+✔ local acknowledgements preserve useful memory (13.7392ms)
+✔ friendly 429 is displayed and never retried automatically (15.5526ms)
+✔ six completed questions end the chat, while failures do not use a slot (9.8614ms)
+✔ upstream 503 has a clear retry message and does not use a slot (6.1491ms)
+✔ an incomplete success response does not create an empty answer or use a slot (5.0013ms)
+✔ starting a new chat clears history and creates a new session (6.1924ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 471.6747

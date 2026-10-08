@@ -114,6 +114,156 @@ establish semantic correctness. See `answer_quality_review.md` for the local rev
 
 ## Run it
 
+### Student-intent quality audit
+
+The [main-model verification report](results/student_quality_main_model_20261007.md)
+continues the dated audit using the configured student model. The frozen
+`student_quality_timeline_holdout.jsonl` and `student_quality_transfer_holdout.jsonl`
+add timeline association, hypothetical arithmetic versus approval, actor-versus-goal
+attributes, explicit topic changes and report requirements. Expectations precede
+live answers and do not change to accommodate the candidate.
+
+`student_quality_dialogue_set.jsonl` contains three conversations (20 turns).
+`python -m eval.student_quality_dialogue_eval --live --output <new-jsonl-path>`
+retrieves from an isolated development database and passes each actual generated
+reply to the next turn. It records exact prompt/context, ordered passages, resolved
+query, dataset hash and stable index generation. This tests propagation through
+real history; replaying canned histories is a separate diagnostic. Run one live
+worker at a time, retaining failed attempts and exact-prompt reuse lineage.
+The earlier Lite-model acceptance was interrupted by a provider daily-quota failure.
+The [paid migration report](results/student_quality_paid_migration_20261008.md)
+records the replacement candidate and its separately verified answer evidence.
+A fresh main-model answer is
+needed when any full prompt changes, even if an earlier answer still looks correct.
+For actual-history reuse, every preceding turn must also match the current prompt;
+one individual matching prompt does not certify the rest of its conversation.
+
+`student_quality_history_task_holdout.jsonl` adds three two-turn controls for
+replacement, a documented positive waiver and relationships between distinct
+programs. These expectations were frozen before live answers after an
+actual-history failure showed that an earlier request could replace the current
+task. They are constructed transfer probes, not independent student sampling.
+
+Fresh audit/dialogue retrieval now rejects an index whose generation does not
+match normalized inputs plus active approved immutable revisions, and checks the
+generation throughout the run. Do not rebuild during evaluation. Explicit frozen
+retrieval replay remains available for controlled generation comparisons and must
+be identified as replay rather than a fresh retrieval measurement.
+
+The completion candidate adds `student_quality_failure_classes_set.jsonl` (30
+frozen probes across scoped conditions, attributes, process stage, spelling and
+topic switches) and `student_quality_comparative_validation_set.jsonl` (four
+minimum/maximum/length probes). `student_quality_completion_set.jsonl` concatenates
+these with the existing 80 cases. No original expected answer is changed. Q47's
+generic template phrase conflicts with its ECE override and remains excluded from
+phrase metrics; its answer is reviewed against the controlling source.
+
+Audit traces record original/resolved queries, supplemental spelling queries,
+primary and companion scores/roles, final context and exact provider prompt.
+Companions are appended after seed retrieval, so a full-context evidence hit is
+not a top-seven seed hit. Report them separately. Verify the 114 paired traces and
+current prompt using `python -m eval.student_quality_finalize --completion`.
+If provider quota interrupts verification, `--completion --partial` emits an
+explicitly incomplete manifest with missing IDs and verifies successful live
+traces plus deterministic local replies without making provider calls. It never
+substitutes an earlier candidate's answers. The [completion report](results/student_quality_completion_20261007.md)
+identifies the accepted final artifacts and pending verification. Final live
+attempts historically used `--delay 12` (five calls/minute); budget diagnostics/retries too and
+stop on daily-quota errors. `--resume` retries failed rows, retaining prior errors.
+Failures and interim trials remain retained; phrase hits and citations are not
+answer-accuracy measurements.
+
+The user-authorized temporary Gemini 3.1 run is a separate model diagnostic. Set
+`LLM_MODEL=gemini-3.1-flash-lite` only on the evaluation command, with the same
+historical five/minute pacing and daily budget. That trial did not change production.
+`python -m eval.student_quality_finalize --completion --alternate --scoped`
+pairs the retained 3.1 trial with the final scoped candidate, verifies exact prompt
+parity, and records hashes. It cannot substitute for production-model acceptance.
+`python -m eval.student_quality_report --completion --scoped --retrieval-only`
+compares first-candidate retrieval with final scoped retrieval independently of
+the model change. Retain failed provider attempts and rank gates explicitly;
+correct-looking answers do not turn a failed deterministic gate into a pass.
+
+For the paid student migration, local `.env` selects `gemini-3.8-flash`, omits
+deprecated sampling fields and sets medium thinking with a 4096-token ceiling.
+The student audit/dialogue commands now default to `--delay 0`; the old pacing
+limit is removed. Provider limits and transient failures still require handling.
+Use a single evaluation worker with a shared ledger, for example:
+
+```bash
+python -m eval.student_quality_audit --cases <frozen-cases> --output <new-trace> \
+  --live-ids all --replay-retrieval <frozen-evidence> \
+  --budget-ledger <shared-ledger> --budget-usd 3 \
+  --input-usd-per-million 0.75 --output-usd-per-million 3.75
+```
+
+Prices must be checked against [Google's current pricing](https://ai.google.dev/gemini-api/docs/pricing).
+The guard reserves counted input plus maximum output before each generation
+attempt, including retries, then settles successful usage including reasoning.
+Failed attempts retain their reservation. This is a conservative evaluation
+estimate, not an account balance reader; unrelated account usage is excluded.
+Do not run simultaneous writers against the same ledger. Staff curation budgets
+and its model remain separate and unchanged. Oracle migration remains separate.
+
+For the final catalogue/output-contract diagnostic, use `--contextual` together
+with `--completion --alternate --scoped` on the finalizer and reporter. The
+completion report identifies the exact final traces. `student_quality_delta`
+can reuse a successful answer only when its entire prompt, model and recorded generation profile are identical
+to frozen candidate retrieval; it replays current local replies and deterministic
+output guards without provider calls. Changed prompts and service failures remain
+pending for fresh live evaluation. Preserve the reuse lineage and failed source
+attempts. Cached prompt parity is not an independent repeat or production-model
+acceptance. For example, on the temporary evaluation model:
+
+```bash
+python -m eval.student_quality_delta --retrieval <frozen-candidate-jsonl> --prior <prior-trace-jsonl> --output <new-jsonl-path>
+python -m eval.student_quality_finalize --completion --alternate --scoped --contextual --after-traces <answer-trace-filename-under-results>
+python -m eval.student_quality_report --completion --scoped --contextual --retrieval-only
+```
+
+The historical [continuation report](results/student_quality_continue_20261007.md)
+records the October 7 runtime, gate results, failures and source parity. The additional
+`student_quality_generalization_set.jsonl` contains 40 frozen semantic probes,
+and `student_quality_condition_holdout.jsonl` contains eight conditional-reasoning
+controls across departments and numerical bounds. These use source-reviewed
+`expected_behavior`; empty lexical evidence lists are not automatic semantic passes.
+The live audit stops on the first quota error and, by default, three consecutive
+service errors (`--max-consecutive-service-errors`). Failures stay in the trace.
+Historical low/medium trials with different prompts or profiles are separate
+experiments. Reuse requires exact current prompt and generation-profile parity;
+the earlier long-prompt medium trial is not acceptance of the final candidate.
+The two `student_quality_service_scope_holdout.jsonl` probes separate future
+requests for CDC assistance from an employer's later hiring decision. The earlier
+164-case verification is historical. The [paid candidate report](results/student_quality_paid_migration_20261008.md)
+links current 179-case verification, actual-answer conversation lineage and separate
+semantic source review; reproducibility checks do not score answer accuracy.
+
+`student_quality_audit_set.jsonl` contains 60 source-grounded diagnostic probes;
+`student_quality_holdout_set.jsonl` adds 20 validation probes. They cover broad
+orientation, paraphrases, informal wording, typos, synthesis, references, switches,
+contamination, ambiguity and unavailable information. They are synthetic probes,
+not independently sampled student questions or replacements for the frozen faculty
+set. The [dated audit](results/student_quality_audit_20261007.md) records paired
+measurements, source review, rejected attempts and release-blocking limitations.
+
+Run `python -m eval.student_quality_audit --output <new-jsonl-path>` against an
+isolated development Compose `test-db` / `msfea_test` index. Retrieval is recorded
+without provider calls by default. Add `--live-ids all` for live answers (provider
+quota applies), or `--cases eval/student_quality_holdout_set.jsonl` for validation.
+Each trace retains literal/resolved queries, ordered chunks/cosines, exact model
+context/prompt and final answers. `--replay-retrieval <trace>` isolates generation
+against an immutable earlier retrieval result. Do not rebuild the index during a
+run; pytest uses a separate database because its fixtures rebuild indexes.
+
+Phrase coverage is an evidence proxy, not semantic accuracy. Q47's initial
+generic report-length phrase conflicts with the ECE override and is explicitly
+excluded from aggregate phrase metrics; its original authored record is preserved.
+`student_quality_report.py` reproduces the dated coverage summary.
+`student_quality_finalize.py` assembles the dated paired traces, verifies exact
+final prompt/local-reply parity and records source hashes. It uses mocked generation
+and makes no provider calls. Independently review conditions, scope and actual
+claims before release; passing evidence and citation checks is insufficient.
+
 ```bash
 python -m eval.run     # summarize the golden set
 python -m eval.threshold_eval  # verify the pre-LLM 0.60 gate; no Gemini usage

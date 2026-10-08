@@ -1,0 +1,229 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "model": "gemini-3.8-flash",
+  "thinking": "medium",
+  "cases": 44,
+  "decision": "Rejected; no material-failure reduction across the comparison group",
+  "records": [
+    {
+      "id": "U01",
+      "status": "fail",
+      "note": "Introduces an at-least-six-week trigger and policy validation into a hypothetical arithmetic question; source condition overgeneralized."
+    },
+    {
+      "id": "U02",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U03",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U04",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U05",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U06",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U07",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U08",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U09",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U10",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "U11",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P01",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P02",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P03",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P04",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P05",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P06",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P07",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "P08",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "T01",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "T02",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "T03",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "T04",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "R05",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "R31",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "R32",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "R34",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "S01",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "S02",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "F01",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "F02",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "F04",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "F21",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "H01",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "H02",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "H07",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "Q01",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "Q02",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "Q03",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "Q09",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "Q10",
+      "status": "fail",
+      "note": "Proposal timing is fixed but final reports/presentation are still grouped throughout training rather than after completion; stage synthesis remains incorrect."
+    },
+    {
+      "id": "Q30",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "Q52",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    },
+    {
+      "id": "Q53",
+      "status": "pass",
+      "note": "Correct supported answer to the actual requested intent."
+    }
+  ]
+}

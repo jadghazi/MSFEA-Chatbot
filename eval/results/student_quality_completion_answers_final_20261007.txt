@@ -1,0 +1,21 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "Q01", "hits": [true, true, true, true], "gate": true, "query": "Tell me about internships", "refused": false, "error": null}
+{"id": "Q02", "hits": [true, true, true], "gate": true, "query": "more specifically what about the internships", "refused": false, "error": null}
+{"id": "Q03", "hits": [true, true, true, true], "gate": true, "query": "I'm new here, can you walk me through the internship thing?", "refused": false, "error": null}
+{"id": "Q04", "hits": [true, false, true, true], "gate": true, "query": "Give me an overview of CO-OP", "refused": false, "error": null}
+{"id": "Q05", "hits": [true, true, true], "gate": true, "query": "What should I know about IAESTE?", "refused": false, "error": null}
+{"id": "Q06", "hits": [true, true, true], "gate": true, "query": "How can the CDC help me prepare for work?", "refused": false, "error": null}
+{"id": "Q07", "hits": [true, true, true], "gate": true, "query": "Tell me about mentorship", "refused": false, "error": null}
+{"id": "Q08", "hits": [true, true, true], "gate": true, "query": "I have no idea what Career+ is, explain it", "refused": false, "error": null}
+{"id": "Q09", "hits": [true, true, false], "gate": true, "query": "I want to get ready for internship applications. Where do I start?", "refused": false, "error": null}
+{"id": "Q10", "hits": [true, true, true], "gate": true, "query": "What's the whole process from finding an internship to passing the course?", "refused": false, "error": null}
+{"id": "Q11", "hits": [true, true, true, true], "gate": true, "query": "Can you explain the difference between an internship and CO-OP in plain English?", "refused": false, "error": null}
+{"id": "Q12", "hits": [true, true], "gate": true, "query": "I don't know which career path I want. Is there anything that can help?", "refused": false, "error": null}
+{"id": "Q13", "hits": [true, true], "gate": true, "query": "I found a placement myself. Does that mean it automatically counts for graduation?", "refused": false, "error": null}
+{"id": "Q14", "hits": [true, true], "gate": true, "query": "I finished the training so am I done with the course?", "refused": false, "error": null}
+{"id": "Q15", "hits": [true], "gate": true, "query": "What is the minimum internship duration?", "refused": false, "error": null}
+{"id": "Q16", "hits": [true, true], "gate": true, "query": "How much time do I need to spend at the company?", "refused": false, "error": null}
+{"id": "Q17", "hits": [true], "gate": true, "query": "internship duration?", "refused": false, "error": null}
+{"id": "Q18", "hits": [false], "gate": true, "query": "how long is the intership?", "refused": false, "error": null}
+llm_failure model=gemini-flash-lite-latest reason=Gemini rate or quota limit reached cause=ClientError status=429 attempt=1 elapsed_ms=632 retry=False
+{"id": "Q19", "hits": [true], "gate": true, "query": "do i gotta get paid for it to count as internship", "refused": null, "error": "LLMRateLimitError"}

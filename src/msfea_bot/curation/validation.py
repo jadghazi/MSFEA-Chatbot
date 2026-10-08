@@ -23,13 +23,13 @@ from msfea_bot import departments
 from msfea_bot.config import settings
 from msfea_bot.curation.revisions import Revision, list_revisions, program_registry
 from msfea_bot.curation.service import curated_chunks, revision_chunks
-from msfea_bot.generation.answer import build_prompt, passes_similarity_gate, retrieve_context
+from msfea_bot.generation.answer import _answer_context, build_prompt, passes_similarity_gate, retrieve_context
 from msfea_bot.generation.conversation import ConversationMessage
 from msfea_bot.ingestion.chunking import Chunk, chunk_normalized_dir
 from msfea_bot.ingestion.embeddings import model_fingerprint
-from msfea_bot.retrieval.store import index_chunks, indexed_generation, retrieval_depth, search
+from msfea_bot.retrieval.store import expand_evidence_links, index_chunks, indexed_generation, retrieval_depth, search
 
-VALIDATOR_VERSION = "publication-guard-v5-canonical-first"
+VALIDATOR_VERSION = "publication-guard-v6-student-context"
 REQUIRED_STEPS = (
     "schema_source",
     "candidate_index",
@@ -314,7 +314,9 @@ def review_candidates(
     """Return related passages and explainable potential-conflict flags."""
     found: dict[str, RetrievedLike] = {}
     for query in (question, answer):
-        for chunk in search(query, depth, candidates=max(depth, 40), database_url=database_url):
+        seeds = search(query, depth, candidates=max(depth, 40), database_url=database_url)
+        # Staff compare across scopes; student routing exclusions do not apply here.
+        for chunk in expand_evidence_links(seeds, query, None, database_url=database_url):
             if not chunk.id.startswith("candidate-"):
                 found.setdefault(chunk.id, chunk)
     related: list[dict[str, Any]] = []
@@ -330,6 +332,8 @@ def review_candidates(
             "source_doc": related_chunk.source_doc,
             "section": related_chunk.section,
             "department": scope,
+            "program": related_chunk.metadata.get("program", ""),
+            "process_stage": related_chunk.metadata.get("process_stage", ""),
             "score": round(related_chunk.score, 6),
             "text": related_chunk.text,
         }
@@ -401,6 +405,8 @@ def _declared_evidence_candidates(revision: Revision) -> list[dict[str, Any]]:
                         "source_doc": chunk.source_doc,
                         "section": chunk.section,
                         "department": chunk.metadata.get("department", "all"),
+                        "program": chunk.metadata.get("program", ""),
+                        "process_stage": chunk.metadata.get("process_stage", ""),
                         "score": None,
                         "text": chunk.text,
                         "reason": "declared_evidence",
@@ -421,12 +427,13 @@ def _positive_retrieval(revision: Revision, dsn: str) -> tuple[bool, dict[str, A
     for question in questions:
         if question is None:
             continue
-        chunks = search(
+        chunks = _answer_context(question, retrieve_context(
             question,
             retrieval_depth(question, settings.top_k),
             department=revision.department if revision.department != "all" else None,
+            history=None,
             database_url=dsn,
-        )
+        ), None)
         ids = [chunk.id for chunk in chunks]
         evidence_hit = expected_evidence_present(
             [chunk.text for chunk in chunks], revision.expected_evidence or ""

@@ -1,0 +1,31 @@
+{
+  "expected_cases": 164,
+  "verified_cases": 164,
+  "complete": true,
+  "missing_case_ids": [],
+  "current_prompt_and_local_reply_parity": true,
+  "source_freeze_matches": true,
+  "source_freeze": "eval/results/student_quality_main_freeze_20261007.json",
+  "answer_model": "gemini-flash-lite-latest",
+  "production_model_acceptance": false,
+  "default_generation_parameters": {
+    "temperature": 0.0,
+    "seed": 42,
+    "max_output_tokens": 1024,
+    "thinking_level": "provider default"
+  },
+  "provider_answers": 149,
+  "local_replies": 15,
+  "reused_provider_answers": 0,
+  "retained_failed_attempts": 0,
+  "attempt_files": [
+    "eval/results/student_quality_main_answers_20261007.jsonl",
+    "eval/results/student_quality_main_key_probe_20261007.jsonl"
+  ],
+  "semantic_accuracy_verified_by_this_script": false,
+  "artifact_sha256": {
+    "eval/results/student_quality_main_retrieval_20261007.jsonl": "02ec16e9bd18b3360d94dec668a62202f6c812a78e840803e8e06721918b59b0",
+    "eval/results/student_quality_main_answers_20261007.jsonl": "7467de080b5bc5c7fdfc0060ff040d1bac9fe1a06884816f49a4d68c6e7dafc2",
+    "eval/results/student_quality_main_key_probe_20261007.jsonl": "e0ade413c7721cd552dcfbabe7d97863af972cea4e04f03f22d3fcbe5ebfc0d3"
+  }
+}

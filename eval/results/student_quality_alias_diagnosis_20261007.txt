@@ -1,0 +1,9 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  18%|█▊        | 36/199 [00:00<00:00, 359.61it/s]
+Loading weights:  44%|████▍     | 88/199 [00:00<00:00, 449.76it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 803.58it/s]
+How long is CO-OP? [('MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)', 0.772), ('What CO-OP is', 0.813), ('What CO-OP is', 0.763)] 0.8132811896037361
+How long is Cooperative Education? [('MSFEA CO-OP (Cooperative Education) Handbook > The CO-OP program at MSFEA > The Cooperative Education Experience', 0.801), ('CO-OP (Cooperative Education)', 0.75), ('MSFEA CO-OP (Cooperative Education) Handbook > The CO-OP program at MSFEA > The Cooperative Education Experience', 0.712)] 0.8008909225463867
+How long is CO-OP (Cooperative Education)? [('MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)', 0.788), ('CO-OP (Cooperative Education)', 0.797), ('MSFEA CO-OP (Cooperative Education) Handbook > The CO-OP program at MSFEA > The Cooperative Education Experience', 0.834)] 0.8341744194678793
+CO-OP minimum work term duration [('What CO-OP is', 0.857), ('What CO-OP is', 0.792), ('MSFEA CO-OP (Cooperative Education) Handbook > Information for students > Application timeline (deadlines)', 0.781)] 0.8566988962831101

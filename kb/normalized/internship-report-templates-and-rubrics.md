@@ -8,13 +8,9 @@ department: all
 ---
 
 # Internship (Approved Experience) Report Templates and Rubrics
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
-The Approved Experience has three graded deliverables that build on each other:
-the **Progress Report** (a mid-experience checkpoint), the **Final Training
-Report** (the primary evidence of a completed, meaningful experience), and the
-**Final Presentation**. Each template below lists the required content; each
-rubric shows how it is assessed. Assessment is Pass/Fail, so no percentage
-breakdowns are assigned.
+The **Progress Report** and **Final Training Report** are separate required written deliverables for Approved Experience. The Progress Report is a mid-experience checkpoint; the Final Training Report is the primary evidence of a completed, meaningful experience. The **Final Presentation** is another graded deliverable where required by the department. Students must complete the approved experience and all applicable required deliverables satisfactorily and on time. Each template below lists the required content; each rubric shows how it is assessed. Assessment is Pass/Fail, so no percentage breakdowns are assigned.
 
 ## 1. Progress Report Template (3–5 pages)
 
@@ -84,6 +80,7 @@ Describe work still to be completed; learning goals for the remainder of the App
 Students receiving a rating of Needs Attention in two or more categories may be asked to revise and resubmit the report.
 
 ## 2. Final Training Report Template (8–15 pages)
+<!-- evidence_links: email-clarifications.md > Final Report requirements (ECE) -->
 
 **Purpose.** The Final Approved Experience Report serves as the primary evidence that the student successfully completed a meaningful professional experience and achieved the learning objectives of the Approved Experience course. The report should emphasize analysis, application, learning, and reflection rather than simply describing activities. Students should demonstrate how they applied knowledge from their academic program, contributed to their organization, and developed professionally throughout the experience.
 
@@ -207,5 +204,11 @@ The assessment criteria align with MSFEA learning objectives and relevant accred
 
 
 ## About this document
+
+**2026-10-08 — self-contained deliverable requirements (local candidate).** The introduction combines the existing graded-report purposes with the required Progress Report and Final Training Report in `summer-training-guidelines-2026.md` (Course Description and Internship Timeline and Deliverables) and the approved internship grading clarification in `email-clarifications.md`. Presentation applicability retains the department rules, including IEM. This reorganizes existing requirements, without adding a waiver rule, grade guarantee or question-specific FAQ. Originals are unchanged.
+
+**2026-10-07 — governing report context (local candidate).** Template and rubric sections retain the existing introductory distinction between the graded Progress Report, Final Training Report and Final Presentation. A reviewed evidence link also supplies the existing IEM presentation exception when applicable. This connects already verified requirements to their detailed guidance; it adds no deliverable or policy.
+
+**2026-10-07 — department override link (local candidate).** The general Final Training Report template links to the approved ECE report-length clarification. The relationship is inherited by its detailed subsections and removed from canonical answer text. The general template and original source remain unchanged.
 
 The contents-page detail was clarified in the approved FAQ workbook (FR-06), reviewed on 2026-09-27; see `kb/source/faq-review-2026-09-27.json`. The general 8–15-page Final Report template remains applicable, with the separately scoped ECE length rule in the approved clarifications.

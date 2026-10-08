@@ -1,0 +1,111 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "trace": "student_quality_main_accepted_dialogue_20261007.jsonl",
+  "records": [
+    {
+      "id": "D01.1",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D01.2",
+      "status": "partial",
+      "note": "Correct ordinary internship explanation, but includes an unasked combined-placement exception and a long deliverable inventory."
+    },
+    {
+      "id": "D01.3",
+      "status": "partial",
+      "note": "Correct eight-week minimum; adds unasked six-week combination routes to a duration follow-up."
+    },
+    {
+      "id": "D01.4",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D01.5",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D01.6",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D01.7",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D02.1",
+      "status": "partial",
+      "note": "Correct written-approval and conditional rules; adds unasked numeric splits."
+    },
+    {
+      "id": "D02.2",
+      "status": "partial",
+      "note": "Correctly confirms five-plus-three arithmetic under the hypothesis, but still adds unnecessary approval warnings and a different numeric scenario."
+    },
+    {
+      "id": "D02.3",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D02.4",
+      "status": "fail",
+      "note": "Unnecessary clarification: final-report subject is correctly resolved and separate graded deliverables are supplied, but the long-question heuristic removes the identifying user anchor."
+    },
+    {
+      "id": "D02.5",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D02.6",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D03.1",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D03.2",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D03.3",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D03.4",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D03.5",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D03.6",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    },
+    {
+      "id": "D03.7",
+      "status": "pass",
+      "note": "Reviewed actual-history answer against final supplied passages and frozen intent; correct scope, contact, options or missing-value handling."
+    }
+  ],
+  "counts": {
+    "pass": 15,
+    "partial": 4,
+    "fail": 1
+  }
+}

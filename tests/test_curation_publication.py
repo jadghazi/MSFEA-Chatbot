@@ -30,6 +30,7 @@ from msfea_bot.curation.revisions import (
     create_successor_draft,
     list_revisions,
 )
+from msfea_bot.curation.service import revision_chunks
 from msfea_bot.curation.validation import REQUIRED_STEPS, validation_fingerprint
 from msfea_bot.ingestion.chunking import Chunk
 from msfea_bot.retrieval.store import GenerationChanged, index_chunks, indexed_generation
@@ -565,3 +566,21 @@ def test_recovery_compensates_committed_attempt_left_by_crash(
 
     assert recovered == ["compensated"]
     assert _active_and_chunks(entry_id) == (None, [])
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_revision_scope_survives_immutable_roundtrip_and_windowing(
+    publication_database: str,
+) -> None:
+    answer = "<!-- process_stage: completion -->\n" + " ".join([_payload().answer] * 15)
+    entry_id, revision_id = create_draft(_payload(answer=answer))
+    revision = next(item for item in list_revisions() if item.id == revision_id)
+    assert revision.answer == answer  # The reviewed immutable input is preserved.
+    chunks = revision_chunks(revision, candidate=True)
+    assert len(chunks) > 1
+    assert all(chunk.metadata["process_stage"] == "completion" for chunk in chunks)
+    assert all(chunk.metadata["department"] == "ece" for chunk in chunks)
+    assert all("<!--" not in chunk.text for chunk in chunks)
+    assert all(chunk.metadata["revision_id"] == str(revision_id) for chunk in chunks)
+    assert all(chunk.metadata["revision_bundle"] == str(revision_id) for chunk in chunks)
+    assert _active_and_chunks(entry_id) == (None, [])  # Scope is not publication approval.

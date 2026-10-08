@@ -2,6 +2,9 @@
 # and keeps the code identical when it runs in Linux/Docker).
 * text=auto eol=lf
 
+# Audit manifests hash exact bytes; keep recorded attempts unchanged across hosts.
+eval/results/** -text
+
 # Treat these as binary — never touch their bytes.
 *.png binary
 *.jpg binary

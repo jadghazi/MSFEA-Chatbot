@@ -1,0 +1,32 @@
+{
+  "expected_cases": 179,
+  "verified_cases": 179,
+  "complete": true,
+  "missing_case_ids": [],
+  "current_prompt_and_local_reply_parity": true,
+  "source_freeze_matches": true,
+  "source_freeze": "eval/results/student_quality_paid_reference_final_freeze_20261008.json",
+  "answer_model": "gemini-3.8-flash",
+  "production_model_acceptance": false,
+  "generation_profile": {
+    "max_output_tokens": 4096,
+    "temperature": null,
+    "seed": null,
+    "thinking_level": "medium"
+  },
+  "provider_answers": 164,
+  "local_replies": 15,
+  "reused_provider_answers": 164,
+  "retained_failed_attempts": 1,
+  "attempt_files": [
+    "eval/results/student_quality_paid_medium_final_full_20261008.jsonl",
+    "eval/results/student_quality_paid_medium_retry_20261008.jsonl"
+  ],
+  "semantic_accuracy_verified_by_this_script": false,
+  "artifact_sha256": {
+    "eval/results/student_quality_paid_reference_final_retrieval_20261008.jsonl": "53bdd8447184e48fcb60288f107fea0236b728c67bbf0453fe6d904fd9b1fac2",
+    "eval/results/student_quality_paid_reference_final_answers_20261008.jsonl": "30f02e68b19479153ae955fd01dd9ace58716bf1b98c5de0cbec18ccfc982a34",
+    "eval/results/student_quality_paid_medium_final_full_20261008.jsonl": "d94a973a060ac51266478f5aac327c120e07b5887e59c75bd7d357b9fad7125a",
+    "eval/results/student_quality_paid_medium_retry_20261008.jsonl": "0d30749c8f9f3ffdb020a811fff94385be0467a8a2c1d7b2419e7cc0c7f1acd3"
+  }
+}

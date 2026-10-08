@@ -1,0 +1,3 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+llm_failure model=gemini-flash-lite-latest reason=Gemini rate or quota limit reached cause=ClientError status=429 attempt=1 elapsed_ms=1054 retry=False
+{"utc": "2026-10-07T11:28:16.833793+00:00", "quota": [{"quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests", "quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier", "quotaValue": "500"}], "retry_delay": ["45098s"], "status": "LLMRateLimitError"}

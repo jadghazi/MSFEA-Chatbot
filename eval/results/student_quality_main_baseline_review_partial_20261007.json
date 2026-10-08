@@ -1,0 +1,463 @@
+{
+  "reviewer": "Codex source review, not independent faculty calibration",
+  "phase": "baseline review through F11; later records pending",
+  "rubric": "Pass answers core supported intent. Partial is useful and grounded but weak in specificity, relevance, completeness or actionability. Fail is a material unsupported policy/scope conclusion. No citation-based automatic accuracy score.",
+  "trace": "student_quality_main_answers_20261007.jsonl",
+  "records": [
+    {
+      "id": "Q01",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q02",
+      "status": "partial",
+      "note": "Useful grounded overview, but an exhaustive deliverable inventory makes orientation unnecessarily long."
+    },
+    {
+      "id": "Q03",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q04",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q05",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q06",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q07",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q08",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q09",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q10",
+      "status": "partial",
+      "note": "Normal process is answered, but unrequested six-week completion exceptions distract from it."
+    },
+    {
+      "id": "Q11",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q12",
+      "status": "partial",
+      "note": "Career+ and preparation modules are supported; relevant alumni mentorship present in context is omitted from the frozen synthesis expectation."
+    },
+    {
+      "id": "Q13",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q14",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q15",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q16",
+      "status": "partial",
+      "note": "Ordinary duration is correct; volunteering the six-week shortfall is unnecessary."
+    },
+    {
+      "id": "Q17",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q18",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q19",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q20",
+      "status": "partial",
+      "note": "Correct eligibility minimum; billing/course credits were not requested."
+    },
+    {
+      "id": "Q21",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q22",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q23",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q24",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q25",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q26",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q27",
+      "status": "partial",
+      "note": "Correct joining route, but omits the verified MentorPlus+ page URL present in context."
+    },
+    {
+      "id": "Q28",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q29",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q30",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q31",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q32",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q33",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q34",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q35",
+      "status": "partial",
+      "note": "Does not invent the absent current fee; generic escalation discards the IAESTE contact supplied in context."
+    },
+    {
+      "id": "Q36",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q37",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q38",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q39",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q40",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q41",
+      "status": "partial",
+      "note": "Correct job-support service, but the URL guard leaves an omitted-link placeholder; raw replay is needed before diagnosing its destination."
+    },
+    {
+      "id": "Q42",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q43",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q44",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q45",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q46",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q47",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q48",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q49",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q50",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q51",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q52",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q53",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q54",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q55",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q56",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q57",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q58",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q59",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "Q60",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H01",
+      "status": "partial",
+      "note": "Grounded ordinary overview; unrequested CO-OP closing pointer despite explicit Approved Experience subject."
+    },
+    {
+      "id": "H02",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H03",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H04",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H05",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H06",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H07",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H08",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H09",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H10",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H11",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H12",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H13",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H14",
+      "status": "partial",
+      "note": "Missing price remains unknown, but generic fallback does not identify the missing attribute or offer the supplied program resource."
+    },
+    {
+      "id": "H15",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H16",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H17",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H18",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H19",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "H20",
+      "status": "partial",
+      "note": "Correct joining route; supplied verified program-page URL is omitted."
+    },
+    {
+      "id": "F01",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F02",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F03",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F04",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F05",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F06",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F07",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F08",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F09",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F10",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    },
+    {
+      "id": "F11",
+      "status": "pass",
+      "note": "Core response is consistent with the supplied evidence and frozen intent; absence and approval are not invented."
+    }
+  ]
+}

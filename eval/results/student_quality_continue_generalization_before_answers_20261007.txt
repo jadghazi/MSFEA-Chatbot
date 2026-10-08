@@ -1,0 +1,42 @@
+ Container msfea-quality-candidate-test-db-1  Running
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "R01", "hits": [], "gate": true, "query": "I need some work experience before graduating and have no idea where to begin. What should I look into?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=6821 retry=True
+{"id": "R02", "hits": [], "gate": true, "query": "If CO-OP is a three-credit course, does that automatically make it an elective for my degree?", "refused": false, "error": null}
+{"id": "R03", "hits": [], "gate": true, "query": "I already registered for FEAA 500 in the first term. Do I register again for the next part?", "refused": false, "error": null}
+{"id": "R04", "hits": [], "gate": true, "query": "I have 85 credits right now. Does that stop me from applying to CO-OP a year early?", "refused": false, "error": null}
+{"id": "R05", "hits": [], "gate": true, "query": "Will finishing the CO-OP term guarantee that the employer hires me permanently?", "refused": false, "error": null}
+{"id": "R06", "hits": [], "gate": false, "query": "Does the second part cost extra?", "refused": true, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=27774 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=29034 retry=False
+{"id": "R07", "hits": [], "gate": true, "query": "And how much time would I need to set aside for CO-OP program?", "refused": null, "error": "LLMServiceError"}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29624 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=59407 retry=False
+{"id": "R08", "hits": [], "gate": true, "query": "Is Approved Experience internship a minimum or a maximum?", "refused": null, "error": "LLMServiceError"}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29827 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=38356 retry=False
+{"id": "R09", "hits": [], "gate": true, "query": "My friend got permission last year. Can I do the same?", "refused": null, "error": "LLMServiceError"}
+{"id": "R10", "hits": [], "gate": true, "query": "Where can I get CDC help with a resume and a covering letter?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29951 retry=True
+{"id": "R11", "hits": [], "gate": true, "query": "I have a job interview coming up. What help is available through MSFEA?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=30003 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=2 elapsed_ms=60138 retry=False
+{"id": "R12", "hits": [], "gate": true, "query": "What's the email for IAESTE?", "refused": null, "error": "LLMServiceError"}
+{"id": "R13", "hits": [], "gate": true, "query": "how can an alumini mentro help me with my career?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=1419 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=2724 retry=False
+{"id": "R14", "hits": [], "gate": true, "query": "What's the point of Career+ and what kinds of things count toward it?", "refused": null, "error": "LLMServiceError"}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29942 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=32182 retry=False
+{"id": "R15", "hits": [], "gate": true, "query": "Actually, I need information about the international exchange internships now.", "refused": null, "error": "LLMServiceError"}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=989 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=2124 retry=False
+{"id": "R16", "hits": [], "gate": true, "query": "Would a paid job for 20 hours a week qualify as CO-OP if it lasts six months?", "refused": null, "error": "LLMServiceError"}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=29954 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=31674 retry=False
+{"id": "R17", "hits": [], "gate": true, "query": "Could I do a remote internship for an American company?", "refused": null, "error": "LLMServiceError"}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=504 attempt=1 elapsed_ms=28906 retry=True
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=2 elapsed_ms=30449 retry=False
+{"id": "R18", "hits": [], "gate": true, "query": "Can some hands-on faculty research make up the rest if my company offers six weeks?", "refused": null, "error": "LLMServiceError"}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=2657 retry=True
+

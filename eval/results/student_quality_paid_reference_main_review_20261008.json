@@ -1,0 +1,1100 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "rubric": "Material correctness and current intent against frozen expected behavior and supplied approved evidence; style/completeness notes separate. No expected answer changes.",
+  "cases": 179,
+  "material_policy_or_current_intent_failures": 0,
+  "core_passes": 179,
+  "provider_failure_before_retry": [
+    "U02: two 504 attempts in independent full run; separately retained fresh successful retry."
+  ],
+  "minor_notes": {
+    "Q02": "Correct comparison; clarify that the one-week deadline applies specifically to final report/presentation, not every end item.",
+    "Q04": "FEAA 500 is used as the program umbrella in this broad overview; named second-semester questions correctly say FEAA 500A.",
+    "H03": "General eligibility statement could name the enrollment stage explicitly for the credit threshold.",
+    "H04": "Does not incorrectly require 90 credits at application; enrollment-stage wording can be clearer.",
+    "Q14": "Rejects being done just from finishing training; could name the Progress Report in the summarized outstanding requirements.",
+    "Q38": "Grounded refusal; generic CDC escalation is awkward for unrelated football questions.",
+    "Q39": "Grounded refusal; generic CDC escalation can be more natural for unrelated requests."
+  },
+  "grades": [
+    {
+      "id": "U01",
+      "core_grade": "pass",
+      "expected_behavior": "Yes to arithmetic under the stated hypothetical; do not transfer the six-week-first-placement trigger or verify personal approval.",
+      "minor_note": null
+    },
+    {
+      "id": "U02",
+      "core_grade": "pass",
+      "expected_behavior": "Confirm the stated numerical total; do not invent a second-placement minimum for an eleven-week first component.",
+      "minor_note": null
+    },
+    {
+      "id": "U03",
+      "core_grade": "pass",
+      "expected_behavior": "Six plus five totals eleven; the second component meets the documented four-week minimum after a six-week first placement. Do not repeat a missing-approval objection removed by the hypothesis.",
+      "minor_note": null
+    },
+    {
+      "id": "U04",
+      "core_grade": "pass",
+      "expected_behavior": "Distinguish a claimed individual exception from standard policy: the documented MECH rule rejects two separate four-week company periods. Do not use a hypothetical approval to invent a standard exception.",
+      "minor_note": null
+    },
+    {
+      "id": "U05",
+      "core_grade": "pass",
+      "expected_behavior": "Retrieve and explain documented career/interview preparation support, without internship reporting rules or an unnecessary refusal.",
+      "minor_note": null
+    },
+    {
+      "id": "U06",
+      "core_grade": "pass",
+      "expected_behavior": "Explain approved abroad placements and relevant IAESTE opportunity, retaining approval conditions. Do not substitute only the scoped US-remote exception or an employer-hosting form.",
+      "minor_note": null
+    },
+    {
+      "id": "U07",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve alumni mentorship; give the verified MentorPlus+ resource, without an unrelated Career+ joining route.",
+      "minor_note": null
+    },
+    {
+      "id": "U08",
+      "core_grade": "pass",
+      "expected_behavior": "Keep the mentor as subject despite the goal phrase and typo; use the verified MentorPlus+ URL only.",
+      "minor_note": null
+    },
+    {
+      "id": "U09",
+      "core_grade": "pass",
+      "expected_behavior": "No; distinguish the separately graded required Progress Report and Final Training Report. Explain their distinct purposes without inventing grade guarantees.",
+      "minor_note": null
+    },
+    {
+      "id": "U10",
+      "core_grade": "pass",
+      "expected_behavior": "Progress Report and Final Training Report remain distinct required reports. Do not infer a universally required presentation from the general report-template introduction; preserve the IEM presentation exception if discussing presentations.",
+      "minor_note": null
+    },
+    {
+      "id": "U11",
+      "core_grade": "pass",
+      "expected_behavior": "Keep CO-OP as the subject. Explain its one-page progress report at the end of the third month and three-page final memo if giving details; do not substitute internship week-four or ECE final-training-report length rules.",
+      "minor_note": null
+    },
+    {
+      "id": "P01",
+      "core_grade": "pass",
+      "expected_behavior": "Five plus three is eight weeks. Explain the ordinary minimum and the required approval of the complete arrangement; do not claim to verify an actual approval or impose the six-first-week rule on this different breakdown.",
+      "minor_note": null
+    },
+    {
+      "id": "P02",
+      "core_grade": "pass",
+      "expected_behavior": "No automatic acceptance. For the documented second-company route after six company weeks, the second placement needs at least four weeks; nine total does not override that condition. Prior approval remains required.",
+      "minor_note": null
+    },
+    {
+      "id": "P03",
+      "core_grade": "pass",
+      "expected_behavior": "Apply the explicit MECH 4+4 company-split prohibition. Do not weaken it into a merely approval-dependent arrangement.",
+      "minor_note": null
+    },
+    {
+      "id": "P04",
+      "core_grade": "pass",
+      "expected_behavior": "CHEM components must be in the same summer; adding durations does not remove that restriction. Preserve the approval requirement without inventing a cross-summer exception.",
+      "minor_note": null
+    },
+    {
+      "id": "P05",
+      "core_grade": "pass",
+      "expected_behavior": "No: paid and full-time do not replace the minimum six-month duration.",
+      "minor_note": null
+    },
+    {
+      "id": "P06",
+      "core_grade": "pass",
+      "expected_behavior": "Yes for the ordinary 90-credit enrollment minimum; departments may impose additional requirements and credits alone do not establish complete eligibility or admission.",
+      "minor_note": null
+    },
+    {
+      "id": "P07",
+      "core_grade": "pass",
+      "expected_behavior": "Twelve minutes is within the 15-minute total maximum and three minutes respects the per-slide maximum. This does not certify overall presentation acceptance or waive other requirements.",
+      "minor_note": null
+    },
+    {
+      "id": "P08",
+      "core_grade": "pass",
+      "expected_behavior": "Do not turn the six-week-specific rule into an unconditional rule for an undocumented different breakdown. Explain what is documented and that the complete proposed arrangement requires department review; do not invent acceptance or prohibition.",
+      "minor_note": null
+    },
+    {
+      "id": "T01",
+      "core_grade": "pass",
+      "expected_behavior": "No; program application is July, academic-advisor meeting August. Preserve distinct steps and track; no invented exact calendar dates.",
+      "minor_note": null
+    },
+    {
+      "id": "T02",
+      "core_grade": "pass",
+      "expected_behavior": "Program application February, academic-advisor meeting March. Keep each action attached to its month.",
+      "minor_note": null
+    },
+    {
+      "id": "T03",
+      "core_grade": "pass",
+      "expected_behavior": "Explain application/advisor/modules/positions/offer/agreement at appropriate level; do not attach one month to all steps or give an exhaustive date inventory.",
+      "minor_note": null
+    },
+    {
+      "id": "T04",
+      "core_grade": "pass",
+      "expected_behavior": "No; Notice of Arrival during first week, Progress Report end of week four. Preserve distinct deliverables, not arbitrary generic submission timing.",
+      "minor_note": null
+    },
+    {
+      "id": "R01",
+      "core_grade": "pass",
+      "expected_behavior": "Explain ordinary Approved Experience internship purpose, minimum and starting steps. Do not assume a split placement or substitute a job-search service.",
+      "minor_note": null
+    },
+    {
+      "id": "R02",
+      "core_grade": "pass",
+      "expected_behavior": "Distinguish course credits from department-controlled academic/elective recognition; retain full-time status.",
+      "minor_note": null
+    },
+    {
+      "id": "R03",
+      "core_grade": "pass",
+      "expected_behavior": "Yes, registration continues in the second semester under FEAA 500A; no extra second-semester tuition. Interpret the course sequence normally.",
+      "minor_note": null
+    },
+    {
+      "id": "R04",
+      "core_grade": "pass",
+      "expected_behavior": "The 90-credit threshold is at FEAA 500 enrollment, not program application. Other applicable eligibility conditions still matter; do not approve personal admission.",
+      "minor_note": null
+    },
+    {
+      "id": "R05",
+      "core_grade": "pass",
+      "expected_behavior": "Cannot confirm an unsupported later-employment guarantee or no-guarantee policy; route to a human. Do not substitute initial placement rules.",
+      "minor_note": null
+    },
+    {
+      "id": "R06",
+      "core_grade": "pass",
+      "expected_behavior": "Preserve CO-OP; explain second-semester FEAA 500A registration without additional tuition.",
+      "minor_note": null
+    },
+    {
+      "id": "R07",
+      "core_grade": "pass",
+      "expected_behavior": "Preserve CO-OP and its minimum six-month work term; do not answer internship duration.",
+      "minor_note": null
+    },
+    {
+      "id": "R08",
+      "core_grade": "pass",
+      "expected_behavior": "Explain eight full weeks is the minimum, not a maximum; extensions are documented. No unrelated arrangements.",
+      "minor_note": null
+    },
+    {
+      "id": "R09",
+      "core_grade": "pass",
+      "expected_behavior": "Ask which arrangement is meant; a friend's individual permission cannot verify this student's permission.",
+      "minor_note": null
+    },
+    {
+      "id": "R10",
+      "core_grade": "pass",
+      "expected_behavior": "Use verified CV/cover-letter resources and/or documented career modules/advising. Provide verified useful links when supplied.",
+      "minor_note": null
+    },
+    {
+      "id": "R11",
+      "core_grade": "pass",
+      "expected_behavior": "Explain documented interview preparation modules/support. Do not return internship duration or guarantee employment.",
+      "minor_note": null
+    },
+    {
+      "id": "R12",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve IAESTE and give iaeste.lebanon@aub.edu.lb rather than an unrelated coordinator.",
+      "minor_note": null
+    },
+    {
+      "id": "R13",
+      "core_grade": "pass",
+      "expected_behavior": "Recover alumni mentorship intent and explain MentorPlus+ career guidance without inventing mentoring duties.",
+      "minor_note": null
+    },
+    {
+      "id": "R14",
+      "core_grade": "pass",
+      "expected_behavior": "Explain documented purpose and four activity domains, avoiding invented mandatory certification rules.",
+      "minor_note": null
+    },
+    {
+      "id": "R15",
+      "core_grade": "pass",
+      "expected_behavior": "Switch to IAESTE context and explain it rather than continuing interview advice.",
+      "minor_note": null
+    },
+    {
+      "id": "R16",
+      "core_grade": "pass",
+      "expected_behavior": "No under the documented paid full-time 35–40-hour requirement; duration alone is insufficient. Do not verify individual approval.",
+      "minor_note": null
+    },
+    {
+      "id": "R17",
+      "core_grade": "pass",
+      "expected_behavior": "Explain IEM's exception conditional on legal US work eligibility and department approval. Do not give an unconditional yes or the general prohibition alone.",
+      "minor_note": null
+    },
+    {
+      "id": "R18",
+      "core_grade": "pass",
+      "expected_behavior": "Six company weeks plus two approved faculty-research weeks may count when research includes hands-on engineering work; both components require approval and documentation.",
+      "minor_note": null
+    },
+    {
+      "id": "R19",
+      "core_grade": "pass",
+      "expected_behavior": "Disambiguate three minutes per slide, maximum five slides and fifteen minutes total; preserve both per-item and overall limits.",
+      "minor_note": null
+    },
+    {
+      "id": "R20",
+      "core_grade": "pass",
+      "expected_behavior": "No; progress report is due end of week four of the company internship and covers company experience. Research has its separate report.",
+      "minor_note": null
+    },
+    {
+      "id": "R21",
+      "core_grade": "pass",
+      "expected_behavior": "No; the employer letter is a separate required deliverable. Explain incompleteness and potential failure without declaring an unverified grade.",
+      "minor_note": null
+    },
+    {
+      "id": "R22",
+      "core_grade": "pass",
+      "expected_behavior": "Use documented employer-letter criteria, including dates and required signature/stamp where supplied; do not invent an official template.",
+      "minor_note": null
+    },
+    {
+      "id": "R23",
+      "core_grade": "pass",
+      "expected_behavior": "Past individual participation does not verify this student's approval. Explain the documented CDC/department approval route.",
+      "minor_note": null
+    },
+    {
+      "id": "R24",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve the exchange scheme to IAESTE and provide its official contact, or clarify if unable to resolve; never give interview or unrelated contact advice.",
+      "minor_note": null
+    },
+    {
+      "id": "R25",
+      "core_grade": "pass",
+      "expected_behavior": "Do not invent an amount/year-specific policy; identify the missing detail and route to an official human contact.",
+      "minor_note": null
+    },
+    {
+      "id": "R26",
+      "core_grade": "pass",
+      "expected_behavior": "Recover internship-abroad intent. Explain approved placements abroad and IAESTE if relevant; do not infer automatic placement/approval.",
+      "minor_note": null
+    },
+    {
+      "id": "R27",
+      "core_grade": "pass",
+      "expected_behavior": "Retrieve the verified MentorPlus+ URL; do not invent a form destination or switch to another program.",
+      "minor_note": null
+    },
+    {
+      "id": "R28",
+      "core_grade": "pass",
+      "expected_behavior": "Do not infer unprovided office hours. Route to an official contact.",
+      "minor_note": null
+    },
+    {
+      "id": "R29",
+      "core_grade": "pass",
+      "expected_behavior": "Ask which program is meant because registration differs; do not arbitrarily choose one.",
+      "minor_note": null
+    },
+    {
+      "id": "R30",
+      "core_grade": "pass",
+      "expected_behavior": "Switch to documented full-time job support, Career Portal and postings; do not apply internship or initial CO-OP placement rules.",
+      "minor_note": null
+    },
+    {
+      "id": "R31",
+      "core_grade": "pass",
+      "expected_behavior": "The arithmetic meets the ordinary eight-week total but a two-company arrangement requires prior written approval/petition. Do not assume the split is accepted or apply six-week-specific conditions unconditionally.",
+      "minor_note": null
+    },
+    {
+      "id": "R32",
+      "core_grade": "pass",
+      "expected_behavior": "Distinguish main company internship from approved faculty research at AUB; preserve department approval and combined-arrangement conditions.",
+      "minor_note": null
+    },
+    {
+      "id": "R33",
+      "core_grade": "pass",
+      "expected_behavior": "Explain purpose, ordinary minimum, approval and normal completion path. Do not lead with an exceptional two-company or research arrangement.",
+      "minor_note": null
+    },
+    {
+      "id": "R34",
+      "core_grade": "pass",
+      "expected_behavior": "No under documented paid full-time minimum-six-month CO-OP rules; do not invent approval of an alternative internship.",
+      "minor_note": null
+    },
+    {
+      "id": "R35",
+      "core_grade": "pass",
+      "expected_behavior": "Mentorship agreement alone does not establish formal course approval. Explain authorized department/course approval with CDC involvement, without asserting every mentor lacks other roles.",
+      "minor_note": null
+    },
+    {
+      "id": "R36",
+      "core_grade": "pass",
+      "expected_behavior": "CO-OP can delay graduation by a term in some cases; overloads/department-approved planning may avoid delay. Preserve return-to-campus requirement where relevant.",
+      "minor_note": null
+    },
+    {
+      "id": "R37",
+      "core_grade": "pass",
+      "expected_behavior": "No; they are separate required deliverables with different purposes. Both must be completed.",
+      "minor_note": null
+    },
+    {
+      "id": "R38",
+      "core_grade": "pass",
+      "expected_behavior": "Ordinary minimum eight full approved weeks, typically 320 hours. Do not treat an exceptional research route as the ordinary duration.",
+      "minor_note": null
+    },
+    {
+      "id": "R39",
+      "core_grade": "pass",
+      "expected_behavior": "Use documented advice for appropriate relevant visuals; ask which document if needed. Do not impose unrelated slide counts or arbitrary layout rules.",
+      "minor_note": null
+    },
+    {
+      "id": "R40",
+      "core_grade": "pass",
+      "expected_behavior": "Ordinary minimum eight full approved weeks; selected-company six-week reductions are exceptional and require approval. Proposed research completion requires Chair approval; no automatic acceptance.",
+      "minor_note": null
+    },
+    {
+      "id": "S01",
+      "core_grade": "pass",
+      "expected_behavior": "Explain documented full-time job support, Career Portal and postings without guaranteeing employment. A request for support is not a request for an employer hiring decision.",
+      "minor_note": null
+    },
+    {
+      "id": "S02",
+      "core_grade": "pass",
+      "expected_behavior": "Do not infer later hiring or a no-guarantee policy from initial-placement rules. Identify that this outcome cannot be verified from the supplied approved knowledge.",
+      "minor_note": null
+    },
+    {
+      "id": "V01",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "V02",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "V03",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "V04",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F01",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F02",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F03",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F04",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F05",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F06",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F07",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F08",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F09",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F10",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F11",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F12",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F13",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F14",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F15",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F16",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F17",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F18",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F19",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F20",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F21",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F22",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F23",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F24",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F25",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F26",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F27",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F28",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F29",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "F30",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H01",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H02",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H03",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": "General eligibility statement could name the enrollment stage explicitly for the credit threshold."
+    },
+    {
+      "id": "H04",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": "Does not incorrectly require 90 credits at application; enrollment-stage wording can be clearer."
+    },
+    {
+      "id": "H05",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H06",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H07",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H08",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H09",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H10",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H11",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H12",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H13",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H14",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H15",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H16",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H17",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H18",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H19",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "H20",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q01",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q02",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": "Correct comparison; clarify that the one-week deadline applies specifically to final report/presentation, not every end item."
+    },
+    {
+      "id": "Q03",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q04",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": "FEAA 500 is used as the program umbrella in this broad overview; named second-semester questions correctly say FEAA 500A."
+    },
+    {
+      "id": "Q05",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q06",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q07",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q08",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q09",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q10",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q11",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q12",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q13",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q14",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": "Rejects being done just from finishing training; could name the Progress Report in the summarized outstanding requirements."
+    },
+    {
+      "id": "Q15",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q16",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q17",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q18",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q19",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q20",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q21",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q22",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q23",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q24",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q25",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q26",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q27",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q28",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q29",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q30",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q31",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q32",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q33",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q34",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q35",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q36",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q37",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q38",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": "Grounded refusal; generic CDC escalation is awkward for unrelated football questions."
+    },
+    {
+      "id": "Q39",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": "Grounded refusal; generic CDC escalation can be more natural for unrelated requests."
+    },
+    {
+      "id": "Q40",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q41",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q42",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q43",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q44",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q45",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q46",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q47",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q48",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q49",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q50",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q51",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q52",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q53",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q54",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q55",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q56",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q57",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q58",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q59",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    },
+    {
+      "id": "Q60",
+      "core_grade": "pass",
+      "expected_behavior": null,
+      "minor_note": null
+    }
+  ],
+  "limits": [
+    "Constructed cases, not real traffic prevalence.",
+    "Six faculty designated-document retrieval misses and one golden phrase miss remain.",
+    "No finite set proves universal correctness."
+  ]
+}

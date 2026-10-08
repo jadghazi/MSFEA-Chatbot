@@ -1,0 +1,424 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "reviewed_cases": 82,
+  "expected_cases": 179,
+  "complete": false,
+  "records": [
+    {
+      "id": "U03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "U04",
+      "status": "partial",
+      "note": "Correctly rejects a standard MECH split, but adds a potentially confusing approval qualification after the explicit prohibition."
+    },
+    {
+      "id": "U06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "U07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "P02",
+      "status": "partial",
+      "note": "Correctly rejects automatic approval; omits the controlling second-company minimum for this six-week first placement."
+    },
+    {
+      "id": "P03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "P04",
+      "status": "partial",
+      "note": "Correct same-summer restriction and prior approval; adds an unrelated six-company-week shortfall."
+    },
+    {
+      "id": "P05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "P06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "T01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "T02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "T03",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R02",
+      "status": "partial",
+      "note": "Correct departmental academic-credit recognition; omits the frozen expected full-time-status facet."
+    },
+    {
+      "id": "R04",
+      "status": "partial",
+      "note": "Correct application/enrollment distinction; omits remaining applicable eligibility conditions."
+    },
+    {
+      "id": "R05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R10",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R12",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R16",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R18",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R23",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R26",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R27",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R29",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R30",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R33",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R34",
+      "status": "partial",
+      "note": "Correct paid, full-time and six-month conditions; includes an odd invented word before correcting it."
+    },
+    {
+      "id": "R38",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R39",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "R40",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "S01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "S02",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "V01",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "V04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F07",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F08",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F10",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F11",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F14",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F15",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F18",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F19",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F20",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F21",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F23",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F24",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F27",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F28",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "F29",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H01",
+      "status": "partial",
+      "note": "Correct full alternative paths now replace the unsupported combined path; adds unrequested alternatives to an ordinary overview."
+    },
+    {
+      "id": "H04",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H05",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H06",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H09",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H12",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H15",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H19",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "H20",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q02",
+      "status": "partial",
+      "note": "Useful ordinary orientation replaces the narrow FAQ; adds unasked alternatives and a long deliverables list."
+    },
+    {
+      "id": "Q11",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q13",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q15",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q18",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q22",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q23",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q24",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q27",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q34",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q35",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q38",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q39",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q44",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q56",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q57",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    },
+    {
+      "id": "Q58",
+      "status": "pass",
+      "note": "Source-reviewed answer addresses the frozen intent with applicable scope and conditions, or a justified clarification/limitation; no unsupported policy found."
+    }
+  ],
+  "counts": {
+    "pass": 74,
+    "partial": 8
+  },
+  "missing_cases": 97,
+  "note": "Same reviewed answer text, refusal and citations; full current prompt parity separately checked. Not final full-set accuracy."
+}

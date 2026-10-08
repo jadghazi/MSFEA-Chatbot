@@ -1,0 +1,56 @@
+{
+  "baseline_commit": "a0caa4d",
+  "cases": 114,
+  "expected_cases": 114,
+  "complete": true,
+  "missing_case_ids": [],
+  "verified_provider_answers": 102,
+  "verified_local_answers": 12,
+  "reused_provider_answers": 102,
+  "fresh_provider_answers": 0,
+  "comparison": "same temporary model: before scope/overview refinement to final candidate",
+  "answer_models": [
+    "gemini-3.1-flash-lite"
+  ],
+  "baseline_answer_models": [
+    "gemini-3.1-flash-lite"
+  ],
+  "temporary_model_diagnostic": true,
+  "production_model_acceptance": false,
+  "final_prompt_matches_live_traces": true,
+  "provider_errors_before": 1,
+  "provider_errors_after": 0,
+  "retained_failed_answer_attempts": 0,
+  "reuse_source_files": [
+    "eval/results/student_quality_completion_alternate_answers_20261007.jsonl",
+    "eval/results/student_quality_completion_context_delta_answers_20261007.jsonl",
+    "eval/results/student_quality_completion_scoped_answers_20261007.jsonl"
+  ],
+  "retained_provider_errors_in_reuse_sources": 5,
+  "attempt_files": [
+    "student_quality_completion_catalogue_final_reused_20261007.jsonl"
+  ],
+  "source_review": "Codex review, not independent human calibration",
+  "invalid_phrase_probe": "Q47: generic report length conflicts with ECE override; excluded from phrase metrics",
+  "sha256": {
+    "eval/student_quality_audit_set.jsonl": "885770afc4e9d6eb23f355539d21b12fe7497e73e53f387789c4be697e90e24d",
+    "eval/student_quality_holdout_set.jsonl": "5f0367dfec10f71ff694694c48a9d0ea8e720415fd0b0761bf85a4867a98d0e9",
+    "src/msfea_bot/generation/answer.py": "fabd4768d888fb941960859e4cd776da5b479050d45f0b45e521468db2b51282",
+    "src/msfea_bot/generation/conversation.py": "d93aaca24427a00decc0c6099f802719f542b80dd33e40c096e08f19149eea0a",
+    "src/msfea_bot/generation/__init__.py": "a06cebd0fbda5b2df4452867f2548410f543b8ff21ecedb282e2fb516cd75bfb",
+    "src/msfea_bot/ingestion/chunking.py": "070c3430a8f3761b482de7ae8030205f1f611efa71836d3f0b8272509aea4d76",
+    "src/msfea_bot/retrieval/store.py": "c6bf87d7ffef9bde87b7a62b2bb0c5ea00f849fdcf388462922847d76a5ba74b",
+    "kb/normalized/cdc-knowledge-base.md": "c924e5e7d20d2fb6a19ad7804f1c52a7ff5aafe6253578d3f890f5fe196637c9",
+    "kb/normalized/email-clarifications.md": "b8b16be151359e96ad78c56debce913cc278f278134f516ba5d471b062c93348",
+    "kb/normalized/final-presentation-slide-template.md": "b61960ddb380069575e5408b7a1ce17798c077c564eb9fcaba8a4d19db5b2a33",
+    "kb/normalized/internship-report-templates-and-rubrics.md": "06cdff7c71fecb7e5f495dd0403bf6bb8103badb760ced83e3a087b701bf05c0",
+    "kb/normalized/msfea-cdc-coop-handbook.md": "cbe4d7bb3330b33a81d71393055e95d991c9d0ebdd5e0991e4381fdfc522566c",
+    "kb/normalized/summer-training-guidelines-2026.md": "594538f12d05727fdd495e0c4d51f62ac14bcf8e543b88e04a3ab2864db951a9",
+    "eval/student_quality_failure_classes_set.jsonl": "37d49f8595e04c9039a9e1683f671f3b760135ac1e47c79b91ee5d3c0e83a504",
+    "eval/student_quality_comparative_validation_set.jsonl": "56b501dd80f29be9071a0679efe6dd1f2b23798e903374c505d5f4b3e89bfc4e",
+    "eval/student_quality_completion_set.jsonl": "a951b490487e1cb4ff74c144e18df2ef77abb2e661444dfa4317fded645cdf41",
+    "src/msfea_bot/retrieval/repair.py": "2abbb9a49aa28ea6dd0132faadcd30682c1ca81b2bd1fab580d1fe7d635bc237",
+    "src/msfea_bot/retrieval/scope.py": "19277cdcf54c4590e3536660102d25fca85272215521dba9cee23ab79e1f4812",
+    "src/msfea_bot/curation/service.py": "fdf4dfe9dffd4105d3895c63e0b72f803a6125e21892d152dd81a35fd96832d6"
+  }
+}

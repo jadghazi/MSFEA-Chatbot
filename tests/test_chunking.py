@@ -31,14 +31,47 @@ def test_chunk_splits_on_headings() -> None:
         assert c.text.strip()
 
 
+def test_heading_only_parents_are_not_evidence_but_scope_is_inherited() -> None:
+    md = "# Guide\n## Rules (ECE)\n**Department:** Electrical and Computer Engineering (ECE)\n---\n### Duration\nEight weeks.\n## Empty\n"
+    chunks = chunk_markdown(md, "guide.md")
+    assert len(chunks) == 1
+    assert "Rules (ECE) > Duration" in chunks[0].section
+    assert chunks[0].metadata["department"] == "ece"
+    assert "Eight weeks." in chunks[0].text
+
+
 def test_large_section_is_windowed_with_heading() -> None:
-    body = "\n".join(f"line {i} " + "x" * 40 for i in range(60))
+    body = "\n\n".join(f"paragraph {i} " + "x" * 40 for i in range(60))
     md = f"---\ntitle: Doc\n---\n## Big Section\n{body}"
     chunks = chunk_markdown(md, "doc.md", max_chars=300, overlap=50)
     assert len(chunks) > 1, "oversized section should be split into multiple windows"
     assert all(c.section == "Big Section" for c in chunks)
     assert all("## Big Section" in c.text for c in chunks), "each window keeps its heading"
     assert all(len(c.text) <= 300 + 150 for c in chunks), "windows are roughly bounded"
+
+
+def test_wrapped_paragraph_retains_its_qualifying_clause() -> None:
+    paragraph = (
+        "The placement carries three course credits.\n"
+        "Whether these count toward the degree, and their elective category,\n"
+        "is decided by the department."
+    )
+    chunks = chunk_markdown("## Credit\n\n" + paragraph + "\n\nA separate topic.",
+                            "credit.md", max_chars=85, overlap=20)
+    owners = [chunk for chunk in chunks if "three course credits" in chunk.text]
+    assert len(owners) == 1
+    assert paragraph in owners[0].text
+    assert not any("Whether these" in chunk.text and "three course credits" not in chunk.text
+                   for chunk in chunks)
+
+
+def test_wrapped_list_items_stay_whole_but_separate_items_can_split() -> None:
+    first = "- A prerequisite applies before enrollment,\n  rather than before application."
+    second = "- A different requirement applies during participation."
+    chunks = chunk_markdown(f"## Rules\n{first}\n{second}", "rules.md", max_chars=75, overlap=20)
+    assert any(first in chunk.text for chunk in chunks)
+    assert any(second in chunk.text for chunk in chunks)
+    assert len(chunks) == 2
 
 
 def test_small_section_stays_one_chunk() -> None:
@@ -184,11 +217,22 @@ Applies to all departments.
         "ece",
         "ece",
         "ece",
-        "ece",
         "all",
     ]
-    assert "Combined arrangements (ECE) > 6+2 definition" in chunks[1].section
-    assert "Combined arrangements (ECE)" in chunks[1].text
+    assert "Combined arrangements (ECE) > 6+2 definition" in chunks[0].section
+    assert "Combined arrangements (ECE)" in chunks[0].text
+
+
+def test_explicit_overview_metadata_has_no_empty_window_or_marker_in_evidence() -> None:
+    md = "## New topic overview\n<!-- content_role: overview -->\n\n" + "Verified fact. " * 60
+    chunks = chunk_markdown(md, "topic.md")
+    assert len(chunks) == 1
+    assert chunks[0].metadata["content_role"] == "overview"
+    assert "<!--" not in chunks[0].text
+    assert "Verified fact." in chunks[0].text
+    assert chunks[0].retrieval_text == "New topic overview\nVerified fact."
+    ordinary = chunk_markdown("## Organization Overview\nReport instructions.", "report.md")
+    assert "content_role" not in ordinary[0].metadata
 
 
 def test_legacy_qa_pairs_remain_atomic() -> None:
@@ -201,3 +245,33 @@ def test_legacy_qa_pairs_remain_atomic() -> None:
     assert len(first) == 1
     assert "answer" in first[0].text
     assert not any("First question" in c.text and "A: second answer" in c.text for c in chunks)
+def test_reviewed_relationship_and_stage_metadata_are_not_answer_evidence() -> None:
+    chunks = chunk_markdown(
+        "## Admission\n<!-- process_stage: admission -->\n"
+        "<!-- evidence_links: policy.md > Exceptions -->\n"
+        "Approval is required.\n", "policy.md",
+    )
+    assert chunks[0].metadata["process_stage"] == "admission"
+    assert chunks[0].metadata["evidence_links"] == "policy.md > Exceptions"
+    assert "<!--" not in chunks[0].text
+
+
+def test_all_reviewed_source_links_have_canonical_targets() -> None:
+    chunks = chunk_normalized_dir()
+    targets = {(chunk.source_doc, chunk.section) for chunk in chunks}
+    for chunk in chunks:
+        for link in chunk.metadata.get("evidence_links", "").split(" | "):
+            if link:
+                source, section = link.split(" > ", 1)
+                matches = {(doc, path) for doc, path in targets if doc == source
+                           and (path == section or path.endswith(" > " + section))}
+                assert len(matches) == 1, (chunk.id, link, matches)
+
+
+def test_parent_links_reach_children_and_do_not_leak_to_siblings() -> None:
+    chunks = chunk_markdown(
+        "## General rule\n<!-- evidence_links: policy.md > Exception -->\n"
+        "### Detail\nThe ordinary rule.\n## Other\nAn unrelated rule.", "policy.md",
+    )
+    assert chunks[0].metadata["evidence_links"] == "policy.md > Exception"
+    assert "evidence_links" not in chunks[1].metadata

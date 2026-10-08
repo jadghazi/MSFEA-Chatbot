@@ -71,6 +71,76 @@ def test_preview_uses_private_candidate_and_original_question_without_logging_st
         assert conn.execute("SELECT resolved_at FROM interactions WHERE id=7").fetchone()[0] is None
 
 
+@pytest.mark.parametrize("setting,value", [
+    ("llm_model", "different-student-model"),
+    ("llm_gemini_thinking_level", "high"),
+    ("llm_max_output_tokens", 8192),
+])
+def test_profile_change_blocks_approval_and_retries_only_previews(studio_database, monkeypatch, setting, value):
+    revision = reviewed(studio_database)
+    run_id = passed_run(studio_database, revision)
+    monkeypatch.setattr(workspace, "indexed_generation", lambda _dsn: "private-generation")
+    monkeypatch.setattr(workspace, "get_preview_provider", lambda **_kw: object())
+    monkeypatch.setattr(workspace, "generate_answer", lambda *_args, **_kw: Answer(text="Thursday from 2 to 4 p.m.", citations=["CDC Knowledge > Weekly advising"]))
+    assert workspace.process_next_workspace_job()
+    old = workspace.workspace(revision)["jobs"][0]["result"]
+    monkeypatch.setattr(settings, setting, value)
+    state = workspace.workspace(revision)
+    assert not state["stale"] and state["run"]["id"] == run_id
+    assert state["jobs"][0]["error_code"] == "preview_profile_changed"
+    assert not state["jobs"][0]["result"]["passed"]
+    monkeypatch.setattr(settings, "admin_token", "test-admin")
+    client = TestClient(api.app)
+    body = {"revision_id": revision, "run_id": run_id, "reviewer_label": "CDC reviewer", "decision": "confirm_no_conflict", "reason": "Reviewed the source."}
+    assert client.post('/admin/api/studio/approve', json=body, headers={"Authorization": "Bearer test-admin"}).status_code == 409
+    workspace.retry_preview(revision)
+    with psycopg.connect(studio_database) as conn:
+        saved = conn.execute("SELECT payload FROM curation_events WHERE event_type='preview_retried'").fetchone()[0]
+        assert saved["result"] == old
+        assert conn.execute("SELECT count(*) FROM curation_validation_results WHERE run_id=%s", (run_id,)).fetchone()[0] == len(REQUIRED_STEPS)
+    assert workspace.process_next_workspace_job()
+    assert workspace.workspace(revision)["jobs"][0]["result"]["passed"]
+    with pytest.raises(ValueError, match="no failed preview"):
+        workspace.retry_preview(revision)
+
+
+def test_legacy_preview_requires_refresh(studio_database):
+    revision = reviewed(studio_database)
+    run_id = passed_run(studio_database, revision)
+    with psycopg.connect(studio_database) as conn:
+        conn.execute("UPDATE curation_workspace_jobs SET status='completed',result=%s WHERE run_id=%s", (Json({"passed": True}), run_id))
+    assert workspace.workspace(revision)["jobs"][0]["error_code"] == "preview_profile_changed"
+    workspace.retry_preview(revision)
+    assert workspace.workspace(revision)["jobs"][0]["status"] == "queued"
+
+
+def test_publication_rechecks_profile_and_human_approval_after_preview_retry(studio_database, monkeypatch):
+    from msfea_bot.curation.publication import PublicationError, _assert_authorized
+    from msfea_bot.curation.validation import get_revision, validation_fingerprint
+
+    revision_id = reviewed(studio_database)
+    run_id = passed_run(studio_database, revision_id)
+    monkeypatch.setattr(workspace, "indexed_generation", lambda _dsn: "private-generation")
+    monkeypatch.setattr(workspace, "get_preview_provider", lambda **_kw: object())
+    monkeypatch.setattr(workspace, "generate_answer", lambda *_args, **_kw: Answer(text="Thursday from 2 to 4 p.m.", citations=["CDC Knowledge > Weekly advising"]))
+    assert workspace.process_next_workspace_job()
+    record_human_review(run_id, "CDC reviewer", "confirm_no_conflict", "Source and current previews checked.")
+    revision = get_revision(revision_id)
+    fingerprint = validation_fingerprint(revision)
+    with psycopg.connect(studio_database) as conn:
+        _assert_authorized(conn, revision, run_id, fingerprint)
+    monkeypatch.setattr(settings, "llm_model", "changed-student-model")
+    with psycopg.connect(studio_database) as conn, pytest.raises(PublicationError, match="refreshing"):
+        _assert_authorized(conn, revision, run_id, fingerprint)
+    workspace.retry_preview(revision_id)
+    assert workspace.process_next_workspace_job()
+    with psycopg.connect(studio_database) as conn, pytest.raises(PublicationError, match="approval must follow"):
+        _assert_authorized(conn, revision, run_id, fingerprint)
+    record_human_review(run_id, "CDC reviewer", "confirm_no_conflict", "Refreshed previews checked again.")
+    with psycopg.connect(studio_database) as conn:
+        _assert_authorized(conn, revision, run_id, fingerprint)
+
+
 def test_preview_refusal_is_visible_and_cannot_become_a_success(studio_database, monkeypatch):
     revision = reviewed(studio_database)
     passed_run(studio_database, revision)
@@ -145,7 +215,7 @@ def test_guided_approval_requires_successful_private_previews(studio_database, m
     revision = reviewed(studio_database)
     run_id = passed_run(studio_database, revision)
     with psycopg.connect(studio_database) as conn:
-        conn.execute("UPDATE curation_workspace_jobs SET status='completed',result=%s WHERE run_id=%s", (Json({"passed": preview_passed}), run_id))
+        conn.execute("UPDATE curation_workspace_jobs SET status='completed',result=%s WHERE run_id=%s", (Json({"passed": preview_passed, "profile_fingerprint": workspace.preview_fingerprint()}), run_id))
     monkeypatch.setattr(settings, "admin_token", "test-admin")
     requested = []
     monkeypatch.setattr(api, "request_publication", lambda *args, **kwargs: requested.append(args) or PublicationResult("fake-attempt", revision, "publishing", None))

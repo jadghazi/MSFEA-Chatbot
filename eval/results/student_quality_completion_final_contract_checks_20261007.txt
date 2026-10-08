@@ -1,0 +1,5 @@
+ Container msfea-quality-tests-test-db-1  Running
+All checks passed!
+Success: no issues found in 94 source files
+......................................................                   [100%]
+54 passed in 4.31s

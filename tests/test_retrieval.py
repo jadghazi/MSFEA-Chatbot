@@ -256,3 +256,85 @@ def test_joined_duration_retrieves_the_same_evidence(department: str) -> None:
     joined = search("Can I do 6weeks of internship?", 7, department=department)
     spaced = search("Can I do 6 weeks of internship?", 7, department=department)
     assert [(c.id, c.score) for c in joined] == [(c.id, c.score) for c in spaced]
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_linked_evidence_keeps_base_and_only_applicable_companions() -> None:
+    from msfea_bot.ingestion.chunking import Chunk
+    from msfea_bot.retrieval.store import (
+        RetrievedChunk, delete_chunk, expand_evidence_links, upsert_chunks,
+    )
+
+    sources = [Chunk("zzz-base-tail", "The restriction in another window.", "zzz-policy.md", "Base",
+                     {"department": "all"}),
+               Chunk("zzz-ece", "An approval condition.", "zzz-policy.md", "ECE condition",
+                     {"department": "ece"}),
+               Chunk("zzz-iem", "A different condition.", "zzz-policy.md", "IEM condition",
+                     {"department": "iem"})]
+    upsert_chunks(sources)
+    seed = RetrievedChunk("zzz-base", "General rule.", "zzz-policy.md", "Base", 0.61,
+                          {"evidence_links": "zzz-policy.md > ECE condition | zzz-policy.md > IEM condition"})
+    try:
+        result = expand_evidence_links([seed], "General rule", "ece")
+        assert result[0] is seed
+        assert [chunk.id for chunk in result[1:]] == ["zzz-base-tail", "zzz-ece"]
+        assert result[1].metadata["retrieval_role"] == "companion"
+        assert len(expand_evidence_links(result, "General rule", "ece")) == 3
+    finally:
+        for source in sources:
+            delete_chunk(source.id)
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_stage_filter_applies_before_ranking_and_to_linked_context() -> None:
+    from msfea_bot.ingestion.chunking import Chunk
+    from msfea_bot.retrieval.store import (
+        RetrievedChunk, delete_chunk, expand_evidence_links, search, upsert_chunks,
+    )
+
+    sources = [
+        Chunk("zzz-stage-entry", "qwertystemployment admission does not guarantee placement.",
+              "zzz-stage.md", "Admission", {"process_stage": "entry"}),
+        Chunk("zzz-stage-later", "qwertystemployment after training includes career support.",
+              "zzz-stage.md", "Later support", {"process_stage": "post_completion"}),
+    ]
+    upsert_chunks(sources)
+    try:
+        assert any(c.id == sources[0].id for c in search("qwertystemployment", k=7))
+        filtered = search("qwertystemployment", k=7, excluded_stages=("entry",))
+        assert any(c.id == sources[1].id for c in filtered)
+        assert not any(c.metadata.get("process_stage") == "entry" for c in filtered)
+        seed = RetrievedChunk("zzz-stage-seed", "Training overview", "zzz-stage.md", "Overview", 0.7,
+                              {"evidence_links": "zzz-stage.md > Admission | zzz-stage.md > Later support"})
+        bundle = expand_evidence_links([seed], "qwertystemployment", None,
+                                       excluded_stages=("entry",))
+        assert [c.id for c in bundle] == [seed.id, sources[1].id]
+    finally:
+        for source in sources:
+            delete_chunk(source.id)
+
+
+@pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+def test_revision_bundle_restores_only_the_same_revision_and_applicable_scope() -> None:
+    from msfea_bot.generation.answer import _answer_context, passes_similarity_gate
+    from msfea_bot.ingestion.chunking import Chunk
+    from msfea_bot.retrieval.store import RetrievedChunk, delete_chunk, expand_evidence_links, upsert_chunks
+
+    metadata = {"revision_bundle": "999999", "revision_id": "999999", "entry_id": "999999", "department": "ece", "process_stage": "completion"}
+    sources = [
+        Chunk("zzz-bundle-condition", "Completion requires a separately approved final report.", "same-title", "Report", metadata),
+        Chunk("zzz-bundle-old", "An old superseded condition.", "same-title", "Report", {**metadata, "revision_id": "999998"}),
+        Chunk("zzz-bundle-other-entry", "Another entry's condition.", "same-title", "Report", {**metadata, "entry_id": "999998"}),
+        Chunk("zzz-bundle-other-dept", "A condition outside this department.", "same-title", "Report", {**metadata, "department": "iem"}),
+    ]
+    upsert_chunks(sources)
+    seed = RetrievedChunk("zzz-bundle-seed", "Report submission procedure.", "same-title", "Report", 0.61, metadata)
+    try:
+        bundle = expand_evidence_links([seed], "Report submission procedure", "ece")
+        assert [chunk.id for chunk in bundle] == [seed.id, sources[0].id]
+        assert _answer_context("Report procedure", bundle, None) == bundle
+        assert not passes_similarity_gate(bundle, 0.99)
+        assert expand_evidence_links([seed], "Report procedure", "ece", excluded_stages=("completion",)) == [seed]
+    finally:
+        for source in sources:
+            delete_chunk(source.id)

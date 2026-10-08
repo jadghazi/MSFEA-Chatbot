@@ -1,0 +1,17 @@
+ Container msfea-quality-next-test-db-1  Running
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "R06", "hits": [], "gate": true, "query": "Does the second part cost extra for CO-OP?", "refused": false, "error": null}
+llm_failure model=gemini-3.1-flash-lite reason=Gemini is temporarily unavailable cause=ServerError status=503 attempt=1 elapsed_ms=2094 retry=True
+{"id": "R08", "hits": [], "gate": true, "query": "Is Approved Experience internship duration a minimum or a maximum?", "refused": false, "error": null}
+{"id": "R09", "hits": [], "gate": true, "query": "My friend got permission last year. Can I do the same?", "refused": false, "error": null}
+{"id": "R15", "hits": [], "gate": true, "query": "Actually, I need information about the international exchange internships now.", "refused": false, "error": null}
+{"id": "R16", "hits": [], "gate": true, "query": "Would a paid job for 20 hours a week qualify as CO-OP if it lasts six months?", "refused": false, "error": null}
+{"id": "R18", "hits": [], "gate": true, "query": "Can some hands-on faculty research make up the rest if my company offers six weeks?", "refused": false, "error": null}
+{"id": "R20", "hits": [], "gate": true, "query": "For six company weeks followed by two research weeks, do I wait until the research starts to send the progress report?", "refused": false, "error": null}
+{"id": "R23", "hits": [], "gate": true, "query": "The company hosted another AUB student before. Does that mean my placement is already approved?", "refused": false, "error": null}
+{"id": "R31", "hits": [], "gate": true, "query": "If I do seven weeks at one company and one week at another, is eight weeks in total enough?", "refused": false, "error": null}
+{"id": "R32", "hits": [], "gate": true, "query": "You said internships can't be inside AUB. Does that also rule out an approved faculty research component?", "refused": false, "error": null}
+{"id": "R33", "hits": [], "gate": true, "query": "Could you explain the internship thing in ordinary language before getting into special cases?", "refused": false, "error": null}
+{"id": "R34", "hits": [], "gate": true, "query": "Can I call an unpaid twelve-week placement a CO-OP?", "refused": false, "error": null}
+{"id": "R35", "hits": [], "gate": true, "query": "Would getting my alumni mentor's agreement be enough to approve an internship?", "refused": false, "error": null}
+{"id": "R37", "hits": [], "gate": true, "query": "Can I submit the Final Report instead of the Progress Report?", "refused": false, "error": null}

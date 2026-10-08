@@ -45,6 +45,108 @@ The `normalized/` Markdown is the **canonical input to ingestion** — the vecto
 store is rebuilt from it, so it is version-controlled and reviewable. Known
 limitation: `python-docx` does not capture hyperlink URLs (only link text).
 
+### Topic overviews and detailed evidence
+
+Keep both an ordinary topic overview and focused rules/FAQs. A useful overview
+connects verified purpose, normal requirements, the main process and where to get
+help; it must not turn an exception into the ordinary rule. Summaries can reorganize
+approved facts but cannot create eligibility, dates, permission or policy rationales.
+Record their supporting source sections in an editorial provenance footer.
+
+A reviewed overview section may include `<!-- content_role: overview -->` directly
+below its heading. Ingestion stores this role in metadata and omits the marker from
+answer evidence. Merely naming a report section "Organization Overview" does not
+make it a topic overview. Keep the summary as a coherent paragraph; confirm it fits
+the embedding model's input limit. Its title and first sentence form the compact
+embedding representation; the full text remains canonical answer evidence and
+full-text search input. Empty heading windows are not indexed.
+
+A service-directory section can use `<!-- content_role: catalogue -->`. The role
+applies only to that section's windows, not child sections. Keep the existing
+reviewed `program` scope accurate: a single-program leading primary result allows
+generation to omit unlinked catalogue evidence that could confuse separate
+services. Mixed or unknown program scopes and directory-led questions retain
+the directory. Explicit evidence links are preserved. This is conservative
+context selection, not automatic classification or a guarantee of service scope.
+
+The local quality candidate adds internship and career-support overviews to the CDC
+document and a CO-OP overview to its authoritative handbook. The change has not
+published new staff revisions or changed the deployed index. Evaluation evidence
+and known limits are in the [main-model evaluation](../eval/results/student_quality_main_model_20261007.md).
+
+### Complete policy context
+
+Keep a fact and its approval, exception or scope condition together. Reconcile
+abbreviated bullets against already approved clarifications rather than leaving
+the model to resolve contradictory fragments. Preserve provenance and original files.
+Wrapped prose and continuation lines inside one Markdown bullet remain together
+in the local candidate. Keep the ordinary governing fact self-contained; place
+specific exceptions below it with their triggering conditions intact. An explicitly
+linked canonical ancestor already retrieved is presented before its child. This
+does not expand a scoped rule to other arrangements or guarantee correct reasoning.
+
+Write each alternative as a complete independent path, repeating a shared starting
+component when needed. Abbreviated additions separated by "or" can otherwise be
+misread as a new combined route. Check that the restatement preserves the approved
+components, bounds and conditions. A named arrangement's reporting or procedure
+section can link to its governing definition so its name alone is not expected to
+establish the required components.
+
+Reviewed sections can declare `<!-- evidence_links: file.md > Section > Child | other.md > Section -->`.
+Targets must identify exactly one canonical section path; ingestion rejects missing
+or ambiguous targets. Links inherit through child headings and stop at sibling
+boundaries. Retrieval restores the linked seed section's own windows and complete
+target sections once, respecting
+department isolation and the context ceiling. Markers are editorial metadata,
+never factual evidence or permission. Use links for actual controlling conditions
+or complementary facts, not indiscriminate related-topic expansion.
+
+The local candidate uses these existing links to restore the report introduction
+alongside report-specific guidance, retaining the IEM presentation exception. A
+restricted internship-format passage links to its ordinary duration/location
+requirements; employer IAESTE hosting guidance links to the distinct student
+introduction. These links preserve existing context and roles, without adding
+new policy. CO-OP tuition and Approved Experience substitution are separate facts;
+current Approved Experience credit/billing comes from the approved clarification.
+Keep short service lists coherent. When a registration-only window can retrieve
+without the service description, a reviewed governing-context link can restore
+the section's complete windows and its overview. Paragraph grouping alone does
+not guarantee that the factual description will be ranked above registration text.
+
+Keep ordinary topic guidance separate from conditional process changes. A topic
+overview should preserve the chronology of approval before training, activities
+during training and submissions after completion. An overview's governing link
+should restore the normal rule; late starts, changed dates and extensions belong
+in separately titled sections with their existing conditions. This avoids pulling
+an exceptional procedure into every ordinary topic answer. Reorganize verified
+facts without creating new limits, permissions or official policy.
+
+`<!-- process_stage: descriptive stage -->` marks existing source applicability.
+Use `entry` for application/admission/initial placement facts and `post_completion`
+only for approved facts about outcomes after participation ends. Other descriptive
+labels can distinguish participation or course completion. Separate mixed FAQ
+chapters by actual process before tagging; a chapter about entry cannot establish
+later employment. Tag each factual section explicitly; its windows retain the
+label, which is removed from factual text. Stage labels do not inherit to children.
+
+Explicit later employment/retention queries exclude `entry` evidence before search
+and companion expansion. Definitive later-outcome claims require retrieved
+`post_completion` evidence in the final model context; without it the assistant routes to a human rather than
+inventing either a guarantee or a no-guarantee policy. General career-support
+questions remain answerable from documented support. Tagging must never introduce
+an unsupported policy or authorize publication; unknown/implicit stages remain a
+review boundary. New staff content follows the normal source and publication gates.
+
+The local candidate also parses a single `<!-- process_stage: ... -->` line in a
+focused Studio revision's answer. The immutable answer retains it for normal
+source/human review; factual chunks omit it and every window carries the scope.
+Conflicting or malformed stage markers fail chunk construction. An untagged
+revision keeps its original behavior and provenance; no stage is guessed from
+its question. A marker grants no approval and creates no active revision. There
+is no separate stage control in the dashboard. Existing approved revisions may
+still need reviewed successors with stage scope: inspect parity before release,
+and never infer a policy from missing labels or bypass the evidence guard.
+
 ### Normalized outputs (batch 1)
 
 | Normalized file | From |

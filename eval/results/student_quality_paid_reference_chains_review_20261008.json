@@ -1,0 +1,174 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "rubric": "Current intent, conditional/scoped accuracy, topic preservation and grounded unknowns against frozen behavior; no expected answer changes.",
+  "actual_history_turns": 26,
+  "core_passes": 26,
+  "material_failures": 0,
+  "minor_notes": {
+    "D01.6": "Answers the requested billing stages correctly; adds related waiver/billing detail.",
+    "D01.7": "Correct FEAA 500A registration, tuition and status; could route registration corrections more specifically to Registrar.",
+    "D02.5": "Answers interview help and adds a related mentorship resource."
+  },
+  "grades": [
+    {
+      "id": "D01.1",
+      "core_grade": "pass",
+      "expected_behavior": "Orient to documented CDC services; no arbitrary narrow policy.",
+      "minor_note": null
+    },
+    {
+      "id": "D01.2",
+      "core_grade": "pass",
+      "expected_behavior": "Explain normal Approved Experience purpose and path; no assumed split placement.",
+      "minor_note": null
+    },
+    {
+      "id": "D01.3",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve internship; ordinary eight-week minimum, not CO-OP duration.",
+      "minor_note": null
+    },
+    {
+      "id": "D01.4",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve current internship and give verified ECE course contact.",
+      "minor_note": null
+    },
+    {
+      "id": "D01.5",
+      "core_grade": "pass",
+      "expected_behavior": "Switch to optional paid full-time minimum-six-month CO-OP; omit old internship-only rules.",
+      "minor_note": null
+    },
+    {
+      "id": "D01.6",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve CO-OP; three-credit first-semester tuition and no additional second-semester tuition.",
+      "minor_note": "Answers the requested billing stages correctly; adds related waiver/billing detail."
+    },
+    {
+      "id": "D01.7",
+      "core_grade": "pass",
+      "expected_behavior": "Keep CO-OP; second-semester registration under FEAA 500A, without inventing a conflict.",
+      "minor_note": "Correct FEAA 500A registration, tuition and status; could route registration corrections more specifically to Registrar."
+    },
+    {
+      "id": "D02.1",
+      "core_grade": "pass",
+      "expected_behavior": "Prior written approval/petition, documentation and technical relevance; do not claim every split approved or banned.",
+      "minor_note": null
+    },
+    {
+      "id": "D02.2",
+      "core_grade": "pass",
+      "expected_behavior": "Answer stated arithmetic under hypothetical approved premise; do not claim personal records verified or transfer six-week-specific second-placement rule.",
+      "minor_note": null
+    },
+    {
+      "id": "D02.3",
+      "core_grade": "pass",
+      "expected_behavior": "Switch to report; ECE controlling length five pages and 1500 words minimum, twenty-page maximum, exclusions; no generic eight-to-fifteen-page override.",
+      "minor_note": null
+    },
+    {
+      "id": "D02.4",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve final report; separate required progress report cannot be substituted.",
+      "minor_note": null
+    },
+    {
+      "id": "D02.5",
+      "core_grade": "pass",
+      "expected_behavior": "Switch to documented interview preparation support, not report or placement completion rules.",
+      "minor_note": "Answers interview help and adds a related mentorship resource."
+    },
+    {
+      "id": "D02.6",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve career preparation; verified CV/cover-letter resources, not internship deliverables.",
+      "minor_note": null
+    },
+    {
+      "id": "D03.1",
+      "core_grade": "pass",
+      "expected_behavior": "Recover alumni mentorship; explain documented MentorPlus+ guidance.",
+      "minor_note": null
+    },
+    {
+      "id": "D03.2",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve mentorship; verified MentorPlus+ URL only.",
+      "minor_note": null
+    },
+    {
+      "id": "D03.3",
+      "core_grade": "pass",
+      "expected_behavior": "Recover overseas internship intent; approved abroad placements and IAESTE if relevant, without guaranteeing approval or placement.",
+      "minor_note": null
+    },
+    {
+      "id": "D03.4",
+      "core_grade": "pass",
+      "expected_behavior": "Orient to international internship exchange and joining/contact route.",
+      "minor_note": null
+    },
+    {
+      "id": "D03.5",
+      "core_grade": "pass",
+      "expected_behavior": "Resolve IAESTE; iaeste.lebanon@aub.edu.lb.",
+      "minor_note": null
+    },
+    {
+      "id": "D03.6",
+      "core_grade": "pass",
+      "expected_behavior": "Keep IAESTE; explicitly unknown monetary amount with verified IAESTE contact, no CO-OP tuition substitution.",
+      "minor_note": null
+    },
+    {
+      "id": "D03.7",
+      "core_grade": "pass",
+      "expected_behavior": "Switch to documented full-time job support/Career Portal and postings; no unsupported hiring guarantee or blanket refusal.",
+      "minor_note": null
+    },
+    {
+      "id": "HT01.1",
+      "core_grade": "pass",
+      "expected_behavior": "Answer the progress-report content request using approved templates; preserve department scope.",
+      "minor_note": null
+    },
+    {
+      "id": "HT01.2",
+      "core_grade": "pass",
+      "expected_behavior": "Answer the current replacement question, not the preceding content checklist. Progress and final reports are separate required deliverables; final does not replace progress.",
+      "minor_note": null
+    },
+    {
+      "id": "HT02.1",
+      "core_grade": "pass",
+      "expected_behavior": "Explain first-semester FEAA 500 tuition and second-semester FEAA 500A registration with no additional tuition.",
+      "minor_note": null
+    },
+    {
+      "id": "HT02.2",
+      "core_grade": "pass",
+      "expected_behavior": "Answer the current documented substitution question rather than repeating tuition. Passing FEAA 500 replaces the department's Approved Experience requirement.",
+      "minor_note": null
+    },
+    {
+      "id": "HT03.1",
+      "core_grade": "pass",
+      "expected_behavior": "Give documented MentorPlus+ joining resources and verified links; do not invent a direct form destination.",
+      "minor_note": null
+    },
+    {
+      "id": "HT03.2",
+      "core_grade": "pass",
+      "expected_behavior": "Address the current relationship between distinct programs, not the earlier sign-up instructions. MentorPlus+ participation does not establish Career+ certification; explain the documented path requirements, certification application and feedback, without inventing eligibility rules.",
+      "minor_note": null
+    }
+  ],
+  "sha256": {
+    "eval\\results\\student_quality_paid_relation_dialogue_20261008.jsonl": "80074c48f3088529b381994323b1493eab24c26263c6aa187f434c2aff021973",
+    "eval\\results\\student_quality_paid_reference_final_holdout_20261008.jsonl": "ab4f89f63c4da7c709ada0c1652b8abbaa5f6f06a5e603851dbff01f4f99096b"
+  }
+}

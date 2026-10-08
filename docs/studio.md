@@ -1,6 +1,7 @@
 # Knowledge Studio: staff workflow
 
-Reviewed 2026-10-03 against the deployed flow. Both **Add knowledge** and
+Reviewed 2026-10-08 against the local alignment candidate; Oracle remains unchanged.
+Both **Add knowledge** and
 **Needs attention → Review in Knowledge Studio** use one resumable workspace.
 Continue linked draft/Continue in Studio resume saved work; editing a published
 entry prepares its replacement while the current version remains active.
@@ -68,6 +69,13 @@ Never weaken original tests to obtain a pass.
 student model against the private candidate, with normal grounding/citations.
 Those previews use LLM calls. Inspect facts, qualifications and links; passing the
 local checks does not guarantee the generated answer is correct.
+
+If the student model or its settings changed since the saved preview, approval is
+paused. **Retry answer previews** refreshes those answers while retaining valid
+source checks and the prior attempt in the audit. A knowledge/source change still
+requires fresh complete checks. Comparisons and writing suggestions retain
+department, program and process-stage applicability; related placement guidance
+does not establish a later employment outcome.
 
 A saved failed draft can also offer optional answer-writing assistance using its
 recorded checks/previews. Acceptance creates a successor and fresh review; earlier

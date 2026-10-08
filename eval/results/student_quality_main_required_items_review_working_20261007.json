@@ -1,0 +1,705 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "records": [
+    {
+      "id": "U01",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U02",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U03",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U04",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U05",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U06",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U07",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U08",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U09",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "U10",
+      "status": "partial",
+      "note": "Correct ordinary reports and timing; adds conditional arrangements not requested."
+    },
+    {
+      "id": "U11",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "P01",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "P02",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "P03",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "P04",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "P05",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "P08",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "T03",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R05",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R08",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R12",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R21",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R22",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R23",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R24",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R25",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R28",
+      "status": "partial",
+      "note": "Correctly refuses undocumented CDC office hours but routes to a department course contact rather than CDC."
+    },
+    {
+      "id": "R29",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R30",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "R38",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "S02",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F11",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F13",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F15",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F16",
+      "status": "partial",
+      "note": "Correctly cannot verify a personal employer decision; omits a useful human route."
+    },
+    {
+      "id": "F17",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F19",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F20",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F21",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F23",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "F24",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H05",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H06",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H09",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H12",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H13",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H15",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H19",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "H20",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q03",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q04",
+      "status": "partial",
+      "note": "Eligibility wording says an undergraduate degree rather than clearly identifying current undergraduate students."
+    },
+    {
+      "id": "Q05",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q09",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q10",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q11",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q13",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q15",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q16",
+      "status": "partial",
+      "note": "Correct ordinary duration but adds an unasked six-week shortfall."
+    },
+    {
+      "id": "Q17",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q18",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q21",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q22",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q23",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q24",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q27",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q32",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q34",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q35",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q36",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q38",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q39",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q44",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q49",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q52",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q54",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q56",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q57",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "Q58",
+      "status": "pass",
+      "note": "Source-reviewed reply answers the frozen intent with its applicable scope and conditions; no unsupported official fact identified."
+    },
+    {
+      "id": "P06",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "P07",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "T01",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "T02",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "T04",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "R01",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "R02",
+      "status": "partial",
+      "note": "Correctly separates course credits from departmental elective recognition; omits the frozen expected full-time-status facet."
+    },
+    {
+      "id": "R03",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "R04",
+      "status": "partial",
+      "note": "Correctly places the 90-credit threshold at enrollment, but does not mention remaining applicable eligibility conditions."
+    },
+    {
+      "id": "R06",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "R07",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "R09",
+      "status": "pass",
+      "note": "Source-reviewed answer preserves the applicable credits, timing, scope or conditional relationship; clarification addresses an unidentified proposal directly."
+    },
+    {
+      "id": "R10",
+      "status": "pass",
+      "note": "Source-reviewed relevant career preparation, mentorship or certification answer, with correct resource/scope and no invented outcome."
+    },
+    {
+      "id": "R11",
+      "status": "pass",
+      "note": "Source-reviewed relevant career preparation, mentorship or certification answer, with correct resource/scope and no invented outcome."
+    },
+    {
+      "id": "R13",
+      "status": "pass",
+      "note": "Source-reviewed relevant career preparation, mentorship or certification answer, with correct resource/scope and no invented outcome."
+    },
+    {
+      "id": "R14",
+      "status": "pass",
+      "note": "Source-reviewed relevant career preparation, mentorship or certification answer, with correct resource/scope and no invented outcome."
+    },
+    {
+      "id": "R15",
+      "status": "pass",
+      "note": "Source-reviewed scope, working time, research approval or reporting/recording limits match the stated circumstances."
+    },
+    {
+      "id": "R16",
+      "status": "pass",
+      "note": "Source-reviewed scope, working time, research approval or reporting/recording limits match the stated circumstances."
+    },
+    {
+      "id": "R17",
+      "status": "pass",
+      "note": "Source-reviewed scope, working time, research approval or reporting/recording limits match the stated circumstances."
+    },
+    {
+      "id": "R18",
+      "status": "pass",
+      "note": "Source-reviewed scope, working time, research approval or reporting/recording limits match the stated circumstances."
+    },
+    {
+      "id": "R19",
+      "status": "pass",
+      "note": "Source-reviewed scope, working time, research approval or reporting/recording limits match the stated circumstances."
+    },
+    {
+      "id": "R20",
+      "status": "pass",
+      "note": "Source-reviewed scope, working time, research approval or reporting/recording limits match the stated circumstances."
+    },
+    {
+      "id": "R26",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves overseas options, the requested mentor resource, research scope or ordinary orientation."
+    },
+    {
+      "id": "R27",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves overseas options, the requested mentor resource, research scope or ordinary orientation."
+    },
+    {
+      "id": "R31",
+      "status": "partial",
+      "note": "Does not authorize an unapproved split or impose the six-week trigger on seven weeks, but adds a restriction for an unstated six-week scenario."
+    },
+    {
+      "id": "R32",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves overseas options, the requested mentor resource, research scope or ordinary orientation."
+    },
+    {
+      "id": "R33",
+      "status": "pass",
+      "note": "Source-reviewed reply preserves overseas options, the requested mentor resource, research scope or ordinary orientation."
+    },
+    {
+      "id": "R34",
+      "status": "partial",
+      "note": "Correct paid/full-time/six-month conditions, but includes an odd invented word before correcting it to twelve-week."
+    },
+    {
+      "id": "R35",
+      "status": "pass",
+      "note": "Source-reviewed approval authority, graduation planning, separate reports, visuals or CEE exception remains correctly scoped."
+    },
+    {
+      "id": "R36",
+      "status": "pass",
+      "note": "Source-reviewed approval authority, graduation planning, separate reports, visuals or CEE exception remains correctly scoped."
+    },
+    {
+      "id": "R37",
+      "status": "pass",
+      "note": "Source-reviewed approval authority, graduation planning, separate reports, visuals or CEE exception remains correctly scoped."
+    },
+    {
+      "id": "R39",
+      "status": "pass",
+      "note": "Source-reviewed approval authority, graduation planning, separate reports, visuals or CEE exception remains correctly scoped."
+    },
+    {
+      "id": "R40",
+      "status": "pass",
+      "note": "Source-reviewed approval authority, graduation planning, separate reports, visuals or CEE exception remains correctly scoped."
+    },
+    {
+      "id": "S01",
+      "status": "pass",
+      "note": "Source-reviewed assistance or quantity follow-up preserves the current topic and applicable minimum/maximum without inventing an outcome."
+    },
+    {
+      "id": "V01",
+      "status": "pass",
+      "note": "Source-reviewed assistance or quantity follow-up preserves the current topic and applicable minimum/maximum without inventing an outcome."
+    },
+    {
+      "id": "V02",
+      "status": "pass",
+      "note": "Source-reviewed assistance or quantity follow-up preserves the current topic and applicable minimum/maximum without inventing an outcome."
+    },
+    {
+      "id": "V03",
+      "status": "pass",
+      "note": "Source-reviewed assistance or quantity follow-up preserves the current topic and applicable minimum/maximum without inventing an outcome."
+    },
+    {
+      "id": "V04",
+      "status": "pass",
+      "note": "Source-reviewed assistance or quantity follow-up preserves the current topic and applicable minimum/maximum without inventing an outcome."
+    },
+    {
+      "id": "F01",
+      "status": "partial",
+      "note": "Correct ECE checklist and controlling dates, but adds an unasked research-arrangement branch."
+    },
+    {
+      "id": "F02",
+      "status": "pass",
+      "note": "Source-reviewed deadlines, narration bounds, IEM presentation applicability or Chair approval preserve the scoped controlling facts."
+    },
+    {
+      "id": "F03",
+      "status": "pass",
+      "note": "Source-reviewed deadlines, narration bounds, IEM presentation applicability or Chair approval preserve the scoped controlling facts."
+    },
+    {
+      "id": "F04",
+      "status": "pass",
+      "note": "Source-reviewed deadlines, narration bounds, IEM presentation applicability or Chair approval preserve the scoped controlling facts."
+    },
+    {
+      "id": "F05",
+      "status": "pass",
+      "note": "Source-reviewed deadlines, narration bounds, IEM presentation applicability or Chair approval preserve the scoped controlling facts."
+    },
+    {
+      "id": "F06",
+      "status": "pass",
+      "note": "Source-reviewed department permission or fee/duration/contact attribute follows the current topic, including current one-credit internship billing and FEAA 500A sequencing."
+    },
+    {
+      "id": "F07",
+      "status": "pass",
+      "note": "Source-reviewed department permission or fee/duration/contact attribute follows the current topic, including current one-credit internship billing and FEAA 500A sequencing."
+    },
+    {
+      "id": "F08",
+      "status": "pass",
+      "note": "Source-reviewed department permission or fee/duration/contact attribute follows the current topic, including current one-credit internship billing and FEAA 500A sequencing."
+    },
+    {
+      "id": "F09",
+      "status": "pass",
+      "note": "Source-reviewed department permission or fee/duration/contact attribute follows the current topic, including current one-credit internship billing and FEAA 500A sequencing."
+    },
+    {
+      "id": "F10",
+      "status": "pass",
+      "note": "Source-reviewed department permission or fee/duration/contact attribute follows the current topic, including current one-credit internship billing and FEAA 500A sequencing."
+    },
+    {
+      "id": "F12",
+      "status": "pass",
+      "note": "Source-reviewed missing price, initial placement, undocumented prerequisite with useful CV support, typo recovery or explicit topic switch matches the requested scope."
+    },
+    {
+      "id": "F14",
+      "status": "pass",
+      "note": "Source-reviewed missing price, initial placement, undocumented prerequisite with useful CV support, typo recovery or explicit topic switch matches the requested scope."
+    },
+    {
+      "id": "F18",
+      "status": "pass",
+      "note": "Source-reviewed missing price, initial placement, undocumented prerequisite with useful CV support, typo recovery or explicit topic switch matches the requested scope."
+    },
+    {
+      "id": "F22",
+      "status": "pass",
+      "note": "Source-reviewed missing price, initial placement, undocumented prerequisite with useful CV support, typo recovery or explicit topic switch matches the requested scope."
+    },
+    {
+      "id": "F25",
+      "status": "pass",
+      "note": "Source-reviewed missing price, initial placement, undocumented prerequisite with useful CV support, typo recovery or explicit topic switch matches the requested scope."
+    },
+    {
+      "id": "F26",
+      "status": "pass",
+      "note": "Source-reviewed missing price, initial placement, undocumented prerequisite with useful CV support, typo recovery or explicit topic switch matches the requested scope."
+    },
+    {
+      "id": "F27",
+      "status": "pass",
+      "note": "Source-reviewed career certification, contact, comparative duration, CV resource or program definition is consistent with supplied evidence."
+    },
+    {
+      "id": "F28",
+      "status": "pass",
+      "note": "Source-reviewed career certification, contact, comparative duration, CV resource or program definition is consistent with supplied evidence."
+    },
+    {
+      "id": "F29",
+      "status": "pass",
+      "note": "Source-reviewed career certification, contact, comparative duration, CV resource or program definition is consistent with supplied evidence."
+    },
+    {
+      "id": "F30",
+      "status": "pass",
+      "note": "Source-reviewed career certification, contact, comparative duration, CV resource or program definition is consistent with supplied evidence."
+    },
+    {
+      "id": "H01",
+      "status": "fail",
+      "note": "Combines two separate alternatives into an unsupported two-research-week plus four-company-week path during an ordinary overview; correct context was supplied."
+    },
+    {
+      "id": "H02",
+      "status": "partial",
+      "note": "Ordinary facts are correct, but the overview reproduces an unasked detailed deliverables checklist."
+    },
+    {
+      "id": "H03",
+      "status": "pass",
+      "note": "Source-reviewed career certification, contact, comparative duration, CV resource or program definition is consistent with supplied evidence."
+    },
+    {
+      "id": "H04",
+      "status": "pass",
+      "note": "Source-reviewed career certification, contact, comparative duration, CV resource or program definition is consistent with supplied evidence."
+    }
+  ]
+}

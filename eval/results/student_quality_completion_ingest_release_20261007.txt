@@ -1,0 +1,7 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  24%|██▍       | 48/199 [00:00<00:00, 471.65it/s]
+Loading weights:  48%|████▊     | 96/199 [00:00<00:00, 466.30it/s]
+Loading weights:  72%|███████▏  | 143/199 [00:00<00:00, 441.30it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 528.75it/s]
+Indexed 249 chunks into the vector store.

@@ -1,0 +1,6 @@
+ Container msfea-quality-tests-test-db-1  Running
+All checks passed!
+eval/results/student_quality_continue_reasoning_trial_20261007.py:44: error: Module "eval.student_quality_audit" does not explicitly export attribute "get_llm_provider"  [attr-defined]
+eval/results/student_quality_continue_reasoning_trial_20261007.py:44: error: Incompatible types in assignment (expression has type "Callable[[], GeminiProvider]", variable has type "_lru_cache_wrapper[LLMProvider]")  [assignment]
+Found 2 errors in 1 file (checked 102 source files)
+

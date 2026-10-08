@@ -1,0 +1,13 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "Q16", "hits": [false, false], "gate": true, "query": "How much time do I need to spend at the company?", "refused": false, "error": null}
+{"id": "Q24", "hits": [true], "gate": true, "query": "what about the fee for CO-OP?", "refused": false, "error": null}
+{"id": "Q30", "hits": [true], "gate": true, "query": "Back to the internship, what do I need to finish?", "refused": false, "error": null}
+{"id": "Q44", "hits": [true], "gate": true, "query": "whats mentroplus", "refused": false, "error": null}
+{"id": "Q47", "hits": [true], "gate": true, "query": "How long should my Final Training Report be?", "refused": false, "error": null}
+{"id": "H11", "hits": [true], "gate": true, "query": "Actually, what help is there for interviews?", "refused": false, "error": null}
+{"id": "H15", "hits": [], "gate": true, "query": "Will I definitely get hired after CO-OP?", "refused": true, "error": null}
+{"id": "H16", "hits": [true, true], "gate": true, "query": "Do I need a career plan before I can work on my resume?", "refused": false, "error": null}
+{"id": "F02", "hits": [true, true], "gate": true, "query": "Can you list the internship submissions and when they are due?", "refused": false, "error": null}
+{"id": "F03", "hits": [true], "gate": true, "query": "How long should my narrated slides take?", "refused": false, "error": null}
+{"id": "F04", "hits": [true], "gate": true, "query": "What is the final presentation requirement?", "refused": false, "error": null}
+{"id": "F07", "hits": [true, true], "gate": true, "query": "what about the fee for CO-OP?", "refused": false, "error": null}

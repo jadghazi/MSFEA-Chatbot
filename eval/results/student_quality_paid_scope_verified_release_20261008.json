@@ -1,0 +1,34 @@
+{
+  "expected_cases": 179,
+  "verified_cases": 179,
+  "complete": true,
+  "missing_case_ids": [],
+  "current_prompt_and_local_reply_parity": true,
+  "source_freeze_matches": true,
+  "source_freeze": "eval/results/student_quality_paid_scope_freeze_20261008.json",
+  "answer_model": "gemini-3.8-flash",
+  "production_model_acceptance": false,
+  "generation_profile": {
+    "max_output_tokens": 4096,
+    "temperature": null,
+    "seed": null,
+    "thinking_level": "low"
+  },
+  "provider_answers": 164,
+  "local_replies": 15,
+  "reused_provider_answers": 102,
+  "retained_failed_attempts": 0,
+  "attempt_files": [
+    "eval/results/student_quality_paid_candidate_full_20261008.jsonl",
+    "eval/results/student_quality_paid_final_changed_20261008.jsonl",
+    "eval/results/student_quality_paid_scope_changed_20261008.jsonl"
+  ],
+  "semantic_accuracy_verified_by_this_script": false,
+  "artifact_sha256": {
+    "eval/results/student_quality_paid_scope_retrieval_retry_20261008.jsonl": "2b2d80c23b8b73d6a0d0b2d5109e327c889d4cf8c41ec7b40d1a964375d9d6ed",
+    "eval/results/student_quality_paid_scope_answers_release_20261008.jsonl": "9ba1674fa00bbd6246f9171d0184d31cb1ae19eea61f0b5cd1c2f0d173261f32",
+    "eval/results/student_quality_paid_candidate_full_20261008.jsonl": "fe0a2a98c8e54cd27e98218f79659db052442bd75742fbc2afc521d30e3b2fb5",
+    "eval/results/student_quality_paid_final_changed_20261008.jsonl": "36f5387c9f0d6f4f153aae54395587827636362e16fc7b991d73e35e75801c3d",
+    "eval/results/student_quality_paid_scope_changed_20261008.jsonl": "0d946e1fe795f8c5937afa8a409c74252153a5f4be07e627b8c8000baf20c615"
+  }
+}

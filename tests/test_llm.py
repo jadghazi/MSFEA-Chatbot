@@ -65,6 +65,7 @@ def test_gemini_passes_sampling_params_to_the_sdk(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(genai, "Client", _FakeClient)
     monkeypatch.setattr(settings, "llm_api_key", "test-key")
     # Distinctive values, so this proves propagation rather than restating defaults.
+    monkeypatch.setattr(settings, "llm_gemini_use_sampling_params", True)
     monkeypatch.setattr(settings, "llm_temperature", 0.25)
     monkeypatch.setattr(settings, "llm_seed", 99)
     monkeypatch.setattr(settings, "llm_max_output_tokens", 777)
@@ -88,15 +89,40 @@ def test_gemini_passes_sampling_params_to_the_sdk(monkeypatch: pytest.MonkeyPatc
     assert cast(_FakeClient, provider._client).http_options.retry_options.attempts == 1
 
 
-def test_defaults_are_deterministic() -> None:
-    """Defaults must stay pinned — creative defaults are what ADR-0012 fixed.
-
-    The seed matters as much as the temperature here: temperature 0 alone was
-    measured to still vary Gemini's wording between identical calls.
-    """
+def test_legacy_sampling_defaults_are_preserved() -> None:
+    """Legacy defaults remain available without promising deterministic output."""
     assert Settings.model_fields["llm_temperature"].default == 0.0
     assert Settings.model_fields["llm_seed"].default == 42
     assert Settings.model_fields["llm_max_output_tokens"].default == 1024
+
+
+@pytest.mark.parametrize("purpose,sampling,thinking", [
+    ("", False, "LOW"),
+    ("curation_preview_", False, "LOW"),
+    ("curation_", True, "MEDIUM"),
+])
+def test_student_profile_omits_deprecated_fields_without_changing_staff(
+    monkeypatch: pytest.MonkeyPatch, purpose: str, sampling: bool, thinking: str,
+) -> None:
+    pytest.importorskip("google.genai")
+    from google import genai
+    from msfea_bot.llm.gemini import GeminiProvider
+
+    monkeypatch.setattr(genai, "Client", _FakeClient)
+    monkeypatch.setattr(settings, "llm_api_key", "test-key")
+    monkeypatch.setattr(settings, "llm_temperature", 0.25)
+    monkeypatch.setattr(settings, "llm_seed", 99)
+    monkeypatch.setattr(settings, "llm_gemini_use_sampling_params", False)
+    monkeypatch.setattr(settings, "llm_gemini_thinking_level", "low")
+    config = GeminiProvider(purpose=purpose)._config
+    assert config.temperature == (0.25 if sampling else None)
+    assert config.seed == (99 if sampling else None)
+    assert config.thinking_config is not None
+    assert config.thinking_config.thinking_level == thinking
+    payload = config.model_dump(exclude_none=True)
+    assert ("temperature" in payload) == sampling
+    assert ("seed" in payload) == sampling
+    assert config.automatic_function_calling.disable is True
 
 
 def test_gemini_maps_provider_429_to_rate_limit_error(

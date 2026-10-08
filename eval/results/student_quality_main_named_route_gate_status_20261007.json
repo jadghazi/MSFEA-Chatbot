@@ -1,0 +1,34 @@
+[
+  {
+    "command": "eval.retrieval_eval",
+    "exit_code": 0
+  },
+  {
+    "command": "eval.faculty_retrieval_gate",
+    "exit_code": 0
+  },
+  {
+    "command": "eval.threshold_eval",
+    "exit_code": 0
+  },
+  {
+    "command": "eval.synthesis_gate",
+    "exit_code": 0
+  },
+  {
+    "command": "eval.conversation_eval",
+    "exit_code": 0
+  },
+  {
+    "command": "eval.conversation_stress_eval",
+    "exit_code": 0
+  },
+  {
+    "command": "eval.publication_guard_gate",
+    "exit_code": 0
+  },
+  {
+    "command": "eval.conflict_gate",
+    "exit_code": 0
+  }
+]

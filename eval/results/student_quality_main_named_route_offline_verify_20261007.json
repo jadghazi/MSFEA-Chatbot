@@ -1,0 +1,32 @@
+{
+  "source_freeze": "eval/results/student_quality_main_named_route_freeze_20261007.json",
+  "source_hashes_verified": 77,
+  "canonical_index_matches": true,
+  "index_generation": "sha256:570a44171e689f4579ee754116a9607bab8366904953e14fc57ae337338ef883",
+  "model": "gemini-flash-lite-latest",
+  "fresh_provider_calls": 0,
+  "prefix": [
+    {
+      "id": "D01.1",
+      "current_prompt_exact": true,
+      "current_chain_verified": true
+    },
+    {
+      "id": "D01.2",
+      "current_prompt_exact": true,
+      "current_chain_verified": true
+    },
+    {
+      "id": "D01.3",
+      "current_prompt_exact": true,
+      "current_chain_verified": true
+    },
+    {
+      "id": "D01.4",
+      "current_prompt_exact": false,
+      "current_chain_verified": false
+    }
+  ],
+  "complete_dialogue_evaluation": false,
+  "note": "Exact current prompts and actual prior replies only; not independent repetitions or semantic grading."
+}

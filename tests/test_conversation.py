@@ -11,6 +11,9 @@ from msfea_bot.generation.conversation import (
     answer_task,
     needs_condition_focus,
     retrieval_plan,
+    is_overview_request,
+    unresolved_reference,
+    attribute_search,
 )
 
 
@@ -297,3 +300,180 @@ def test_only_decisions_with_explicit_extra_conditions_get_condition_focus() -> 
     assert needs_condition_focus("Can I do eight weeks while enrolled in a class?")
     assert not needs_condition_focus("Are six weeks enough for the 6+2 option?")
     assert not needs_condition_focus("What happens while I take another course?")
+
+
+def test_overview_intent_generalizes_across_subjects_without_overriding_decisions() -> None:
+    for question in ("Tell me about housing", "Give me an overview of the exchange",
+                     "Can you walk me through registration?", "What's the whole process?",
+                     "Explain the program like I've never heard of it"):
+        assert is_overview_request(question)
+        assert answer_task(question, []).startswith("Topic overview:")
+    for question in ("Is six weeks enough?", "Can I combine two placements?",
+                     "What is the deadline?", "Explain how to submit the form"):
+        assert not is_overview_request(question)
+    assert not is_overview_request("what about the 6+2", _history())
+
+
+def test_reference_without_subject_needs_clarification_but_named_questions_do_not() -> None:
+    for question in ("How does this work?", "What about that?", "Is it required?"):
+        assert unresolved_reference(question, [])
+        assert not unresolved_reference(question, _history())
+    for question in ("How does an internship work?", "Is CO-OP required?",
+                     "How does this internship work?", "What about research?"):
+        assert not unresolved_reference(question, [])
+
+
+def test_attribute_followup_is_not_forced_into_an_alternative_plan_task() -> None:
+    history = [ConversationMessage("user", "What is the exchange program?")]
+    assert not answer_task("what about the fee?", history).startswith("Alternative")
+    assert answer_task("what about the 6+2", history).startswith("Alternative")
+
+
+def test_generic_deadline_after_overview_needs_a_document_referent() -> None:
+    history = [ConversationMessage("user", "Tell me about registration")]
+    assert answer_task("When is the deadline?", history).startswith("Clarification:")
+    assert not answer_task("When is the deadline?", _history()).startswith("Clarification:")
+
+
+def test_status_and_outcome_cues_do_not_treat_silence_as_permission_or_transfer_stages() -> None:
+    assert answer_task("Do I need approval before enrolling?", []).startswith("Requirement status:")
+    assert "absence of a listed prerequisite" in answer_task("Is membership required?", [])
+    assert "ask which" in answer_task("is that mandatory?", _history())
+    assert not answer_task("What are the required forms?", []).startswith("Requirement status:")
+    assert not answer_task("Why is that required?", []).startswith("Requirement status:")
+
+
+def test_singular_status_after_service_menu_needs_a_subject_without_policy_inference() -> None:
+    history = [ConversationMessage("user", "What services does the center offer?"),
+               ConversationMessage("assistant", "Placement, mentoring, and preparation.")]
+    assert unresolved_reference("Is that mandatory?", history)
+    assert unresolved_reference("Do I have to do that?", history)
+    assert not unresolved_reference("Is mentoring mandatory?", history)
+    assert not unresolved_reference("Is that mandatory?", _history())
+
+
+def test_attributes_preserve_subject_across_several_followups() -> None:
+    history = [ConversationMessage("user", "Tell me about the exchange program"),
+               ConversationMessage("assistant", "A study exchange."),
+               ConversationMessage("user", "what about the fee?"),
+               ConversationMessage("assistant", "See the tuition information.")]
+    for question in ("and the duration?", "who do I contact?", "and the cost?"):
+        assert is_contextual_followup(question, history)
+        assert attribute_search(question, history)[0] == "exchange program"
+        assert "fee" not in retrieval_plan(question, history).query
+
+
+def test_named_switches_override_discourse_markers_without_losing_pronouns() -> None:
+    for question in ("Actually, what help is there for housing?",
+                     "Instead, can you explain scholarships?",
+                     "Now, how does enrollment work?"):
+        assert not is_contextual_followup(question, _history())
+        assert retrieval_plan(question, _history()).query == question
+        assert not format_prompt_history(question, _history())
+    assert is_contextual_followup("Actually, can it be shorter?", _history())
+
+
+def test_comparative_retrieval_does_not_redefine_generation_intent() -> None:
+    history = [ConversationMessage("user", "Tell me about workshops")]
+    for question in ("Can it be shorter?", "Could it be longer?"):
+        assert retrieval_plan(question, history).query == "How long is workshops?"
+        assert contextual_question(question, history) == question.replace("it", "workshops")
+        assert retrieval_plan("Actually, " + question.lower(), history).standalone_query is None
+    assert retrieval_plan("Does that mean it can be shorter?", history).standalone_query is None
+
+
+def test_quantity_task_generalizes_without_overriding_explicit_decisions() -> None:
+    for question in ("How much time do I need?", "How long is the workshop?",
+                     "How many pages should the document contain?", "Could it be shorter?"):
+        assert answer_task(question, []).startswith("Quantity or range:")
+    assert answer_task("Can I combine two placements?", []).startswith("Decision:")
+
+
+def test_ordinal_part_reference_preserves_topic_and_attribute() -> None:
+    history = [ConversationMessage("user", "How do exchange fees work?")]
+    plan = retrieval_plan("Does the second part cost extra?", history)
+    assert is_contextual_followup("Does the second part cost extra?", history)
+    assert "exchange" in plan.query
+    assert attribute_search("Does the second part cost extra?", history)[1][0] == "fee"
+    assert plan.standalone_query is None
+
+
+def test_bounds_preserve_latest_dimension_but_never_cross_topic_switches() -> None:
+    history = [ConversationMessage("user", "Tell me about workshops"),
+               ConversationMessage("user", "How long is it?"),
+               ConversationMessage("assistant", "A purported number.")]
+    question = "Is that a minimum or a maximum?"
+    plan = retrieval_plan(question, history)
+    assert "workshops duration" in plan.query
+    assert "workshops duration" in contextual_question(question, history)
+    assert plan.standalone_query is None
+    history.append(ConversationMessage("user", "What is the exchange program?"))
+    assert "duration" not in retrieval_plan(question, history).query
+    history.append(ConversationMessage("user", "What about the cost?"))
+    assert "exchange program cost" in retrieval_plan(question, history).query
+
+
+def test_attribute_only_queries_use_subject_but_conditional_queries_keep_both_paths() -> None:
+    history = [ConversationMessage("user", "Tell me about housing")]
+    for question in ("What's the email for them?", "Can you send the link again?",
+                     "And how much time would I need to set aside?"):
+        plan = retrieval_plan(question, history)
+        assert "housing" in plan.query
+        assert plan.standalone_query is None
+        assert attribute_search(question, history) is not None
+    assert retrieval_plan("What is its fee if I leave early?", history).standalone_query
+    assert retrieval_plan("Does it cost 200 dollars?", history).standalone_query
+
+
+def test_registration_reference_after_menu_clarifies_without_picking_a_program() -> None:
+    history = [ConversationMessage("user", "What can the center help me with?"),
+               ConversationMessage("assistant", "Housing, exchanges, and workshops.")]
+    for question in ("How do I sign up for it?", "How can I apply for that?"):
+        assert unresolved_reference(question, history)
+    assert not unresolved_reference("How do I sign up for housing?", history)
+    assert not unresolved_reference("How do I sign up for them?", history)
+    assert not unresolved_reference("How do I sign up for it?", _history())
+
+
+def test_activity_permission_does_not_assume_a_quantified_completion_plan() -> None:
+    for question in ("Could I do online training?", "Can I do a placement overseas?",
+                     "Can I complete the ACME 500 course remotely?"):
+        assert answer_task(question, []).startswith("Activity permission:")
+    for question in ("Can I combine two activities?", "Can I do six weeks of practice?",
+                     "Can I complete the 6+2 arrangement?"):
+        assert answer_task(question, []).startswith("Decision:")
+
+
+def test_rule_application_recognizes_other_actors_and_document_substitution() -> None:
+    for question in ("Can practical work make up the rest of my requirement?",
+                     "Could the lab count toward the certificate?",
+                     "Can I submit the invoice instead of the receipt?"):
+        cue = answer_task(question, [])
+        assert cue.startswith("Decision:")
+        assert "unstated exception scenarios" in cue
+
+
+def test_referential_decision_checks_for_a_real_subject_before_applying_rules() -> None:
+    cue = answer_task("Someone used this before. Can I do the same?", [])
+    assert cue.startswith("Referential decision:")
+    assert "include the clarifying question" in cue
+    assert "without asking an unnecessary clarification" in answer_task("Can I do it?", _history())
+
+
+def test_overview_before_details_does_not_expand_a_specific_attribute_question() -> None:
+    assert is_overview_request("Could you explain the exchange before getting into special cases?")
+    assert is_overview_request("What's the big picture for workshops?")
+    assert not is_overview_request("Explain the fee before we get into details")
+
+
+def test_attribute_task_covers_named_properties_and_topic_followups() -> None:
+    history = [ConversationMessage("user", "Tell me about workshops")]
+    for question in ("How much does membership cost?", "What's the email?",
+                     "Can you send the link again?", "What is the workshop fee?"):
+        assert answer_task(question, history).startswith("Requested attribute:")
+
+
+def test_attribute_task_keeps_permission_overview_and_quantity_priorities() -> None:
+    assert answer_task("Can I skip the fee?", []).startswith("Decision:")
+    assert answer_task("Tell me about the workshop", []).startswith("Topic overview:")
+    assert answer_task("How long is the workshop?", []).startswith("Quantity or range:")

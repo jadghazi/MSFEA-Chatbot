@@ -1,0 +1,33 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "records": [
+    {
+      "id": "D01.1",
+      "status": "pass",
+      "note": "Source-reviewed services, ordinary orientation or correct contact route."
+    },
+    {
+      "id": "D01.2",
+      "status": "pass",
+      "note": "Source-reviewed services, ordinary orientation or correct contact route."
+    },
+    {
+      "id": "D01.3",
+      "status": "partial",
+      "note": "Correct training duration; adds unrelated employer-response timing and extension guidance."
+    },
+    {
+      "id": "D01.4",
+      "status": "pass",
+      "note": "Source-reviewed services, ordinary orientation or correct contact route."
+    },
+    {
+      "id": "D01.5",
+      "status": "provider_error",
+      "note": "HTTP429: no answer, not a correctness failure."
+    }
+  ],
+  "completed_turns": 4,
+  "expected_turns": 20,
+  "complete": false
+}

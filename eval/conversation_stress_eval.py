@@ -15,7 +15,7 @@ from msfea_bot.generation.answer import (
 )
 from msfea_bot.generation.conversation import ConversationMessage, retrieval_plan
 from msfea_bot.llm import get_llm_provider
-from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth, search
+from msfea_bot.retrieval.store import RetrievedChunk, retrieval_depth
 
 
 def _rank(chunks: list[RetrievedChunk], case: dict[str, Any], phrase: str | None) -> int | None:
@@ -66,7 +66,7 @@ def main() -> None:
         chunks = retrieve_context(question, k, case.get("department"), history)
         phrases = case.get("evidence_all") or [case.get("expected_evidence")]
         ranks = [_rank(chunks, case, phrase) for phrase in phrases]
-        bare = search(question, k, department=case.get("department"))
+        bare = retrieve_context(question, k, case.get("department"), None)
         record: dict[str, Any] = {
             "id": case["id"], "query": plan.query,
             "literal_query": plan.standalone_query,

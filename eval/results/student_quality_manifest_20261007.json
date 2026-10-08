@@ -1,0 +1,24 @@
+{
+  "baseline_commit": "a0caa4d",
+  "cases": 80,
+  "final_prompt_matches_live_traces": true,
+  "provider_errors_before": 0,
+  "provider_errors_after": 0,
+  "source_review": "Codex review, not independent human calibration",
+  "invalid_phrase_probe": "Q47: generic report length conflicts with ECE override; excluded from phrase metrics",
+  "sha256": {
+    "eval/student_quality_audit_set.jsonl": "885770afc4e9d6eb23f355539d21b12fe7497e73e53f387789c4be697e90e24d",
+    "eval/student_quality_holdout_set.jsonl": "5f0367dfec10f71ff694694c48a9d0ea8e720415fd0b0761bf85a4867a98d0e9",
+    "src/msfea_bot/generation/answer.py": "d6007812609ff225cbc2ae99e9c9baf736bbe9658a41759fdadd6654563089ce",
+    "src/msfea_bot/generation/conversation.py": "7fd27a25ec70726596c6e6de1bf0fb6bdfb663f4fc7df2f0c2416ee3d8c21984",
+    "src/msfea_bot/generation/__init__.py": "a06cebd0fbda5b2df4452867f2548410f543b8ff21ecedb282e2fb516cd75bfb",
+    "src/msfea_bot/ingestion/chunking.py": "8ba3384ec21c1bd2b176d04de9a4ce95a534137ea96477efa3572e4bc7077508",
+    "src/msfea_bot/retrieval/store.py": "4b9974c7982fba845aacb12e4067f0de2532c04a6e6281a7a2c208c964a9c1b9",
+    "kb/normalized/cdc-knowledge-base.md": "a3d4b188978efc60a7f9ac2f04d4d3a5719ef70e321bdea2694269698fdc06bf",
+    "kb/normalized/email-clarifications.md": "923b72474ff9e444f069445325c1e306da8f260660599090a9827cf5b74677c6",
+    "kb/normalized/final-presentation-slide-template.md": "b61960ddb380069575e5408b7a1ce17798c077c564eb9fcaba8a4d19db5b2a33",
+    "kb/normalized/internship-report-templates-and-rubrics.md": "9bec7094e829f0d168dea861adee479fc4786430a0c316d5c11150cc8f37a99f",
+    "kb/normalized/msfea-cdc-coop-handbook.md": "a0d004db506052a430c9f9cdf9c713bf36415895a429ae4f798a0d06af445b79",
+    "kb/normalized/summer-training-guidelines-2026.md": "18116c21e3b614ceb1a05074cd116eb50ae1a39711dccfb438582a681a95c68b"
+  }
+}

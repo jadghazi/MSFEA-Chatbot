@@ -1,0 +1,112 @@
+{
+  "reviewer": "Codex source review; not independent faculty calibration",
+  "rubric": "Pass answers the supported core intent. Partial is grounded but weak in relevance/completeness/wording. Fail is a wrong official fact, material unsupported conclusion or refusal despite sufficient canonical facts.",
+  "trace": "student_quality_main_release_dialogue_20261007.jsonl",
+  "records": [
+    {
+      "id": "D01.1",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D01.2",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D01.3",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D01.4",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D01.5",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D01.6",
+      "status": "fail",
+      "note": "The tuition amounts are correct, but repeats an outdated zero-credit Approved Experience label; the approved current clarification says one credit."
+    },
+    {
+      "id": "D01.7",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D02.1",
+      "status": "partial",
+      "note": "Correct written-approval requirement, but adds unasked numeric arrangements rather than keeping the answer at the general level requested."
+    },
+    {
+      "id": "D02.2",
+      "status": "fail",
+      "note": "Rejects explicitly assumed approval and transfers a six-week-first-placement condition to five-plus-three arithmetic."
+    },
+    {
+      "id": "D02.3",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D02.4",
+      "status": "fail",
+      "note": "Unnecessary refusal: separately graded Progress and Final Training reports are canonical requirements, but governing introductory evidence was missing."
+    },
+    {
+      "id": "D02.5",
+      "status": "fail",
+      "note": "Unnecessary refusal: job-interview assistance is documented, but abandoned report wording contaminates retrieval."
+    },
+    {
+      "id": "D02.6",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D03.1",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D03.2",
+      "status": "partial",
+      "note": "Gives the correct MentorPlus+ URL but also an unrelated Career+ route after an alumni-mentor discussion."
+    },
+    {
+      "id": "D03.3",
+      "status": "partial",
+      "note": "Only explains a narrow US-remote exception, omitting ordinary approved abroad placements and IAESTE from an options question."
+    },
+    {
+      "id": "D03.4",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D03.5",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D03.6",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    },
+    {
+      "id": "D03.7",
+      "status": "pass",
+      "note": "Actual-history response answers the requested scope using canonical evidence; no approval, price or personal decision is invented."
+    }
+  ],
+  "counts": {
+    "pass": 13,
+    "partial": 3,
+    "fail": 4
+  }
+}

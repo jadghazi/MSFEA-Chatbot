@@ -1,0 +1,48 @@
+✔ uses distinct denominators for answer rate, helpfulness, participation and outcomes (383.3673ms)
+✔ empty and missing measurements stay unavailable, never 0% satisfaction or 0ms latency (9.6455ms)
+✔ escapes logged questions, source labels and rating reasons (19.2903ms)
+✔ an older range response cannot overwrite the latest selected range (11.4043ms)
+✔ failed refresh clears stale metrics and offers a working retry (19.8751ms)
+✔ renders the actual official form as a clickable safe link (4.5851ms)
+✔ model HTML and unsafe markdown schemes cannot execute (1.1603ms)
+✔ long bare form URLs remain usable without consuming the page width (1.2194ms)
+✔ independent coverage failure overrides the initial positive assessment (5.9157ms)
+✔ a new entry cannot treat an official conflict with no entry ID as its own predecessor (1.0107ms)
+✔ a regression shows the conversation, expected answer and a maintainer action above positive AI advice (3.6631ms)
+✔ historical explanations do not invent stored rankings (1.4103ms)
+✔ source and model content is escaped (1.6982ms)
+✔ manual revisions do not claim an AI review occurred (0.7795ms)
+✔ passing search tests still require a policy decision (0.9321ms)
+✔ AI conflict advice shows both literal claims and its explanation (1.4632ms)
+✔ new-answer failures show the actual failing question and reason (4.2625ms)
+✔ a copied issue includes the original run and advice without claiming it was sent (1.4325ms)
+✔ missing coverage is explicit AI advice and never displayed as a passed check (3.9307ms)
+✔ saved workspaces show an actionable replacement explanation without a second update action (1.1011ms)
+✔ an addition highlights the new condition while keeping the original rule readable (11.4351ms)
+✔ replacement shows removed and added words and preserves the accepted text (1.9269ms)
+✔ unchanged short answers have no manufactured diff (0.7231ms)
+✔ suggestion content and source text are escaped (4.4043ms)
+✔ missing facts are questions and human choices explicitly require fresh review (1.77ms)
+✔ large edits stay bounded and show both original and proposed text (2.1988ms)
+✔ restored human edits do not display the original AI verification as their own (0.9427ms)
+✔ policy corrections display original claim, replacement, reason and exact KB evidence (1.9984ms)
+✔ claim corrections cannot inject HTML into explanations or source quotes (2.0487ms)
+✔ source concerns are visible warnings and keep all human choices available (1.4484ms)
+✔ repeated Send/Enter submissions have one pending fetch (27.879ms)
+✔ question submission is blocked until a valid department is selected (7.4178ms)
+✔ student picker contains exactly the five supported departments (9.6507ms)
+✔ opening the department picker clears the selected department and conversation (7.7615ms)
+✔ local acknowledgements preserve useful memory (9.9095ms)
+✔ friendly 429 is displayed and never retried automatically (11.3134ms)
+✔ six completed questions end the chat, while failures do not use a slot (7.3314ms)
+✔ upstream 503 has a clear retry message and does not use a slot (4.468ms)
+✔ an incomplete success response does not create an empty answer or use a slot (4.6419ms)
+✔ starting a new chat clears history and creates a new session (4.9509ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1153.5964

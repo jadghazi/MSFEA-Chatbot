@@ -37,6 +37,7 @@ approval_reference: project-review-2026-09
 **Answer:** Moodle access and AUBSIS registration are separate administrative checks. Contact the coordinator with the approval documents. The course team can check Moodle access, but AUBSIS registration must be resolved through the appropriate academic or Registrar process.
 
 ## Moodle submissions and corrections
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -101,6 +102,7 @@ approval_reference: project-review-2026-09
 **Answer:** Yes. Approved training may take place in Lebanon or abroad at a recognized organization or approved setting. The location alone does not establish eligibility: the experience must meet the course requirements and be approved.
 
 ## Finding an internship and acceptable work
+<!-- evidence_links: cdc-knowledge-base.md > Internship (Approved Experience Course) > Internship overview -->
 
 **Department:** All departments
 
@@ -113,6 +115,7 @@ approval_reference: project-review-2026-09
 **Answer:** The experience should be meaningful professional work related to the student's discipline and allow them to apply engineering, computing, design, analysis, or technical problem-solving skills. Work that is mainly unrelated business, finance, or administrative activity may not meet the course objectives. Department-specific limits and approval rules still apply.
 
 ## Approval before beginning an internship
+<!-- evidence_links: email-clarifications.md > Internship approval authority -->
 
 **Department:** All departments
 
@@ -136,9 +139,17 @@ approval_reference: project-review-2026-09
 
 **Answer:** Yes. An approved internship may be longer than eight weeks. The Proposal, Notice of Arrival, and final employer letter should show the correct dates.
 
+### Confirming or changing an internship end date
+
+**Department:** All departments
+
 **Question/topic:** My internship end date is not fixed.
 
 **Answer:** Enter the best date currently confirmed by the employer. When the date is finalized or changes, inform the coordinator and update or resubmit the relevant Moodle form if requested. The final employer letter must show the actual start and end dates.
+
+### Late starts and current-term deadlines
+
+**Department:** All departments
 
 **Question/topic:** My internship starts late or ends after the normal course deadline.
 
@@ -245,6 +256,7 @@ approval_reference: project-review-2026-09
 **Answer:** Reopening is not automatic. Contact the coordinator promptly, explain the reason, and provide supporting information when applicable. A reopening requires an approved exception.
 
 ## Progress Report length and component
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -257,6 +269,7 @@ approval_reference: project-review-2026-09
 **Answer:** Cover whichever approved internship component is being completed at the time the Progress Report is written. The course coordinator may specify a different component based on the approved schedule.
 
 ## AI use, similarity, and report revision
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -285,6 +298,7 @@ approval_reference: project-review-2026-09
 **Answer:** No. Each student must write an independent report, even when students work at the same company, team, or project.
 
 ## Revision of unsatisfactory internship reports
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -313,6 +327,7 @@ approval_reference: project-review-2026-09
 **Answer:** Summer-graduating students may receive earlier deadlines because their grades must be processed sooner. Follow the current graduating-student Moodle announcement or course-coordinator email.
 
 ## Course completion requirements (ECE)
+<!-- evidence_links: summer-training-guidelines-2026.md > Internship Timeline and Deliverables | summer-training-guidelines-2026.md > Department-Specific Rules > Electrical and Computer Engineering (ECE) -->
 
 **Department:** Electrical and Computer Engineering (ECE)
 
@@ -337,16 +352,25 @@ approval_reference: project-review-2026-09
 **Answer:** The six company weeks and two faculty-research weeks (2 weeks of research with an MSFEA faculty member) must be approved and documented. Submit a separate research report in addition to the company internship report for the approved research component. Dar Al-Handasah is an example of a company offering six-week placements, not the only company eligible for a department-approved arrangement.
 
 ### Progress reporting for a 6+2 arrangement
+<!-- evidence_links: email-clarifications.md > Combined internship arrangements (ECE) > 6+2 arrangement definition -->
 
 **Question/topic:** When is the Progress Report due for a six-week internship plus two-week research arrangement, and what should it cover?
 
 **Answer:** Submit the Progress Report at the end of Week 4 of the company internship and cover only the company internship in that report.
 
 ### Combining two company internships
+<!-- evidence_links: email-clarifications.md > Combined internship arrangements (ECE) > Combining two company internships > Second company placement after six company weeks | email-clarifications.md > Combined internship arrangements (ECE) > 4+4 company-internship split -->
 
-**Question/topic:** Can two company internships be combined for EECE500, such as six weeks at one company and four at another, when I am not taking another summer course?
+**Question/topic:** Can two company internships be combined for EECE500?
 
-**Answer:** A combined arrangement requires prior written approval or petition; a six-plus-four company arrangement is not automatically accepted. Each internship must be documented and technically relevant, and the total approved duration must satisfy EECE500 requirements. After a six-week company placement, a second company internship must last at least four weeks, with or without another summer course. This gives at least ten company weeks for this route; it does not change the standard eight-week minimum for a single approved placement or the approved six-plus-two research route. Use the second-internship forms when instructed.
+**Answer:** A combined arrangement requires prior written approval or petition. Each internship must be documented and technically relevant, and the total approved duration must satisfy EECE500 requirements. Meeting a duration total does not itself approve a particular split. Use the second-internship forms when instructed. The following scoped rules describe particular arrangements; apply their conditions to the proposed plan.
+
+#### Second company placement after six company weeks
+<!-- evidence_links: email-clarifications.md > Combined internship arrangements (ECE) > Combining two company internships -->
+
+**Question/topic:** After a six-week company placement, how long must a second company internship be?
+
+**Answer:** After a six-week company placement, a second company internship must last at least four weeks, with or without another summer course. This gives at least ten company weeks for this route. The complete arrangement requires prior written approval or petition, documentation and technical relevance. This rule describes the six-company-week plus second-company route; it does not change the standard eight-week minimum for a single approved placement or the separate approved six-plus-two faculty-research route.
 
 ### 4+4 company-internship split
 
@@ -378,7 +402,7 @@ documentation conditions.
 
 **Question/topic:** Is a six-week company internship enough for IEM, or can I combine two company placements?
 
-**Answer:** No. Six company weeks alone do not meet the standard eight-week minimum. Complete 2 weeks of research with an MSFEA faculty member, or a minimum 4-week internship at another company, with prior approval and documentation. For the approved research route, submit a separate research report in addition to the company report. A four-plus-four company plan is not automatically accepted; confirm a different split with the department before relying on it.
+**Answer:** No. Six company weeks alone do not meet the standard eight-week minimum. The research completion route is six company weeks plus 2 weeks of research with an MSFEA faculty member. The alternative two-company route is six company weeks plus a minimum 4-week internship at another company. Both routes require prior approval and documentation. For the approved research route, submit a separate research report in addition to the company report. A four-plus-four company plan is not automatically accepted; confirm a different split with the department before relying on it.
 
 ## Combining two company internships (CEE)
 
@@ -435,6 +459,7 @@ approved placement must still satisfy the course's total training requirement.
 **Answer:** A concurrent summer course requires department, course-team, and employer approval, and the required internship work hours must still be completed. Students in any department may have to complete at least ten weeks of approved internship (ten weeks at one company or six weeks at one company plus four weeks at another) and schedule the other course before 8:30 AM or after 4:30 PM. Confirm whether these duration and class-time limits apply to your arrangement with the course team and current Moodle instructions before committing. They are not an unconditional ten-week requirement for every student taking another course. Separately, ECE and IEM students using a second company after a six-week placement must complete at least four weeks at that second company, whether or not they take another course.
 
 ## Final Report requirements (ECE)
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** Electrical and Computer Engineering (ECE)
 
@@ -443,6 +468,7 @@ approved placement must still satisfy the course's total training requirement.
 **Answer:** The report must be at least five pages and 1,500 words, excluding the cover page, references, and appendix, and must not exceed 20 pages.
 
 ## Required Final Report sections
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -451,6 +477,7 @@ approved placement must still satisfy the course's total training requirement.
 **Answer:** Follow the report structure and rubric. Missing required core content can make the report unsatisfactory and may require revision; a report lacking required sections can fail the organization and professional-writing rubric. Complete the required sections before final submission.
 
 ## Shared Final Report formatting and content
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -479,6 +506,7 @@ approved placement must still satisfy the course's total training requirement.
 **Answer:** Write your report independently in your own words. Cite external information and quote it where needed rather than copying company descriptions or other material. Do not disclose confidential or proprietary company content without permission.
 
 ## Reporting after approval of multiple internship components
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -499,6 +527,7 @@ approved placement must still satisfy the course's total training requirement.
 **Answer:** Use relevant pictures, diagrams, graphs, or charts when they help explain the work. Make slides concise and professional instead of copying report text onto them. Respect employer confidentiality and cite external visuals or information.
 
 ## Final Voice-over Presentation duration (ECE)
+<!-- evidence_links: summer-training-guidelines-2026.md > Department-Specific Rules > Electrical and Computer Engineering (ECE) -->
 
 **Department:** Electrical and Computer Engineering (ECE)
 
@@ -621,6 +650,7 @@ approved placement must still satisfy the course's total training requirement.
 **Answer:** The letter is required when the internship is completed and must be ready by the current course submission deadline. Request it from the employer about two to three weeks before your internship ends because preparation can take time. Check the current Moodle instructions or course coordinator for the exact submission date.
 
 ## Progress Report deadline origin
+<!-- evidence_links: internship-report-templates-and-rubrics.md > Internship (Approved Experience) Report Templates and Rubrics | summer-training-guidelines-2026.md > Department-Specific Rules > Industrial Engineering and Management (IEM) -->
 
 **Department:** All departments
 
@@ -637,6 +667,18 @@ approved placement must still satisfy the course's total training requirement.
 **Answer:** No. AI detection estimates whether text may be AI-generated, while text similarity measures overlap with other sources. The limits are separate: at most 25% AI-generated text and at most 20% similarity. AI use must be disclosed and cited in every department, and students remain responsible for original, accurate work.
 
 ## About this document
+
+**2026-10-08 — self-contained alternative routes (local candidate).** The IEM completion clarification repeats the six-company-week starting component in each existing alternative, matching the original summer guidelines and the owner's approved FAQ decision that IEM follows ECE. The two-week research and minimum four-week second-company additions remain separate routes, with their approvals and documentation intact. No policy is added.
+
+**2026-10-08 — named-arrangement context (local candidate).** The progress-report procedure for the named 6+2 arrangement links to that arrangement's existing definition. This preserves the meaning of its company and faculty-research components when a procedural passage ranks ahead of its definition; no requirement or exception changes.
+
+**2026-10-07 — governing report context (local candidate).** Report, revision and submission guidance links to the existing report-template introduction, which distinguishes graded Progress Report, Final Training Report and Final Presentation deliverables. The applicable IEM presentation exception is supplied alongside that general context. These links preserve requirement status while retrieving detailed guidance; no bypass rule or new policy was authored.
+
+**2026-10-07 — topic parent context (local candidate).** Finding an internship and acceptable work links to the reviewed Approved Experience overview. This restores purpose, normal requirements and search channels alongside the existing precise FAQs; no policy fact or contact was added.
+
+**2026-10-07 — controlling context links (local candidate).** Completion and ECE presentation evidence link to the existing general timeline and ECE due-date rules in the Summer Training Guidelines. These are source relationships, not new policy facts or publication approval.
+
+**2026-10-07 — general approval and conditional breakdowns (local candidate).** The ECE two-company section separates the general written-approval, documentation and total-duration requirements from the approved review's specific rule for a second company after six company weeks. Both remain linked evidence. Meeting a total does not establish approval; no undocumented split is authorized or prohibited by this reorganization. The unchanged approved review and original email source remain the authority.
 
 The September 2026 approved email source is supplemented and, where specified, superseded by the project owner's completed FAQ decision review on 2026-09-27. The anonymized source questions, question-cell scope, and all 18 decisions are preserved in `kb/source/faq-review-2026-09-27.json`. Shared rules use neutral course wording and the existing department course-code map. ECE Final Report length remains department-specific. CO-OP changes are recorded only in the CO-OP handbook normalization.
 

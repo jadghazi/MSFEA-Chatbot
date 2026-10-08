@@ -1,0 +1,66 @@
+ Network msfea-quality-tests_default  Creating
+ Network msfea-quality-tests_default  Created
+ Container msfea-quality-tests-test-db-1  Creating
+ Container msfea-quality-tests-test-db-1  Created
+ Container msfea-quality-tests-test-db-1  Starting
+ Container msfea-quality-tests-test-db-1  Started
+.................F........F...................F                          [100%]
+=================================== FAILURES ===================================
+______________________ test_legacy_qa_pairs_remain_atomic ______________________
+
+    def test_legacy_qa_pairs_remain_atomic() -> None:
+        chunks = chunk_markdown(
+            "## FAQs\n**Q: First question?**\nA: " + "answer " * 30
+            + "\n**Q: Second question?**\nA: second answer.",
+            "faq.md", max_chars=80, overlap=0,
+        )
+        first = [chunk for chunk in chunks if "First question" in chunk.text]
+        assert len(first) == 1
+        assert "answer" in first[0].text
+>       assert not any("First question" in c.text and "A: second answer" in c.text for c in chunks)
+E       assert not True
+E        +  where True = any(<generator object test_legacy_qa_pairs_remain_atomic.<locals>.<genexpr> at 0x7bfeddffa4d0>)
+
+tests/test_chunking.py:247: AssertionError
+______________ test_long_curated_answer_is_windowed_not_truncated ______________
+
+    def test_long_curated_answer_is_windowed_not_truncated() -> None:
+        """A long answer must be split, not silently half-indexed (ADR-0013).
+    
+        Written as one run-on paragraph on purpose: that is what the dashboard textarea
+        produces, and it is the case the plain windower cannot split on its own.
+        """
+        from msfea_bot.curation.service import _to_chunks
+    
+        chunks = _to_chunks(7, "How do I submit my internship forms?", LONG_ANSWER, "admin")
+    
+>       assert len(chunks) > 1, "an 8000-char answer must not stay a single chunk"
+E       AssertionError: an 8000-char answer must not stay a single chunk
+E       assert 1 > 1
+E        +  where 1 = len([Chunk(id='curated-7-00', text='Q: How do I submit my internship forms?\nA: Students must submit the Notice of Arrival... my internship forms?', metadata={'source': 'admin-curated', 'author': 'admin'}, display_prefix='', retrieval_text='')])
+
+tests/test_curation.py:44: AssertionError
+________ test_revision_scope_survives_immutable_roundtrip_and_windowing ________
+
+publication_database = 'user=msfea password=msfea dbname=guard_publish_02b92322b4be49438246e33bbe9a66f2 host=test-db port=5432'
+
+    @pytest.mark.skipif(not _db_available(), reason="PostgreSQL not reachable")
+    def test_revision_scope_survives_immutable_roundtrip_and_windowing(
+        publication_database: str,
+    ) -> None:
+        answer = "<!-- process_stage: completion -->\n" + " ".join([_payload().answer] * 15)
+        entry_id, revision_id = create_draft(_payload(answer=answer))
+        revision = next(item for item in list_revisions() if item.id == revision_id)
+        assert revision.answer == answer  # The reviewed immutable input is preserved.
+        chunks = revision_chunks(revision, candidate=True)
+>       assert len(chunks) > 1
+E       AssertionError: assert 1 > 1
+E        +  where 1 = len([Chunk(id='candidate-1-r1-00', text='Q: What is the minimum ECE Final Report length?\nA: For ECE, the Final Report mus...nance_status': 'submitted', 'department': 'ece', 'process_stage': 'completion'}, display_prefix='', retrieval_text='')])
+
+tests/test_curation_publication.py:580: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_chunking.py::test_legacy_qa_pairs_remain_atomic - assert no...
+FAILED tests/test_curation.py::test_long_curated_answer_is_windowed_not_truncated
+FAILED tests/test_curation_publication.py::test_revision_scope_survives_immutable_roundtrip_and_windowing
+3 failed, 44 passed in 101.23s (0:01:41)
+

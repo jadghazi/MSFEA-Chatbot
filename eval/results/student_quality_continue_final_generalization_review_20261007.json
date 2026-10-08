@@ -1,0 +1,213 @@
+{
+  "reviewer": "Codex source review, not independent faculty calibration",
+  "rubric": "Pass: answers core supported intent. Partial: core useful but expectation/completeness/relevance weak. Fail: material scope conclusion not established by the supplied evidence. This is not an automated accuracy score.",
+  "trace": "eval/results/student_quality_continue_final_generalization_answers_20261007.jsonl",
+  "records": [
+    {
+      "id": "R01",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R02",
+      "status": "partial",
+      "note": "Correct department-controlled recognition; omits the documented full-time academic-status distinction in the frozen expectation."
+    },
+    {
+      "id": "R03",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R04",
+      "status": "partial",
+      "note": "Correct application versus enrollment credit stage; should mention that other admission requirements still apply."
+    },
+    {
+      "id": "R05",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R06",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R07",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R08",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R09",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R10",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R11",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R12",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R13",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R14",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R15",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R16",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R17",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R18",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R19",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R20",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R21",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R22",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R23",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R24",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R25",
+      "status": "pass",
+      "note": "States the missing dollar amount and provides the verified IAESTE contact after the general requested-attribute change."
+    },
+    {
+      "id": "R26",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R27",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R28",
+      "status": "partial",
+      "note": "No invented office hours; generic department escalation is less useful than a CDC-specific contact."
+    },
+    {
+      "id": "R29",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R30",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R31",
+      "status": "fail",
+      "note": "Treats a condition stated for a six-week first placement as settling a seven-plus-one plan; written approval remains mentioned, but the categorical shortfall is overconfident."
+    },
+    {
+      "id": "R32",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R33",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R34",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R35",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R36",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R37",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R38",
+      "status": "partial",
+      "note": "Correct ordinary minimum; volunteers an unasked split-placement exception."
+    },
+    {
+      "id": "R39",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    },
+    {
+      "id": "R40",
+      "status": "pass",
+      "note": "Core intent consistent with supplied source evidence; minor wording is not a separate policy claim."
+    }
+  ],
+  "counts": {
+    "pass": 35,
+    "partial": 4,
+    "fail": 1
+  },
+  "prior_review": "eval\\results\\student_quality_continue_generalization_review_20261007.json"
+}

@@ -1,0 +1,8 @@
+{
+  "cases": 114,
+  "reused_provider_answers": 102,
+  "local_replies": 12,
+  "pending_count": 0,
+  "pending_case_ids": [],
+  "live_ids": ""
+}

@@ -1,0 +1,14 @@
+{
+  "cases": 179,
+  "evidence_cases": 94,
+  "retrieval_complete": 91,
+  "context_complete": 91,
+  "phrase_hits": 152,
+  "phrases": 155,
+  "misses": [
+    "Q04",
+    "Q09",
+    "Q18"
+  ],
+  "note": "Lexical coverage only; excludes the retained generic-template expectation Q47 because ECE has a scoped override. No expected answer was edited."
+}

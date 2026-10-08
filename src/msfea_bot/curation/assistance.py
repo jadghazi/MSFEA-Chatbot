@@ -21,12 +21,13 @@ from msfea_bot.curation.revisions import (
     DraftPayload, _content_hash, _insert_revision, program_registry, validate_payload,
 )
 from msfea_bot.curation.validation import review_candidates
+from msfea_bot.curation.service import _revision_stage
 from msfea_bot.llm import LLMError, LLMRateLimitError, get_curation_provider
 from msfea_bot.observability.privacy import _ner, anonymize
 from msfea_bot.retrieval.store import indexed_generation
 
-PROMPT_VERSION = "self-service-studio-v9"
-SUGGESTION_PROMPT_VERSION = "source-backed-answer-suggestion-v4"
+PROMPT_VERSION = "self-service-studio-v10-scoped-evidence"
+SUGGESTION_PROMPT_VERSION = "source-backed-answer-suggestion-v5-scoped-evidence"
 _LOG = logging.getLogger(__name__)
 _DECISIONS = {"duplicate", "potential_conflict", "direct_conflict", "supersedes"}
 
@@ -319,6 +320,9 @@ short exact phrase copied from the proposed guidance, including meaningful polic
 Compare the same claims, actions, conditions, dates and departments. Different numbers
 about different things are not a conflict. General rules and specific exceptions
 need scope review; do not assume all departments share a specific department rule.
+Respect each passage's program and process_stage labels. A placement-entry rule
+does not establish an outcome after completion. Read linked controlling conditions
+together with the general rule; do not flag compatible scoped exceptions as contradictions.
 Return at most eight non-repetitive, actionable findings. For every finding use a
 proposed_claim_id from proposed_claims and existing_claim_id from the cited
 passage's claims, using its candidate_id. Select the factual statements carrying
@@ -372,6 +376,7 @@ def checked_report(
             **finding.model_dump(), "source_doc": source["source_doc"],
             "proposed_claim": proposed, "existing_claim": existing,
             "section": source["section"], "department": source["department"],
+            "program": source.get("program", ""), "process_stage": source.get("process_stage", ""),
             "entry_id": source.get("entry_id"),
         })
     if report.classification in _DECISIONS and not any(
@@ -434,15 +439,17 @@ def _evidence(intake: Intake, queries: list[str] | None = None) -> list[dict[str
         }
         if intake.entry_id is not None:
             prior = conn.execute(
-                "SELECT r.id, r.question, r.answer, r.document_title, r.department"
+                "SELECT r.id, r.question, r.answer, r.document_title, r.department, r.programs"
                 " FROM curated_entries e JOIN curated_revisions r ON r.id = e.active_revision_id"
                 " WHERE e.id = %s", (intake.entry_id,),
             ).fetchone()
             if prior:
+                prior_answer, prior_stage = _revision_stage(prior[2])
                 related.insert(0, {
                     "id": f"predecessor-{prior[0]}", "source_doc": f"CDC Knowledge KB-{intake.entry_id}",
-                    "section": prior[3] or prior[1], "text": prior[2],
+                    "section": prior[3] or prior[1], "text": prior_answer,
                     "department": prior[4] or "all", "score": 1.0,
+                    "program": ", ".join(prior[5]), "process_stage": prior_stage or "",
                 })
     result: list[dict[str, Any]] = []
     used: set[tuple[str, str]] = set()
@@ -462,6 +469,8 @@ def _evidence(intake: Intake, queries: list[str] | None = None) -> list[dict[str
             "id": item["id"], "source_doc": _safe_text(str(item["source_doc"])),
             "section": _safe_text(str(item["section"])), "text": text,
             "department": item["department"], "entry_id": entry_id,
+            "program": _safe_text(str(item.get("program", ""))),
+            "process_stage": _safe_text(str(item.get("process_stage", ""))),
         })
         if len(result) >= 40:
             break

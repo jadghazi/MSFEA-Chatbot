@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 from dataclasses import asdict
+from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
@@ -17,6 +20,24 @@ from msfea_bot.curation.validation import get_revision, start_validation, valida
 from msfea_bot.generation.answer import generate_answer
 from msfea_bot.llm import LLMError, LLMRateLimitError, get_preview_provider
 from msfea_bot.retrieval.store import indexed_generation
+
+
+def preview_fingerprint() -> str:
+    """Bind saved answers to the student configuration and generation contract."""
+    package = Path(__file__).resolve().parents[1]
+    profile = {
+        "model": settings.llm_model,
+        "max_output_tokens": settings.llm_max_output_tokens,
+        "thinking_level": settings.llm_gemini_thinking_level,
+        "sampling": settings.llm_gemini_use_sampling_params,
+        "temperature": settings.llm_temperature if settings.llm_gemini_use_sampling_params else None,
+        "seed": settings.llm_seed if settings.llm_gemini_use_sampling_params else None,
+        "generation_contract": {
+            name: hashlib.sha256((package / name).read_bytes()).hexdigest()
+            for name in ("generation/answer.py", "generation/conversation.py", "llm/gemini.py", "llm/__init__.py")
+        },
+    }
+    return hashlib.sha256(json.dumps(profile, sort_keys=True).encode()).hexdigest()
 
 
 def schedule(conn: Any, run_id: str, revision_id: int, kind: str) -> None:
@@ -55,12 +76,21 @@ def workspace(revision_id: int) -> dict[str, Any]:
             " WHERE revision_id=%s ORDER BY created_at DESC", (revision_id,),
         ).fetchall()
         review = conn.execute("SELECT id,prompt_version FROM curation_assistance WHERE accepted_revision_id=%s", (revision_id,)).fetchone()
+    current_profile = preview_fingerprint()
+    visible_jobs = []
+    for row in jobs:
+        job = {"id": row[0], "kind": row[1], "status": row[2], "result": row[3], "error_code": row[4]}
+        if job["kind"] == "preview" and job["status"] == "completed" and job["result"].get("profile_fingerprint") != current_profile:
+            # Preserve the historical record; only its eligibility changes.
+            job.update(status="failed", error_code="preview_profile_changed")
+            job["result"] = {**job["result"], "passed": False}
+        visible_jobs.append(job)
     return {
         "revision": {**asdict(revision), "created_at": revision.created_at.isoformat()},
         "run": run,
         "assistance": assistance.get_review(str(review[0])) if review else None,
         "review_outdated": bool(review and review[1] != PROMPT_VERSION),
-        "jobs": [{"id": row[0], "kind": row[1], "status": row[2], "result": row[3], "error_code": row[4]} for row in jobs],
+        "jobs": visible_jobs,
         "stale": bool(run and not revision.active and validation_fingerprint(revision) != run["fingerprint"]),
     }
 
@@ -72,12 +102,22 @@ def retry_preview(revision_id: int) -> None:
         raise ValueError("Run fresh successful checks before previewing this draft.")
     with _connect() as conn:
         row = conn.execute(
-            "UPDATE curation_workspace_jobs SET status='queued', error_code=NULL, result='{}',"
-            " completed_at=NULL WHERE run_id=%s AND kind='preview' AND status='failed' RETURNING id",
-            (run["id"],),
+            "SELECT id,result,error_code FROM curation_workspace_jobs"
+            " WHERE run_id=%s AND kind='preview' AND (status='failed' OR"
+            " (status='completed' AND result->>'profile_fingerprint' IS DISTINCT FROM %s)) FOR UPDATE",
+            (run["id"], preview_fingerprint()),
         ).fetchone()
         if not row:
             raise ValueError("There is no failed preview to retry.")
+        conn.execute(
+            "INSERT INTO curation_events (revision_id,event_type,actor_type,reason,payload)"
+            " VALUES (%s,'preview_retried','admin','Fresh student answers requested; prior attempt retained.',%s)",
+            (revision_id, Json({"job_id": row[0], "result": row[1], "error_code": row[2]})),
+        )
+        conn.execute(
+            "UPDATE curation_workspace_jobs SET status='queued',error_code=NULL,result='{}',completed_at=NULL WHERE id=%s",
+            (row[0],),
+        )
 
 
 def _repair(state: dict[str, Any], job_id: str) -> dict[str, Any]:
@@ -167,6 +207,7 @@ def process_next_workspace_job() -> bool:
         if row[2] == "repair":
             result = _repair(state, str(row[0]))
         else:
+            profile = preview_fingerprint()
             revision = state["revision"]
             if run["status"] != "passed":
                 raise ValueError("All checks must pass before previews.")
@@ -182,8 +223,11 @@ def process_next_workspace_job() -> bool:
                     provider=get_preview_provider(before_request=lambda: reserve_model_call(str(row[0]), settings.llm_model, preview=True)),
                 )
                 previews.append({"question": question, **asdict(answer)})
-            result = {"previews": previews, "model": settings.llm_model, "candidate_generation": run["candidate_generation"],
+            result = {"previews": previews, "model": settings.llm_model, "profile_fingerprint": profile,
+                      "candidate_generation": run["candidate_generation"],
                       "passed": bool(previews) and all(not item["refused"] and item["citations"] for item in previews)}
+            if preview_fingerprint() != profile:
+                raise ValueError("The student generation profile changed during previews.")
         checked_revision = get_revision(int(row[1]))
         if checked_revision is None or validation_fingerprint(checked_revision) != run["fingerprint"]:
             raise ValueError("The KB changed during this operation.")

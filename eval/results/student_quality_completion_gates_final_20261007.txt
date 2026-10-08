@@ -1,0 +1,30 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  38%|███▊      | 75/199 [00:00<00:00, 749.47it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1349.57it/s]
+Retrieval on 124 answerable questions (124 golden + 0 live curated)
+
+Document-level recall (is a chunk from the expected source_doc in top-k?)
+  recall@1: 103/124 =   83%  #################
+  recall@3: 116/124 =   94%  ###################
+  recall@5: 122/124 =   98%  ####################
+  recall@7: 122/124 =   98%  ####################
+
+Context recall (is the answer's evidence text in top-k?) - the stricter metric
+  context-recall@1: 87/124 =   70%  ##############
+  context-recall@3: 115/124 =   93%  ###################
+  context-recall@5: 120/124 =   97%  ###################
+  context-recall@7: 122/124 =   98%  ####################
+
+Context-recall misses at k=7 (evidence not retrieved - the real gaps):
+  [internship-vs-coop] evidence 'graduation requirement' not in top-7
+  [faq-cee-exception] evidence 'reduced 6-week internship may be approved' not in top-7
+
+Production adaptive-depth context recall: 122/124
+
+OK: context-recall@top 98.4% meets the floor 90.0%
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  42%|████▏     | 83/199 [00:00<00:00, 752.80it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1196.11it/s]
+

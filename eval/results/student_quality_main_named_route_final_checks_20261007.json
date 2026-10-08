@@ -1,0 +1,14 @@
+{
+  "relative_links_checked": 73,
+  "missing_links": [],
+  "source_hashes_checked": 77,
+  "source_mismatches": [],
+  "full_python_tests": 543,
+  "skipped": 2,
+  "dependency_warnings": 2,
+  "evidence_gate_commands_passed": 8,
+  "lint_passed": true,
+  "strict_type_files": 110,
+  "main_model_acceptance": false,
+  "note": "Local candidate verified; current live answer set incomplete and generation defects remain. No provider calls or deployment in this check."
+}

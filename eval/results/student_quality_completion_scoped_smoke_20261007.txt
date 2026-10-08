@@ -1,0 +1,9 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "Q22", "hits": [true, true, true], "gate": true, "query": "I have a 3.4 GPA and 95 credits. Am I definitely getting a CO-OP placement?", "refused": false, "error": null}
+{"id": "H02", "hits": [true, true], "gate": true, "query": "I'm lost about internship stuff. Where should I begin?", "refused": false, "error": null}
+{"id": "H08", "hits": [true], "gate": true, "query": "how do i find interships", "refused": false, "error": null}
+{"id": "H15", "hits": [], "gate": true, "query": "Will I definitely get hired after CO-OP?", "refused": false, "error": null}
+{"id": "H18", "hits": [true], "gate": true, "query": "I have 92 credits but my GPA is 3.1. Can I join CO-OP under the usual requirements?", "refused": false, "error": null}
+{"id": "F13", "hits": [], "gate": true, "query": "Will the CO-OP employer keep me as an employee after the work term ends?", "refused": false, "error": null}
+{"id": "F14", "hits": [true], "gate": true, "query": "If I'm accepted into CO-OP, is placement guaranteed?", "refused": false, "error": null}
+{"id": "F15", "hits": [], "gate": true, "query": "After completing CO-OP, do they promise a permanent job?", "refused": false, "error": null}

@@ -1,0 +1,19 @@
+ Container msfea-quality-next-test-db-1  Running
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "Q15", "hits": [true], "gate": true, "query": "What is the minimum internship duration?", "refused": false, "error": null}
+{"id": "Q24", "hits": [true], "gate": true, "query": "what about the fee for CO-OP?", "refused": false, "error": null}
+{"id": "Q35", "hits": [], "gate": true, "query": "What's the exact IAESTE fee this year?", "refused": false, "error": null}
+{"id": "Q44", "hits": [true], "gate": true, "query": "whats mentroplus", "refused": false, "error": null}
+{"id": "Q59", "hits": [true], "gate": true, "query": "Can I train outside Lebanon?", "refused": false, "error": null}
+{"id": "H14", "hits": [], "gate": true, "query": "How much does MentorPlus membership cost?", "refused": false, "error": null}
+{"id": "F07", "hits": [true, true], "gate": true, "query": "what about the fee for CO-OP?", "refused": false, "error": null}
+{"id": "F08", "hits": [true], "gate": true, "query": "and the cost for Approved Experience course?", "refused": false, "error": null}
+{"id": "F10", "hits": [true], "gate": true, "query": "who do I contact for IAESTE?", "refused": false, "error": null}
+{"id": "F11", "hits": [true], "gate": true, "query": "who should I contact for internships?", "refused": false, "error": null}
+{"id": "F12", "hits": [], "gate": true, "query": "what about the price for IAESTE?", "refused": false, "error": null}
+{"id": "F28", "hits": [true], "gate": true, "query": "Back to IAESTE, who do I contact?", "refused": false, "error": null}
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "R06", "hits": [], "gate": true, "query": "Does the second part cost extra for CO-OP?", "refused": false, "error": null}
+{"id": "R12", "hits": [], "gate": true, "query": "What's the email for IAESTE?", "refused": false, "error": null}
+{"id": "R25", "hits": [], "gate": true, "query": "How many dollars is the IAESTE participation fee for this year's intake?", "refused": false, "error": null}
+{"id": "R27", "hits": [], "gate": true, "query": "Can you send the link again for MentorPlus?", "refused": false, "error": null}

@@ -1,0 +1,4 @@
+ Container msfea-quality-tests-test-db-1  Running
+.............................................................            [100%]
+61 passed in 3.84s
+All checks passed!

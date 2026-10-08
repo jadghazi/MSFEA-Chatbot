@@ -1,0 +1,46 @@
+ Container msfea-quality-candidate-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  17%|█▋        | 34/199 [00:00<00:00, 327.40it/s]
+Loading weights:  41%|████      | 82/199 [00:00<00:00, 414.45it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 716.34it/s]
+{"id": "R01", "hits": [], "gate": true, "query": "I need some work experience before graduating and have no idea where to begin. What should I look into?", "refused": null, "error": null}
+{"id": "R02", "hits": [], "gate": true, "query": "If CO-OP is a three-credit course, does that automatically make it an elective for my degree?", "refused": null, "error": null}
+{"id": "R03", "hits": [], "gate": true, "query": "I already registered for FEAA 500 in the first term. Do I register again for the next part?", "refused": null, "error": null}
+{"id": "R04", "hits": [], "gate": true, "query": "I have 85 credits right now. Does that stop me from applying to CO-OP a year early?", "refused": null, "error": null}
+{"id": "R05", "hits": [], "gate": true, "query": "Will finishing the CO-OP term guarantee that the employer hires me permanently?", "refused": null, "error": null}
+{"id": "R06", "hits": [], "gate": false, "query": "Does the second part cost extra?", "refused": null, "error": null}
+{"id": "R07", "hits": [], "gate": true, "query": "And how much time would I need to set aside for CO-OP program?", "refused": null, "error": null}
+{"id": "R08", "hits": [], "gate": true, "query": "Is Approved Experience internship a minimum or a maximum?", "refused": null, "error": null}
+{"id": "R09", "hits": [], "gate": true, "query": "My friend got permission last year. Can I do the same?", "refused": null, "error": null}
+{"id": "R10", "hits": [], "gate": true, "query": "Where can I get CDC help with a resume and a covering letter?", "refused": null, "error": null}
+{"id": "R11", "hits": [], "gate": true, "query": "I have a job interview coming up. What help is available through MSFEA?", "refused": null, "error": null}
+{"id": "R12", "hits": [], "gate": true, "query": "What's the email for IAESTE?", "refused": null, "error": null}
+{"id": "R13", "hits": [], "gate": true, "query": "how can an alumini mentro help me with my career?", "refused": null, "error": null}
+{"id": "R14", "hits": [], "gate": true, "query": "What's the point of Career+ and what kinds of things count toward it?", "refused": null, "error": null}
+{"id": "R15", "hits": [], "gate": true, "query": "Actually, I need information about the international exchange internships now.", "refused": null, "error": null}
+{"id": "R16", "hits": [], "gate": true, "query": "Would a paid job for 20 hours a week qualify as CO-OP if it lasts six months?", "refused": null, "error": null}
+{"id": "R17", "hits": [], "gate": true, "query": "Could I do a remote internship for an American company?", "refused": null, "error": null}
+{"id": "R18", "hits": [], "gate": true, "query": "Can some hands-on faculty research make up the rest if my company offers six weeks?", "refused": null, "error": null}
+{"id": "R19", "hits": [], "gate": true, "query": "Does voice-over presentation limits limit apply to each slide or the entire recording?", "refused": null, "error": null}
+{"id": "R20", "hits": [], "gate": true, "query": "For six company weeks followed by two research weeks, do I wait until the research starts to send the progress report?", "refused": null, "error": null}
+{"id": "R21", "hits": [], "gate": true, "query": "I've submitted my final report but still don't have the employer's completion letter. Is my file complete?", "refused": null, "error": null}
+{"id": "R22", "hits": [], "gate": true, "query": "What should the company put in my completion letter?", "refused": null, "error": null}
+{"id": "R23", "hits": [], "gate": true, "query": "The company hosted another AUB student before. Does that mean my placement is already approved?", "refused": null, "error": null}
+{"id": "R24", "hits": [], "gate": true, "query": "Back to the exchange scheme, how do I reach the people running it?", "refused": null, "error": null}
+{"id": "R25", "hits": [], "gate": true, "query": "How many dollars is the IAESTE participation fee for this year's intake?", "refused": null, "error": null}
+{"id": "R26", "hits": [], "gate": true, "query": "heyy im trying to get an intership overseas any options?", "refused": null, "error": null}
+{"id": "R27", "hits": [], "gate": true, "query": "Can you send the link again for MentorPlus?", "refused": null, "error": null}
+{"id": "R28", "hits": [], "gate": true, "query": "Is the CDC office open until 6 pm on Wednesdays?", "refused": null, "error": null}
+{"id": "R29", "hits": [], "gate": true, "query": "How do I sign up for CDC?", "refused": null, "error": null}
+{"id": "R30", "hits": [], "gate": true, "query": "I'm asking about finding full-time work after graduation, not internship approval. What can the CDC help with?", "refused": null, "error": null}
+{"id": "R31", "hits": [], "gate": true, "query": "If I do seven weeks at one company and one week at another, is eight weeks in total enough?", "refused": null, "error": null}
+{"id": "R32", "hits": [], "gate": true, "query": "You said internships can't be inside AUB. Does that also rule out an approved faculty research component?", "refused": null, "error": null}
+{"id": "R33", "hits": [], "gate": true, "query": "Could you explain the internship thing in ordinary language before getting into special cases?", "refused": null, "error": null}
+{"id": "R34", "hits": [], "gate": true, "query": "Can I call an unpaid twelve-week placement a CO-OP?", "refused": null, "error": null}
+{"id": "R35", "hits": [], "gate": true, "query": "Would getting my alumni mentor's agreement be enough to approve an internship?", "refused": null, "error": null}
+{"id": "R36", "hits": [], "gate": true, "query": "Can CO-OP make me graduate later?", "refused": null, "error": null}
+{"id": "R37", "hits": [], "gate": true, "query": "Can I submit the Final Report instead of the Progress Report?", "refused": null, "error": null}
+{"id": "R38", "hits": [], "gate": true, "query": "How long must my internship be?", "refused": null, "error": null}
+{"id": "R39", "hits": [], "gate": true, "query": "Should I use pictures, graphs, or charts?", "refused": null, "error": null}
+{"id": "R40", "hits": [], "gate": true, "query": "What if I just do six company weeks for CIVE 400?", "refused": null, "error": null}

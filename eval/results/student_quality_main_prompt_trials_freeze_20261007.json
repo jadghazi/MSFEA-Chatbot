@@ -1,0 +1,12 @@
+{
+  "files_sha256": {
+    "eval/results/student_quality_main_trial_cases_final_20261007.jsonl": "cbc948c8cc0e82f90a4df4200d203ac932e2ab16c294fde46869cefc2303b27b",
+    "eval/results/student_quality_main_trial_retrieval_20261007.jsonl": "90c7ef757563108f657c6b0b9cd92aff133c58c26f1f07d18790c8b7bde75807",
+    "eval/results/student_quality_main_prompt_guarded_trial_20261007.txt": "37ccc781187863f0a0511601f381d4980e14d588a18800e1f63ce490b0f4d284",
+    "eval/results/student_quality_main_prompt_compact_trial_20261007.txt": "f185ff2a40b4216f5f9b71acc221b878884e1c382d974398679267fea9570c63",
+    "eval/student_quality_timeline_holdout.jsonl": "b1ba2adae0563382122d048025cae3839aedb4dadba5ca73ad17298509d0d06e"
+  },
+  "before_live_trials": true,
+  "runtime_changes": false,
+  "notes": "Two prompt variants, identical frozen evidence/model/student generation settings, 27 diagnostic/regression cases and four new timeline holdouts. This experiment does not isolate prompt length as the sole cause."
+}

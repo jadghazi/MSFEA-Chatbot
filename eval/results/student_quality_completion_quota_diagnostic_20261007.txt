@@ -1,0 +1,2 @@
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"utc": "2026-10-07T11:25:07.925456+00:00", "quota": [], "retry_delay": [], "status": "available"}

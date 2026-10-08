@@ -1,5 +1,30 @@
 """Unit tests for curated-answer windowing used only after guarded publication."""
 
+import pytest
+
+from msfea_bot.curation.service import _revision_stage
+
+
+def test_revision_stage_preserves_untagged_factual_body() -> None:
+    answer = "First fact.\r\nSecond fact."
+    assert _revision_stage(answer) == (answer, None)
+
+
+def test_revision_stage_strips_scope_from_evidence() -> None:
+    body, stage = _revision_stage("<!-- process_stage: post_completion -->\nLater verified fact.")
+    assert stage == "post_completion"
+    assert body == "Later verified fact."
+
+
+@pytest.mark.parametrize("answer", [
+    "<!-- process_stage: entry -->\nFact.\n<!-- process_stage: post_completion -->",
+    "<!-- process_stage:  -->\nFact.",
+    "<!-- process_stage: unclosed",
+])
+def test_revision_stage_rejects_conflicting_or_malformed_scope(answer: str) -> None:
+    with pytest.raises(ValueError, match="process.stage"):
+        _revision_stage(answer)
+
 
 LONG_ANSWER = (
     "Students must submit the Notice of Arrival form during the first week. " * 100

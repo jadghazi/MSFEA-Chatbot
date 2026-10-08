@@ -20,6 +20,7 @@ data/
 tmp/
 output/
 backups/
+eval/results/       # dated audit traces are not runtime/build inputs
 kb/source/          # original PDFs/docx; only kb/normalized/ is ingested
 
 # Dev-only material not needed to run the app

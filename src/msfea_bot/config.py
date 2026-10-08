@@ -4,6 +4,8 @@ Every environment variable the app reads is loaded and validated *here* and
 nowhere else (AGENTS.md §6). Import the singleton `settings` from this module.
 """
 
+from typing import Literal
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -27,18 +29,16 @@ class Settings(BaseSettings):
     # Actual answer previews share the student model's quota; leave most for students.
     curation_preview_daily_call_limit: int = Field(default=60, ge=1, le=500)
 
-    # Generation sampling (ADR-0012). This bot does grounded extraction from
-    # retrieved context, not creative writing, so decoding is deterministic by
-    # default. Temperature 0 also makes the answer eval reproducible, which §2
-    # depends on: a metric can only prove a change helped if re-running it on
-    # unchanged code gives the same result.
-    # Measured 2026-07-30: temperature 0 alone is NOT enough — Gemini still varied
-    # its wording across identical calls (2 distinct answers in 3 runs). Pinning a
-    # seed as well made 3/3 runs identical. Any fixed value works; what matters is
-    # that it does not change between runs.
+    # Legacy sampling profile (ADR-0012). Fixed temperature/seed reduce variation
+    # but do not guarantee identical answers. Newer Gemini models omit these
+    # deprecated fields and use an explicitly recorded thinking profile instead.
     llm_temperature: float = 0.0
     llm_seed: int = 42
     llm_max_output_tokens: int = 1024
+    # Student/preview Gemini API compatibility. Newer models deprecate sampling
+    # parameters; preserve the legacy profile until a measured migration.
+    llm_gemini_use_sampling_params: bool = True
+    llm_gemini_thinking_level: Literal["low", "medium", "high"] | None = None
 
     # Embeddings (local/open by default — §3, ADR-0004)
     embedding_model: str = "BAAI/bge-small-en-v1.5"

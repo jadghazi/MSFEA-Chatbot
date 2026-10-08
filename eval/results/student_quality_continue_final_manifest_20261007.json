@@ -1,0 +1,48 @@
+{
+  "expected_cases": 164,
+  "verified_cases": 164,
+  "complete": true,
+  "missing_case_ids": [],
+  "current_prompt_and_local_reply_parity": true,
+  "source_freeze_matches": true,
+  "source_freeze": "eval/results/student_quality_continue_final_freeze_20261007.json",
+  "answer_model": "gemini-3.1-flash-lite",
+  "production_model_acceptance": false,
+  "default_generation_parameters": {
+    "temperature": 0.0,
+    "seed": 42,
+    "max_output_tokens": 1024,
+    "thinking_level": "provider default"
+  },
+  "provider_answers": 149,
+  "local_replies": 15,
+  "reused_provider_answers": 124,
+  "retained_failed_attempts": 8,
+  "attempt_files": [
+    "eval/results/student_quality_continue_candidate_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_attribute_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_generalization_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_generalization_changed_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_candidate_generalization_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_attribute_generalization_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_parent_answers_20261007.jsonl",
+    "eval/results/student_quality_continue_service_scope_after_20261007.jsonl"
+  ],
+  "semantic_accuracy_verified_by_this_script": false,
+  "artifact_sha256": {
+    "eval/results/student_quality_continue_final_retrieval_20261007_v2.jsonl": "1a832139259b3bc32d5339a58901e67c669c699cddc2a0664909822dd596a666",
+    "eval/results/student_quality_continue_final_generalization_20261007_v2.jsonl": "1061b23e6ee1804e740546e9fef83fbe9656ec1f06a0ab3839c2f21982e0f47c",
+    "eval/results/student_quality_continue_final_conditions_20261007.jsonl": "6a7b6eb5594a4cc6d53f4b6caa9c1d80e5415c745050d16642b5f8db940ea2f1",
+    "eval/results/student_quality_continue_final_services_20261007.jsonl": "fa17d2fd704bf9bbfbbec6e6b60051c4766b74981105c39f33ec99991edf9b63",
+    "eval/results/student_quality_continue_final_answers_20261007.jsonl": "90f20f64f4471895658c2374c3563557b31eb67562a1b9c2ffe29d79e909d459",
+    "eval/results/student_quality_continue_final_generalization_answers_20261007.jsonl": "eb847fdb3ca5e5ed9e84f5472171866f9578ca8926269016f383be9ddb8f52af",
+    "eval/results/student_quality_continue_parent_answers_20261007.jsonl": "b608a1855878f1e71d03ab575141db92e6d704c635cf809b635e5c441945e19e",
+    "eval/results/student_quality_continue_service_scope_after_20261007.jsonl": "9168aa8d067a52cf07bbf22b9ec75c7b0a09278fab4445a8221a49b38dd6ed7d",
+    "eval/results/student_quality_continue_candidate_answers_20261007.jsonl": "cb58f21479d8ffb43198ad2f33c5a4d39cd6bb237a6bac1fbd71eddbe337bf68",
+    "eval/results/student_quality_continue_attribute_answers_20261007.jsonl": "4b80a5666609268f97b09042ab4b62decd9f77e7fdd671d6e9fe0a898b2e98da",
+    "eval/results/student_quality_continue_generalization_answers_20261007.jsonl": "dac22832634cf4ffc93feacbbe1177d97f7e8e515f679e13980ae8dda2f1c18d",
+    "eval/results/student_quality_continue_generalization_changed_answers_20261007.jsonl": "4a2839b6dc29db4f0338864298c48d672296ed3ed78d669520c4d7afa6787097",
+    "eval/results/student_quality_continue_candidate_generalization_answers_20261007.jsonl": "df7687f918922cf6b4634ab9cf9071245c079fe534282a2b09f1fb8391a0eadc",
+    "eval/results/student_quality_continue_attribute_generalization_answers_20261007.jsonl": "007b1f9d685ed4bb2f45024db8a42dbd3beb9cef31d2eb50b6384e471c85846f"
+  }
+}

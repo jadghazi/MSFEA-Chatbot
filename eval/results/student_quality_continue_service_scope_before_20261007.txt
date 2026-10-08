@@ -1,0 +1,11 @@
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:   9%|▊         | 17/199 [00:00<00:01, 167.65it/s]
+Loading weights:  19%|█▊        | 37/199 [00:00<00:00, 180.56it/s]
+Loading weights:  29%|██▉       | 58/199 [00:00<00:00, 172.90it/s]
+Loading weights:  43%|████▎     | 85/199 [00:00<00:00, 206.59it/s]
+Loading weights:  75%|███████▌  | 150/199 [00:00<00:00, 356.95it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 361.02it/s]
+{"id": "S01", "hits": [], "gate": true, "query": "Will the CDC help me find a job after CO-OP?", "refused": null, "error": null}
+{"id": "S02", "hits": [], "gate": true, "query": "Will the company hire me after CO-OP?", "refused": null, "error": null}

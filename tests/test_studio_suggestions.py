@@ -79,6 +79,15 @@ def test_numeric_and_unknown_source_facts_are_rejected_before_independent_check(
         suggestions.checked_proposal(json.dumps(invalid),available,INTAKE)
 
 
+def test_suggestion_facts_preserve_program_and_process_scope() -> None:
+    sources = [{**SOURCES[0], "program": "internship", "process_stage": "entry"}]
+    facts = suggestions.facts(INTAKE, sources)
+    source = facts["source:0:c2"]
+    assert source["program"] == "internship"
+    assert source["process_stage"] == "entry"
+    assert source["department"] == "all"
+
+
 def test_pre_addition_review_request_remains_idempotent(_publication_database: str) -> None:
     key=uuid4().hex
     review_id=assistance.enqueue(INTAKE,key)

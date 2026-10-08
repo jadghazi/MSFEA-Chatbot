@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/eval/student_quality_audit.py", line 125, in <module>
+    main()
+  File "/workspace/eval/student_quality_audit.py", line 65, in main
+    generation = indexed_generation()
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/src/msfea_bot/retrieval/store.py", line 287, in indexed_generation
+    with _connect(database_url=database_url) as conn:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/src/msfea_bot/retrieval/store.py", line 68, in _connect
+    register_vector(conn)
+  File "/usr/local/lib/python3.12/site-packages/pgvector/psycopg/register.py", line 12, in register_vector
+    register_vector_info(context, info)
+  File "/usr/local/lib/python3.12/site-packages/pgvector/psycopg/vector.py", line 49, in register_vector_info
+    raise psycopg.ProgrammingError('vector type not found in the database')
+psycopg.ProgrammingError: vector type not found in the database
+

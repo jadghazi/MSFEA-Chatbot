@@ -1,0 +1,21 @@
+ Container msfea-quality-next-test-db-1  Running
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  32%|███▏      | 63/199 [00:00<00:00, 607.11it/s]
+Loading weights:  62%|██████▏   | 124/199 [00:00<00:00, 525.33it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 732.14it/s]
+{
+  "chunks": 243,
+  "documents": {
+    "cdc-knowledge-base.md": 36,
+    "email-clarifications.md": 81,
+    "final-presentation-slide-template.md": 5,
+    "internship-report-templates-and-rubrics.md": 35,
+    "msfea-cdc-coop-handbook.md": 46,
+    "summer-training-guidelines-2026.md": 40
+  },
+  "qa_chunks": 95,
+  "heading_only": [],
+  "embedding_limit": 512,
+  "truncated_embeddings": []
+}

@@ -23,7 +23,7 @@ from msfea_bot.llm.base import (
 
 
 class GeminiProvider:
-    """LLMProvider backed by the Gemini free tier."""
+    """LLMProvider backed by the configured Gemini API project."""
 
     def __init__(
         self, *, model: str | None = None, response_schema: dict[str, Any] | None = None,
@@ -49,15 +49,41 @@ class GeminiProvider:
         self._purpose = purpose
         self._retry_transient = retry_transient
         self._before_request = before_request
-        # Deterministic decoding (ADR-0012). Built once here rather than per call.
+        # Staff curation retains its existing profile. Student previews use the
+        # actual student profile, including omission of deprecated SDK fields.
+        staff = purpose == "curation_"
+        sampling = staff or settings.llm_gemini_use_sampling_params
+        thinking = (
+            types.ThinkingLevel.MEDIUM if staff
+            else types.ThinkingLevel(settings.llm_gemini_thinking_level.upper())
+            if settings.llm_gemini_thinking_level else None
+        )
         self._config = types.GenerateContentConfig(
-            temperature=settings.llm_temperature,
-            seed=settings.llm_seed,
+            temperature=settings.llm_temperature if sampling else None,
+            seed=settings.llm_seed if sampling else None,
             max_output_tokens=max_output_tokens or settings.llm_max_output_tokens,
             response_mime_type="application/json" if response_schema else None,
             response_json_schema=response_schema,
-            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.MEDIUM) if purpose == "curation_" else None,
+            thinking_config=types.ThinkingConfig(thinking_level=thinking) if thinking else None,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
         )
+
+    def count_input_tokens(self, prompt: str) -> int:
+        """Count an evaluation prompt without generating student text."""
+        from google.genai import errors
+        from httpx import TransportError
+
+        try:
+            count_result = self._client.models.count_tokens(model=self._model, contents=prompt)
+        except errors.ClientError as exc:
+            if exc.code == 429:
+                raise LLMRateLimitError("Gemini token counting rate limit reached") from exc
+            raise LLMServiceError("Gemini could not count evaluation input") from exc
+        except (errors.ServerError, TimeoutError, ConnectionError, TransportError) as exc:
+            raise LLMServiceError("Gemini could not count evaluation input") from exc
+        if count_result.total_tokens is None:
+            raise LLMServiceError("Gemini did not return an input token count")
+        return int(count_result.total_tokens)
 
     def _count(self, name: str, value: int = 1) -> None:
         count(self._purpose + name, value)

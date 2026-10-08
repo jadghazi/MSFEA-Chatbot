@@ -1,0 +1,8 @@
+{
+  "relative_links_checked": 70,
+  "missing_links": [],
+  "source_hashes_checked": 77,
+  "source_mismatches": [],
+  "oracle_changed": false,
+  "note": "Local paths and frozen candidate identity; no provider calls or deployment."
+}

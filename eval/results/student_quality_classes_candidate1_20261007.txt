@@ -1,0 +1,36 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  22%|██▏       | 44/199 [00:00<00:00, 438.48it/s]
+Loading weights:  44%|████▍     | 88/199 [00:00<00:00, 416.91it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 739.18it/s]
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "F01", "hits": [true, true], "gate": true, "query": "What paperwork and presentations do I need to complete?", "refused": false, "error": null}
+{"id": "F02", "hits": [false, true], "gate": true, "query": "Can you list the internship submissions and when they are due?", "refused": false, "error": null}
+{"id": "F03", "hits": [true], "gate": true, "query": "How long should my narrated slides take?", "refused": false, "error": null}
+{"id": "F04", "hits": [true], "gate": true, "query": "What is the final presentation requirement?", "refused": false, "error": null}
+{"id": "F05", "hits": [true], "gate": true, "query": "I have six weeks with a company, can I add research and be finished?", "refused": false, "error": null}
+{"id": "F06", "hits": [false], "gate": true, "query": "Can I train online?", "refused": true, "error": null}
+{"id": "F07", "hits": [false, false], "gate": true, "query": "what about the fee for CO-OP?", "refused": false, "error": null}
+{"id": "F08", "hits": [true], "gate": true, "query": "and the cost for Approved Experience course?", "refused": false, "error": null}
+{"id": "F09", "hits": [true], "gate": true, "query": "and the duration for CO-OP?", "refused": false, "error": null}
+{"id": "F10", "hits": [true], "gate": true, "query": "who do I contact for IAESTE?", "refused": false, "error": null}
+{"id": "F11", "hits": [true], "gate": true, "query": "who should I contact for internships?", "refused": false, "error": null}
+{"id": "F12", "hits": [], "gate": true, "query": "what about the price for IAESTE?", "refused": true, "error": null}
+{"id": "F13", "hits": [], "gate": true, "query": "Will the CO-OP employer keep me as an employee after the work term ends?", "refused": true, "error": null}
+{"id": "F14", "hits": [true], "gate": true, "query": "If I'm accepted into CO-OP, is placement guaranteed?", "refused": false, "error": null}
+{"id": "F15", "hits": [], "gate": true, "query": "After completing CO-OP, do they promise a permanent job?", "refused": true, "error": null}
+{"id": "F16", "hits": [], "gate": true, "query": "Can you tell whether my company has accepted my internship proposal?", "refused": false, "error": null}
+{"id": "F17", "hits": [true], "gate": true, "query": "Does registering for the internship mean my company is approved?", "refused": false, "error": null}
+{"id": "F18", "hits": [true, true], "gate": true, "query": "Do I need to choose a career path before getting help with my CV?", "refused": false, "error": null}
+{"id": "F19", "hits": [true], "gate": true, "query": "whats mentroplus", "refused": false, "error": null}
+{"id": "F20", "hits": [true], "gate": true, "query": "what is mentorpuls", "refused": false, "error": null}
+{"id": "F21", "hits": [true], "gate": true, "query": "how do i apply for coooperative education", "refused": false, "error": null}
+{"id": "F22", "hits": [false], "gate": true, "query": "can i do interships aborad", "refused": true, "error": null}
+{"id": "F23", "hits": [], "gate": false, "query": "what is the weather tomorrow", "refused": true, "error": null}
+{"id": "F24", "hits": [], "gate": false, "query": "where can I buy a mentroplus gaming keyboard", "refused": true, "error": null}
+{"id": "F25", "hits": [true], "gate": true, "query": "Actually, what help is there for interviews?", "refused": false, "error": null}
+{"id": "F26", "hits": [true], "gate": true, "query": "Instead, can you explain mentorship?", "refused": false, "error": null}
+{"id": "F27", "hits": [true], "gate": true, "query": "Now, how does Career+ work?", "refused": false, "error": null}
+{"id": "F28", "hits": [true], "gate": true, "query": "Back to IAESTE, who do I contact?", "refused": false, "error": null}
+{"id": "F29", "hits": [false], "gate": false, "query": "Actually, can CO-OP be shorter?", "refused": true, "error": null}
+{"id": "F30", "hits": [true], "gate": true, "query": "What help is there for writing a resume?", "refused": false, "error": null}

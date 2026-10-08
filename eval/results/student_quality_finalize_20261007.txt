@@ -1,0 +1,9 @@
+{
+  "baseline_commit": "a0caa4d",
+  "cases": 80,
+  "final_prompt_matches_live_traces": true,
+  "provider_errors_before": 0,
+  "provider_errors_after": 0,
+  "source_review": "Codex review, not independent human calibration",
+  "invalid_phrase_probe": "Q47: generic report length conflicts with ECE override; excluded from phrase metrics"
+}

@@ -17,6 +17,8 @@ from msfea_bot.generation.answer import (
     parse_answer,
     _answer_context,
     retrieve_context,
+    passes_similarity_gate,
+    grounded_answer_links,
 )
 from msfea_bot.generation.conversation import ConversationMessage
 from msfea_bot.llm import GenerationResult
@@ -31,6 +33,173 @@ CHUNKS = [
         score=0.9,
     )
 ]
+
+
+def test_linked_parent_precedes_detail_without_changing_retrieval_authority() -> None:
+    parent = RetrievedChunk("p", "Approval governs the whole plan.", "manual.md",
+                            "Manual > Plans", 0.9, {"retrieval_role": "companion"})
+    detail = RetrievedChunk("d", "A condition for a particular plan.", "manual.md",
+                            "Manual > Plans > Condition", 0.7,
+                            {"evidence_links": "manual.md > Plans"})
+    chunks = [detail, parent]
+    prompt = build_prompt("What does my plan require?", chunks)
+    assert prompt.index(parent.text) < prompt.index(detail.text)
+    assert chunks == [detail, parent]
+    assert passes_similarity_gate(chunks, 0.6)
+    assert not passes_similarity_gate([parent], 0.6)
+
+
+def test_unlinked_ancestor_does_not_reorder_context() -> None:
+    parent = RetrievedChunk("p", "General context.", "manual.md", "Manual > Plans", 0.4)
+    detail = RetrievedChunk("d", "Focused evidence.", "manual.md",
+                            "Manual > Plans > Condition", 0.7)
+    prompt = build_prompt("Explain the condition.", [detail, parent])
+    assert prompt.index(detail.text) < prompt.index(parent.text)
+
+
+def test_service_catalogue_does_not_expand_a_focused_answer() -> None:
+    detail = RetrievedChunk("x", "Resource for training.", "x.md", "Training", 0.7,
+                            {"program": "training"})
+    catalogue = RetrievedChunk("c", "Directory of unrelated services.", "c.md", "Services", 0.8,
+                               {"content_role": "catalogue"})
+    linked = RetrievedChunk("l", "A controlling exception.", "l.md", "Exception", 0.4,
+                            {"retrieval_role": "companion"})
+    assert _answer_context("What resource is available?", [detail, catalogue, linked], None) == [detail, linked]
+    assert _answer_context("What services are available?", [catalogue, detail], None) == [catalogue, detail]
+
+
+def test_removed_catalogue_cannot_authorize_a_weak_focused_match(monkeypatch) -> None:
+    import msfea_bot.generation.answer as generation
+
+    detail = RetrievedChunk("x", "Training detail.", "x.md", "Training", 0.59,
+                            {"program": "training"})
+    catalogue = RetrievedChunk("c", "Service directory.", "c.md", "Services", 0.8,
+                               {"content_role": "catalogue"})
+    monkeypatch.setattr(generation, "retrieve_context", lambda *args, **kwargs: [detail, catalogue])
+    monkeypatch.setattr(generation, "get_llm_provider", lambda: pytest.fail("LLM called"))
+    assert generate_answer("How does the training work?").refused
+
+
+def test_explicitly_linked_catalogue_is_preserved() -> None:
+    detail = RetrievedChunk("x", "Training detail.", "x.md", "Training", 0.7,
+                            {"program": "training"})
+    linked = RetrievedChunk("l", "Reviewed companion.", "l.md", "Related services", 0.4,
+                            {"content_role": "catalogue", "retrieval_role": "companion"})
+    assert _answer_context("What resource is available?", [detail, linked], None) == [detail, linked]
+
+
+def test_catalogue_is_retained_when_leading_program_scope_is_mixed_or_unknown() -> None:
+    catalogue = RetrievedChunk("c", "Directory.", "c.md", "Services", 0.7,
+                               {"content_role": "catalogue"})
+    for metadata in ({}, {"program": "training, workshops"}):
+        detail = RetrievedChunk("x", "Service detail.", "x.md", "Topic", 0.8, metadata)
+        assert _answer_context("What are my options?", [detail, catalogue], None) == [detail, catalogue]
+
+
+def test_answer_links_keep_verified_urls_and_drop_invented_destinations() -> None:
+    chunks = [RetrievedChunk("x", "Use https://example.edu/form?a=1&b=2", "x.md", "Forms", 0.9)]
+    text = "[Form](https://example.edu/form?a=1&b=2), [Handbook](x.md), [Other](https://invented.edu)."
+    assert grounded_answer_links(text, chunks) == (
+        "[Form](https://example.edu/form?a=1&b=2), Handbook, Other.")
+
+
+def test_answer_links_verify_plain_web_urls_in_supplied_evidence() -> None:
+    chunks = [RetrievedChunk("x", "Official https://example.edu/table\nA factual body.",
+                             "x.md", "Table", 0.9)]
+    assert grounded_answer_links("See https://example.edu/table.", chunks) == "See https://example.edu/table."
+    assert grounded_answer_links("See https://invented.edu/path.", chunks) == "See [unverified link omitted]"
+
+
+@pytest.mark.parametrize("text", [
+    "The provided context does not contain information regarding workshop costs.",
+    "The sources don't provide information about delivery dates.",
+])
+def test_empty_missing_information_reply_routes_to_a_human(text: str) -> None:
+    answer = parse_answer(text, CHUNKS)
+    assert answer.refused
+    assert "fcareer@aub.edu.lb" in answer.text
+    assert not answer.citations
+
+
+@pytest.mark.parametrize("text", [
+    "The sources do not provide information about the exact fee, but tuition is charged for three credits.",
+    "The context does not contain information about the fee. Contact the coordinator for details.",
+    "Acceptance into the program does not guarantee a placement.",
+])
+def test_partial_help_and_documented_negative_rules_are_not_empty_refusals(text: str) -> None:
+    assert not parse_answer(text, CHUNKS).refused
+
+
+def test_wrong_stage_cannot_authorize_generation(monkeypatch):
+    import msfea_bot.generation.answer as generation
+
+    entry = RetrievedChunk("entry", "Admission does not guarantee a placement.",
+                           "workshop.md", "Admission", 0.99, {"process_stage": "entry"})
+    later = RetrievedChunk("later", "Later career support is available.",
+                           "workshop.md", "Career support", 0.59)
+    monkeypatch.setattr(generation, "retrieve_context", lambda *args, **kwargs: [entry, later])
+    monkeypatch.setattr(generation, "get_llm_provider", lambda: pytest.fail("LLM called"))
+    assert generate_answer("Will I get hired after the workshop?").refused
+
+
+def test_stage_constraint_keeps_later_facts_and_entry_questions(monkeypatch):
+    import msfea_bot.generation.answer as generation
+
+    entry = RetrievedChunk("entry", "Admission does not guarantee a placement.",
+                           "workshop.md", "Admission", 0.99, {"process_stage": "entry"})
+    later = RetrievedChunk("later", "Graduates may use career support.",
+                           "workshop.md", "Later support", 0.90,
+                           {"process_stage": "post_completion"})
+    monkeypatch.setattr(generation, "retrieve_context", lambda *args, **kwargs: [entry, later])
+    prompts = []
+
+    class Recorder:
+        def generate(self, prompt):
+            prompts.append(prompt)
+            return GenerationResult(text=REFUSAL_MARKER)
+
+    generate_answer("Will I get hired after the workshop?", provider=Recorder())
+    assert "Graduates may use career support" in prompts[-1]
+    assert "Admission does not guarantee" not in prompts[-1]
+    generate_answer("Will I get hired after applying?", provider=Recorder())
+    assert "Admission does not guarantee" in prompts[-1]
+
+
+def test_later_outcome_needs_stage_evidence_but_career_help_can_generate(monkeypatch):
+    import msfea_bot.generation.answer as generation
+
+    support = RetrievedChunk("support", "Career support helps with applications.",
+                             "workshop.md", "Career support", 0.95)
+    monkeypatch.setattr(generation, "retrieve_context", lambda *args, **kwargs: [support])
+    calls = []
+
+    class Recorder:
+        def generate(self, prompt):
+            calls.append(prompt)
+            return GenerationResult(text=REFUSAL_MARKER)
+
+    assert generate_answer("Will I get hired after the workshop?", provider=Recorder()).refused
+    assert not calls
+    generate_answer("What career help is available for employment after graduation?", provider=Recorder())
+    assert len(calls) == 1
+    # A future reviewed later-stage policy can be answered without new routing code.
+    support.metadata = {"process_stage": "post_completion"}
+    support.text = "After completing the workshop, employment is not guaranteed."
+    generate_answer("Will I get hired after the workshop?", provider=Recorder())
+    assert len(calls) == 2
+
+
+@pytest.mark.parametrize("role", ["companion", "spelling_candidate"])
+def test_companions_cannot_pass_similarity_gate_or_be_discarded_by_dominant_hit(role: str) -> None:
+    seed = RetrievedChunk("seed", "Entry rule", "policy.md", "Entry", 0.59)
+    companion = RetrievedChunk("companion", "Scoped exception", "policy.md", "Exception", 0.95,
+                               {"retrieval_role": role})
+    assert not passes_similarity_gate([seed, companion], 0.60)
+    seed.score = 0.96
+    seed.metadata = {"source_type": "approved_clarification"}
+    seed.text = "**Question/topic:** Entry?\n**Answer:** Rule."
+    companion.score = 0.70
+    assert _answer_context("Can I enter?", [seed, companion], []) == [seed, companion]
 
 
 def test_dual_retrieval_ranks_by_current_question_not_context_similarity(monkeypatch):
@@ -113,6 +282,18 @@ def test_build_prompt_contains_question_context_and_marker() -> None:
     assert "How long?" in prompt
     assert "8 weeks" in prompt
     assert REFUSAL_MARKER in prompt
+
+
+def test_unresolved_reference_asks_for_subject_without_retrieval_or_provider(monkeypatch):
+    import msfea_bot.generation.answer as generation
+
+    monkeypatch.setattr(generation, "retrieve_context", lambda *a, **kw: pytest.fail("retrieval"))
+    monkeypatch.setattr(generation, "get_llm_provider", lambda: pytest.fail("provider"))
+    answer = generation.generate_answer("How does this work?")
+    assert not answer.refused
+    assert answer.citations == []
+    assert "Which topic or step" in answer.text
+    assert answer.disclaimer == DISCLAIMER
 
 
 def test_build_prompt_includes_history_only_for_a_followup() -> None:
@@ -333,30 +514,29 @@ def test_citation_matching_tolerates_reformatting() -> None:
 
 def test_prompt_requires_only_directly_supporting_citations() -> None:
     prompt = build_prompt("How long?", CHUNKS)
-    assert "Cite only blocks that directly support the answer" in prompt
-    assert "do not cite a conflicting general rule" in prompt
+    assert "Cite only evidence actually used" in prompt
+    assert "conflicting general rule over its scoped exception" in prompt
 
 
 def test_prompt_requires_intent_aware_answer_planning() -> None:
     prompt = build_prompt("So the two weeks are research?", CHUNKS)
-    assert "Resolve what the CURRENT question asks" in prompt
-    assert "Identify its intent" in prompt
-    assert "smallest set of blocks" in prompt
-    assert "does not mean it belongs in the answer" in prompt
+    assert "answer the student's current intent" in prompt
+    assert "Select the relevant evidence before answering" in prompt
+    assert "a block's presence does not make it applicable" in prompt
 
 
 def test_prompt_keeps_confirmations_focused() -> None:
     prompt = build_prompt("So the two weeks are research?", CHUNKS)
-    assert "For a confirmation or correction" in prompt
-    assert "Do not volunteer" in prompt
-    assert "Answer the current turn" in prompt
+    assert "For confirmation," in prompt
+    assert "student's current intent" in prompt
+    assert "Do not add unrelated alternatives" in prompt
 
 
 def test_prompt_allows_grounded_rule_application() -> None:
     prompt = build_prompt("I completed 88 credits. Can I register?", CHUNKS)
-    assert "apply an explicit rule" in prompt
-    assert "basic logic or arithmetic" in prompt
-    assert "facts the student explicitly provides" in prompt
+    assert "apply explicit rules to facts the student states" in prompt
+    assert "Basic arithmetic and comparisons are allowed" in prompt
+    assert "hypothetical condition explicitly assumed" in prompt
 
 
 def test_proposed_combination_requires_department_specific_authorization() -> None:
@@ -373,8 +553,8 @@ def test_proposed_combination_requires_department_specific_authorization() -> No
 
 def test_prompt_requests_minimum_sufficient_sources() -> None:
     prompt = build_prompt("How long?", MULTI_CHUNKS)
-    assert "Usually one source is enough" in prompt
-    assert "two only when the answer genuinely combines facts from both" in prompt
+    assert "smallest sufficient set of supporting sources" in prompt
+    assert "More than one source is appropriate for synthesis" in prompt
 
 
 def test_repeated_labels_are_deduped() -> None:

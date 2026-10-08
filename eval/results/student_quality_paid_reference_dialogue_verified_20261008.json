@@ -1,0 +1,15 @@
+[
+  {
+    "dataset": "eval/student_quality_dialogue_set.jsonl",
+    "trace": "eval/results/student_quality_paid_relation_dialogue_20261008.jsonl",
+    "verified_turns": 20,
+    "actual_answer_history_lineage": true,
+    "current_prompt_profile_parity": true,
+    "canonical_index_generation": "sha256:79a543b25a9189af7d2a902fc6b115acd6ee6606796e1ead68036454bac864ea",
+    "semantic_accuracy_verified": false,
+    "sha256": {
+      "eval/student_quality_dialogue_set.jsonl": "df37e7a795abf3a78f09cb17558c763dc157c3c829f42fa30b880cb7bea8d39e",
+      "eval/results/student_quality_paid_relation_dialogue_20261008.jsonl": "80074c48f3088529b381994323b1493eab24c26263c6aa187f434c2aff021973"
+    }
+  }
+]

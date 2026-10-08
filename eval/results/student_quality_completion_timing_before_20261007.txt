@@ -1,0 +1,15 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  20%|█▉        | 39/199 [00:00<00:00, 385.48it/s]
+Loading weights:  61%|██████    | 121/199 [00:00<00:00, 639.52it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 910.02it/s]
+{"id": "F01", "hits": [true, true], "gate": true, "query": "What paperwork and presentations do I need to complete?", "refused": null, "error": null}
+{"id": "F07", "hits": [false, false], "gate": true, "query": "what about the fee for CO-OP?", "refused": null, "error": null}
+{"id": "F10", "hits": [true], "gate": true, "query": "who do I contact for IAESTE?", "refused": null, "error": null}
+{"id": "F19", "hits": [true], "gate": false, "query": "whats mentroplus", "refused": null, "error": null}
+{"id": "F22", "hits": [false], "gate": true, "query": "can i do interships aborad", "refused": null, "error": null}
+{"id": "F25", "hits": [true], "gate": true, "query": "Actually, what help is there for interviews for six weeks company?", "refused": null, "error": null}
+{"id": "F29", "hits": [false], "gate": false, "query": "Actually, can CO-OP be shorter?", "refused": null, "error": null}
+{"id": "V01", "hits": [true], "gate": true, "query": "Could long internship be longer?", "refused": null, "error": null}
+{"id": "V02", "hits": [true], "gate": true, "query": "Can Final Voice-over Presentation be shorter?", "refused": null, "error": null}
+{"id": "V04", "hits": [true], "gate": false, "query": "Does CO-OP mean it can be shorter?", "refused": null, "error": null}

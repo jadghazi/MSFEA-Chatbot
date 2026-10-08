@@ -1,0 +1,2 @@
+ Container msfea-quality-paid-test-db-1  Running
+{"student_model": "gemini-3.8-flash", "student_profile": {"max_output_tokens": 4096, "temperature": null, "seed": null, "thinking_level": "medium"}, "staff_model": "gemini-3.1-flash-lite", "similarity_threshold": 0.6, "database_is_disposable": true}

@@ -1,0 +1,13 @@
+{
+  "turns": 20,
+  "exact_prompts": 17,
+  "verified_chain_turns": 7,
+  "mismatches": [
+    "D01.2",
+    "D03.1",
+    "D03.2"
+  ],
+  "model": "gemini-flash-lite-latest",
+  "fresh_provider_calls": 0,
+  "note": "Actual prior replies; exact current prompt reuse, not independent repeats or semantic grading."
+}

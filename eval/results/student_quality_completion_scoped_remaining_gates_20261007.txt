@@ -1,0 +1,103 @@
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  19%|█▊        | 37/199 [00:00<00:00, 369.93it/s]
+Loading weights:  40%|████      | 80/199 [00:00<00:00, 402.37it/s]
+Loading weights:  61%|██████    | 121/199 [00:00<00:00, 364.64it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 550.91it/s]
+letter-after-salary: [2]
+letter-after-employer: [2]
+mentor-after-coop: [1]
+mentor-after-internship: [1]
+mentor-long-after-coop: [1]
+mandatory-after-switch: [1]
+mandatory-after-switch-back: [1]
+internship-after-coop: [1]
+relative-that-june: [2]
+letter-pronoun-followup: [2]
+coop-paid-followup: [3]
+mentor-signup-after-switch: [1]
+coop-duration-pronoun: [1]
+iaeste-after-two-switches: [1]
+letter-switch-back: [1]
+ambiguous-research-after-coop: [1]
+other-two-weeks-followup: [2]
+credits-after-application: [2]
+credits-after-application-no-punctuation: [2]
+credits-pronoun-after-coop: [2]
+credits-after-mentor-switchback: [2]
+letter-location: [2]
+coop-optional: [2]
+coop-pay-after-approval: [1]
+internship-completed-credits: [1]
+internship-course-credits: [1]
+coop-credits-after-application: [3]
+report-pronoun-after-duration: [4]
+coop-duration-ellipsis: [3]
+iaeste-join-followup: [1]
+mentor-signup-followup: [1]
+switch-to-coop: [1]
+switch-to-careerplus: [1]
+short-standalone-iaeste: [1]
+and-new-subject: [1]
+switch-back-internship: [3]
+switch-back-coop: [1]
+internship-pay-standalone: [1]
+full-time-support-standalone: [1]
+lowercase-new-subject: [1]
+switch-followup-switch-back: [2]
+relational-followup: [1]
+explicit-switch-after-switch: [1]
+{"cases": 43, "hit_at_7": 43, "all_evidence_top_3": 42, "independent_parity": 19, "independent_cases": 19}
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  24%|██▎       | 47/199 [00:00<00:00, 466.27it/s]
+Loading weights:  49%|████▊     | 97/199 [00:00<00:00, 472.94it/s]
+Loading weights:  78%|███████▊  | 155/199 [00:00<00:00, 481.05it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 521.92it/s]
+PASS pg-ece-six-plus-two department=ece
+PASS pg-mech-no-split department=mech
+PASS pg-cee-split department=cee
+PASS pg-iem-presentation department=iem
+PASS pg-chem-eligibility department=chem
+PASS pg-unknown-department-split department=unknown
+PASS pg-followup-six-plus-two department=ece
+PASS pg-internship-coop-comparison department=unknown
+PASS pg-topic-switch-iaeste department=unknown
+Department cee: 1/1
+Department chem: 1/1
+Department ece: 2/2
+Department iem: 1/1
+Department mech: 1/1
+Department unknown: 3/3
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  22%|██▏       | 43/199 [00:00<00:00, 396.69it/s]
+Loading weights:  59%|█████▉    | 117/199 [00:00<00:00, 590.15it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 822.56it/s]
+PASS conflict-same-scope-number: candidates=53 flags=8
+PASS conflict-paraphrased-negation: candidates=53 flags=1
+PASS conflict-exact-duplicate: candidates=38 flags=5
+PASS conflict-valid-department-exception: candidates=45 flags=0
+PASS conflict-differing-condition: candidates=40 flags=3
+PASS conflict-outdated-replacement: candidates=53 flags=4
+PASS conflict-none: candidates=49 flags=0
+Conflict candidate coverage: 7/7; flagged=5; known false-positive fixtures=0
+
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]
+Loading weights:  28%|██▊       | 56/199 [00:00<00:00, 555.03it/s]
+Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1292.21it/s]
+{
+  "chunks": 254,
+  "documents": {
+    "cdc-knowledge-base.md": 36,
+    "email-clarifications.md": 80,
+    "final-presentation-slide-template.md": 5,
+    "internship-report-templates-and-rubrics.md": 35,
+    "msfea-cdc-coop-handbook.md": 58,
+    "summer-training-guidelines-2026.md": 40
+  },
+  "qa_chunks": 94,
+  "heading_only": [],
+  "embedding_limit": 512,
+  "truncated_embeddings": []
+}

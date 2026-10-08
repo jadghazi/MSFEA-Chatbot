@@ -1,0 +1,23 @@
+{
+  "chunks": 253,
+  "documents": {
+    "cdc-knowledge-base.md": 35,
+    "email-clarifications.md": 81,
+    "final-presentation-slide-template.md": 5,
+    "internship-report-templates-and-rubrics.md": 36,
+    "msfea-cdc-coop-handbook.md": 54,
+    "summer-training-guidelines-2026.md": 42
+  },
+  "qa_chunks": 89,
+  "heading_only": [
+    "cdc-knowledge-base.md#01-internship-approved-experience-course",
+    "cdc-knowledge-base.md#19-career-readiness-resources",
+    "internship-report-templates-and-rubrics.md#10-2-final-training-report-template-815-pages",
+    "msfea-cdc-coop-handbook.md#21-information-for-students",
+    "msfea-cdc-coop-handbook.md#42-information-for-employers",
+    "summer-training-guidelines-2026.md#00-summer-training-approved-experience-guidelines",
+    "summer-training-guidelines-2026.md#22-important-checklists"
+  ],
+  "embedding_limit": 512,
+  "truncated_embeddings": []
+}

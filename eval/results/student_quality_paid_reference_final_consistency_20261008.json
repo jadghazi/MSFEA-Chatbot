@@ -1,0 +1,19 @@
+{
+  "checked_guides": [
+    "docs\\architecture.md",
+    "docs\\backlog.md",
+    "docs\\decisions\\README.md",
+    "docs\\decisions\\0032-paid-student-profile-and-context.md",
+    "eval\\README.md",
+    "kb\\README.md",
+    "eval\\results\\student_quality_paid_migration_20261008.md"
+  ],
+  "broken_local_links": [],
+  "source_hash_mismatches": [],
+  "runtime_source_hashes": 86,
+  "main_cases_verified": 179,
+  "actual_history_turns_verified": 26,
+  "oracle_changed": false,
+  "curated_test_facts_used": false,
+  "semantic_review": "Separate Codex source-review artifacts; not inferred from parity checks."
+}

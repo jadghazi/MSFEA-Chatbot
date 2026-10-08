@@ -1,0 +1,12 @@
+ Container msfea-quality-next-test-db-1  Running
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+{"id": "P01", "hits": [], "gate": true, "query": "Suppose my department approves both company placements and the whole five-week plus three-week plan in writing. Do those periods add up to the ordinary duration requirement?", "refused": false, "error": null}
+{"id": "P02", "hits": [], "gate": true, "query": "I have six weeks with one company and three with a second. That's nine total, so is the duration automatically enough?", "refused": false, "error": null}
+{"id": "P03", "hits": [], "gate": true, "query": "Two four-week company placements add up to eight weeks. Can that satisfy my MECH internship?", "refused": false, "error": null}
+{"id": "P04", "hits": [], "gate": true, "query": "Can I join four company weeks from this summer to four from next summer for my CHEM internship?", "refused": false, "error": null}
+{"id": "P05", "hits": [], "gate": true, "query": "Would four months of paid full-time work meet the CO-OP length requirement?", "refused": false, "error": null}
+{"id": "P06", "hits": [], "gate": true, "query": "I have 100 credits. Does that meet the handbook's ordinary FEAA 500 credit minimum?", "refused": false, "error": null}
+{"id": "P07", "hits": [], "gate": true, "query": "Four presentation slides with three minutes of audio each would be twelve minutes. Is that within the EECE 500 narrated-duration limit?", "refused": false, "error": null}
+{"id": "P08", "hits": [], "gate": true, "query": "Does the rule about a second company after six weeks necessarily decide a different plan, like ten weeks followed by one?", "refused": false, "error": null}
+{"id": "R31", "hits": [], "gate": true, "query": "If I do seven weeks at one company and one week at another, is eight weeks in total enough?", "refused": false, "error": null}
+{"model": "gemini-3.1-flash-lite", "thinking_level": "medium", "temperature": 0.0, "seed": 42, "max_output_tokens": 1024}

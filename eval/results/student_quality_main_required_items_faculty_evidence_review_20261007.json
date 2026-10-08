@@ -1,0 +1,55 @@
+{
+  "reviewer": "Codex evidence review; not live answer evaluation or independent faculty calibration",
+  "records": [
+    {
+      "id": "faculty-007-chem",
+      "finding": "ordinary duration in CDC FAQ",
+      "supporting_phrases": [
+        "at least 8 weeks"
+      ],
+      "core_evidence_in_supplied_context": true
+    },
+    {
+      "id": "faculty-025-ece",
+      "finding": "individual exceptions in approved clarification",
+      "supporting_phrases": [
+        "does not establish current policy"
+      ],
+      "core_evidence_in_supplied_context": true
+    },
+    {
+      "id": "faculty-075-ece",
+      "finding": "presentation visuals in approved clarification",
+      "supporting_phrases": [
+        "Use relevant pictures"
+      ],
+      "core_evidence_in_supplied_context": true
+    },
+    {
+      "id": "faculty-125-ece",
+      "finding": "ambiguous arrangement and exception in approved clarification",
+      "supporting_phrases": [
+        "Ask which arrangement"
+      ],
+      "core_evidence_in_supplied_context": true
+    },
+    {
+      "id": "faculty-131-mech",
+      "finding": "MECH duration and research in approved clarification",
+      "supporting_phrases": [
+        "Six company weeks alone",
+        "hands-on engineering work"
+      ],
+      "core_evidence_in_supplied_context": true
+    },
+    {
+      "id": "faculty-158-ece",
+      "finding": "required employer letter and temporary-delay conditions in approved clarification",
+      "supporting_phrases": [
+        "required employer completion",
+        "final signed employer letter must still be submitted"
+      ],
+      "core_evidence_in_supplied_context": true
+    }
+  ]
+}

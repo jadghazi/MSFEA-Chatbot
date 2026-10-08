@@ -14,13 +14,22 @@ program. It covers what CO-OP is, the policies, the FEAA 500 course, student
 eligibility and application, deliverables, evaluation, and information for
 employers.
 
+## CO-OP overview
+<!-- content_role: overview -->
+
+MSFEA CO-OP combines study with a full-time and paid work term of at least 6 months, associated with FEAA 500. It is an optional program. Apply to the program at least one year before your intended start. Eligibility requirements include a minimum GPA of 3.3 at application and course enrollment, at least 90 completed credits when enrolling in FEAA 500 (120 for architecture), and completion of the required career development modules before applying to positions and enrolling; departments may impose additional requirements. Students who pass FEAA 500 are no longer required to take their department's Approved Experience / Professional Training course. The application stages, conditions, tuition, work responsibilities and deliverables are explained below.
+
 ## What CO-OP is
+<!-- evidence_links: msfea-cdc-coop-handbook.md > Approved Experience internship and CO-OP comparison -->
 
 Cooperative education ("co-op") is a program in which students combine their
 studies with one or more official **paid** work terms within their area of
 study. The difference between a co-op work term and an internship is duration and
 pay: internships are typically short (one or two months) and can be unpaid, while
-co-op terms are longer and are paid. The **MSFEA co-op work term is a minimum of
+co-op terms are longer and are paid. This is a general internship description;
+the MSFEA Approved Experience internship course requires at least **8 weeks** of
+approved training (see the course comparison below and the Summer Training Guidelines).
+The **MSFEA co-op work term is a minimum of
 6 months**, full-time and paid.
 
 According to the U.S. Department of Education, students with co-op experience earn
@@ -34,8 +43,9 @@ graduate degree.
 
 ## Approved Experience internship and CO-OP comparison
 
-The department's Approved Experience internship requires at least **8 weeks** of
-approved training and can be unpaid (see the Summer Training Guidelines). MSFEA
+The department's Approved Experience internship is a graduation requirement. It
+requires at least **8 weeks** of approved training and can be unpaid (see the
+Summer Training Guidelines). MSFEA
 CO-OP is an optional, full-time paid work term of at least **6 months**. Students
 who pass FEAA 500 are no longer required to take their department's Approved
 Experience / Professional Training course. The CO-OP rules and substitution are
@@ -90,6 +100,7 @@ The program involves co-op students and co-op employers, and is administered by 
 participating departments.
 
 ## Policies
+<!-- evidence_links: msfea-cdc-coop-handbook.md > Information for students > The FEAA 500 course -->
 
 - **Optional or required:** CO-OP is an **optional program**, open to
   undergraduate students (and to graduate students if allowed by their
@@ -108,9 +119,11 @@ participating departments.
   elective or a technical elective, is decided by each department. Students keep
   **full-time student status** during the co-op.
 - **Tuition / co-op fees:** regular tuition is charged for the 3 credits of FEAA
-  500. Students who pass FEAA 500 are **no longer required** to take the 0-credit
-  Approved Experience / Professional Training course in their department (that
-  course is currently billed as 1 credit).
+  500.
+- **Approved Experience substitution:** students who pass FEAA 500 are **no longer
+  required** to take the Approved Experience / Professional Training course in
+  their department (that course is currently billed as 1 credit). Its current course-credit and billing information is maintained
+  in the approved internship course clarification, separately from CO-OP tuition.
 - **Number, duration, and certification:** one placement of at least 6 months is
   required; additional co-ops (consecutive or not) are allowed if approved by the
   department and co-op advisor. A 6-month co-op should typically coincide with the
@@ -132,6 +145,7 @@ participating departments.
 ## Information for students
 
 ### Eligibility requirements
+<!-- process_stage: entry -->
 
 To participate in the co-op program and enroll in FEAA 500, a student must satisfy:
 
@@ -152,6 +166,8 @@ Applications are reviewed by the department's co-op academic advisor, who accept
 or rejects in consultation with the department or its Undergraduate Committee.
 
 ### Application and admission process
+<!-- process_stage: entry -->
+<!-- evidence_links: msfea-cdc-coop-handbook.md > Information for students > Eligibility requirements -->
 
 Students can apply starting at the **beginning of the Spring of their 2nd year**,
 and should apply **at least one year before** the intended co-op start date.
@@ -176,6 +192,7 @@ CDC Advisor. A deadline is attached to each step, for both the "Summer + Fall" a
 "Spring + Summer" tracks (see the timeline below).
 
 ### Application timeline (deadlines)
+<!-- process_stage: entry -->
 
 Students should apply to the CO-OP program at least one year before their intended
 co-op start date. The application step is in July for the Summer + Fall track or
@@ -293,6 +310,7 @@ Co-op positions offered to MSFEA students should satisfy:
 6. Any additional requirements set by individual departments.
 
 ### Employer application process
+<!-- process_stage: entry -->
 
 Employers submit a **Co-op Employer Application Form** with a detailed job
 description. If the position is approved by the relevant department and co-op
@@ -312,6 +330,9 @@ Employer Experience Feedback Form**.
 
 ## CO-OP FAQs
 
+### Placement proposal procedure
+<!-- process_stage: entry -->
+
 **Q: When should a CO-OP student submit the Proposal for Approved Experience?**
 A: The CO-OP handbook does not establish a universal department-internship Moodle
 Proposal for every CO-OP student. Apply to the CO-OP program through its student
@@ -321,14 +342,25 @@ Education and Experiential Learning Form** and contact the CO-OP CDC Advisor to
 seek approval. Follow the CO-OP application timeline and advisor instructions
 for the applicable dates.
 
+### Course substitution after passing
+<!-- process_stage: completion -->
+
 **Q: Does passing FEAA 500 remove the department's Approved Experience requirement?**
 A: Yes. The CO-OP handbook says students who pass FEAA 500 are no longer required to take their department's Approved Experience / Professional Training course.
+
+### Program admission and initial placement
+<!-- process_stage: entry -->
 
 **Q: Do I need approval to join CO-OP or use a self-found placement?**
 A: The department's co-op academic advisor reviews and accepts or rejects applications to the CO-OP program in consultation with the department or its Undergraduate Committee. Acceptance into the program does not guarantee a placement. For a self-found CO-OP opportunity, submit the Proposal of Cooperative Education and Experiential Learning Form and contact the co-op CDC Advisor to seek approval.
 
+### General program questions
+
 **Q: Is CO-OP mandatory?**
 A: No, it is an **optional program** students can choose to enroll in.
+
+### Eligibility and course enrollment
+<!-- process_stage: entry -->
 
 **Q: What GPA do I need for co-op?**
 A: A minimum GPA of **3.3 (B+)**.
@@ -339,13 +371,21 @@ minimum GPA of 3.3 (B+); at least 90 completed credits (120 for architecture) wh
 enrolling in FEAA 500; completion of the CDC Career Development Modules; plus any
 department-specific requirements.
 
+### Course registration during participation
+
 **Q: Is CO-OP associated with a course?**
 A: Yes — the 3-credit Pass/Fail course **FEAA 500** (and **FEAA 500A** in the
 second semester), which you register for every semester you are on co-op.
 
+### Applying to placement opportunities
+<!-- process_stage: entry -->
+
 **Q: How many CO-OP opportunities can I apply to?**
 A: Up to a **maximum of 3**, ranked by priority, but you can only accept and
 confirm one.
+
+### Coursework and program timing
+<!-- evidence_links: msfea-cdc-coop-handbook.md > Information for students > Eligibility requirements -->
 
 **Q: Can I take other courses while on CO-OP?**
 A: No, except possibly Final Year Project (FYP) or a 499 research course, if your
@@ -356,13 +396,20 @@ A: In the 3rd or 4th year for Engineering/Graphic Design students, and the 4th o
 5th year for Architecture students. You must return to campus for at least one
 term afterward.
 
+### Program application timing
+<!-- process_stage: entry -->
+
 **Q: When should I apply to the CO-OP program?**
 A: At least one year before your intended start date (you can begin applying in the
 Spring of your 2nd year).
 
+### Degree credit recognition
+
 **Q: Do CO-OP course credits count toward my degree?**
-A: This is decided by your department. You remain a full-time student during co-op
-regardless.
+A: CO-OP is associated with the **3-credit Pass/Fail FEAA 500** course.
+Whether it counts toward academic credit, and whether it is treated as a free
+elective or a technical elective, is decided by each department. Students keep
+**full-time student status** during co-op regardless of that decision.
 
 ---
 
@@ -371,6 +418,18 @@ regardless.
 All CO-OP departments require an official signed company letter on company letterhead confirming the placement duration and relevant work. This letter is additional to the Final Student Performance Evaluation Form and Employer Experience Feedback Form; it does not replace either form. The handbook's other deliverables remain unchanged.
 
 ## About this document
+
+**2026-10-07 — separate policy attributes (local candidate).** CO-OP tuition and Approved Experience substitution are separate bullets. The older handbook's incidental "0-credit" internship label is omitted from student-facing normalization because the current approved `kb/source/email-clarifications.md` explicitly states that Approved Experience is a 1-credit course with 1-credit billing. The substitution itself, CO-OP tuition and FEAA 500/500A sequence are unchanged. Original source versions remain intact; no policy change is inferred from this editorial separation.
+
+**2026-10-07 — admission evidence separation (local candidate).** The existing admission/initial-placement FAQ now has its own section with entry-stage metadata, matching the application section. The duplicated admission guarantee sentence was removed from the synthetic mixed-topic overview; the original admission rule remains in both detailed sections. This prevents transferring admission evidence to later employment outcomes without inventing an employment policy.
+
+**2026-10-07 — general and course-specific definitions (local candidate).** The general short-internship description now explicitly distinguishes the existing MSFEA eight-week Approved Experience course minimum, already stated in the reviewed comparison and Summer Training Guidelines. An editorial link restores that comparison with the definition. No duration or substitution policy was changed.
+
+**2026-10-07 — scope and context metadata (local candidate).** Program policies link to the existing FEAA 500 course section so first- and second-semester tuition are available together. The application/admission section is labelled as program admission and initial placement; that scope does not establish post-program employment outcomes. No handbook policy was changed.
+
+**2026-10-07 — complete topic facts (local candidate).** The degree-credit FAQ includes the course-credit value and department-controlled elective recognition already stated together in Policies. The comparison includes the graduation-requirement status stated in the Summer Training Guidelines, Course Description. FEAA 500 registration across both semesters and the second-semester code FEAA 500A describe the same course sequence; neither is treated as a conflicting policy.
+
+**2026-10-07 — source-grounded CO-OP overview (local quality candidate).** The added overview reorganizes existing facts from What CO-OP is, Policies, Eligibility requirements, Application and admission process and the approved course-substitution FAQ in this same document. It does not replace their detailed conditions or create new policy. Publication requires reviewed release authorization.
 
 Normalized from `msfea-cdc-coop-handbook.pdf` (the 10-page official MSFEA CO-OP
 handbook). Cleaning removed the cover page, table of contents, running-header

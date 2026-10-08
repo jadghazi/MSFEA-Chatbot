@@ -1,0 +1,25 @@
+{
+  "gate_group_passed": false,
+  "failing_command": "eval.conversation_eval --gate",
+  "failing_rank_case_ids": [
+    "credits-after-application",
+    "credits-after-application-no-punctuation",
+    "credits-pronoun-after-coop",
+    "credits-after-mentor-switchback"
+  ],
+  "conversation_evidence_hits": 21,
+  "conversation_independent_parity": 9,
+  "golden_context_recall": {
+    "hits": 122,
+    "total": 124,
+    "floor": 0.9,
+    "meets_floor": true
+  },
+  "faculty_source_recall": {
+    "hits": 198,
+    "total": 205,
+    "floor": 0.95,
+    "meets_floor": true
+  },
+  "status_basis": "Per-command failures in retained log; the PowerShell continuation driver exit is not gate acceptance"
+}

@@ -1,0 +1,22 @@
+ Container msfea-quality-next-test-db-1  Running
+All checks passed!
+Success: no issues found in 42 source files
+..............................................F......................... [ 59%]
+.................................................                        [100%]
+=================================== FAILURES ===================================
+____ test_activity_permission_does_not_assume_a_quantified_completion_plan _____
+
+    def test_activity_permission_does_not_assume_a_quantified_completion_plan() -> None:
+        for question in ("Could I do online training?", "Can I do a placement overseas?",
+                         "Can I complete the ACME 500 course remotely?"):
+>           assert answer_task(question, []).startswith("Activity permission:")
+E           assert False
+E            +  where False = <built-in method startswith of str object at 0x5dd605445580>('Activity permission:')
+E            +    where <built-in method startswith of str object at 0x5dd605445580> = "Decision: decide whether the student's exact proposed combination is a documented option for their department. A gene...ngements and restrictions. Do not add forms, reports, deadlines, or other procedures unless the student asks for them.".startswith
+E            +      where "Decision: decide whether the student's exact proposed combination is a documented option for their department. A gene...ngements and restrictions. Do not add forms, reports, deadlines, or other procedures unless the student asks for them." = answer_task('Can I complete the ACME 500 course remotely?', [])
+
+tests/test_conversation.py:441: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_conversation.py::test_activity_permission_does_not_assume_a_quantified_completion_plan
+1 failed, 120 passed in 5.67s
+
