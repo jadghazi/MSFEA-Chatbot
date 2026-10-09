@@ -18,6 +18,7 @@ period. The latest optional-draft rule is [ADR-0031](../decisions/0031-advisory-
 | API admission/cache audit | [September usage audit](usage-audit.md); current settings in [operations](../deployment.md) |
 | Paid-call admission, monitoring and emergency pause | [October 8 safeguard audit](paid-usage-safeguards-20261008.md) |
 | Progressive student replies and compact answer controls | [October 8 UI release receipt](student-response-ui-20261008.md) |
+| Procedural follow-up activity/object resolution and scoring | [October 9 release receipt](procedural-followup-release-20261009.md); [paired verification](../../eval/results/procedural_followup_review_20261009.md) |
 | Source scope/provenance audit | [Scope audit](kb-scope-provenance-audit.md); subsequent faculty decisions in [intake](../intake/) |
 | Publication baseline, guard quality and isolated rehearsal | [Baseline](kb-publication-guard-baseline.md), [quality report](kb-publication-guard-quality-report.md), [operator rehearsal](kb-publication-guard-operations.md) |
 | Original guided Studio and clarity investigation | [Original review](guided-studio-quality-report.md), [clarity review](guided-studio-clarity-review.md) |

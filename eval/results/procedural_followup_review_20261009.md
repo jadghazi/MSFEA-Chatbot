@@ -101,7 +101,13 @@ gates after ingestion; no provider is involved. The paired baseline reloaded
 unchanged pre-candidate conversation and answer modules at HEAD `48ec7e8` in the
 existing audit runner, on the same canonical 246-chunk index.
 
-Verification status: final full-suite and release receipt pending.
+Final local verification: **644 passed, 1 skipped** in the isolated full suite;
+92 focused conversation tests passed; Ruff passed; strict mypy passed for all 115
+source/eval files. The skip is an existing optional test, not a failed check.
+Oracle release and three public actual-history requests passed; see the
+[release receipt](../../docs/archive/procedural-followup-release-20261009.md).
+Code-release [GitHub CI](https://github.com/jadghazi/MSFEA-Chatbot/actions/runs/37967205379)
+passed, including all eight evidence gates against the final deployed commit.
 
 An earlier in-progress full-suite run was interrupted after 246 passes and one
 `stale_validation` rejection: adding the frozen CI subset during that run changed
