@@ -1,0 +1,35 @@
+{
+  "final_conversation_sha256": "998f3e85e50153e048a1d2e18feedc935c28ddf622b972378c3426e594530080",
+  "frozen_cases_sha256": "419f034a421039ad111643866d145ee7e6c8bbe9653cb6a4c2796bd6587e6049",
+  "frozen_dialogues_sha256": "64429799075261fb5785faa04bf4b9d9e092c06c350fba9778063f56ed509f5e",
+  "verified_live_or_local_prompt_ids": [
+    "PF1.1",
+    "PF1.2",
+    "PF1.3",
+    "PF1.4",
+    "PF2.1",
+    "PF2.2",
+    "PF2.3",
+    "PF2.4",
+    "PF2.5",
+    "PF2.6",
+    "P05",
+    "P10",
+    "P16",
+    "P17",
+    "P21"
+  ],
+  "independent_chunk_parity": [
+    "P13",
+    "P14",
+    "P15",
+    "P19",
+    "P20"
+  ],
+  "completion_gate_before": 1,
+  "completion_gate_after": 4,
+  "index_generation": "sha256:79a543b25a9189af7d2a902fc6b115acd6ee6606796e1ead68036454bac864ea",
+  "estimated_paid_usd": 0.1030815,
+  "frozen_cases_lf_sha256": "bed3b04b413b99c21c469b8f8efc980899640aa51bc69beefa33049836eef015",
+  "frozen_dialogues_lf_sha256": "87aef4892b24dbdc18fadc98b646739b9b9266de38eec6a98dc2e1a2dd240e08"
+}

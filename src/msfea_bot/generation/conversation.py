@@ -37,6 +37,7 @@ _EXPLICIT_CONDITION_RE = re.compile(r"\b(also|while|when|if|during)\b", re.IGNOR
 _GENERIC_REFERENTS = frozenset({
     "answer", "application", "approval", "deadline", "document", "form", "letter",
     "link", "option", "process", "report", "requirement", "step", "submission",
+    "offer", "offers", "contract", "contracts",
     "fee", "fees", "cost", "price", "tuition", "duration", "length", "contact", "email",
     "applications", "approvals", "deadlines", "documents", "forms", "letters",
     "reports", "programs", "courses", "requirements", "steps", "submissions",
@@ -67,6 +68,24 @@ _ATTRIBUTE_GROUPS = (
     (r"\b(?:contact|email|advisor|coordinator)\b",
      ("contact", "email", "advisor", "coordinator")),
     (r"\b(?:links?|urls?|websites?|webpages?)\b", ("link", "url", "website")),
+)
+# Temporal/process language can be elliptical even when it contains several
+# content words. These are English intent cues, not university topic aliases.
+_PROCESS_TERMS = frozenset({
+    "once", "before", "after", "start", "starts", "starting", "begin", "begins",
+    "beginning", "finish", "finishes", "finished", "finishing", "complete",
+    "completed", "completing", "done", "over", "next", "happens", "happen",
+    "need", "we", "our", "then", "its", "they", "them", "their",
+})
+_PROCESS_ACTION_RE = re.compile(
+    r"\b(?:start(?:s|ing)?|begin(?:s|ning)?|finish(?:es|ed|ing)?|"
+    r"complet(?:e|ed|ing)|done|over)\b", re.I,
+)
+_ACTIVITY_REFERENCE_RE = re.compile(
+    r"\b(?:do|doing|start(?:s|ing)?|begin(?:s|ning)?|finish(?:es|ed|ing)?|"
+    r"complet(?:e|ed|ing))\s+(?:it|that|this|them|those|these)\b|"
+    r"\b(?:it|that|this|they)\s+(?:is|are|was|were)\s+(?:done|over|finished|completed)\b",
+    re.I,
 )
 _BOUND_REFERENCE_RE = re.compile(
     r"^(?:so\s+)?(?:is|was)\s+(?:that|this|it)\s+(?:a |the )?"
@@ -145,7 +164,7 @@ def contextual_question(question: str, history: Sequence[ConversationMessage] | 
             # Retrieval can lexicalize an attribute, but generation must retain
             # the student's actual decision/comparison rather than its search terms.
             prior = bounded_history(history)
-            subject = _subject_hint(prior[_anchor_index(prior)].content)
+            subject = _reference_subject(question, prior)
             dimension = _bound_dimension(question, prior)
             return _resolved_query(question, f"{subject} {dimension}" if dimension else subject)
         return question
@@ -524,8 +543,14 @@ def unresolved_reference(
             r"how (?:do|can) I (?:sign up|register|apply|enroll|enrol) "
             r"(?:for|in) (?:this|that|it))\??", question.strip(), re.I,
         )
-        return bool(service_menu and singular_reference
-                    and (recent_answer.count(",") >= 2 or recent_answer.count("\n- ") >= 2))
+        compared = re.search(
+            r"\b(?:compare\s+.+\s+(?:and|with|versus|vs\.?)\s+.+|"
+            r"difference(?:s)? between\s+.+\s+and\s+.+)",
+            prior[_anchor_index(prior)].content, re.I,
+        )
+        return bool(singular_reference and (compared or (
+            service_menu and (recent_answer.count(",") >= 2 or recent_answer.count("\n- ") >= 2)
+        )))
     return bool(re.fullmatch(
         r"(?:how (?:does|do) (?:this|that|it|they) work|"
         r"what (?:about|is) (?:this|that|it)|is (?:this|that|it) (?:required|mandatory))\??",
@@ -614,11 +639,55 @@ def _anchor_index(prior: list[ConversationMessage]) -> int:
         text = prior[index].content.strip()
         if _explicit_subject(text):
             return index
+        if _process_focus(text):
+            # A generic stage object (accepting an offer, submitting a form)
+            # is a recent focus, not a replacement for the ongoing activity.
+            continue
         if _REFERENCE_RE.search(text) or _CONTINUATION_RE.match(text):
             continue
         if len(text.split()) > 6 or not _QUESTION_START_RE.match(text):
             return index
     return user_indices[-1]
+
+
+def _process_focus(question: str) -> str:
+    """An object introduced inside a process stage, without using assistant facts."""
+    match = re.search(
+        r"\b(?:before|after)\s+(?:I\s+)?[a-z]+\s+"
+        r"(?:a|an|the|my)\s+([\w+-]+(?:\s+[\w+-]+){0,2}?)"
+        r"(?=[?.!,;]|$)", question.strip(), re.I,
+    )
+    if match and match.group(1).split()[-1].lower() in _GENERIC_REFERENTS:
+        return match.group(1)
+    return ""
+
+
+def _process_ellipsis(question: str) -> bool:
+    """A process question with no named object, numerical or new condition."""
+    return bool(
+        _PROCESS_ACTION_RE.search(question)
+        and len(question.split()) <= 12
+        and not (_EXPLICIT_CONDITION_RE.search(question) or re.search(r"\d", question))
+        and not (_current_terms(question) - _PROCESS_TERMS)
+    )
+
+
+def _reference_subject(question: str, prior: list[ConversationMessage]) -> str:
+    """Keep the activity through stage turns; use the recent object when referenced.
+
+    Completion/start questions without their own object refer to the activity.
+    Other pronouns can refer to the stage's offer/form/etc. Explicit subject
+    changes bound both searches; history never provides source authority.
+    """
+    anchor = _anchor_index(prior)
+    topic = _subject_hint(prior[anchor].content)
+    attribute = any(re.search(pattern, question, re.I) for pattern, _ in _ATTRIBUTE_GROUPS)
+    activity_reference = bool(_ACTIVITY_REFERENCE_RE.search(question))
+    if not (activity_reference or attribute) and _REFERENCE_RE.search(question):
+        for message in reversed(prior[anchor:]):
+            if message.role == "user" and (focus := _process_focus(message.content)):
+                return f"{focus} for {topic}" if focus.casefold() != topic.casefold() else topic
+    return topic
 
 
 def _strip_topic_framing(question: str) -> str:
@@ -719,10 +788,10 @@ def attribute_search(
     question = " ".join(question.split())
     dimension = _bound_dimension(question, prior)
     if dimension:
-        return _subject_hint(prior[_anchor_index(prior)].content), (dimension,)
+        return _reference_subject(question, prior), (dimension,)
     for pattern, terms in _ATTRIBUTE_GROUPS:
         if re.search(pattern, question, re.I):
-            return _subject_hint(prior[_anchor_index(prior)].content), terms
+            return _reference_subject(question, prior), terms
     return None
 
 
@@ -824,7 +893,7 @@ def retrieval_plan(
         ):
             return RetrievalPlan(f"Course duration and training length: {question}")
         return RetrievalPlan(question)
-    subject = _subject_hint(prior[_anchor_index(prior)].content)
+    subject = _reference_subject(question, prior)
     dimension = _bound_dimension(question, prior)
     if dimension:
         subject = f"{subject} {dimension}"
@@ -849,6 +918,10 @@ def retrieval_plan(
         # A short referential attribute has no independent search subject. Its
         # literal embedding otherwise favors unrelated forms, fees or limits.
         # Substantive conditions retain the dual path.
+        uncertain = False
+    if _process_ellipsis(question):
+        # Score genuinely dependent process questions against their resolved
+        # query. Word count alone must not force an uninformative literal score.
         uncertain = False
     return RetrievalPlan(resolved, question if uncertain and resolved != question else None)
 

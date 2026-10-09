@@ -1,9 +1,11 @@
 # Current architecture and project state
 
-Reviewed 2026-10-08 against the paid student/Studio release, shared paid-usage safeguards
-and student response UI update. The behavior below is deployed on Oracle; the
+Reviewed 2026-10-09 against the focused procedural follow-up correction, paid
+student/Studio release, shared paid-usage safeguards and student response UI.
+The [follow-up verification](../eval/results/procedural_followup_review_20261009.md)
+records the candidate's measured behavior and release status. The
 [response UI release receipt](archive/student-response-ui-20261008.md) identifies
-the latest application commit. The [safeguard receipt](archive/paid-usage-safeguards-20261008.md)
+the preceding application release. The [safeguard receipt](archive/paid-usage-safeguards-20261008.md)
 records the preceding guard release. This is the current checkout map.
 Defaults below describe code/example configuration; a deployed `.env` can override
 them. Deployment observations are dated evidence, not a live monitoring snapshot.
@@ -99,6 +101,13 @@ repair. This text never becomes factual answer evidence. See [curation](curation
    means cessation, not duration. A detailed pronoun follow-up retains
    current-topic student questions for referent verification; earlier assistant claims are omitted from those longer
    restatements. Detailed independent questions still omit history.
+   Generic stage questions retain the ongoing activity and recent object separately:
+   a question about accepting an offer does not erase the internship topic.
+   Completion/start references use the activity; object references can use the
+   recent offer/form within that activity. Named subject changes bound both.
+   Purely elliptical process questions use contextual retrieval and its relevance
+   score; numerical or substantive new conditions retain literal checks.
+   Singular status/sign-up references after an explicit comparison ask which subject.
    Required-item questions ask for ordinary applicable obligations before conditional
    arrangements; substitution questions compare explicitly required items and honor
    documented substitution rules. These cues contain no program facts.

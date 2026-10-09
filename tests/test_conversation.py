@@ -26,6 +26,85 @@ def _history() -> list[ConversationMessage]:
     ]
 
 
+@pytest.mark.parametrize("topic", ["internships", "exchanges", "workshops"])
+@pytest.mark.parametrize("question", [
+    "and once I finish it?", "What do I do after completing it?",
+    "And after I finish?", "Once it is over, what next?",
+])
+def test_process_stage_keeps_activity_and_contextual_scoring(topic: str, question: str) -> None:
+    history = [ConversationMessage("user", f"Tell me about {topic}."),
+               ConversationMessage("assistant", "A source-backed overview."),
+               ConversationMessage("user", "What should I do before accepting an offer?"),
+               ConversationMessage("assistant", "Check the applicable process.")]
+    plan = retrieval_plan(question, history)
+    assert topic in plan.query
+    assert "offer" not in plan.query
+    assert plan.standalone_query is None
+    assert topic in contextual_question(question, history)
+    assert f"Tell me about {topic}" in format_prompt_history(question, history)
+    assert "accepting an offer" in format_prompt_history(question, history)
+
+
+def test_recent_stage_object_and_activity_are_distinct_referents() -> None:
+    history = [ConversationMessage("user", "Tell me about exchanges."),
+               ConversationMessage("user", "What should I do before accepting an offer?")]
+    assert "offer for exchanges" in retrieval_plan("Can I reject it?", history).query
+    assert "offer for exchanges" in retrieval_plan(
+        "Can I reject it after my training is complete?", history,
+    ).query
+    for question in ("And how long is it?", "Who do I contact?", "What about its fee?"):
+        assert "offer" not in retrieval_plan(question, history).query
+        assert attribute_search(question, history)[0] == "exchanges"
+
+
+def test_new_document_focus_overrides_an_older_stage_object() -> None:
+    history = [ConversationMessage("user", "Tell me about exchanges."),
+               ConversationMessage("user", "What should I do before accepting an offer?"),
+               ConversationMessage("user", "Now explain the final report.")]
+    plan = retrieval_plan("How many pages should it have?", history)
+    assert "final report" in plan.query
+    assert "offer" not in plan.query
+    assert "exchanges" not in format_prompt_history("How many pages should it have?", history)
+
+
+def test_process_focus_never_crosses_a_named_topic_switch() -> None:
+    history = [ConversationMessage("user", "Tell me about workshops."),
+               ConversationMessage("user", "What should I do before accepting an offer?"),
+               ConversationMessage("user", "Tell me about exchanges.")]
+    for question in ("and once I finish it?", "Can I reject it?"):
+        plan = retrieval_plan(question, history)
+        assert "exchanges" in plan.query
+        assert "workshops" not in plan.query
+        assert "offer" not in plan.query
+
+
+def test_stage_with_a_new_named_subject_is_not_a_generic_activity_focus() -> None:
+    history = [ConversationMessage("user", "Tell me about workshops."),
+               ConversationMessage("user", "What should I do after receiving a scholarship?")]
+    assert "scholarship" in retrieval_plan("And how long is it?", history).query
+    assert "workshops" not in format_prompt_history("And how long is it?", history)
+
+
+@pytest.mark.parametrize("question", [
+    "Can I finish it in 4 months?", "Can I complete it while working remotely?",
+    "What happens after I finish it if I leave early?", "Does it count for credits?",
+])
+def test_process_resolution_preserves_new_substantive_constraints(question: str) -> None:
+    history = [ConversationMessage("user", "Tell me about exchanges."),
+               ConversationMessage("user", "What should I do before accepting an offer?")]
+    assert retrieval_plan(question, history).standalone_query == question
+    if "count" not in question:
+        assert "offer" not in retrieval_plan(question, history).query
+    assert "exchanges" in retrieval_plan(question, history).query
+
+
+def test_singular_reference_after_explicit_comparison_clarifies() -> None:
+    history = [ConversationMessage("user", "Compare workshops and exchanges."),
+               ConversationMessage("assistant", "They serve different purposes.")]
+    assert unresolved_reference("Is it mandatory?", history)
+    assert not unresolved_reference("Are workshops mandatory?", history)
+
+
 @pytest.mark.parametrize("prefix", ["", "So ", "Okay, ", "Well, ", "Hey, ", "OK, so "])
 @pytest.mark.parametrize("question", ["What can you help me with?", "What can you do?",
                                       "What do you offer?"])

@@ -1,0 +1,26 @@
+{"event": "reserve", "usd_delta": 0.01855725, "estimated_spent_upper_bound_usd": 0.01855725, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.00939, "estimated_spent_upper_bound_usd": 0.00916725, "model": "gemini-3.8-flash", "input_tokens": 4263, "billed_output_tokens": 1592}
+{"event": "reserve", "usd_delta": 0.0184995, "estimated_spent_upper_bound_usd": 0.027666749999999997, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.006967499999999998, "estimated_spent_upper_bound_usd": 0.02069925, "model": "gemini-3.8-flash", "input_tokens": 4186, "billed_output_tokens": 2238}
+{"event": "reserve", "usd_delta": 0.01862475, "estimated_spent_upper_bound_usd": 0.039324, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.00921375, "estimated_spent_upper_bound_usd": 0.030110249999999998, "model": "gemini-3.8-flash", "input_tokens": 4353, "billed_output_tokens": 1639}
+{"event": "reserve", "usd_delta": 0.018174, "estimated_spent_upper_bound_usd": 0.04828425, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.0149325, "estimated_spent_upper_bound_usd": 0.03335175, "model": "gemini-3.8-flash", "input_tokens": 3752, "billed_output_tokens": 114}
+{"event": "reserve", "usd_delta": 0.01845375, "estimated_spent_upper_bound_usd": 0.051805500000000004, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.009446250000000002, "estimated_spent_upper_bound_usd": 0.04235925, "model": "gemini-3.8-flash", "input_tokens": 4125, "billed_output_tokens": 1577}
+{"event": "reserve", "usd_delta": 0.01832625, "estimated_spent_upper_bound_usd": 0.0606855, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.009622499999999999, "estimated_spent_upper_bound_usd": 0.051063000000000004, "model": "gemini-3.8-flash", "input_tokens": 3955, "billed_output_tokens": 1530}
+{"event": "reserve", "usd_delta": 0.01788525, "estimated_spent_upper_bound_usd": 0.06894825, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.013852499999999998, "estimated_spent_upper_bound_usd": 0.055095750000000006, "model": "gemini-3.8-flash", "input_tokens": 3367, "billed_output_tokens": 402}
+{"event": "reserve", "usd_delta": 0.01823625, "estimated_spent_upper_bound_usd": 0.07333200000000001, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.008831249999999999, "estimated_spent_upper_bound_usd": 0.06450075000000001, "model": "gemini-3.8-flash", "input_tokens": 3835, "billed_output_tokens": 1741}
+{"event": "reserve", "usd_delta": 0.01874175, "estimated_spent_upper_bound_usd": 0.08324250000000001, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.01251375, "estimated_spent_upper_bound_usd": 0.07072875, "model": "gemini-3.8-flash", "input_tokens": 4509, "billed_output_tokens": 759}
+{"event": "reserve", "usd_delta": 0.0181815, "estimated_spent_upper_bound_usd": 0.08891025000000001, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.010589999999999999, "estimated_spent_upper_bound_usd": 0.07832025000000001, "model": "gemini-3.8-flash", "input_tokens": 3762, "billed_output_tokens": 1272}
+{"event": "reserve", "usd_delta": 0.018183, "estimated_spent_upper_bound_usd": 0.09650325000000001, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.007428750000000001, "estimated_spent_upper_bound_usd": 0.08907450000000001, "model": "gemini-3.8-flash", "input_tokens": 3764, "billed_output_tokens": 2115}
+{"event": "reserve", "usd_delta": 0.01867425, "estimated_spent_upper_bound_usd": 0.10774875000000002, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.01117875, "estimated_spent_upper_bound_usd": 0.09657000000000002, "model": "gemini-3.8-flash", "input_tokens": 4419, "billed_output_tokens": 1115}
+{"event": "reserve", "usd_delta": 0.01904025, "estimated_spent_upper_bound_usd": 0.11561025000000003, "model": "gemini-3.8-flash"}
+{"event": "settle", "usd_delta": -0.012528750000000002, "estimated_spent_upper_bound_usd": 0.10308150000000002, "model": "gemini-3.8-flash", "input_tokens": 4907, "billed_output_tokens": 755}

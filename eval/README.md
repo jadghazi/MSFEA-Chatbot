@@ -114,6 +114,26 @@ establish semantic correctness. See `answer_quality_review.md` for the local rev
 
 ## Run it
 
+### Procedural follow-up regression
+
+`procedural_followup_set.jsonl` freezes 21 completion, object-reference, attribute,
+topic-switch, condition, ambiguity and refusal/injection probes.
+`procedural_followup_dialogues.jsonl` freezes two conversations (ten turns), using
+actual generated replies in the existing dialogue runner. Four completion probes
+also run in CI's existing synthesis gate through `followup_set.jsonl`; original
+expectations are preserved. No new evaluation framework or second LLM is required.
+The [October 9 review](results/procedural_followup_review_20261009.md) records paired
+retrieval, source-reviewed live replies, retained trials and verification limits.
+
+```bash
+python -m eval.student_quality_audit --cases eval/procedural_followup_set.jsonl --output <new-trace.jsonl>
+python -m eval.student_quality_dialogue_eval --cases eval/procedural_followup_dialogues.jsonl --live --output <new-live.jsonl>
+```
+
+Use the isolated development database and budget flags described below for paid
+runs. A phrase check can miss semantically equivalent source wording; inspect the
+retrieved evidence before classifying that as a retrieval failure.
+
 ### Student-intent quality audit
 
 The [main-model verification report](results/student_quality_main_model_20261007.md)
