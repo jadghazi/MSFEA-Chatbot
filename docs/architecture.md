@@ -1,12 +1,13 @@
 # Current architecture and project state
 
-Reviewed 2026-10-09 against the focused procedural follow-up correction, paid
+Reviewed 2026-10-10 against the starter-question refresh, procedural follow-up correction, paid
 student/Studio release, shared paid-usage safeguards and student response UI.
 The [follow-up verification](../eval/results/procedural_followup_review_20261009.md)
 records measured behavior; the [follow-up release receipt](archive/procedural-followup-release-20261009.md)
+records that retrieval change. The [starter-question receipt](archive/starter-questions-release-20261010.md)
 identifies the latest deployed application commit. The
-[response UI release receipt](archive/student-response-ui-20261008.md) identifies
-the preceding application release. The [safeguard receipt](archive/paid-usage-safeguards-20261008.md)
+[response UI release receipt](archive/student-response-ui-20261008.md) records
+the response presentation rollout. The [safeguard receipt](archive/paid-usage-safeguards-20261008.md)
 records the preceding guard release. This is the current checkout map.
 Defaults below describe code/example configuration; a deployed `.env` can override
 them. Deployment observations are dated evidence, not a live monitoring snapshot.
@@ -16,7 +17,7 @@ them. Deployment observations are dated evidence, not a live monitoring snapshot
 The source-backed CDC knowledge base, standalone student pilot, embeddable widget,
 department scoping, bounded follow-ups, feedback/usage dashboard and guarded
 Knowledge Studio are implemented. Oracle deployment was verified through the
-2026-10-09 procedural follow-up release. The [October rollout record](archive/oracle-studio-deployment-20261001.md)
+2026-10-10 starter-question refresh. The [October rollout record](archive/oracle-studio-deployment-20261001.md)
 documents the serving topology and unchanged 253-chunk source index at that rollout.
 The latest private-draft behavior is recorded in [ADR-0031](decisions/0031-advisory-ai-drafts.md).
 
