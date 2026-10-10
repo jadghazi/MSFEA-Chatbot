@@ -47,9 +47,9 @@
   // always demonstrates a grounded answer with citations.
   var SUGGESTIONS = [
     "What is the minimum internship duration?",
-    "What GPA do I need for CO-OP?",
+    "How can the CDC help me prepare for job interviews?",
     "What do I submit at the end of my internship?",
-    "How do I apply to IAESTE?",
+    "Can I combine a company internship with faculty research?",
   ];
 
   var ICON_CHAT =
