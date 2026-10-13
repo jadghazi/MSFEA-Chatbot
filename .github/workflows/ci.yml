@@ -64,7 +64,7 @@ jobs:
         run: node --test tests/studio_review.test.cjs tests/studio_preview.test.cjs tests/studio_suggestion.test.cjs
 
       - name: Needs attention dashboard
-        run: node --test tests/dashboard_attention.test.cjs
+        run: node --test tests/dashboard_attention.test.cjs tests/studio_topic.test.cjs
 
       - name: Type-check (mypy --strict)
         run: mypy --strict src eval

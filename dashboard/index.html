@@ -392,6 +392,7 @@
           <p class="intro">
             Review responses the bot couldn't answer, students marked not helpful, or that may be incomplete.
             Check the conversation and evidence before deciding whether knowledge needs updating.
+            Drafts are never visible to students.
           </p>
           <div class="attention-toolbar">
             <div class="attention-filters" role="group" aria-label="Filter review reasons">
@@ -452,7 +453,7 @@
     <script src="review.js?v=5"></script>
     <script src="studio_preview.js?v=1"></script>
     <script src="studio_suggestion.js?v=4"></script>
-    <script src="studio.js?v=10"></script>
+    <script src="studio.js?v=11"></script>
     <script>
       var API = ""; // same origin (served from /dashboard/)
       var TOKEN_KEY = "msfea_admin_token";
@@ -691,6 +692,7 @@
         KnowledgeStudio.mount($("new-knowledge-card"), {
           api: API, headers: headers, escape: esc, options: _options,
           entries: function () { return _curated || []; },
+          feedbackItem: function (id) { return (_attentionItems || []).find(function (item) { return item.id === id; }); },
           signedIn: function () { return !!token(); },
           showStudio: function () { selectTab('create'); },
           onSaved: function (error) {

@@ -272,9 +272,28 @@ def test_generated_questions_cannot_silently_replace_an_unanswered_student_quest
     assert report["classification"] == "needs_clarification"
 
 
-def test_linked_question_cannot_be_swapped_for_a_different_topic(studio_database: str) -> None:
-    with pytest.raises(ValueError, match="original unanswered question"):
-        enqueue(INTAKE.model_copy(update={"question": "What is the internship tuition?"}), uuid4().hex)
+def test_linked_question_can_be_clarified_without_rewriting_original_feedback(studio_database: str) -> None:
+    clarified = "What day and time is the weekly CDC advising window?"
+    review_id = enqueue(INTAKE.model_copy(update={"question": clarified}), uuid4().hex)
+    with psycopg.connect(studio_database) as conn:
+        row = conn.execute("SELECT intake FROM curation_assistance WHERE id=%s", (review_id,)).fetchone()
+        assert row[0]["question"] == clarified and row[0]["linked_feedback_ids"] == [7]
+        original = conn.execute("SELECT question,resolved_at FROM interactions WHERE id=7").fetchone()
+        assert original == (INTAKE.question, None)
+
+
+@pytest.mark.parametrize("resolved", [False, True])
+def test_linked_question_must_exist_and_remain_unresolved(studio_database: str, resolved: bool) -> None:
+    with psycopg.connect(studio_database) as conn:
+        conn.execute("UPDATE interactions SET resolved_at=now() WHERE id=7" if resolved else
+                     "DELETE FROM interactions WHERE id=7")
+    with pytest.raises(ValueError, match="missing or already resolved"):
+        enqueue(INTAKE, uuid4().hex)
+
+
+def test_linked_review_still_requires_a_question_or_topic(studio_database: str) -> None:
+    with pytest.raises(ValueError, match="Add a question or topic"):
+        enqueue(INTAKE.model_copy(update={"question": " "}), uuid4().hex)
 
 
 def test_unrelated_passages_do_not_require_displaying_all_retrieved_text() -> None:

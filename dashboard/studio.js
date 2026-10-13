@@ -24,6 +24,11 @@
     review_unavailable: "This review could not finish. Nothing was published. Try again or use the manual editor."
   };
   function e(value) { return hooks.escape(value); }
+  function linkedFeedback(item) {
+    var id = item.linked_feedback_ids[0];
+    var original = hooks.feedbackItem(id);
+    return {id:id, question:original ? original.question : 'Student feedback #' + id};
+  }
   function humanLabel(value) { return String(value).replace(/[-_]/g, ' ').replace(/\b\w/g, function (letter) { return letter.toUpperCase(); }); }
 
   function el(selector) { return host.querySelector(selector); }
@@ -407,8 +412,8 @@
     host.classList.remove('has-candidate');
     entry = Object.assign({}, state.revision, {id:state.revision.entry_id, working_draft:true});
     el('#studio-guidance').value = state.revision.answer;
-    el('#studio-topic').value = feedback ? feedback.question : state.revision.question;
-    el('#studio-topic').readOnly = !!feedback;
+    el('#studio-topic').value = state.assistance ? state.assistance.intake.question : state.revision.question;
+    el('#studio-topic').readOnly = false;
     el('#studio-department').value = state.revision.department || '';
     setPrograms(state.revision.programs);
     emptyReview(); rail(0); setBusy(false); remember(); updateCount();
@@ -450,7 +455,7 @@
     host.classList.add('has-candidate'); setBusy(false); rail(active ? 4 : ready ? 3 : 2);
     if (revision.linked_feedback_ids.length && state.assistance) {
       el('.studio-origin').classList.remove('hidden');
-      el('.studio-origin').innerHTML = '<span class="studio-origin-label">Linked student question</span><strong>' + e(state.assistance.intake.question) + '</strong><span>' + (active ? 'Resolved by this published entry.' : 'The question stays in Needs attention until this entry is published.') + '</span>';
+      el('.studio-origin').innerHTML = '<span class="studio-origin-label">Linked student question</span><strong>' + e((feedback || linkedFeedback(revision)).question) + '</strong><span>' + (active ? 'Resolved by this published entry.' : 'The question stays in Needs attention until this entry is published.') + '</span>';
     } else el('.studio-origin').classList.add('hidden');
     el('.studio-results').innerHTML = '<section class="studio-report studio-continuous"><div class="studio-report-top"><span class="eyebrow">' + (active ? 'Published knowledge' : 'Private workspace · KB-' + revision.entry_id + ' · Version ' + revision.revision_number) + '</span><span class="studio-private">' + icon('shield') + (active ? 'Live for students' : 'Students cannot see this yet') + '</span></div>' +
       '<div class="studio-verdict"><span class="studio-tag">' + (active ? 'Published' : publishing ? 'Publishing…' : ready ? 'Ready for your approval' : testing ? 'Private checks running' : passed ? 'Preparing student previews' : 'Publication paused') + '</span><h3>' + e(revision.document_title) + '</h3></div>' +
@@ -578,7 +583,7 @@
       var restored = JSON.parse(sessionStorage.getItem("msfea_studio_intake") || "null");
       if (restored && restored.intake) {
         feedback = restored.feedback; entry = restored.entry;
-        el("#studio-topic").readOnly = !!feedback;
+        el("#studio-topic").readOnly = false;
         requestKey = restored.requestKey; lastIntake = restored.lastIntake;
         Object.keys(restored.intake).forEach(function (key) {
           var mapping = {guidance:"#studio-guidance", question:"#studio-topic", department:"#studio-department"};
@@ -607,10 +612,10 @@
       replaceWorking('Resume this saved workspace in place of the current working guidance?', function () {
         reset(false); entry = Object.assign({}, item, {id:item.entry_id, working_draft:true});
         var original = item.assistance && item.assistance.intake;
-        if (item.linked_feedback_ids.length && original) feedback = {id:item.linked_feedback_ids[0], question:original.question};
+        if (item.linked_feedback_ids.length) feedback = linkedFeedback(item);
         el('#studio-guidance').value = item.answer;
-        el('#studio-topic').value = feedback ? feedback.question : item.question;
-        el('#studio-topic').readOnly = !!feedback;
+        el('#studio-topic').value = original ? original.question : item.question;
+        el('#studio-topic').readOnly = false;
         el('#studio-department').value = item.department || ''; setPrograms(item.programs || []);
         workspaceId = item.id; hooks.showStudio(); remember(); updateCount(); pollWorkspace();
       });
@@ -620,7 +625,7 @@
       replaceWorking('Open this student question in place of the current working guidance?', function () {
       reset(false); feedback = {id:item.id, question:item.question};
       el("#studio-topic").value = item.question;
-      el("#studio-topic").readOnly = true;
+      el("#studio-topic").readOnly = false;
       el(".studio-origin").innerHTML = '<span class="studio-origin-label">From Needs attention</span><strong>' +
         e(item.question) + '</strong><span>This question stays in the queue until reviewed knowledge is published or you dismiss it.</span>';
       el(".studio-origin").classList.remove("hidden");
@@ -644,10 +649,10 @@
       replaceWorking('Review this saved draft in place of the current working guidance?', function () {
         reset(false); entry = Object.assign({}, item, {id:item.entry_id, working_draft:true});
         var original = item.assistance && item.assistance.intake;
-        if (item.linked_feedback_ids.length && original) feedback = {id:item.linked_feedback_ids[0], question:original.question};
+        if (item.linked_feedback_ids.length) feedback = linkedFeedback(item);
         el('#studio-guidance').value = item.answer;
-        el('#studio-topic').value = feedback ? feedback.question : item.question;
-        el('#studio-topic').readOnly = !!feedback;
+        el('#studio-topic').value = original ? original.question : item.question;
+        el('#studio-topic').readOnly = false;
         el('#studio-department').value = item.department || '';
         setPrograms(item.programs || []);
         el('.studio-origin').innerHTML = '<strong>Reviewing draft: ' + e(item.document_title) + '</strong><span>This will create a new revision of the same entry. The saved draft and failed test remain in its history. An AI review cannot waive the search failure.</span>';

@@ -36,6 +36,11 @@ conditions. Omit student names/IDs/personal contact details. You do not need to
 engineer keywords or test questions. A supplied student question helps the review
 check whether the guidance actually answers it.
 
+When opening a Needs Attention case, the question/topic is prefilled and editable
+so staff can clarify wording or restore an omitted subject. The original feedback
+record remains linked and unchanged. The edited topic survives refresh/resume;
+changing it requires a fresh review before continuing with the draft.
+
 Select **Prepare & review draft**. Visible worker stages explain understanding/search,
 literal claim comparison, focused search questions and independent coverage review.
 Your factual guidance is retained; AI advice does not publish anything.

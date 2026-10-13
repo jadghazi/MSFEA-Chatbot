@@ -213,12 +213,14 @@ def enqueue(intake: Intake, request_key: str) -> str:
             from msfea_bot.curation.suggestions import validate_acceptance
             validate_acceptance(conn, intake)
         if intake.linked_feedback_ids:
+            if not intake.question:
+                raise ValueError("Add a question or topic for the linked student case.")
             linked = conn.execute(
                 "SELECT question FROM interactions WHERE id = %s AND resolved_at IS NULL",
                 (intake.linked_feedback_ids[0],),
             ).fetchone()
-            if linked is None or intake.question != str(linked[0]).strip():
-                raise ValueError("Keep the original unanswered question when reviewing its guidance.")
+            if linked is None:
+                raise ValueError("The linked student question is missing or already resolved.")
         if intake.entry_id is not None:
             entry = conn.execute(
                 "SELECT r.source_kind FROM curated_entries e JOIN curated_revisions r"
