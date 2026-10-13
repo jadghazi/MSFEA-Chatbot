@@ -4,8 +4,9 @@ Reviewed 2026-10-13 against Needs Attention context/review, the starter-question
 student/Studio release, shared paid-usage safeguards and student response UI.
 The [follow-up verification](../eval/results/procedural_followup_review_20261009.md)
 records measured behavior; the [follow-up release receipt](archive/procedural-followup-release-20261009.md)
-records that retrieval change. The [Needs Attention receipt](archive/attention-review-release-20261013.md)
-identifies the latest deployed application commit. The
+records that retrieval change. The [editable Studio topic receipt](archive/studio-topic-release-20261013.md)
+identifies the latest deployed application commit and green CI. The
+[Needs Attention receipt](archive/attention-review-release-20261013.md) records queue/context improvements. The
 [starter-question receipt](archive/starter-questions-release-20261010.md) records the starter copy refresh. The
 [response UI release receipt](archive/student-response-ui-20261008.md) records
 the response presentation rollout. The [safeguard receipt](archive/paid-usage-safeguards-20261008.md)
@@ -18,7 +19,7 @@ them. Deployment observations are dated evidence, not a live monitoring snapshot
 The source-backed CDC knowledge base, standalone student pilot, embeddable widget,
 department scoping, bounded follow-ups, feedback/usage dashboard and guarded
 Knowledge Studio are implemented. Oracle deployment was verified through the
-2026-10-13 Needs Attention release. The [October rollout record](archive/oracle-studio-deployment-20261001.md)
+2026-10-13 editable Studio topic release. The [October rollout record](archive/oracle-studio-deployment-20261001.md)
 documents the serving topology and unchanged 253-chunk source index at that rollout.
 The latest private-draft behavior is recorded in [ADR-0031](decisions/0031-advisory-ai-drafts.md).
 
