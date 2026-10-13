@@ -50,7 +50,7 @@ def test_chat_returns_structured_answer(monkeypatch: pytest.MonkeyPatch) -> None
         return Answer(text="At least 8 weeks.", citations=["doc.md > Duration"], refused=False)
 
     monkeypatch.setattr(app_module, "generate_answer", fake)
-    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a, **kw: None)
     resp = client.post("/chat", json={"question": "How long is the internship?"})
     assert resp.status_code == 200
     body = resp.json()
@@ -65,7 +65,7 @@ def test_chat_degrades_gracefully_on_backend_error(monkeypatch: pytest.MonkeyPat
         raise RuntimeError("LLM down")
 
     monkeypatch.setattr(app_module, "generate_answer", boom)
-    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a, **kw: None)
     resp = client.post("/chat", json={"question": "anything"})
     assert resp.status_code == 200
     assert resp.json()["refused"] is True
@@ -77,7 +77,7 @@ def test_gemini_service_failure_has_an_actionable_message(monkeypatch: pytest.Mo
         raise LLMServiceError("upstream 503 with private details")
 
     monkeypatch.setattr(app_module, "generate_answer", unavailable)
-    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a, **kw: None)
     resp = client.post("/chat", json={"question": "Can I do six weeks?"})
     assert resp.status_code == 200
     assert resp.json()["error_code"] == "service_unavailable"
@@ -90,7 +90,7 @@ def test_chat_returns_actionable_rate_limit_response(monkeypatch: pytest.MonkeyP
         raise LLMRateLimitError("quota")
 
     monkeypatch.setattr(app_module, "generate_answer", limited)
-    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a, **kw: None)
     resp = client.post("/chat", json={"question": "anything"})
     assert resp.status_code == 200
     assert resp.json()["error_code"] == "rate_limited"
@@ -107,7 +107,7 @@ def test_chat_sanitizes_and_anonymizes_every_history_message(
         return Answer(text="ok", refused=False)
 
     monkeypatch.setattr(app_module, "generate_answer", fake)
-    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a, **kw: None)
     resp = client.post(
         "/chat",
         json={
@@ -136,6 +136,6 @@ def test_chat_rate_limited(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         app_module, "generate_answer", lambda q, **kw: Answer(text="ok", refused=False)
     )
-    monkeypatch.setattr(app_module, "log_interaction", lambda q, a: None)
+    monkeypatch.setattr(app_module, "log_interaction", lambda q, a, **kw: None)
     assert client.post("/chat", json={"question": "hi"}).status_code == 200
     assert client.post("/chat", json={"question": "hi"}).status_code == 429

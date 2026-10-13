@@ -8,6 +8,28 @@ entry prepares its replacement while the current version remains active.
 
 ## Describe
 
+### Needs attention
+
+The queue contains unresolved formal refusals, negative student ratings and possible
+incomplete answers identified by explicit missing-information wording. The last
+category is an advisory signal, not an accuracy judgment or model confidence score.
+Ordinary answers and temporary provider errors stay out. Filters separate these
+reasons; the view loads the newest 100 candidates. Review counts include all three
+categories without changing recorded answered/refused outcomes.
+
+Each card shows the actual student question and reply, available department and
+original retrieval excerpts. Expand **Previous conversation** to see the bounded,
+redacted exchange submitted with a new request (up to eight messages of 1,200
+characters each). Browser-supplied history is not verified policy evidence. Older
+interactions have no saved context; any specifically restored staff-provided
+exchange is labeled separately. No raw session/IP is added to these logs.
+
+Review the response before opening Studio or dismissing it. A useful partial
+answer or an appropriate refusal need not result in new knowledge. Review signals
+use existing response text and consume no additional LLM calls.
+
+### Preparing guidance
+
 Paste one approved guideline, choose department/program scope and include necessary
 conditions. Omit student names/IDs/personal contact details. You do not need to
 engineer keywords or test questions. A supplied student question helps the review

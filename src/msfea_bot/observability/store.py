@@ -8,20 +8,38 @@ succeeds (logging must never break the student's answer).
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from collections.abc import Sequence
+from dataclasses import dataclass, field
 from datetime import datetime
 from threading import Lock
 from typing import Any
 
 import psycopg
+from psycopg.types.json import Jsonb
 
 from msfea_bot.config import settings
 from msfea_bot.generation.answer import Answer
+from msfea_bot.generation.conversation import (
+    MAX_HISTORY_MESSAGE_CHARS,
+    MAX_HISTORY_MESSAGES,
+    ConversationMessage,
+)
+
+# Advisory queue signal, not a judgment of answer correctness or a RAG refusal.
+# Applied at read time so older recorded responses can also be reviewed.
+INCOMPLETE_ANSWER_PATTERN = (
+    r"\y(?:I|we)\s+(?:can['’]t|cannot|couldn['’]t|can not|am unable to|are unable to)"
+    r"\s+(?:confirm|verify|determine|answer|find|provide)\y"
+    r"|\y(?:not enough|insufficient)\s+(?:verified\s+)?(?:information|evidence)\y"
+    r"|\y(?:sources?|context|documentation)\s+(?:do(?:es)? not|doesn['’]t|don['’]t)"
+    r"\s+(?:contain|include|provide)\s+(?:any\s+|specific\s+)?information\y"
+)
+ATTENTION_PREDICATE = "(refused OR rating = -1 OR answer ~* %s)"
 
 
 @dataclass
 class FeedbackItem:
-    """An interaction that needs admin attention: refused or thumbs-down."""
+    """An unresolved refusal, negative rating or possible incomplete answer."""
 
     id: int
     ts: datetime
@@ -31,6 +49,10 @@ class FeedbackItem:
     rating: int | None
     rating_reason: str | None
     retrieved: list[str]
+    possible_incomplete: bool = False
+    conversation_history: list[dict[str, str]] = field(default_factory=list)
+    department: str | None = None
+    history_source: str | None = None
 
 
 def _connect() -> Any:
@@ -71,6 +93,12 @@ def _init_schema(conn: Any) -> None:
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_total_tokens INTEGER")
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_cached_tokens INTEGER")
     conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS llm_latency_ms INTEGER")
+    conn.execute(
+        "ALTER TABLE interactions ADD COLUMN IF NOT EXISTS conversation_history"
+        " JSONB NOT NULL DEFAULT '[]'"
+    )
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS department TEXT")
+    conn.execute("ALTER TABLE interactions ADD COLUMN IF NOT EXISTS history_source TEXT")
 
 
 def _ensure_schema(conn: Any) -> None:
@@ -92,10 +120,17 @@ def initialize_schema() -> None:
         _ensure_schema(conn)
 
 
-def log_interaction(question: str, answer: Answer) -> int | None:
+def log_interaction(
+    question: str,
+    answer: Answer,
+    *,
+    history: Sequence[ConversationMessage] = (),
+    department: str | None = None,
+) -> int | None:
     """Persist one interaction and return its id. Never raises (fail-safe).
 
-    `question` must already be anonymized (see observability.privacy).
+    Question/history must already be redacted (see observability.privacy).
+    Store only the bounded submitted exchange, never IPs or student identifiers.
     """
     try:
         with _connect() as conn:
@@ -104,8 +139,8 @@ def log_interaction(question: str, answer: Answer) -> int | None:
                 "INSERT INTO interactions ("
                 " question, refused, answer, citations, retrieved, error_code,"
                 " llm_input_tokens, llm_output_tokens, llm_total_tokens,"
-                " llm_cached_tokens, llm_latency_ms)"
-                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                " llm_cached_tokens, llm_latency_ms, conversation_history, department, history_source)"
+                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
                 (
                     question,
                     answer.refused,
@@ -118,6 +153,12 @@ def log_interaction(question: str, answer: Answer) -> int | None:
                     answer.total_tokens,
                     answer.cached_tokens,
                     answer.llm_latency_ms,
+                    Jsonb([
+                        {"role": m.role, "content": m.content[:MAX_HISTORY_MESSAGE_CHARS]}
+                        for m in history[-MAX_HISTORY_MESSAGES:]
+                    ]),
+                    department,
+                    "request",
                 ),
             ).fetchone()
         return int(row[0]) if row else None
@@ -209,12 +250,13 @@ def stats() -> dict[str, int]:
             " count(*) FILTER (WHERE error_code IS NOT NULL),"
             " count(*) FILTER (WHERE rating = 1),"
             " count(*) FILTER (WHERE rating = -1),"
-            " count(*) FILTER (WHERE (refused OR rating = -1)"
+            " count(*) FILTER (WHERE " + ATTENTION_PREDICATE +
             "   AND error_code IS NULL AND resolved_at IS NULL),"
             " coalesce(sum(llm_input_tokens), 0),"
             " coalesce(sum(llm_output_tokens), 0),"
             " coalesce(round(avg(llm_latency_ms) FILTER (WHERE llm_latency_ms IS NOT NULL)), 0)"
-            " FROM interactions"
+            " FROM interactions",
+            (INCOMPLETE_ANSWER_PATTERN,),
         ).fetchone()
     vals = row or (0,) * 10
     total, answered, refused, errors, up, down, pending, input_tokens, output_tokens, latency = (
@@ -235,16 +277,20 @@ def stats() -> dict[str, int]:
 
 
 def feedback_items(limit: int = 100) -> list[FeedbackItem]:
-    """Interactions that need admin attention: refused OR thumbs-down."""
+    """Review candidates; text signals never change student answer outcomes."""
     with _connect() as conn:
         _ensure_schema(conn)
         rows = conn.execute(
-            "SELECT id, ts, question, answer, refused, rating, rating_reason, retrieved"
-            " FROM interactions WHERE (refused OR rating = -1) AND error_code IS NULL"
+            "SELECT id, ts, question, answer, refused, rating, rating_reason, retrieved,"
+            " answer ~* %s, conversation_history, department, history_source"
+            " FROM interactions WHERE " + ATTENTION_PREDICATE + " AND error_code IS NULL"
             " AND resolved_at IS NULL"
             " ORDER BY ts DESC LIMIT %s",
-            (limit,),
+            (INCOMPLETE_ANSWER_PATTERN, INCOMPLETE_ANSWER_PATTERN, limit),
         ).fetchall()
     return [
-        FeedbackItem(r[0], r[1], r[2], r[3], r[4], r[5], r[6], list(r[7])) for r in rows
+        FeedbackItem(
+            r[0], r[1], r[2], r[3], r[4], r[5], r[6], list(r[7]),
+            r[8], r[9], r[10], r[11],
+        ) for r in rows
     ]

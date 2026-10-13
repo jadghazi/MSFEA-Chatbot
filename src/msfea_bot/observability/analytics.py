@@ -3,7 +3,12 @@
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from msfea_bot.observability.store import _connect, _ensure_schema
+from msfea_bot.observability.store import (
+    ATTENTION_PREDICATE,
+    INCOMPLETE_ANSWER_PATTERN,
+    _connect,
+    _ensure_schema,
+)
 
 
 def analytics(days: int = 30) -> dict[str, Any]:
@@ -25,7 +30,7 @@ def analytics(days: int = 30) -> dict[str, Any]:
                 " count(*) FILTER (WHERE error_code IS NOT NULL),"
                 " count(*) FILTER (WHERE rating = 1),"
                 " count(*) FILTER (WHERE rating = -1),"
-                " count(*) FILTER (WHERE (refused OR rating = -1)"
+                " count(*) FILTER (WHERE " + ATTENTION_PREDICATE +
                 " AND error_code IS NULL AND resolved_at IS NULL),"
                 " count(llm_latency_ms), avg(llm_latency_ms),"
                 " percentile_cont(0.95) WITHIN GROUP (ORDER BY llm_latency_ms),"
@@ -35,7 +40,7 @@ def analytics(days: int = 30) -> dict[str, Any]:
                 " count(*) FILTER (WHERE NOT refused AND error_code IS NULL"
                 " AND cardinality(citations) > 0)"
                 " FROM interactions" + where,
-                bounds,
+                (INCOMPLETE_ANSWER_PATTERN, *bounds),
             ).fetchone()
             daily = conn.execute(
                 "SELECT (ts AT TIME ZONE 'UTC')::date, count(*),"

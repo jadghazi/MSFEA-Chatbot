@@ -321,7 +321,7 @@ def chat(req: ChatRequest, request: Request, _rl: None = Depends(rate_limit)) ->
             count("backend_errors")
             logging.getLogger(__name__).error("chat_backend_failure type=%s", type(exc).__name__)
             result = _temporary_failure("service_unavailable", dept_code)
-        interaction_id = log_interaction(question, result)
+        interaction_id = log_interaction(question, result, history=history, department=dept_code)
         response = ChatResponse(
             answer=result.text,
             citations=result.citations,
@@ -415,6 +415,10 @@ class FeedbackOut(BaseModel):
     rating: int | None
     rating_reason: str | None
     retrieved: list[str]
+    possible_incomplete: bool
+    conversation_history: list[HistoryMessage]
+    department: str | None
+    history_source: str | None
 
 
 @app.get("/admin/api/stats")
@@ -460,7 +464,7 @@ def admin_analytics(
 
 @app.get("/admin/api/feedback")
 def admin_feedback(_: None = Depends(require_admin)) -> list[FeedbackOut]:
-    """Questions needing attention: the bot refused, or a student thumbs-downed."""
+    """Unresolved review candidates, including advisory incomplete-answer signals."""
     return [
         FeedbackOut(
             id=f.id,
@@ -471,6 +475,10 @@ def admin_feedback(_: None = Depends(require_admin)) -> list[FeedbackOut]:
             rating=f.rating,
             rating_reason=f.rating_reason,
             retrieved=f.retrieved,
+            possible_incomplete=f.possible_incomplete,
+            conversation_history=[HistoryMessage.model_validate(m) for m in f.conversation_history],
+            department=f.department,
+            history_source=f.history_source,
         )
         for f in feedback_items()
     ]

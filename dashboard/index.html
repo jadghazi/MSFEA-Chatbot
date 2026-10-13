@@ -155,6 +155,34 @@
       }
       .bot-said .cap { display: block; font-size: 11px; color: var(--ink-faint); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; }
 
+      /* ---------- attention review ---------- */
+      .attention-toolbar { display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px; }
+      .attention-filters { display:flex;gap:6px;flex-wrap:wrap; }
+      .attention-filter { padding:8px 12px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:13px; }
+      .attention-filter[aria-pressed="true"] { background:var(--m-tint);border-color:var(--m);color:var(--m); }
+      #attention-count { margin:0;color:var(--ink-soft);font-size:12px; }
+      #tab-attention .card { padding:22px; }
+      #tab-attention .q { overflow-wrap:anywhere; }
+      #tab-attention .bot-said { border-left-color:var(--line);color:var(--ink);overflow-wrap:anywhere; }
+      .attention-note { font-size:12px;color:var(--ink-soft);margin:0 0 14px; }
+      .attention-history { border:1px solid var(--line);border-radius:10px;margin:0 0 16px;background:#fff; }
+      .attention-history summary { padding:12px 14px;font-size:13px;font-weight:600;cursor:pointer; }
+      .attention-history summary:focus-visible { outline:2px solid var(--m);outline-offset:2px; }
+      .attention-history .context-note { margin:0;padding:0 14px 10px;color:var(--ink-soft);font-size:12px; }
+      .attention-message { padding:11px 14px;border-top:1px solid var(--line); }
+      .attention-message.assistant { background:var(--bg); }
+      .attention-message strong { display:block;color:var(--ink-soft);font-size:11px;margin-bottom:4px; }
+      .attention-message p { margin:0;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere; }
+      #tab-attention .actions { padding-top:14px;border-top:1px solid var(--line); }
+      #tab-attention .queue-studio { padding:9px 14px;background:var(--m);color:#fff; }
+      #tab-attention .queue-studio:hover { background:var(--m-dark); }
+      #tab-attention .tech { margin-top:14px; }
+      @media (max-width:600px) {
+        #tab-attention .card { padding:16px; }
+        .attention-filter { padding:9px 10px; }
+        .attention-toolbar { align-items:flex-start; }
+      }
+
       .answer-box { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 15px; }
       .answer-box .label { font-size: 13px; font-weight: 650; margin-bottom: 8px; display: block; }
       .answer-box textarea { width: 100%; min-height: 88px; resize: vertical; line-height: 1.55; }
@@ -362,10 +390,18 @@
         <!-- Tab: attention -->
         <div id="tab-attention" class="hidden">
           <p class="intro">
-            These are questions the bot <strong>couldn't answer</strong>, or answers a student marked
-            <strong>not helpful</strong>. Turn one into a focused knowledge draft, or use Add knowledge directly.
-            Drafts are never visible to students.
+            Review responses the bot couldn't answer, students marked not helpful, or that may be incomplete.
+            Check the conversation and evidence before deciding whether knowledge needs updating.
           </p>
+          <div class="attention-toolbar">
+            <div class="attention-filters" role="group" aria-label="Filter review reasons">
+              <button class="attention-filter" data-attention-filter="all" aria-pressed="true">All</button>
+              <button class="attention-filter" data-attention-filter="refused" aria-pressed="false">Couldn't answer</button>
+              <button class="attention-filter" data-attention-filter="incomplete" aria-pressed="false">Possibly incomplete</button>
+              <button class="attention-filter" data-attention-filter="down" aria-pressed="false">Not helpful</button>
+            </div>
+            <p id="attention-count" role="status" aria-live="polite"></p>
+          </div>
           <div id="list"></div>
         </div>
 
@@ -956,12 +992,31 @@
         });
       }
 
+      var _attentionItems = [];
+      var _attentionFilter = 'all';
+
       function renderList(items) {
+        _attentionItems = items || [];
+        drawAttention();
+      }
+
+      function drawAttention() {
         var list = $("list");
+        var items = _attentionItems.filter(function (it) {
+          return _attentionFilter === 'all' ||
+            (_attentionFilter === 'refused' && it.refused) ||
+            (_attentionFilter === 'incomplete' && it.possible_incomplete && !it.refused) ||
+            (_attentionFilter === 'down' && it.rating === -1);
+        });
+        $("attention-count").textContent = items.length + ' of ' + _attentionItems.length +
+          ' loaded · newest first' + (_attentionItems.length === 100 ? ' · latest 100 items' : '');
+        Array.prototype.forEach.call(document.querySelectorAll('[data-attention-filter]'), function (button) {
+          button.setAttribute('aria-pressed', String(button.getAttribute('data-attention-filter') === _attentionFilter));
+        });
         if (!items.length) {
           list.innerHTML =
-            '<div class="empty"><div class="big">🎉</div>' +
-            '<p>All caught up — nothing needs your attention right now.</p></div>';
+            '<div class="empty"><p>' + (_attentionItems.length ? 'No responses match this filter.' :
+              'No unresolved responses to review.') + '</p></div>';
           return;
         }
         list.innerHTML = "";
@@ -973,21 +1028,36 @@
         card.className = "card";
         var badges = "";
         if (it.refused) badges += '<span class="badge refused">Bot couldn\'t answer</span>';
+        if (it.possible_incomplete && !it.refused) badges += '<span class="badge down">Possible incomplete answer</span>';
         if (it.rating === -1) badges += '<span class="badge down">Marked not helpful</span>';
         if (it.rating_reason) badges += '<span class="badge time">' + esc(it.rating_reason) + '</span>';
-        if (it.ts) badges += '<span class="badge time">' + esc(timeAgo(it.ts)) + '</span>';
+        if (it.department) badges += '<span class="badge time">Department: ' + esc(it.department.toUpperCase()) + '</span>';
+        if (it.ts) badges += '<time class="badge time" datetime="' + esc(it.ts) + '" title="' +
+          esc(new Date(it.ts).toLocaleString()) + '">' + esc(timeAgo(it.ts)) + '</time>';
         var relatedDraft = (_revisionItems || []).find(function (revision) {
           return !revision.active && revision.linked_feedback_ids &&
             revision.linked_feedback_ids.indexOf(it.id) >= 0;
         });
         var retrieved = it.retrieved || [];
+        var history = it.conversation_history || [];
+        var context = history.length ? '<details class="attention-history"><summary>Previous conversation · ' +
+          history.length + (history.length === 1 ? ' message' : ' messages') + '</summary><p class="context-note">' +
+          (it.history_source === 'staff_reported' ? 'Provided by staff from the reported exchange; not captured by the original request.' :
+            'Redacted messages submitted with this request. Conversation text is not official policy evidence.') + '</p>' +
+          history.map(function (message) {
+            return '<div class="attention-message ' + (message.role === 'assistant' ? 'assistant' : 'user') +
+              '"><strong>' + (message.role === 'assistant' ? 'Assistant' : 'Student') + '</strong><p>' + esc(message.content) + '</p></div>';
+          }).join('') + '</details>' : '<p class="attention-note">' +
+          (it.history_source === 'request' ? 'No previous messages were submitted with this request.' :
+            'Conversation context was not recorded for this older interaction.') + '</p>';
         card.innerHTML =
           '<div class="badge-row">' + badges + '</div><div class="q-label">Student asked</div>' +
           '<div class="q">' + esc(it.question) + '</div>' +
-          (!it.refused && it.answer ? '<div class="bot-said"><span class="cap">The bot replied</span>' + esc(it.answer) + '</div>' : '') +
-          '<p class="intro">Review the official guidance, then prepare a focused answer in Knowledge Studio. The assistant compares claims and helps test whether students will find it.</p>' +
+          (it.answer ? '<div class="bot-said"><span class="cap">The bot replied</span>' + esc(it.answer) + '</div>' : '') +
+          (it.possible_incomplete && !it.refused ? '<p class="attention-note">Flagged by wording that indicates missing information. This may still be a useful partial answer; staff review is needed.</p>' : '') +
+          context +
           '<div class="actions"><button class="queue-studio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>' +
-          (relatedDraft ? 'Continue linked draft' : 'Review in Knowledge Studio') +
+          (relatedDraft ? 'Continue linked draft' : 'Review this response') +
           '</button><button class="dismiss secondary">Dismiss</button><span class="status" role="status"></span></div>' +
           '<details class="tech"><summary>Inspect the original retrieval evidence</summary><p class="explain">Check whether the right source was retrieved before deciding new knowledge is needed. A refusal may be appropriate.</p>' +
           (retrieved.length ? retrieved.map(function (snippet) { return '<div class="snippet">' + esc(snippet) + '</div>'; }).join('') :
@@ -1178,6 +1248,12 @@
         }
       }, 15000);
       $("curated-search").addEventListener("input", filterCurated);
+      Array.prototype.forEach.call(document.querySelectorAll('[data-attention-filter]'), function (button) {
+        button.addEventListener('click', function () {
+          _attentionFilter = button.getAttribute('data-attention-filter');
+          drawAttention();
+        });
+      });
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (b) {
         b.addEventListener("click", function () { selectTab(b.getAttribute("data-tab")); });
       });

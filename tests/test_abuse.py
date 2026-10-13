@@ -28,7 +28,7 @@ def isolated_guards(monkeypatch):
         monkeypatch.setattr(api, name, RateLimiter(limit, seconds))
     monkeypatch.setattr(api, "_guard", RequestGuard())
     monkeypatch.setattr(api, "anonymize", lambda text: text)
-    monkeypatch.setattr(api, "log_interaction", lambda q, a: 1)
+    monkeypatch.setattr(api, "log_interaction", lambda q, a, **kw: 1)
 
 
 @pytest.mark.parametrize(
@@ -148,7 +148,7 @@ def test_repeated_question_replays_without_logging_or_generation(monkeypatch):
     monkeypatch.setattr(
         api, "generate_answer", lambda q, **kw: calls.append(q) or Answer(text="Answer")
     )
-    monkeypatch.setattr(api, "log_interaction", lambda *args: logs.append(1) or 42)
+    monkeypatch.setattr(api, "log_interaction", lambda *args, **kw: logs.append(1) or 42)
     client = TestClient(api.app)
     payload = {"question": "What are the internship requirements?", "session_id": SESSION}
     for _ in range(5):

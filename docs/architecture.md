@@ -189,6 +189,13 @@ employment guarantees and hiring decisions still require evidence for that stage
    provider usage/latency. Provider failures do not become unanswered-content work.
    `experience/` separately stores anonymous experience feedback.
 
+Needs attention selects unresolved refusals, negative ratings and advisory
+missing-information wording signals. It shows complete replies and bounded,
+redacted submitted history with department metadata; legacy context is absent
+unless explicitly supplied by staff and labeled. These are review candidates,
+not model confidence scores or changes to student answer/refusal classification.
+No extra LLM call or conversation routing change is involved.
+
 The protected Usage view aggregates persisted interactions over 7/30/90-day UTC
 windows. Answer rate excludes provider errors; helpfulness covers submitted
 ratings only. Neither establishes answer accuracy, unique students or email
