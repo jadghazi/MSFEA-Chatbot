@@ -1,6 +1,7 @@
 # Knowledge Studio: staff workflow
 
-Reviewed 2026-10-08 against the [deployed paid-profile alignment](archive/oracle-paid-release-20261008.md).
+Reviewed 2026-10-13 against [Needs Attention review/context](archive/attention-review-release-20261013.md)
+and the [deployed paid-profile alignment](archive/oracle-paid-release-20261008.md).
 Both **Add knowledge** and
 **Needs attention → Review in Knowledge Studio** use one resumable workspace.
 Continue linked draft/Continue in Studio resume saved work; editing a published
