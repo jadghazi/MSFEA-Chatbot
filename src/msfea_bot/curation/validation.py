@@ -822,6 +822,8 @@ def record_human_review(
     reason: str,
 ) -> int:
     revision, fingerprint, _ = _run(run_id)
+    if revision.state == "discarded":
+        raise ValueError("This draft was discarded. Start a new entry for a fresh review.")
     if not reviewer_label.strip() or not reason.strip():
         raise ValueError("reviewer label and reason are required")
     allowed = {"confirm_no_conflict", "valid_scoped_exception", "reject", "replace_outdated"}
@@ -837,6 +839,12 @@ def record_human_review(
     if validation_fingerprint(revision) != fingerprint:
         raise ValueError("validation is stale; rerun before review")
     with _connect() as conn:
+        state = conn.execute(
+            "SELECT state FROM curation_revision_state WHERE revision_id=%s FOR UPDATE",
+            (revision.id,),
+        ).fetchone()
+        if state and state[0] == "discarded":
+            raise ValueError("This draft was discarded. Start a new entry for a fresh review.")
         results = conn.execute(
             "SELECT step, status, details FROM curation_validation_results WHERE run_id = %s",
             (run_id,),

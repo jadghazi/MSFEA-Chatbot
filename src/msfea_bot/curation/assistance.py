@@ -782,9 +782,12 @@ def accept_draft(review_id: str, payload: DraftPayload, actor: str) -> tuple[int
             raise ValueError("The reviewed guidance or scope changed. Run a fresh review.")
         if row[4]:
             entry = conn.execute(
-                "SELECT entry_id, content_hash, created_by FROM curated_revisions WHERE id = %s",
+                "SELECT r.entry_id, r.content_hash, r.created_by, s.state FROM curated_revisions r"
+                " JOIN curation_revision_state s ON s.revision_id=r.id WHERE r.id = %s FOR UPDATE OF s",
                 (row[4],),
             ).fetchone()
+            if entry[3] == "discarded":
+                raise ValueError("This draft was discarded. Start a new entry for a fresh review.")
             if entry[1] != _content_hash(payload) or entry[2] != actor:
                 raise ValueError("This review already has a different saved draft.")
             return int(entry[0]), int(row[4])
@@ -796,15 +799,19 @@ def accept_draft(review_id: str, payload: DraftPayload, actor: str) -> tuple[int
         else:
             entry_id = intake.entry_id
             entry = conn.execute(
-                "SELECT id FROM curated_entries WHERE id = %s FOR UPDATE", (entry_id,),
+                "SELECT id, active_revision_id FROM curated_entries WHERE id = %s FOR UPDATE", (entry_id,),
             ).fetchone()
             if entry is None:
                 raise ValueError("The knowledge entry to update no longer exists.")
             prior = conn.execute(
-                "SELECT id, revision_number FROM curated_revisions WHERE entry_id = %s"
-                " ORDER BY revision_number DESC LIMIT 1", (entry_id,),
+                "SELECT r.id, r.revision_number, s.state FROM curated_revisions r"
+                " JOIN curation_revision_state s ON s.revision_id=r.id WHERE r.entry_id = %s"
+                " ORDER BY r.revision_number DESC LIMIT 1", (entry_id,),
             ).fetchone()
-            predecessor, number = int(prior[0]), int(prior[1]) + 1
+            if prior[2] == "discarded" and entry[1] is None:
+                raise ValueError("This draft was discarded. Start a new entry for a fresh review.")
+            predecessor = int(entry[1] if prior[2] == "discarded" else prior[0])
+            number = int(prior[1]) + 1
         attached = conn.execute(
             "SELECT r.id,a.kb_generation,a.prompt_version FROM curated_revisions r JOIN curation_assistance a"
             " ON a.accepted_revision_id=r.id WHERE r.entry_id=%s AND r.content_hash=%s",

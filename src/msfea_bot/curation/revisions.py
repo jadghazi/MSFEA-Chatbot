@@ -248,16 +248,21 @@ def create_successor_draft(
     payload = validate_payload(payload)
     with _connect() as conn:
         entry = conn.execute(
-            "SELECT id FROM curated_entries WHERE id = %s FOR UPDATE", (entry_id,)
+            "SELECT id, active_revision_id FROM curated_entries WHERE id = %s FOR UPDATE", (entry_id,)
         ).fetchone()
         if entry is None:
             return None
         prior = conn.execute(
-            "SELECT id, revision_number FROM curated_revisions"
-            " WHERE entry_id = %s ORDER BY revision_number DESC LIMIT 1",
+            "SELECT r.id, r.revision_number, s.state FROM curated_revisions r"
+            " JOIN curation_revision_state s ON s.revision_id=r.id"
+            " WHERE r.entry_id = %s ORDER BY r.revision_number DESC LIMIT 1",
             (entry_id,),
         ).fetchone()
         predecessor = int(prior[0]) if prior else None
+        if prior and prior[2] == "discarded":
+            if entry[1] is None:
+                raise ValueError("This draft was discarded. Start a new entry for a fresh review.")
+            predecessor = int(entry[1])
         number = int(prior[1]) + 1 if prior else 1
         return _insert_revision(conn, entry_id, number, predecessor, payload, actor)
 
@@ -312,3 +317,49 @@ def list_revisions() -> list[Revision]:
         )
         for row in rows
     ]
+
+
+def discard_draft(revision_id: int) -> None:
+    """Close the private revision branch; never change serving knowledge."""
+    with _connect() as conn:
+        entry = conn.execute(
+            "SELECT e.id, e.active_revision_id FROM curated_entries e"
+            " JOIN curated_revisions r ON r.entry_id=e.id WHERE r.id=%s FOR UPDATE OF e",
+            (revision_id,),
+        ).fetchone()
+        if entry is None:
+            raise ValueError("This draft was not found.")
+        rows = conn.execute(
+            "SELECT r.id,s.state FROM curated_revisions r"
+            " JOIN curation_revision_state s ON s.revision_id=r.id"
+            " WHERE r.entry_id=%s ORDER BY r.revision_number DESC FOR UPDATE OF s",
+            (entry[0],),
+        ).fetchall()
+        if rows[0][0] != revision_id:
+            raise ValueError("A newer revision exists. Reload Drafts before discarding.")
+        if rows[0][1] == "discarded":
+            return
+        if revision_id == entry[1] or rows[0][1] in {"active", "retired"}:
+            raise ValueError("Published knowledge cannot be discarded. Use retirement instead.")
+        if any(row[1] in {"validating", "publishing"} for row in rows):
+            raise ValueError("Wait for the current checks or publication to finish before discarding.")
+        working = conn.execute(
+            "SELECT j.id FROM curation_workspace_jobs j JOIN curated_revisions r ON r.id=j.revision_id"
+            " WHERE r.entry_id=%s AND j.status IN ('queued','running') FOR UPDATE OF j",
+            (entry[0],),
+        ).fetchall()
+        if working:
+            raise ValueError("Wait for the current previews or search preparation to finish before discarding.")
+        conn.execute(
+            "UPDATE curation_revision_state s SET state='discarded', state_version=state_version+1,"
+            " reason='Private draft discarded by staff. Start a new entry to review this case again.',"
+            " updated_at=now() FROM curated_revisions r WHERE r.id=s.revision_id AND r.entry_id=%s"
+            " AND s.state IN ('draft','blocked','ready')",
+            (entry[0],),
+        )
+        conn.execute(
+            "INSERT INTO curation_events (entry_id,revision_id,event_type,actor_type,reason)"
+            " VALUES (%s,%s,'draft_discarded','admin',"
+            " 'Staff discarded the private draft. Immutable revisions and prior checks retained.')",
+            (entry[0], revision_id),
+        )

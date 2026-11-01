@@ -697,7 +697,7 @@
           showStudio: function () { selectTab('create'); },
           onSaved: function (error) {
             loadAll(function () {
-              if (error) $("banner").innerHTML = '<div class="banner err">Draft saved. Start its automatic checks below: ' + esc(error) + '</div>';
+              if (error) $("banner").innerHTML = '<div class="banner err">' + esc(error) + '</div>';
             });
           }
         });
@@ -755,7 +755,7 @@
 
       function renderDrafts(items) {
         var drafts = (items || []).filter(function (item) {
-          return !item.active && !(items || []).some(function (other) {
+          return !item.active && item.state !== 'discarded' && !(items || []).some(function (other) {
             return other.entry_id === item.entry_id && other.revision_number > item.revision_number;
           });
         });
@@ -776,7 +776,7 @@
         $("drafts-list").innerHTML = drafts.map(function (item) {
           var run = latestRun(item.id);
           if (item.assistance) {
-            return '<div class="card"><div class="badge-row"><span class="badge time">Private draft · Version ' + esc(item.revision_number) + '</span></div><div class="q">' + esc(item.document_title) + '</div><p class="intro">' + esc(item.state === 'validating' ? 'Private checks are running.' : item.state === 'publishing' ? 'Publication is in progress.' : 'Continue the guided review, inspect student previews, and approve in the same workspace.') + '</p><div class="actions"><button class="resume-studio" data-revision="' + esc(item.id) + '">Continue in Knowledge Studio</button></div></div>';
+            return '<div class="card"><div class="badge-row"><span class="badge time">Private draft · Version ' + esc(item.revision_number) + '</span></div><div class="q">' + esc(item.document_title) + '</div><p class="intro">' + esc(item.state === 'validating' ? 'Private checks are running.' : item.state === 'publishing' ? 'Publication is in progress.' : 'Continue the guided review, inspect student previews, and approve in the same workspace.') + '</p><div class="actions"><button class="resume-studio" data-revision="' + esc(item.id) + '">Continue in Knowledge Studio</button>' + (['validating','publishing'].indexOf(item.state) < 0 ? '<button class="discard-draft secondary" data-revision="' + esc(item.id) + '">Discard draft</button>' : '') + '</div></div>';
           }
           var reviews = run ? (run.reviews || []) : [];
           var reviewed = reviews.length > 0;
@@ -846,8 +846,13 @@
             '<div class="actions">' + actionButton +
               (canPublish ? '<button class="publish-revision" data-revision="' + esc(item.id) +
                 '" data-run="' + esc(run.id) + '">Publish to chatbot</button>' : '') +
-              '<span class="status"></span></div></div>';
+              (['validating','publishing','retired'].indexOf(item.state) < 0 ? '<button class="discard-draft secondary" data-revision="' + esc(item.id) + '">Discard draft</button>' : '') + '<span class="status"></span></div></div>';
         }).join('');
+        document.querySelectorAll('.discard-draft').forEach(function (button) {
+          button.addEventListener('click', function () {
+            KnowledgeStudio.discardDraft(drafts.find(function (item) { return item.id === Number(button.dataset.revision); }), button);
+          });
+        });
         document.querySelectorAll('.resume-studio').forEach(function (button) {
           button.addEventListener('click', function () {
             KnowledgeStudio.resumeDraft(drafts.find(function (item) { return item.id === Number(button.dataset.revision); }));
@@ -1037,7 +1042,7 @@
         if (it.ts) badges += '<time class="badge time" datetime="' + esc(it.ts) + '" title="' +
           esc(new Date(it.ts).toLocaleString()) + '">' + esc(timeAgo(it.ts)) + '</time>';
         var relatedDraft = (_revisionItems || []).find(function (revision) {
-          return !revision.active && revision.linked_feedback_ids &&
+          return !revision.active && revision.state !== 'discarded' && revision.linked_feedback_ids &&
             revision.linked_feedback_ids.indexOf(it.id) >= 0;
         });
         var retrieved = it.retrieved || [];

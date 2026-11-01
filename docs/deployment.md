@@ -46,7 +46,8 @@ evidence. Do not copy synthetic demo data or a developer's database into product
    `umask 022` for checkout/build and restrict secrets/backups separately.
 3. Build the exact target image natively for the host architecture before switching.
    Startup applies pending checksum-verified curation migrations. Current code has
-   migrations 0001–0008; never modify already-applied SQL files.
+   migrations 0001–0009; never modify already-applied SQL files. Rollbacks must
+   retain recognition of applied migrations, including the discarded-draft state.
 4. For an existing installation with unchanged dependencies/workflow, recreate
    only the affected services after the native build:
 

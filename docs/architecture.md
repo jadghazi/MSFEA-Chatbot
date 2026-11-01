@@ -230,6 +230,9 @@ a separate validation database. A measured search failure can trigger one bounde
 search-only repair without changing facts, scope or original tests. Actual student
 model previews are separate LLM calls. Named human approval and valid checks are
 required before atomic publication; linked feedback resolves after serving smoke.
+Staff can discard private drafts without publishing them. Discard closes the
+unpublished revision branch and clears its browser workspace; immutable audit
+records remain, but the same case can start as a new entry with fresh checks.
 Saved previews bind to the student model/settings and generation/provider code.
 A changed profile requires fresh previews; valid source checks and prior attempts
 are retained. This local Studio candidate is not deployed to Oracle.

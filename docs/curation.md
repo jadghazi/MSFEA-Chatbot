@@ -72,6 +72,8 @@ commits atomically. Modified/unknown applied SQL fails startup. Current migratio
 | 0005 | Admin-authored source documents and provenance |
 | 0006 | Guided review persistence |
 | 0007 | Self-service stages, search questions and private jobs |
+| 0008 | Shared paid-call ledger, operator controls and admission counters |
+| 0009 | Terminal discarded state for private drafts; immutable audit retained |
 
 Legacy rows retain IDs, question/answer/author/timestamps and active/retired state.
 Missing scope/approval is marked `needs_review`, never inferred. Database constraints

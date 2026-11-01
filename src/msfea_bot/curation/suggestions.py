@@ -63,7 +63,7 @@ def _context(review_id: str | None, revision_id: int | None) -> tuple[Intake, di
     preview_feedback: list[dict[str, Any]] = []
     if revision_id:
         revision = get_revision(revision_id)
-        if revision is None or revision.active or revision.state == "publishing":
+        if revision is None or revision.active or revision.state in {"publishing", "discarded"}:
             raise ValueError("Open a private draft before suggesting changes to a published entry.")
         if revision.source_kind != "admin_authored":
             raise ValueError("Correct official source documents through the source editor and ingestion flow.")

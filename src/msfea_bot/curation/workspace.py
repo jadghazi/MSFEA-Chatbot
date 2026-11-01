@@ -70,6 +70,8 @@ def workspace(revision_id: int) -> dict[str, Any]:
     revision = get_revision(revision_id)
     if revision is None:
         raise ValueError("This knowledge draft was not found.")
+    if revision.state == "discarded":
+        raise ValueError("This draft was discarded. Start a new entry for a fresh review.")
     run = next((run for run in validation_runs() if run["revision_id"] == revision_id), None)
     with _connect() as conn:
         jobs = conn.execute(

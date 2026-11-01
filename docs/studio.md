@@ -122,6 +122,15 @@ No draft becomes student content merely by saving, generating or accepting AI te
 
 ## Recover saved work
 
+**Discard draft** removes a saved private draft from Drafts and linked review
+shortcuts, and clears that draft's working browser state. Confirm the action before
+discarding. All unpublished revisions of the entry are closed; immutable content,
+checks and events remain in the audit history. Published knowledge is unchanged.
+Start a new entry to retry the same guidance with a new review and fresh checks;
+discarded checks/previews cannot authorize publication. Wait for running checks,
+previews or publication to finish before discarding. Published entries use retirement
+instead. Drafts never participate in student retrieval or the main AI comparison.
+
 Reload or resume from Drafts/Needs attention. Saved stages/jobs live in PostgreSQL;
 sign-out clears the browser working copy. Approval notes survive refresh for the
 same checked revision; publication still requires confirmation.

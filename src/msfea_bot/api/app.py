@@ -44,6 +44,7 @@ from msfea_bot.curation.revisions import (
     EvidenceReference,
     create_draft,
     create_successor_draft,
+    discard_draft,
     list_revisions,
     program_registry,
     source_registry,
@@ -720,6 +721,20 @@ def admin_curated_edit(
 class RetireCuratedRequest(BaseModel):
     id: int
     reason: str = Field(min_length=1, max_length=2000)
+
+
+class DiscardDraftRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    revision_id: int = Field(gt=0)
+
+
+@app.post("/admin/api/studio/discard")
+def admin_discard_draft(req: DiscardDraftRequest, _: None = Depends(require_admin)) -> dict[str, bool]:
+    try:
+        discard_draft(req.revision_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"ok": True}
 
 
 @app.post("/admin/api/curated/retire")

@@ -396,7 +396,7 @@
   function reset(preserveFeedback) {
     clearTimeout(suggestionTimer); proposal=null; acceptedSuggestion=null;
     workspaceId = null; host.classList.remove('has-candidate');
-    clearTimeout(timer); current = null; requestKey = null; draft = null; entry = null;
+    clearTimeout(timer); current = null; requestKey = null; lastIntake = null; draft = null; entry = null;
     if (!preserveFeedback) feedback = null;
     el("#studio-guidance").value = ""; el("#studio-topic").value = "";
     el("#studio-topic").readOnly = false;
@@ -419,6 +419,18 @@
     emptyReview(); rail(0); setBusy(false); remember(); updateCount();
     message('Your saved revision stays private. Review the revised guidance to create its successor.');
     el('#studio-guidance').focus();
+  }
+  function discardDraft(item, button) {
+    if (!window.confirm('Discard this private draft? It will be removed from Drafts, and you can start the same case again with fresh checks. Published knowledge stays unchanged. Prior versions remain in the audit history.')) return;
+    button.disabled = true;
+    return request('/admin/api/studio/discard', {revision_id:item.id}).then(function () {
+      if (workspaceId === item.id || (entry && entry.id === item.entry_id) ||
+          (current && item.assistance && current === item.assistance.id)) reset(false);
+      hooks.onSaved('');
+    }).catch(function (error) {
+      button.disabled = false;
+      hooks.onSaved(error.message);
+    });
   }
   function pollWorkspace() {
     clearTimeout(timer);
@@ -480,7 +492,7 @@
       (!active && ready ? '<section class="studio-final-approval"><div class="studio-section-title"><h4>Approve & publish</h4><span>Human decision required</span></div><p>The AI prepared and tested the entry. You approve the policy and the student-facing result.</p>' +
         (flags.length ? '<div class="review-next"><h4>A policy decision is needed</h4><p>Review the exact differences below. Only an approved scoped exception or an update to this entry can be authorized.</p></div>' + (state.assistance ? KnowledgeReview.ai(state.assistance, false) : '') + flags.filter(function (flag) { return flag.reason.indexOf('ai_') !== 0; }).map(function (flag) { var source = conflict.details.related.find(function (item) { return item.id === flag.candidate_id; }); return '<details class="studio-evidence"><summary>Additional source check: ' + e(humanLabel(flag.reason)) + '</summary><p>A rule-based check also flagged this passage. Verify whether it governs the same claim and scope before recording a decision.</p><p><strong>Your approved guidance</strong></p><blockquote>' + e(revision.answer) + '</blockquote><p><strong>Existing source · ' + e(source ? source.source_doc + ' · ' + source.section : flag.candidate_id) + '</strong></p><blockquote>' + e(source ? source.text : 'See the recorded comparison evidence.') + '</blockquote></details>'; }).join('') : '') +
         '<label for="studio-reviewer">Reviewer name or staff role<input id="studio-reviewer" maxlength="120"></label><label for="studio-decision">Your decision<select id="studio-decision">' + (!flags.length ? '<option value="confirm_no_conflict">The facts and previews are correct</option>' : '<option value="">Choose a decision…</option><option value="valid_scoped_exception">Approved exception for the stated scope</option>' + (revision.predecessor_revision_id ? '<option value="replace_outdated">Replace this entry’s outdated version</option>' : '')) + '</select></label><label for="studio-decision-reason">Approval note<textarea id="studio-decision-reason" maxlength="2000" placeholder="What did you verify, and why is this approved?"></textarea></label><label class="studio-confirm"><input id="studio-publish-confirm" type="checkbox"><span>I verified the approved facts, scope and student previews. I authorize publication.</span></label><button class="studio-publish"' + (officialConflict || publishing ? ' disabled' : '') + '>Approve & publish ' + icon('arrow') + '</button><div class="studio-publish-status" role="status" aria-live="polite"></div></section>' : '') +
-      (!active && !publishing ? '<div class="studio-workspace-actions"><button class="studio-edit-guidance secondary">Edit approved guidance</button>' + (!state.review_outdated && !testing && !jobs.some(function (job) { return ['queued','running'].indexOf(job.status) >= 0; }) ? '<button class="studio-recheck secondary">Run fresh checks</button>' : '') + '</div>' : '') +
+      (!active && !publishing ? '<div class="studio-workspace-actions"><button class="studio-edit-guidance secondary">Edit approved guidance</button>' + (!state.review_outdated && !testing && !jobs.some(function (job) { return ['queued','running'].indexOf(job.status) >= 0; }) ? '<button class="studio-recheck secondary">Run fresh checks</button>' : '') + (!testing && !jobs.some(function (job) { return ['queued','running'].indexOf(job.status) >= 0; }) ? '<button class="studio-discard secondary">Discard draft</button>' : '') + '</div>' : '') +
       '<details class="studio-audit"><summary>Version and test audit</summary><p>Revision ' + revision.id + ' · ' + e(run ? run.id : 'Not tested') + '</p><pre>' + e(JSON.stringify({run:run, jobs:jobs, retrieval_questions:revision.retrieval_questions}, null, 2)) + '</pre></details></section>';
     if (entering) el('.studio-progress').scrollIntoView({block:'start', behavior:'smooth'});
     if (repair && repair.status === 'failed' && !repair.result.successor_revision_id && ['quota','provider_unavailable','interrupted','service_unavailable'].indexOf(repair.error_code) >= 0 && !state.stale) {
@@ -493,6 +505,7 @@
       el('.studio-workspace-actions').appendChild(retry);
     }
     if (el('.studio-edit-guidance')) el('.studio-edit-guidance').addEventListener('click', function () { editWorking(state); });
+    if (el('.studio-discard')) el('.studio-discard').addEventListener('click', function () { discardDraft(revision, this); });
     if (el('.studio-recheck')) el('.studio-recheck').addEventListener('click', function (event) {
       event.currentTarget.disabled = true;
       request('/admin/api/revisions/validate', {revision_id:revision.id}).then(pollWorkspace).catch(function (error) { el('.studio-workspace-actions').appendChild(document.createTextNode(error.message)); });
@@ -607,6 +620,7 @@
   }
   window.KnowledgeStudio = {
     mount: mount,
+    discardDraft: discardDraft,
     resumeDraft: function (item) {
       if (!item.assistance) { this.openDraft(item); return; }
       replaceWorking('Resume this saved workspace in place of the current working guidance?', function () {
