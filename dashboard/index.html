@@ -753,12 +753,16 @@
         });
       }
 
-      function renderDrafts(items) {
-        var drafts = (items || []).filter(function (item) {
-          return !item.active && item.state !== 'discarded' && !(items || []).some(function (other) {
+      function workingDrafts(items) {
+        return (items || []).filter(function (item) {
+          return !item.active && ['draft','blocked','ready','validating','publishing'].indexOf(item.state) >= 0 && !(items || []).some(function (other) {
             return other.entry_id === item.entry_id && other.revision_number > item.revision_number;
           });
         });
+      }
+
+      function renderDrafts(items) {
+        var drafts = workingDrafts(items);
         _pendingWorkflow = drafts.some(function (item) {
           return item.state === 'validating' || item.state === 'publishing';
         });
@@ -1041,8 +1045,8 @@
         if (it.department) badges += '<span class="badge time">Department: ' + esc(it.department.toUpperCase()) + '</span>';
         if (it.ts) badges += '<time class="badge time" datetime="' + esc(it.ts) + '" title="' +
           esc(new Date(it.ts).toLocaleString()) + '">' + esc(timeAgo(it.ts)) + '</time>';
-        var relatedDraft = (_revisionItems || []).find(function (revision) {
-          return !revision.active && revision.state !== 'discarded' && revision.linked_feedback_ids &&
+        var relatedDraft = workingDrafts(_revisionItems).find(function (revision) {
+          return revision.linked_feedback_ids &&
             revision.linked_feedback_ids.indexOf(it.id) >= 0;
         });
         var retrieved = it.retrieved || [];

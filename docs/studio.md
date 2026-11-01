@@ -130,6 +130,8 @@ Start a new entry to retry the same guidance with a new review and fresh checks;
 discarded checks/previews cannot authorize publication. Wait for running checks,
 previews or publication to finish before discarding. Published entries use retirement
 instead. Drafts never participate in student retrieval or the main AI comparison.
+Retired published revisions are history, not drafts: they disappear from Published
+and do not appear in Drafts or linked-draft shortcuts in Needs attention.
 
 Reload or resume from Drafts/Needs attention. Saved stages/jobs live in PostgreSQL;
 sign-out clears the browser working copy. Approval notes survive refresh for the
