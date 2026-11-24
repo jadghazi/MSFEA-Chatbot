@@ -23,19 +23,23 @@ For host development use Python 3.12+, install `pip install -e ".[dev,gemini]"`,
 provide PostgreSQL/pgvector, and install the local spaCy model. Docker is the
 preferred reproducible runtime; the image bakes pinned embeddings and local NER.
 
-The base Compose app/database stack supports chat. Full curation needs the
-production overlay's private worker, n8n and validation database; use disposable
-configuration and volumes for synthetic Studio tests. Do not repurpose Oracle.
+Use `docker-compose.dev.yml` for local chat and tests. For a full Studio review,
+use `docker-compose.prod.yml` with disposable configuration and a distinct
+Compose project name such as `msfea-studio-review`. Use that same project name
+for startup, ingestion and cleanup. The app is available on
+`http://127.0.0.1:9000` in that review stack. The project name keeps its data
+volumes separate.
 
 Build the persistent development image after dependency/image changes:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml build dev
+docker compose -f docker-compose.dev.yml build dev
 ```
 
-The dev service bind-mounts the repository, persists tool caches and uses `test-db`
-with `msfea_test`. Database fixtures rebuild indexes, so never run them in a
-container configured for the demo or production DB.
+The dev service bind-mounts the repository and uses the disposable `test-db`
+with `msfea_test`. Both services are in the test profile. Running the dev service
+directly starts its test database. Database fixtures rebuild indexes, so never
+run them against the demo or production database.
 
 ## Choose checks for the change
 
@@ -45,9 +49,9 @@ configuration claims and diff scope. No ingestion, live LLM calls or deployment.
 For executable changes, use the isolated suite and lint/type checks:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev
-docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m ruff check src tests eval
-docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m mypy --strict src eval
+docker compose -f docker-compose.dev.yml run --rm dev
+docker compose -f docker-compose.dev.yml run --rm dev python -m ruff check src tests eval
+docker compose -f docker-compose.dev.yml run --rm dev python -m mypy --strict src eval
 node --test tests/widget_submission.test.cjs tests/widget_reveal.test.cjs tests/studio_review.test.cjs tests/studio_preview.test.cjs tests/studio_suggestion.test.cjs
 ```
 

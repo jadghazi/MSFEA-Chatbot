@@ -1,18 +1,37 @@
-# Development overlay. Builds the pinned dev tools once and mounts the live
-# working tree, so subsequent Ruff/mypy/pytest runs start immediately and inspect
-# current source without rebuilding the image.
-#
-# One-time setup:
-#   docker compose -f docker-compose.yml -f docker-compose.dev.yml build dev
-#
-# Daily use:
-#   docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev
-#   docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m ruff check src tests eval
-#   docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm dev python -m mypy --strict src
+# Local chatbot and isolated tests. See docs/development.md for commands.
 services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: msfea
+      POSTGRES_PASSWORD: msfea
+      POSTGRES_DB: msfea
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msfea -d msfea"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://msfea:msfea@db:5432/msfea
+      WARM_MODELS_ON_STARTUP: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped
+
   # Tests rebuild the chunks table repeatedly. Keep them on an isolated, disposable
   # database so running pytest can never replace the KB used by the local demo.
   test-db:
+    profiles: [test]
     image: pgvector/pgvector:pg16
     environment:
       POSTGRES_USER: msfea
@@ -27,12 +46,14 @@ services:
       retries: 15
 
   dev:
+    profiles: [test]
     build:
       context: .
       target: development
     env_file: .env
     environment:
       DATABASE_URL: postgresql://msfea:msfea@test-db:5432/msfea_test
+      DASHBOARD_TEST_DATABASE_URL: postgresql://msfea:msfea@test-db:5432/msfea_test
       PYTHONPATH: /workspace/src:/workspace
     depends_on:
       test-db:
@@ -40,3 +61,6 @@ services:
     working_dir: /workspace
     volumes:
       - .:/workspace
+
+volumes:
+  pgdata:

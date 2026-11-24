@@ -64,8 +64,8 @@ business workflows without an explicit scope decision.
   Student and staff models are configured separately.
 - Plain HTML/CSS/vanilla JavaScript widget/dashboard; no React. One script embeds
   the widget. The standalone frontend reuses it.
-- Docker/Compose, Caddy HTTPS, environment-only secrets; configuration in
-  `src/msfea_bot/config.py` and documented in `.env.example`.
+- Docker/Compose behind the institution's HTTPS reverse proxy. Secrets stay in
+  the environment. See `src/msfea_bot/config.py` and `.env.example` for settings.
 - The existing private Python curation worker and self-hosted n8n coordinate
   durable checks/publication. n8n does not answer student questions, decide policy
   or authorize writes. Its separate PostgreSQL 17 database is workflow storage.

@@ -1,18 +1,72 @@
 # Deployment and operations
 
-Reviewed 2026-10-08 against the current Compose files and paid student/Studio release.
-Oracle pilot location: `/opt/msfea-chatbot`; public hostname:
-`msfea-chatbot.duckdns.org`. A different institution can supply its own host/domain
-without changing application code. Dated rollout evidence is in [the archive](archive/README.md).
+Use this guide to deploy the chatbot behind the department's existing Caddy
+reverse proxy. The [archive](archive/README.md) records the earlier Oracle pilot
+releases and their serving topology.
+
+## First installation
+
+1. Check out the approved release on the department's Docker host. Confirm the
+   public hostname with IT and reserve host port 9000 for the app. Run the
+   commands from the checkout. For a new installation, create the environment
+   file with restricted permissions.
+
+   ```bash
+   install -m 600 .env.example .env
+   git rev-parse HEAD
+   ```
+
+2. In `.env`, set `APP_COMMIT` to the printed SHA and configure the
+   institution's Gemini project, admin token and independent worker and n8n
+   secrets listed below. Set `CORS_ALLOW_ORIGINS` to the exact host-page origins
+   if another website will embed the widget.
+3. Validate the Compose configuration, start the production stack and build the
+   initial index from the reviewed knowledge files in Git.
+
+   ```bash
+   docker compose -f docker-compose.prod.yml config --quiet
+   docker compose -f docker-compose.prod.yml up -d --build
+   docker compose -f docker-compose.prod.yml run --rm app python -m msfea_bot.skeleton ingest
+   docker compose -f docker-compose.prod.yml ps -a
+   curl -fsS http://127.0.0.1:9000/health
+   curl -fsS http://127.0.0.1:9000/ready
+   ```
+
+   Expect `{"status":"ok"}` and `{"status":"ready"}`, respectively. The
+   readiness probe returns 503 until the initial index is populated and
+   compatible with the local embedding model. The `validation-db-init`,
+   `n8n-import` and `n8n-publish` setup jobs should exit successfully. The app,
+   databases, worker and n8n should be running and healthy. If a service is
+   still starting, wait for it to finish and repeat the checks.
+4. Add the [example Caddy site block](../deploy/Caddyfile) to the department's
+   existing configuration, substituting the assigned hostname. Have the proxy
+   operator validate and reload the shared configuration using their normal
+   process. See [HTTPS, CORS and worker count](#https-cors-and-worker-count)
+   if Caddy uses a separate network namespace or host.
+5. Verify the same health and readiness responses over HTTPS. Replace the example
+   hostname in these commands. Each internal path should return 404.
+
+   ```bash
+   curl -fsS https://chatbot.aub.edu.lb/health
+   curl -fsS https://chatbot.aub.edu.lb/ready
+   curl -sS -o /dev/null -w '%{http_code}\n' https://chatbot.aub.edu.lb/internal
+   curl -sS -o /dev/null -w '%{http_code}\n' -X POST https://chatbot.aub.edu.lb/internal/cache/invalidate
+   ```
+
+   Open the student page and ask a known in-scope question. Verify the answer,
+   citations, disclaimer and source destinations. Sign in at `/dashboard/` and
+   confirm that staff can access the expected Studio and feedback views. Confirm
+   backups and their owners before opening the service to students.
 
 ## Configuration and topology
 
 Use [.env.example](../.env.example) and [config.py](../src/msfea_bot/config.py) as the
 configuration inventory. Keep real secrets in `.env` or the operator's secret store.
-Set `LLM_PROVIDER=gemini`, the student model/key, `ADMIN_TOKEN`, `DOMAIN`,
-`CORS_ALLOW_ORIGINS` and `APP_COMMIT` for the exact running release.
+Set `LLM_PROVIDER=gemini`, `LLM_API_KEY`, the student and staff models,
+`ADMIN_TOKEN`, `CORS_ALLOW_ORIGINS` and `APP_COMMIT` as appropriate.
 Use independent `CURATION_WORKER_TOKEN`, `N8N_WEBHOOK_SECRET`, `N8N_DB_PASSWORD`
-and persistent `N8N_ENCRYPTION_KEY`. Do not reuse the admin token.
+and persistent `N8N_ENCRYPTION_KEY`. The example environment file documents how
+to generate secret values. Keep a recoverable copy of the n8n encryption key.
 
 The deployed paid student profile uses `LLM_MODEL=gemini-3.8-flash`,
 `LLM_MAX_OUTPUT_TOKENS=4096`, `LLM_GEMINI_THINKING_LEVEL=medium` and
@@ -22,22 +76,23 @@ actual student previews use the student profile. Rotate only the intended provid
 key/configuration fields; preserve production database, admin, workflow and domain
 settings. See the [dated rollout](archive/oracle-paid-release-20261008.md).
 
+The standalone production Compose file starts the app, PostgreSQL/pgvector, the
+private worker, self-hosted n8n and n8n's PostgreSQL 17 database. Validation uses
+the separate `msfea_validation` database on application PostgreSQL.
 
-The base stack is app + PostgreSQL/pgvector. The production overlay adds Caddy,
-the private worker, self-hosted n8n and its PostgreSQL 17 database. Validation is
-a separate database (`msfea_validation`) on application PostgreSQL, not another
-permanent database container. Initialization/import/publish jobs exit after setup.
-
-Only Caddy exposes 80/443. The overlay removes app/database host ports. Internal
-routes return 404 through the public proxy. Keep databases, worker and n8n private;
-never give n8n a Docker socket, shell node or application DB credentials.
-n8n's internal network has no external egress; the worker bridges application and
-workflow networks. Student chat does not depend on n8n.
+The app is the only service with a published port. It serves on host port 9000
+and keeps its internal container port 8000. Keep databases, the worker and n8n
+private. Never give n8n a Docker socket, shell node or application DB credentials.
+n8n's internal network has no external egress. The worker connects the application
+and workflow networks. Student chat runs independently of n8n.
 
 ## Release procedure
 
 Use an authorized, verified commit and inspect the diff and relevant evaluation
-evidence. Do not copy synthetic demo data or a developer's database into production.
+evidence. Keep the existing Compose project name when updating an installation
+so it continues to use the same volumes. If migrating a release with bundled
+Caddy, coordinate its retirement and the proxy cutover with the operator. Keep
+synthetic demo data and developer databases out of production.
 
 1. Check CPU/RAM/disk capacity and fresh application/n8n backups. Preserve off-VM
    copies and the encryption key; rehearse schema/image changes on isolated restores.
@@ -52,14 +107,14 @@ evidence. Do not copy synthetic demo data or a developer's database into product
    only the affected services after the native build:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps app curation-worker
+docker compose -f docker-compose.prod.yml up -d --no-deps app curation-worker
 ```
 
-   For initial/full-stack setup:
+   For a full-stack update:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml ps -a
 ```
 
 5. Ingest only when the source/index/embedding change requires it. A documentation
@@ -69,8 +124,8 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
    content-only rebuild with compatible running code:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm app python -m msfea_bot.skeleton ingest
-docker compose -f docker-compose.yml -f docker-compose.prod.yml restart app
+docker compose -f docker-compose.prod.yml run --rm app python -m msfea_bot.skeleton ingest
+docker compose -f docker-compose.prod.yml restart app
 ```
 
 6. Verify public `/health` and `/ready`, embedding/index compatibility, expected
@@ -85,15 +140,21 @@ Never force a stale candidate index over a newer publication.
 
 ## HTTPS, CORS and worker count
 
-Caddy obtains certificates when DNS points to the host and ports 80/443 are open.
-[deploy/Caddyfile](../deploy/Caddyfile) is the default.
-[The nginx template](../deploy/nginx.conf) supports IT-managed TLS; supply its
-domain/certificate paths and review the actual private upstream arrangement.
+Point the site's DNS to the existing proxy, which handles TLS. For Caddy running directly
+on the Docker host, use `reverse_proxy 127.0.0.1:9000` and keep the default
+`APP_BIND_ADDRESS=127.0.0.1`. If Caddy cannot reach the host's loopback, have IT
+select a private host address reachable by the proxy. Set `APP_BIND_ADDRESS` to
+that address, update the upstream and restrict access to port 9000 to the trusted
+proxy. The [nginx template](../deploy/nginx.conf) is also available for
+IT-managed TLS.
 
 `CORS_ALLOW_ORIGINS` should contain exact host-page origins. Empty denies
-cross-origin browser access while allowing same-origin. CORS does not stop direct
-API callers. Enable `TRUST_PROXY_HEADERS` only behind the trusted single proxy
-with no direct public backend access. Additional CDNs/proxy hops need a trust review.
+cross-origin browser access while allowing same-origin. The production app trusts
+`X-Forwarded-For` for client IP rate limiting. Keep the backend port private and
+have the proxy set the forwarded address from the verified client. The example
+uses [Caddy's default forwarded-header handling](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy#defaults).
+Review this setting with IT if the shared proxy already trusts an upstream proxy
+or CDN. Keep the 404 block for both `/internal` and `/internal/*` on the public route.
 
 Use one Uvicorn app worker/instance: rate limits, concurrency guard, response cache
 and usage counters are process-local. Offline ingestion requires app restart to
@@ -188,30 +249,22 @@ For rollback, build a reviewed revert retaining migration 0008 and the guard, or
 restore the pre-release backup with an explicit plan for any subsequent writes.
 Never delete usage rows or migration history just to resume spend or start old code.
 
-## n8n import, editor and workflow recovery
+## n8n import and workflow recovery
 
 The exported workflow is [kb-publication-guard.json](../n8n/workflows/kb-publication-guard.json).
 Import deactivates workflows, so the separate publish bootstrap job is required.
 After a workflow change, rerun the import/publish jobs and restart n8n:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm n8n-import
-docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm n8n-publish
-docker compose -f docker-compose.yml -f docker-compose.prod.yml restart n8n
+docker compose -f docker-compose.prod.yml run --rm n8n-import
+docker compose -f docker-compose.prod.yml run --rm n8n-publish
+docker compose -f docker-compose.prod.yml restart n8n
 ```
 
 n8n process health does not prove webhook activation; short startup 404s are retried
 by the durable outbox. Workflows accept only existing validation/publication IDs.
 
-For visual maintenance, use the optional loopback editor proxy and SSH tunnel:
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.n8n-editor.yml up -d --no-deps n8n-editor
-docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.n8n-editor.yml stop n8n-editor
-```
-
-It binds `127.0.0.1:5678`; never expose the editor publicly. Closing the editor
-does not require stopping n8n.
+Maintain the workflow export in Git. Keep the n8n editor on the private workflow network.
 
 If n8n is down, leave app/db serving. Stop only the worker if dispatch must pause;
 drafts/jobs/intents remain in PostgreSQL. Restore n8n/database/key, rerun
@@ -231,9 +284,19 @@ Application backups contain source revisions, audit/workflow records, interactio
 ratings and experience feedback as well as derived chunks. n8n storage is separate;
 its execution history is not the application audit.
 
+Run both scripts from the checkout using the running stack's Compose project.
+If the project was given a custom name, set `COMPOSE_PROJECT_NAME` to that name.
+
 ```bash
 ./deploy/backup.sh
 ./deploy/backup-n8n.sh
+```
+
+Use the institution's backup scheduler. For systemd, adapt the account and paths
+in the [example service](../deploy/systemd/msfea-chatbot-backup.service) before
+installing the timer:
+
+```bash
 sudo ./deploy/install-backup-timer.sh
 sudo systemctl start msfea-chatbot-backup.service
 systemctl list-timers msfea-chatbot-backup.timer --no-pager

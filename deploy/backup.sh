@@ -18,7 +18,7 @@ TMP="$(mktemp "$DIR/.msfea-backup.XXXXXX")"
 trap 'rm -f -- "$TMP"' EXIT
 
 # -T: no TTY (needed when run non-interactively, e.g. from cron).
-docker compose exec -T db pg_dump -U msfea msfea | gzip > "$TMP"
+docker compose -f docker-compose.prod.yml exec -T db pg_dump -U msfea msfea | gzip > "$TMP"
 if [ -e "$OUT" ]; then
     echo "Refusing to overwrite existing backup: $OUT" >&2
     exit 1

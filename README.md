@@ -14,6 +14,7 @@ establish wider pilot outcomes or independently calibrated answer accuracy.
 
 - Coding agents: read [AGENTS.md](AGENTS.md), then [current architecture](docs/architecture.md).
 - All task guides: [documentation index](docs/README.md).
+- University server setup: [production deployment and handoff](docs/deployment.md#first-installation).
 - Knowledge sources and normalization: [KB guide](kb/README.md).
 - Evaluation sets, commands and evidence: [evaluation guide](eval/README.md).
 
@@ -23,19 +24,19 @@ Docker/Compose is the simplest app/database setup. Copy `.env.example` to `.env`
 set `LLM_API_KEY` and a strong `ADMIN_TOKEN` for the dashboard. Never commit secrets.
 
 ```bash
-docker compose up -d --build
-docker compose run --rm app python -m msfea_bot.skeleton ingest
+docker compose -f docker-compose.dev.yml up -d --build
+docker compose -f docker-compose.dev.yml run --rm app python -m msfea_bot.skeleton ingest
 ```
 
 Open the [assistant](http://localhost:8000/), [dashboard](http://localhost:8000/dashboard/)
 or [readiness endpoint](http://localhost:8000/ready). The widget script is
 `/widget/widget.js`; `data-layout="standalone"` selects its page layout.
 
-The base Compose stack has only app and database. Full Studio AI review,
-private checks and publication require the worker/n8n stack in the
-[deployment guide](docs/deployment.md); a basic local chat stack does not provide
-those services. For Python development use Python 3.12+, `pip install -e ".[dev,gemini]"`
-and the [isolated development workflow](docs/development.md).
+The development file starts the app and database by default. Full Studio AI
+review, private checks and publication use the worker and n8n services in the
+[production deployment](docs/deployment.md). For Python development use Python
+3.12+, `pip install -e ".[dev,gemini]"` and the
+[isolated development workflow](docs/development.md).
 
 ## Repository map
 
@@ -48,7 +49,7 @@ and the [isolated development workflow](docs/development.md).
 | `src/msfea_bot/curation/`, `n8n/` | Immutable revisions, private assistance, checks and publication |
 | `src/msfea_bot/observability/`, `src/msfea_bot/experience/` | Anonymized interaction review, usage and experience feedback |
 | `eval/`, `tests/` | Evaluation datasets, result evidence and regression tests |
-| `deploy/`, `docker-compose*.yml` | HTTPS, deployment, backups and isolated development |
+| `deploy/`, `docker-compose*.yml` | Reverse proxy templates, deployment, backups and isolated development |
 | `docs/` | Current task guides; historical evidence is separated in `docs/archive/` |
 
 All runtime settings and service secrets are documented in [.env.example](.env.example).

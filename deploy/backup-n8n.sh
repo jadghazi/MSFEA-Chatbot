@@ -9,7 +9,7 @@ out="$dir/n8n-$(date +%Y%m%d-%H%M%S).sql.gz"
 tmp="$(mktemp "$dir/.n8n-backup.XXXXXX")"
 trap 'rm -f -- "$tmp"' EXIT
 
-docker compose -f docker-compose.yml -f docker-compose.prod.yml \
+docker compose -f docker-compose.prod.yml \
   exec -T n8n-db pg_dump -U n8n n8n | gzip > "$tmp"
 if [ -e "$out" ]; then
   echo "Refusing to overwrite existing backup: $out" >&2

@@ -1,27 +1,35 @@
-# Production overlay: puts Caddy in front for AUTOMATIC HTTPS, and tells the app it
-# sits behind a trusted proxy (so rate limiting sees the real client IP).
-#
-# Usage:
-#   DOMAIN=chatbot.aub.edu.lb docker compose \
-#       -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-#
-# Requirements:
-#   - DNS for DOMAIN points at this server; ports 80 + 443 are open.
-#   - This overlay removes the development app/database host ports, so only
-#     Caddy is public. It reaches the app privately as "app:8000".
+# Production stack behind the site's existing reverse proxy. See docs/deployment.md.
 services:
-  app:
-    # Only Caddy is public; do not inherit the development host mapping.
-    ports: !reset []
+  db:
+    image: pgvector/pgvector:pg16
     environment:
-      # Caddy sets X-Forwarded-For; trust it so the rate limiter keys on the real
-      # client IP instead of Caddy's. Only enable this when actually behind a proxy.
+      POSTGRES_USER: msfea
+      POSTGRES_PASSWORD: msfea
+      POSTGRES_DB: msfea
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U msfea -d msfea"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://msfea:msfea@db:5432/msfea
+      WARM_MODELS_ON_STARTUP: "true"
+      # The backend port must be reachable only from the trusted proxy/host.
       TRUST_PROXY_HEADERS: "true"
       CURATION_WORKER_TOKEN: ${CURATION_WORKER_TOKEN:?set a dedicated app-worker token}
-
-  db:
-    # PostgreSQL is reachable only on the private Compose network.
-    ports: !reset []
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${APP_BIND_ADDRESS:-127.0.0.1}:9000:8000"
+    restart: unless-stopped
 
   validation-db-init:
     image: pgvector/pgvector:pg16
@@ -170,24 +178,8 @@ services:
     networks:
       - curation_private
 
-  caddy:
-    image: caddy:2
-    depends_on:
-      - app
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      DOMAIN: ${DOMAIN:?set DOMAIN to your public hostname, e.g. chatbot.aub.edu.lb}
-    volumes:
-      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data      # persists the TLS certificates across restarts
-      - caddy_config:/config
-    restart: unless-stopped
-
 volumes:
-  caddy_data:
-  caddy_config:
+  pgdata:
   n8n_data:
   n8n_pgdata:
 

@@ -254,11 +254,13 @@ preview calls/day. These are app budgets, not provider guarantees or entry count
 The local 500/day demo override does not change the production default.
 Retries also use quota; verify the project's actual allowance before changes.
 
-Production runs app, application PostgreSQL, private worker, self-hosted n8n,
-n8n PostgreSQL and Caddy. Validation uses a separate database on the application
-PostgreSQL server, not a seventh permanent container. Bootstrap jobs initialize
-validation and import/publish the Git workflow, then exit. Student chat is independent
-of n8n; n8n sequences checks/publication IDs and cannot approve content.
+The production Compose file runs the app, application PostgreSQL, private
+worker, self-hosted n8n and n8n PostgreSQL. The institution's reverse proxy
+handles HTTPS and forwards requests to host port 9000, bound to loopback by
+default. Validation uses a separate database on the application PostgreSQL
+server. Bootstrap jobs initialize validation and import/publish the Git
+workflow, then exit. Student chat is independent of n8n. n8n sequences
+checks and publication requests. Approval requires a named human reviewer.
 
 Use one application worker/instance: short-term rate limiting, request concurrency,
 response cache and legacy usage counters are process-local. Daily IP/chat admission,
