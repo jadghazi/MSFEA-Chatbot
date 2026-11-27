@@ -6,20 +6,36 @@ releases and their serving topology.
 
 ## First installation
 
-1. Check out the approved release on the department's Docker host. Confirm the
-   public hostname with IT and reserve host port 9000 for the app. Run the
-   commands from the checkout. For a new installation, create the environment
-   file with restricted permissions.
+- **Reverse proxy.** The app stack has no Caddy container. The department's
+  existing Caddy serves the public hostname and terminates HTTPS.
+- **Upstream port.** Production publishes the app at `127.0.0.1:9000` by
+  default for Caddy on the Docker host. For a proxy that cannot reach host
+  loopback, follow the [private address setup](#https-cors-and-worker-count).
+- **Compose files.** The repository has two standalone Compose files. Use
+  [docker-compose.prod.yml](../docker-compose.prod.yml) on the department server
+  and [docker-compose.dev.yml](../docker-compose.dev.yml) for local development.
+
+1. Check that the department host has Docker and the `docker compose` command,
+   reserve port 9000, and confirm the public hostname and upstream address with
+   IT. Check out the approved release. From the repository root, create `.env`
+   if it is missing and print the release SHA.
 
    ```bash
-   install -m 600 .env.example .env
+   test -e .env || install -m 600 .env.example .env
    git rev-parse HEAD
    ```
 
-2. In `.env`, set `APP_COMMIT` to the printed SHA and configure the
-   institution's Gemini project, admin token and independent worker and n8n
-   secrets listed below. Set `CORS_ALLOW_ORIGINS` to the exact host-page origins
-   if another website will embed the widget.
+2. Fill in the following settings in `.env`.
+
+   - Set `APP_COMMIT` to the printed SHA and `LLM_API_KEY` to a key from the
+     institution's Gemini project.
+   - Generate separate values for `ADMIN_TOKEN`, `CURATION_WORKER_TOKEN`,
+     `N8N_WEBHOOK_SECRET`, `N8N_DB_PASSWORD` and `N8N_ENCRYPTION_KEY` using the
+     recipe in [.env.example](../.env.example). Save a recoverable copy of
+     `N8N_ENCRYPTION_KEY` for restoring workflow credentials.
+   - Set `APP_BIND_ADDRESS` if IT chose a private upstream address in step 1.
+   - If another website will embed the widget, set `CORS_ALLOW_ORIGINS` to the
+     exact origins of the pages that will host it.
 3. Validate the Compose configuration, start the production stack and build the
    initial index from the reviewed knowledge files in Git.
 
@@ -32,17 +48,19 @@ releases and their serving topology.
    curl -fsS http://127.0.0.1:9000/ready
    ```
 
-   Expect `{"status":"ok"}` and `{"status":"ready"}`, respectively. The
-   readiness probe returns 503 until the initial index is populated and
-   compatible with the local embedding model. The `validation-db-init`,
-   `n8n-import` and `n8n-publish` setup jobs should exit successfully. The app,
-   databases, worker and n8n should be running and healthy. If a service is
-   still starting, wait for it to finish and repeat the checks.
+   If you set `APP_BIND_ADDRESS` to a private host address, use that address
+   in the two HTTP checks. Expect `{"status":"ok"}` and `{"status":"ready"}`,
+   respectively. The readiness probe returns 503 until the initial index is
+   populated and compatible with the local embedding model. In the Compose
+   status output, look for `Exited (0)` on the `validation-db-init`, `n8n-import`
+   and `n8n-publish` setup jobs. The app should be running, and both databases,
+   the worker and n8n should be healthy. If a service is still starting, wait
+   for it to finish and repeat the checks.
 4. Add the [example Caddy site block](../deploy/Caddyfile) to the department's
-   existing configuration, substituting the assigned hostname. Have the proxy
+   existing configuration. Replace the example hostname with the assigned
+   hostname and use the upstream address chosen in step 1. Have the proxy
    operator validate and reload the shared configuration using their normal
-   process. See [HTTPS, CORS and worker count](#https-cors-and-worker-count)
-   if Caddy uses a separate network namespace or host.
+   process.
 5. Verify the same health and readiness responses over HTTPS. Replace the example
    hostname in these commands. Each internal path should return 404.
 

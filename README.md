@@ -14,7 +14,8 @@ establish wider pilot outcomes or independently calibrated answer accuracy.
 
 - Coding agents: read [AGENTS.md](AGENTS.md), then [current architecture](docs/architecture.md).
 - All task guides: [documentation index](docs/README.md).
-- University server setup: [production deployment and handoff](docs/deployment.md#first-installation).
+- AUB IT can follow the [university deployment guide](docs/deployment.md#first-installation)
+  to run the production stack on port 9000 behind the department's existing Caddy.
 - Knowledge sources and normalization: [KB guide](kb/README.md).
 - Evaluation sets, commands and evidence: [evaluation guide](eval/README.md).
 
